@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowChart WebGL Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; }
+    #app { width: 100vw; height: 100vh; }
+
+    #sidebar {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 260px; z-index: 20;
+      background: rgba(20, 24, 48, 0.92); backdrop-filter: blur(8px);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      padding: 16px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    #sidebar h3 { color: #9ca3af; font-size: 11px; text-transform: uppercase;
+                  letter-spacing: .08em; font-family: system-ui; margin-top: 4px; }
+    .btn-group { display: flex; flex-direction: column; gap: 6px; }
+    button {
+      padding: 8px 12px; border: none; border-radius: 6px;
+      background: #1e2d5a; color: #d1d5db; cursor: pointer;
+      font-size: 13px; font-family: system-ui; text-align: left;
+      transition: background .15s;
+    }
+    button:hover { background: #263872; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    label  { color: #9ca3af; font-size: 11px; font-family: system-ui; }
+    input[type=color] { width: 100%; height: 32px; border: none;
+                        border-radius: 4px; cursor: pointer; padding: 2px; }
+    input[type=range] { width: 100%; }
+    input[type=text]  {
+      width: 100%; padding: 6px 8px; border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.12); background: #0f172a;
+      color: #e5e7eb; font-size: 13px; font-family: monospace;
+    }
+    #log {
+      position: fixed; bottom: 0; left: 0; right: 260px; z-index: 10;
+      padding: 6px 14px; background: rgba(0,0,0,0.55);
+      color: #6b7280; font-size: 11px; font-family: monospace;
+      display: flex; gap: 20px;
+    }
+    #hint {
+      position: fixed; top: 14px; left: 14px; z-index: 10;
+      color: #4b5563; font-size: 11px; font-family: system-ui; line-height: 1.9;
+    }
+  </style>
+</head>
+<body>
+  <div id="hint">
+    Drag empty → pan · Scroll → zoom<br>
+    Click node → select · ⌘+Click → multi<br>
+    Hover node edge → drag dot to connect<br>
+    ⌘Z → undo · ⌘⇧Z / ⌘Y → redo
+  </div>
+  <div id="app"></div>
+
+  <div id="sidebar">
+    <h3>History</h3>
+    <div class="btn-group" style="flex-direction:row;gap:6px;">
+      <button id="btnUndo" style="flex:1;opacity:.5;" disabled>↩ Undo</button>
+      <button id="btnRedo" style="flex:1;opacity:.5;" disabled>↪ Redo</button>
+    </div>
+
+    <h3>Canvas</h3>
+    <div class="btn-group">
+      <button id="btnFit">Fit View</button>
+      <button id="btnAdd">Add 100 Nodes</button>
+      <button id="btnStress">Stress Test (5 k)</button>
+      <button id="btnClear">Clear All</button>
+    </div>
+
+    <h3>Selected Node</h3>
+    <div class="field">
+      <label>ID (read-only)</label>
+      <input type="text" id="fId" readonly placeholder="—" />
+    </div>
+    <div class="field">
+      <label>Border Color</label>
+      <input type="color" id="fBorder" value="#1a73e8" />
+    </div>
+    <div class="field">
+      <label>Background Color</label>
+      <input type="color" id="fBg" value="#ffffff" />
+    </div>
+    <div class="field">
+      <label>Width</label>
+      <input type="range" id="fWidth" min="60" max="400" value="150" />
+    </div>
+    <div class="field">
+      <label>Height</label>
+      <input type="range" id="fHeight" min="30" max="200" value="52" />
+    </div>
+  </div>
+
+  <div id="log">
+    <span id="statNodes">nodes: 0</span>
+    <span id="statEdges">edges: 0</span>
+    <span id="statSel">selected: —</span>
+    <span id="statEvt"></span>
+  </div>
+
+  <script type="module">
+    import { FlowChart, generateId } from '@flowchart/core'
+
+    // ── Init ────────────────────────────────────────────────────────
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'n1', x: 80,  y: 180, width: 150, height: 52, label: 'Start',
+          style: { backgroundColor: '#e8f5e9', borderColor: '#43a047' } },
+        { id: 'n2', x: 340, y: 180, width: 150, height: 52, label: 'Process',
+          style: { backgroundColor: '#e3f2fd', borderColor: '#1e88e5' } },
+        { id: 'n3', x: 600, y: 100, width: 150, height: 52, label: 'Branch A',
+          style: { backgroundColor: '#fff8e1', borderColor: '#f9a825' } },
+        { id: 'n4', x: 600, y: 260, width: 150, height: 52, label: 'Branch B',
+          style: { backgroundColor: '#fce4ec', borderColor: '#e53935' } },
+        { id: 'n5', x: 860, y: 180, width: 150, height: 52, label: 'End',
+          style: { backgroundColor: '#f3e5f5', borderColor: '#8e24aa' } },
+      ],
+      edges: [
+        { id: 'e1', source: 'n1', target: 'n2' },
+        { id: 'e2', source: 'n2', target: 'n3' },
+        { id: 'e3', source: 'n2', target: 'n4', style: { dashArray: [8, 4] } },
+        { id: 'e4', source: 'n3', target: 'n5' },
+        { id: 'e5', source: 'n4', target: 'n5' },
+      ],
+    })
+
+    // ── Stats ────────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id)
+    const updateStats = () => {
+      $('statNodes').textContent = `nodes: ${chart.graph.nodeCount}`
+      $('statEdges').textContent = `edges: ${chart.graph.edgeCount}`
+      updateHistoryButtons()
+    }
+    const updateHistoryButtons = () => {
+      const canUndo = chart.canUndo()
+      const canRedo = chart.canRedo()
+      $('btnUndo').disabled = !canUndo
+      $('btnUndo').style.opacity = canUndo ? '1' : '.5'
+      $('btnRedo').disabled = !canRedo
+      $('btnRedo').style.opacity = canRedo ? '1' : '.5'
+    }
+    updateStats()
+
+    // ── Auto-connect on handle drag ──────────────────────────────────
+    chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
+      chart.addEdge({
+        id: generateId('e'),
+        source: sourceId,
+        target: targetId,
+        sourceHandle,
+        targetHandle,
+      })
+      updateStats()
+      $('statEvt').textContent = `connected: ${sourceId} → ${targetId}`
+    })
+
+    // ── Undo / Redo buttons ──────────────────────────────────────────
+    $('btnUndo').addEventListener('click', () => {
+      const ok = chart.undo()
+      if (ok) $('statEvt').textContent = 'undo'
+      updateStats()
+    })
+    $('btnRedo').addEventListener('click', () => {
+      const ok = chart.redo()
+      if (ok) $('statEvt').textContent = 'redo'
+      updateStats()
+    })
+
+    // ── Selection → populate sidebar ─────────────────────────────────
+    let selectedId = null
+
+    chart.on('nodeClick', ({ node }) => {
+      selectedId = node.id
+      const style = { backgroundColor:'#ffffff', borderColor:'#1a73e8', ...node.style }
+      $('fId').value     = node.id
+      $('fBorder').value = toHex(style.borderColor)
+      $('fBg').value     = toHex(style.backgroundColor)
+      $('fWidth').value  = node.width
+      $('fHeight').value = node.height
+      $('statEvt').textContent = `selected: ${node.id}`
+    })
+
+    chart.on('selectionChange', ({ selectedIds }) => {
+      $('statSel').textContent = selectedIds.length
+        ? `selected: ${selectedIds.join(', ')}`
+        : 'selected: —'
+      if (selectedIds.length === 0) { selectedId = null; $('fId').value = '' }
+    })
+
+    chart.on('nodeDragEnd', ({ id, x, y }) => {
+      $('statEvt').textContent = `moved ${id} → (${Math.round(x)}, ${Math.round(y)})`
+      updateHistoryButtons()
+    })
+
+    // ── Sidebar controls ─────────────────────────────────────────────
+    $('fBorder').addEventListener('input', e => {
+      if (!selectedId) return
+      chart.setNodeBorderColor(selectedId, e.target.value)
+    })
+    $('fBg').addEventListener('input', e => {
+      if (!selectedId) return
+      chart.setNodeBackgroundColor(selectedId, e.target.value)
+    })
+    $('fWidth').addEventListener('input', e => {
+      if (!selectedId) return
+      const node = chart.graph.getNode(selectedId)
+      if (node) chart.setNodeSize(selectedId, +e.target.value, node.height)
+    })
+    $('fHeight').addEventListener('input', e => {
+      if (!selectedId) return
+      const node = chart.graph.getNode(selectedId)
+      if (node) chart.setNodeSize(selectedId, node.width, +e.target.value)
+    })
+
+    // ── Canvas buttons ────────────────────────────────────────────────
+    $('btnFit').addEventListener('click', () => chart.fitView())
+
+    let autoN = 100
+    $('btnAdd').addEventListener('click', () => {
+      const cols = 10
+      for (let i = 0; i < 100; i++) {
+        chart.addNode({
+          id: generateId(),
+          x: 80 + (i % cols) * 200,
+          y: 480 + Math.floor(i / cols) * 120,
+          width: 150, height: 52,
+          label: `Node ${autoN++}`,
+        })
+      }
+      updateStats()
+    })
+
+    $('btnStress').addEventListener('click', () => {
+      chart.setNodes([])
+      const nodes = [], edges = []
+      const cols = 50
+      for (let i = 0; i < 5000; i++) {
+        nodes.push({ id: `s${i}`, x: (i%cols)*200, y: Math.floor(i/cols)*110,
+                     width: 160, height: 52, label: `Node ${i}` })
+        if (i > 0 && i%cols !== 0)
+          edges.push({ id: `se${i}`, source: `s${i-1}`, target: `s${i}` })
+      }
+      chart.setNodes(nodes)
+      chart.setEdges(edges)
+      chart.fitView()
+      updateStats()
+    })
+
+    $('btnClear').addEventListener('click', () => {
+      chart.graph.clear()
+      chart.clearSelection()
+      chart.setViewport({ x: 0, y: 0, zoom: 1 })
+      updateStats()
+    })
+
+    // Sync history buttons after keyboard undo/redo
+    document.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'z' || e.key === 'y')) {
+        // Let canvas handler run first, then sync buttons
+        setTimeout(updateHistoryButtons, 0)
+      }
+    })
+
+    // ── Helpers ──────────────────────────────────────────────────────
+    function toHex(css) {
+      const c = document.createElement('canvas')
+      c.width = c.height = 1
+      const ctx = c.getContext('2d')
+      ctx.fillStyle = css
+      ctx.fillRect(0, 0, 1, 1)
+      const [r,g,b] = ctx.getImageData(0,0,1,1).data
+      return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')
+    }
+  </script>
+</body>
+</html>

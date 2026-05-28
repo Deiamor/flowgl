@@ -1,0 +1,1 @@
+{"version":3,"file":"dynamic-buffer.d.ts","sourceRoot":"","sources":["../../../../src/renderer/webgl/buffers/dynamic-buffer.ts"],"names":[],"mappings":"AAAA,qBAAa,aAAa;IACxB,QAAQ,CAAC,MAAM,EAAE,WAAW,CAAA;IAC5B,OAAO,CAAC,EAAE,CAAwB;IAClC,OAAO,CAAC,aAAa,CAAQ;gBAEjB,EAAE,EAAE,sBAAsB,EAAE,YAAY,SAAQ;IAU5D,MAAM,CAAC,IAAI,EAAE,YAAY,GAAG,IAAI;IAWhC,OAAO,IAAI,IAAI;CAGhB"}
