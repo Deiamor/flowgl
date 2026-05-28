@@ -132,7 +132,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     const { width, height } = options.container.getBoundingClientRect()
     this.viewport.setSize(width, height)
 
-    // Issue 1: WebGL2 error handling — graceful failure
+    if (options.nodes) for (const n of options.nodes) this.graph.addNode(n)
+    if (options.edges) for (const e of options.edges) this.graph.addEdge(e)
+
     const ok = this.renderer.initialize(this.canvas, options.renderer)
     if (!ok) {
       this.failed = true
@@ -142,9 +144,6 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       return
     }
     this.renderer.resize(width, height)
-
-    if (options.nodes) for (const n of options.nodes) this.graph.addNode(n)
-    if (options.edges) for (const e of options.edges) this.graph.addEdge(e)
 
     // Issue 9: Context panels extracted to separate module
     this.panels = new ContextPanels({
@@ -692,9 +691,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.keyboardHandler.dispose()
       this.renderer.dispose()
     }
-    this.resizeObserver.disconnect()
-    this.labelEditor.dispose()
-    this.contextMenu.dispose()
+    this.resizeObserver?.disconnect()
+    this.labelEditor?.dispose()
+    this.contextMenu?.dispose()
     this.ariaLive?.remove()
     this.canvas?.remove()
     super.dispose()

@@ -116,4 +116,36 @@ describe('KeyboardHandler', () => {
     canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true }))
     expect(opts.onDelete).not.toHaveBeenCalled()
   })
+
+  // ── Tab / Arrow (new handlers) ─────────────────────────────────────────────
+
+  it('calls onTabNext on Tab key', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
+    expect(opts.onTabNext).toHaveBeenCalledOnce()
+    expect(opts.onTabPrev).not.toHaveBeenCalled()
+  })
+
+  it('calls onTabPrev on Shift+Tab', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }))
+    expect(opts.onTabPrev).toHaveBeenCalledOnce()
+    expect(opts.onTabNext).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['ArrowUp'],
+    ['ArrowDown'],
+    ['ArrowLeft'],
+    ['ArrowRight'],
+  ] as const)('calls onArrowKey with direction %s', (key) => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }))
+    expect(opts.onArrowKey).toHaveBeenCalledWith(key)
+  })
+
+  it('ignores Tab when targeting an INPUT element', () => {
+    const input = document.createElement('input')
+    document.body.appendChild(input)
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
+    expect(opts.onTabNext).not.toHaveBeenCalled()
+    document.body.removeChild(input)
+  })
 })

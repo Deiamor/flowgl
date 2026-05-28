@@ -85,6 +85,39 @@ describe('PanZoom', () => {
     expect(viewport.y).toBe(0)
   })
 
+  // ── Touch ─────────────────────────────────────────────────────────────────
+
+  function dispatchTouch(target: EventTarget, type: string, touches: Partial<Touch>[], changed?: Partial<Touch>[]): void {
+    const e = new Event(type, { bubbles: true, cancelable: true })
+    Object.defineProperty(e, 'touches',        { value: touches })
+    Object.defineProperty(e, 'changedTouches', { value: changed ?? touches })
+    target.dispatchEvent(e)
+  }
+  function t(clientX: number, clientY: number): Partial<Touch> {
+    return { identifier: 1, clientX, clientY }
+  }
+
+  it('1-finger touch pans the viewport', () => {
+    dispatchTouch(canvas, 'touchstart', [t(100, 100)])
+    dispatchTouch(canvas, 'touchmove', [t(150, 120)], [t(150, 120)])
+
+    expect(viewport.x).toBe(50)
+    expect(viewport.y).toBe(20)
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('shouldBlock prevents 1-finger touch pan', () => {
+    panZoom.dispose()
+    const blocked = new PanZoom(canvas, viewport, onUpdate, () => true)
+
+    dispatchTouch(canvas, 'touchstart', [t(100, 100)])
+    dispatchTouch(canvas, 'touchmove', [t(200, 200)], [t(200, 200)])
+
+    expect(viewport.x).toBe(0)
+    expect(viewport.y).toBe(0)
+    blocked.dispose()
+  })
+
   it('dispose() removes all listeners', () => {
     panZoom.dispose()
     canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 0, clientY: 0, bubbles: true }))

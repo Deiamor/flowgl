@@ -115,6 +115,86 @@ describe('NodeDrag', () => {
     expect(graph.updateNode).not.toHaveBeenCalled()
   })
 
+  // ── Touch support ─────────────────────────────────────────────────────────
+
+  function dispatchTouch(target: EventTarget, type: string, touches: Partial<Touch>[], changed?: Partial<Touch>[]): void {
+    const e = new Event(type, { bubbles: true, cancelable: true })
+    Object.defineProperty(e, 'touches',        { value: touches })
+    Object.defineProperty(e, 'changedTouches', { value: changed ?? touches })
+    target.dispatchEvent(e)
+  }
+  function t(id: number, clientX: number, clientY: number): Partial<Touch> {
+    return { identifier: id, clientX, clientY }
+  }
+
+  it('touchstart on node → touchmove → onStart fires on first move', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130)])
+    expect(onStart).not.toHaveBeenCalled()
+
+    dispatchTouch(canvas, 'touchmove', [t(1, 200, 150)], [t(1, 200, 150)])
+    expect(onStart).toHaveBeenCalledOnce()
+  })
+
+  it('touchmove updates node position', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130)])
+    dispatchTouch(canvas, 'touchmove', [t(1, 210, 160)], [t(1, 210, 160)])
+
+    expect(graph.updateNode).toHaveBeenCalled()
+    const [, patch] = (graph.updateNode as ReturnType<typeof vi.fn>).mock.calls[0]!
+    expect(patch.x).toBeGreaterThan(100)
+  })
+
+  it('touchend after move → onEnd fired', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130)])
+    dispatchTouch(canvas, 'touchmove', [t(1, 210, 160)], [t(1, 210, 160)])
+    dispatchTouch(canvas, 'touchend', [], [t(1, 210, 160)])
+
+    expect(onEnd).toHaveBeenCalledOnce()
+  })
+
+  it('touchend without prior move → onEnd NOT fired', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130)])
+    dispatchTouch(canvas, 'touchend', [], [t(1, 160, 130)])
+
+    expect(onEnd).not.toHaveBeenCalled()
+  })
+
+  it('shouldBlock prevents touch drag', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd, () => true)
+
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130)])
+    dispatchTouch(canvas, 'touchmove', [t(1, 210, 160)], [t(1, 210, 160)])
+
+    expect(onStart).not.toHaveBeenCalled()
+    expect(graph.updateNode).not.toHaveBeenCalled()
+  })
+
+  it('second touch while dragging is ignored (multi-touch guard)', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130)])
+    // Second finger arrives
+    dispatchTouch(canvas, 'touchstart', [t(1, 160, 130), t(2, 300, 200)])
+    dispatchTouch(canvas, 'touchmove', [t(2, 400, 300)], [t(2, 400, 300)])
+
+    // Only the first touch drives the drag
+    expect(graph.updateNode).not.toHaveBeenCalled()
+  })
+
   it('onMove is called with correct node id and new coordinates', () => {
     ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
 
