@@ -109,9 +109,14 @@ export class PanZoom {
   private handleTouchStart(e: TouchEvent): void {
     e.preventDefault()
     if (e.touches.length === 1) {
+      const touch = e.touches[0]!
+      const { left, top } = this.offset()
+      const sx = touch.clientX - left
+      const sy = touch.clientY - top
+      if (this.shouldBlock(sx, sy)) return
       this.isPanning = true
-      this.lastX = e.touches[0]!.clientX
-      this.lastY = e.touches[0]!.clientY
+      this.lastX = touch.clientX
+      this.lastY = touch.clientY
     } else if (e.touches.length === 2) {
       this.isPanning = false
       this.lastPinchDist = this.pinchDist(e)

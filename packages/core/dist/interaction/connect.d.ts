@@ -27,10 +27,14 @@ export declare class ConnectDrag {
     private onStateChange;
     private onConnect;
     private state;
+    private connectTouchId;
     private readonly onMouseMove;
     private readonly onMouseDown;
     private readonly onMouseUp;
     private readonly onMouseLeave;
+    private readonly onTouchStart;
+    private readonly onTouchMove;
+    private readonly onTouchEnd;
     constructor(canvas: HTMLCanvasElement, viewport: Viewport, graph: Graph, hitTester: HitTester, onStateChange: (s: ConnectState) => void, onConnect: (sourceId: string, targetId: string, sourceHandle: HandleSide, targetHandle: HandleSide) => void);
     isCapturing(): boolean;
     /** True if the pointer is currently within click range of any handle. */
@@ -57,6 +61,9 @@ export declare class ConnectDrag {
     private handleMouseDown;
     private handleMouseUp;
     private handleMouseLeave;
+    private handleTouchStart;
+    private handleTouchMove;
+    private handleTouchEnd;
     dispose(): void;
 }
 //# sourceMappingURL=connect.d.ts.map

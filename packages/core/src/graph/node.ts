@@ -6,6 +6,8 @@ export interface NodeStyle {
   textColor: string
   fontSize: number
   fontFamily: string
+  textAlign: 'left' | 'center' | 'right'
+  lineHeight: number
 }
 
 export interface NodeData {
@@ -28,4 +30,6 @@ export const DEFAULT_NODE_STYLE: NodeStyle = {
   textColor: '#1a1a1a',
   fontSize: 14,
   fontFamily: 'system-ui, sans-serif',
+  textAlign: 'center',
+  lineHeight: 1.4,
 }

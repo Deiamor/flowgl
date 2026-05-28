@@ -282,6 +282,8 @@ const DEFAULT_NODE_STYLE = {
     textColor: '#1a1a1a',
     fontSize: 14,
     fontFamily: 'system-ui, sans-serif',
+    textAlign: 'center',
+    lineHeight: 1.4,
 };
 
 // Per-instance (15 floats):
@@ -746,6 +748,7 @@ class EdgeProgram {
 
 // Per-vertex: position(2) + uv(2) = 4 floats
 const FLOATS_PER_VERT = 4;
+const TEXT_PADDING = 8;
 const VERT$1 = /* glsl */ `#version 300 es
 precision highp float;
 
@@ -819,7 +822,8 @@ class TextProgram {
                 continue;
             const style = { ...DEFAULT_NODE_STYLE, ...node.style };
             const font = `${style.fontSize}px ${style.fontFamily}`;
-            const entry = this.atlas.getOrCreate(node.label, font, style.textColor);
+            const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2);
+            const entry = this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight);
             if (!entry)
                 continue;
             // Center text on node
@@ -900,6 +904,7 @@ class ConnectDrag {
             targetNodeId: null,
             targetHandle: null,
         };
+        this.connectTouchId = null;
         this.canvas = canvas;
         this.viewport = viewport;
         this.graph = graph;
@@ -910,10 +915,17 @@ class ConnectDrag {
         this.onMouseDown = this.handleMouseDown.bind(this);
         this.onMouseUp = this.handleMouseUp.bind(this);
         this.onMouseLeave = this.handleMouseLeave.bind(this);
+        this.onTouchStart = this.handleTouchStart.bind(this);
+        this.onTouchMove = this.handleTouchMove.bind(this);
+        this.onTouchEnd = this.handleTouchEnd.bind(this);
         canvas.addEventListener('mousemove', this.onMouseMove);
         canvas.addEventListener('mousedown', this.onMouseDown);
         window.addEventListener('mouseup', this.onMouseUp);
         canvas.addEventListener('mouseleave', this.onMouseLeave);
+        canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', this.onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', this.onTouchEnd);
+        canvas.addEventListener('touchcancel', this.onTouchEnd);
     }
     isCapturing() {
         return this.state.connectingFrom !== null;
@@ -1075,11 +1087,74 @@ class ConnectDrag {
             this.canvas.style.cursor = '';
         }
     }
+    handleTouchStart(e) {
+        if (this.connectTouchId !== null || e.touches.length !== 1)
+            return;
+        const touch = e.touches[0];
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const handle = this.findNearestHandle(wx, wy);
+        if (!handle)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        this.connectTouchId = touch.identifier;
+        this.setState({
+            connectingFrom: handle,
+            pendingEndWx: wx,
+            pendingEndWy: wy,
+            targetNodeId: null,
+            targetHandle: null,
+        });
+        this.canvas.style.cursor = 'crosshair';
+    }
+    handleTouchMove(e) {
+        if (this.connectTouchId === null || !this.state.connectingFrom)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.connectTouchId);
+        if (!touch)
+            return;
+        e.preventDefault();
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const sourceNodeId = this.state.connectingFrom.nodeId;
+        const hit = this.findTargetHandle(wx, wy, sourceNodeId);
+        this.setState({
+            pendingEndWx: hit ? hit.wx : wx,
+            pendingEndWy: hit ? hit.wy : wy,
+            targetNodeId: hit ? hit.nodeId : null,
+            targetHandle: hit ? hit.side : null,
+        });
+    }
+    handleTouchEnd(e) {
+        if (this.connectTouchId === null || !this.state.connectingFrom)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.connectTouchId);
+        if (!touch)
+            return;
+        const from = this.state.connectingFrom;
+        const targetId = this.state.targetNodeId;
+        const targetHandle = this.state.targetHandle;
+        this.connectTouchId = null;
+        this.setState({
+            connectingFrom: null,
+            pendingEndWx: 0,
+            pendingEndWy: 0,
+            targetNodeId: null,
+            targetHandle: null,
+        });
+        this.canvas.style.cursor = '';
+        if (targetId && targetHandle) {
+            this.onConnect(from.nodeId, targetId, from.side, targetHandle);
+        }
+    }
     dispose() {
         this.canvas.removeEventListener('mousemove', this.onMouseMove);
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
         window.removeEventListener('mouseup', this.onMouseUp);
         this.canvas.removeEventListener('mouseleave', this.onMouseLeave);
+        this.canvas.removeEventListener('touchstart', this.onTouchStart);
+        this.canvas.removeEventListener('touchmove', this.onTouchMove);
+        this.canvas.removeEventListener('touchend', this.onTouchEnd);
+        this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
     }
 }
 
@@ -1501,6 +1576,32 @@ class GridProgram {
 
 const ATLAS_SIZE = 2048;
 const PADDING = 4;
+function isRTL(text) {
+    return /[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text);
+}
+function wrapLines(text, maxWidth, ctx) {
+    if (maxWidth <= 0)
+        return [text];
+    const segments = text.split('\n');
+    const result = [];
+    for (const segment of segments) {
+        const words = segment.split(' ');
+        let current = '';
+        for (const word of words) {
+            const candidate = current.length === 0 ? word : `${current} ${word}`;
+            if (ctx.measureText(candidate).width <= maxWidth) {
+                current = candidate;
+            }
+            else {
+                if (current.length > 0)
+                    result.push(current);
+                current = word;
+            }
+        }
+        result.push(current);
+    }
+    return result.length > 0 ? result : [''];
+}
 class TextAtlas {
     constructor() {
         this.entries = new Map();
@@ -1516,19 +1617,28 @@ class TextAtlas {
         this.ctx = ctx;
         this.ctx.textBaseline = 'top';
     }
-    key(text, font) {
-        return `${font}|${text}`;
+    key(text, font, maxWidth, lineHeight) {
+        return `${font}|${maxWidth}|${lineHeight}|${text}`;
     }
-    getOrCreate(text, font, color) {
-        const k = this.key(text, font);
+    getOrCreate(text, font, color, maxWidth, lineHeight) {
+        const k = this.key(text, font, maxWidth, lineHeight);
         const cached = this.entries.get(k);
         if (cached)
             return cached;
         this.ctx.font = font;
-        const metrics = this.ctx.measureText(text);
-        const w = Math.ceil(metrics.width) + PADDING * 2;
-        const h = Math.ceil((metrics.actualBoundingBoxAscent ?? 0) + (metrics.actualBoundingBoxDescent ?? 0)) + PADDING * 2;
-        if (w > ATLAS_SIZE)
+        const lines = wrapLines(text, maxWidth, this.ctx);
+        const sample = this.ctx.measureText(lines[0] ?? '');
+        const lineH = Math.ceil((sample.actualBoundingBoxAscent ?? 0) + (sample.actualBoundingBoxDescent ?? 0));
+        const lineStep = Math.max(lineH, Math.ceil(lineH * lineHeight));
+        let blockW = 0;
+        for (const line of lines) {
+            const lw = Math.ceil(this.ctx.measureText(line).width);
+            if (lw > blockW)
+                blockW = lw;
+        }
+        const w = blockW + PADDING * 2;
+        const h = lines.length * lineStep + PADDING * 2;
+        if (w > ATLAS_SIZE || h > ATLAS_SIZE)
             return null;
         if (this.shelfX + w > ATLAS_SIZE) {
             this.shelfY += this.shelfH;
@@ -1536,7 +1646,6 @@ class TextAtlas {
             this.shelfH = 0;
         }
         if (this.shelfY + h > ATLAS_SIZE) {
-            // Atlas full — clear and start over
             this.ctx.clearRect(0, 0, ATLAS_SIZE, ATLAS_SIZE);
             this.entries.clear();
             this.shelfX = 0;
@@ -1544,7 +1653,10 @@ class TextAtlas {
             this.shelfH = 0;
         }
         this.ctx.fillStyle = color;
-        this.ctx.fillText(text, this.shelfX + PADDING, this.shelfY + PADDING);
+        this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr';
+        for (let i = 0; i < lines.length; i++) {
+            this.ctx.fillText(lines[i], this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep);
+        }
         const entry = {
             u0: this.shelfX / ATLAS_SIZE,
             v0: this.shelfY / ATLAS_SIZE,
@@ -1799,9 +1911,15 @@ class PanZoom {
     handleTouchStart(e) {
         e.preventDefault();
         if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            const { left, top } = this.offset();
+            const sx = touch.clientX - left;
+            const sy = touch.clientY - top;
+            if (this.shouldBlock(sx, sy))
+                return;
             this.isPanning = true;
-            this.lastX = e.touches[0].clientX;
-            this.lastY = e.touches[0].clientY;
+            this.lastX = touch.clientX;
+            this.lastY = touch.clientY;
         }
         else if (e.touches.length === 2) {
             this.isPanning = false;
@@ -1848,6 +1966,7 @@ class NodeDrag {
         this.dragOffsetX = 0;
         this.dragOffsetY = 0;
         this.didMove = false;
+        this.activeTouchId = null;
         this.canvas = canvas;
         this.viewport = viewport;
         this.graph = graph;
@@ -1859,9 +1978,16 @@ class NodeDrag {
         this.onMouseDown = this.handleMouseDown.bind(this);
         this.onMouseMove = this.handleMouseMove.bind(this);
         this.onMouseUp = this.handleMouseUp.bind(this);
+        this.onTouchStart = this.handleTouchStart.bind(this);
+        this.onTouchMove = this.handleTouchMove.bind(this);
+        this.onTouchEnd = this.handleTouchEnd.bind(this);
         canvas.addEventListener('mousedown', this.onMouseDown);
         window.addEventListener('mousemove', this.onMouseMove);
         window.addEventListener('mouseup', this.onMouseUp);
+        canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', this.onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', this.onTouchEnd);
+        canvas.addEventListener('touchcancel', this.onTouchEnd);
     }
     toWorld(clientX, clientY) {
         const r = this.canvas.getBoundingClientRect();
@@ -1870,7 +1996,6 @@ class NodeDrag {
     handleMouseDown(e) {
         if (e.button !== 0)
             return;
-        // ConnectDrag gets priority when near a handle
         if (this.shouldBlock(e.clientX, e.clientY))
             return;
         const [wx, wy] = this.toWorld(e.clientX, e.clientY);
@@ -1883,7 +2008,6 @@ class NodeDrag {
         this.dragOffsetY = wy - node.y;
         this.didMove = false;
         this.canvas.style.cursor = 'grab';
-        // onStart is deferred to first actual movement so click-only does not pollute history
     }
     handleMouseMove(e) {
         if (!this.dragging)
@@ -1892,7 +2016,7 @@ class NodeDrag {
         const nx = wx - this.dragOffsetX;
         const ny = wy - this.dragOffsetY;
         if (!this.didMove) {
-            this.onStart(); // capture pre-drag snapshot before first updateNode
+            this.onStart();
             this.didMove = true;
         }
         this.graph.updateNode(this.dragging.id, { x: nx, y: ny });
@@ -1908,10 +2032,64 @@ class NodeDrag {
         this.dragging = null;
         this.canvas.style.cursor = '';
     }
+    handleTouchStart(e) {
+        if (this.activeTouchId !== null || e.touches.length !== 1)
+            return;
+        const touch = e.touches[0];
+        if (this.shouldBlock(touch.clientX, touch.clientY))
+            return;
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+        if (!node)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        this.activeTouchId = touch.identifier;
+        this.dragging = node;
+        this.dragOffsetX = wx - node.x;
+        this.dragOffsetY = wy - node.y;
+        this.didMove = false;
+        this.canvas.style.cursor = 'grab';
+    }
+    handleTouchMove(e) {
+        if (this.activeTouchId === null || !this.dragging)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.activeTouchId);
+        if (!touch)
+            return;
+        e.preventDefault();
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const nx = wx - this.dragOffsetX;
+        const ny = wy - this.dragOffsetY;
+        if (!this.didMove) {
+            this.onStart();
+            this.didMove = true;
+        }
+        this.graph.updateNode(this.dragging.id, { x: nx, y: ny });
+        this.canvas.style.cursor = 'grabbing';
+        this.onMove(this.dragging.id, nx, ny);
+    }
+    handleTouchEnd(e) {
+        if (this.activeTouchId === null || !this.dragging)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.activeTouchId);
+        if (!touch)
+            return;
+        const node = this.graph.getNode(this.dragging.id);
+        if (node && this.didMove)
+            this.onEnd(node.id, node.x, node.y);
+        this.dragging = null;
+        this.activeTouchId = null;
+        this.canvas.style.cursor = '';
+    }
     dispose() {
         this.canvas.removeEventListener('mousedown', this.onMouseDown);
         window.removeEventListener('mousemove', this.onMouseMove);
         window.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.removeEventListener('touchstart', this.onTouchStart);
+        this.canvas.removeEventListener('touchmove', this.onTouchMove);
+        this.canvas.removeEventListener('touchend', this.onTouchEnd);
+        this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
     }
 }
 
@@ -2309,6 +2487,20 @@ class KeyboardHandler {
                 case 'Escape':
                     opts.onEscape();
                     break;
+                case 'Tab':
+                    e.preventDefault();
+                    if (e.shiftKey)
+                        opts.onTabPrev();
+                    else
+                        opts.onTabNext();
+                    break;
+                case 'ArrowUp':
+                case 'ArrowDown':
+                case 'ArrowLeft':
+                case 'ArrowRight':
+                    e.preventDefault();
+                    opts.onArrowKey(e.key);
+                    break;
                 case 'z':
                     if (e.metaKey || e.ctrlKey) {
                         e.preventDefault();
@@ -2332,7 +2524,6 @@ class KeyboardHandler {
                     break;
             }
         };
-        // Attach to canvas so only the focused instance handles events
         canvas.addEventListener('keydown', this.onKeyDown);
     }
     dispose() {
@@ -3173,11 +3364,15 @@ class FlowChart extends EventEmitter {
         this.rerouteState = null;
         this.canvas = document.createElement('canvas');
         this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;';
-        // Issue 2: Accessibility attributes
         this.canvas.setAttribute('role', 'application');
         this.canvas.setAttribute('aria-label', options.ariaLabel ?? 'Flowchart');
         this.canvas.setAttribute('tabindex', '0');
         options.container.appendChild(this.canvas);
+        this.ariaLive = document.createElement('div');
+        this.ariaLive.setAttribute('aria-live', 'polite');
+        this.ariaLive.setAttribute('aria-atomic', 'true');
+        this.ariaLive.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+        options.container.appendChild(this.ariaLive);
         this.labelEditable = options.labelEditable ?? true;
         this.bgColor = options.background ?? '#f7f7f7';
         this.gridConfig = { ...DEFAULT_GRID_CONFIG, ...options.grid };
@@ -3364,6 +3559,9 @@ class FlowChart extends EventEmitter {
             },
             onUndo: () => this.undo(),
             onRedo: () => this.redo(),
+            onTabNext: () => this.tabSelectNode(1),
+            onTabPrev: () => this.tabSelectNode(-1),
+            onArrowKey: (dir) => this.moveSelectedByArrow(dir),
         });
         // Issue 2: Focus canvas on click so keyboard events are received
         this.canvas.addEventListener('mousedown', () => { this.canvas.focus(); });
@@ -3449,6 +3647,7 @@ class FlowChart extends EventEmitter {
                 return style ? { ...rest, style: { ...style } } : rest;
             }),
         });
+        this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() });
     }
     applySnapshot(snap) {
         this.graph.clear();
@@ -3473,6 +3672,7 @@ class FlowChart extends EventEmitter {
         if (!prev)
             return false;
         this.applySnapshot(prev);
+        this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() });
         return true;
     }
     /** Redo a previously undone action. Returns true if successful. */
@@ -3487,6 +3687,7 @@ class FlowChart extends EventEmitter {
         if (!next)
             return false;
         this.applySnapshot(next);
+        this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() });
         return true;
     }
     canUndo() { return this.history.canUndo(); }
@@ -3526,6 +3727,40 @@ class FlowChart extends EventEmitter {
             this.rafId = null;
             this.renderer.render(this.graph, this.viewport, this.selectedIds, this.connectState, this.selectedEdgeIds, this.bgColor, this.gridConfig.visible ? this.gridConfig : null, this.rerouteState, this.edgeReroute.getEndpointCircles());
         });
+    }
+    announceNode(label) {
+        this.ariaLive.textContent = `Selected: ${label}`;
+    }
+    tabSelectNode(direction) {
+        const nodes = this.graph.getNodes();
+        if (nodes.length === 0)
+            return;
+        const currentId = this.selectedIds.size === 1 ? [...this.selectedIds][0] : null;
+        const currentIdx = currentId ? nodes.findIndex(n => n.id === currentId) : -1;
+        const nextIdx = ((currentIdx + direction) + nodes.length) % nodes.length;
+        const next = nodes[nextIdx];
+        if (!next)
+            return;
+        this.selectedIds.clear();
+        this.selectedIds.add(next.id);
+        this.selectedEdgeIds.clear();
+        this.emit('selectionChange', { selectedIds: [next.id], edgeIds: [] });
+        this.announceNode(next.label);
+        this.scheduleRender();
+    }
+    moveSelectedByArrow(direction) {
+        if (this.selectedIds.size === 0)
+            return;
+        const STEP = 10;
+        const dx = direction === 'ArrowLeft' ? -STEP : direction === 'ArrowRight' ? STEP : 0;
+        const dy = direction === 'ArrowUp' ? -STEP : direction === 'ArrowDown' ? STEP : 0;
+        this.beforeMutation();
+        for (const id of this.selectedIds) {
+            const node = this.graph.getNode(id);
+            if (node)
+                this.graph.updateNode(id, { x: node.x + dx, y: node.y + dy });
+        }
+        this.scheduleRender();
     }
     deleteSelected() {
         this.beforeMutation();
@@ -3578,6 +3813,7 @@ class FlowChart extends EventEmitter {
     addNode(node) {
         this.beforeMutation();
         this.graph.addNode(node);
+        this.emit('nodeAdd', { node });
         this.scheduleRender();
     }
     removeNode(id) {
@@ -3589,21 +3825,25 @@ class FlowChart extends EventEmitter {
             if (!remaining.has(eid))
                 this.selectedEdgeIds.delete(eid);
         }
+        this.emit('nodeRemove', { id });
         this.scheduleRender();
     }
     updateNode(id, updates) {
         this.graph.updateNode(id, updates);
+        this.emit('nodeUpdate', { id, updates });
         this.scheduleRender();
     }
     addEdge(edge) {
         this.beforeMutation();
         this.graph.addEdge(edge);
+        this.emit('edgeAdd', { edge });
         this.scheduleRender();
     }
     removeEdge(id) {
         this.beforeMutation();
         this.graph.removeEdge(id);
         this.selectedEdgeIds.delete(id);
+        this.emit('edgeRemove', { id });
         this.scheduleRender();
     }
     setNodes(nodes) {
@@ -3652,6 +3892,7 @@ class FlowChart extends EventEmitter {
         this.resizeObserver.disconnect();
         this.labelEditor.dispose();
         this.contextMenu.dispose();
+        this.ariaLive.remove();
         this.canvas.remove();
         super.dispose();
     }

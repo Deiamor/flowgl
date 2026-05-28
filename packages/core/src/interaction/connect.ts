@@ -59,10 +59,15 @@ export class ConnectDrag {
     targetHandle:   null,
   }
 
+  private connectTouchId: number | null = null
+
   private readonly onMouseMove:  (e: MouseEvent) => void
   private readonly onMouseDown:  (e: MouseEvent) => void
   private readonly onMouseUp:    (e: MouseEvent) => void
   private readonly onMouseLeave: (e: MouseEvent) => void
+  private readonly onTouchStart: (e: TouchEvent) => void
+  private readonly onTouchMove:  (e: TouchEvent) => void
+  private readonly onTouchEnd:   (e: TouchEvent) => void
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -88,11 +93,18 @@ export class ConnectDrag {
     this.onMouseDown  = this.handleMouseDown.bind(this)
     this.onMouseUp    = this.handleMouseUp.bind(this)
     this.onMouseLeave = this.handleMouseLeave.bind(this)
+    this.onTouchStart = this.handleTouchStart.bind(this)
+    this.onTouchMove  = this.handleTouchMove.bind(this)
+    this.onTouchEnd   = this.handleTouchEnd.bind(this)
 
-    canvas.addEventListener('mousemove',  this.onMouseMove)
-    canvas.addEventListener('mousedown',  this.onMouseDown)
-    window.addEventListener('mouseup',    this.onMouseUp)
-    canvas.addEventListener('mouseleave', this.onMouseLeave)
+    canvas.addEventListener('mousemove',   this.onMouseMove)
+    canvas.addEventListener('mousedown',   this.onMouseDown)
+    window.addEventListener('mouseup',     this.onMouseUp)
+    canvas.addEventListener('mouseleave',  this.onMouseLeave)
+    canvas.addEventListener('touchstart',  this.onTouchStart, { passive: false })
+    canvas.addEventListener('touchmove',   this.onTouchMove,  { passive: false })
+    canvas.addEventListener('touchend',    this.onTouchEnd)
+    canvas.addEventListener('touchcancel', this.onTouchEnd)
   }
 
   isCapturing(): boolean {
@@ -274,10 +286,70 @@ export class ConnectDrag {
     }
   }
 
+  private handleTouchStart(e: TouchEvent): void {
+    if (this.connectTouchId !== null || e.touches.length !== 1) return
+    const touch = e.touches[0]!
+    const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
+    const handle = this.findNearestHandle(wx, wy)
+    if (!handle) return
+    e.preventDefault()
+    e.stopPropagation()
+    this.connectTouchId = touch.identifier
+    this.setState({
+      connectingFrom: handle,
+      pendingEndWx:   wx,
+      pendingEndWy:   wy,
+      targetNodeId:   null,
+      targetHandle:   null,
+    })
+    this.canvas.style.cursor = 'crosshair'
+  }
+
+  private handleTouchMove(e: TouchEvent): void {
+    if (this.connectTouchId === null || !this.state.connectingFrom) return
+    const touch = Array.from(e.changedTouches).find(t => t.identifier === this.connectTouchId)
+    if (!touch) return
+    e.preventDefault()
+    const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
+    const sourceNodeId = this.state.connectingFrom.nodeId
+    const hit = this.findTargetHandle(wx, wy, sourceNodeId)
+    this.setState({
+      pendingEndWx: hit ? hit.wx : wx,
+      pendingEndWy: hit ? hit.wy : wy,
+      targetNodeId: hit ? hit.nodeId : null,
+      targetHandle: hit ? hit.side  : null,
+    })
+  }
+
+  private handleTouchEnd(e: TouchEvent): void {
+    if (this.connectTouchId === null || !this.state.connectingFrom) return
+    const touch = Array.from(e.changedTouches).find(t => t.identifier === this.connectTouchId)
+    if (!touch) return
+    const from         = this.state.connectingFrom
+    const targetId     = this.state.targetNodeId
+    const targetHandle = this.state.targetHandle
+    this.connectTouchId = null
+    this.setState({
+      connectingFrom: null,
+      pendingEndWx:   0,
+      pendingEndWy:   0,
+      targetNodeId:   null,
+      targetHandle:   null,
+    })
+    this.canvas.style.cursor = ''
+    if (targetId && targetHandle) {
+      this.onConnect(from.nodeId, targetId, from.side, targetHandle)
+    }
+  }
+
   dispose(): void {
-    this.canvas.removeEventListener('mousemove',  this.onMouseMove)
-    this.canvas.removeEventListener('mousedown',  this.onMouseDown)
-    window.removeEventListener('mouseup',    this.onMouseUp)
-    this.canvas.removeEventListener('mouseleave', this.onMouseLeave)
+    this.canvas.removeEventListener('mousemove',   this.onMouseMove)
+    this.canvas.removeEventListener('mousedown',   this.onMouseDown)
+    window.removeEventListener('mouseup',          this.onMouseUp)
+    this.canvas.removeEventListener('mouseleave',  this.onMouseLeave)
+    this.canvas.removeEventListener('touchstart',  this.onTouchStart)
+    this.canvas.removeEventListener('touchmove',   this.onTouchMove)
+    this.canvas.removeEventListener('touchend',    this.onTouchEnd)
+    this.canvas.removeEventListener('touchcancel', this.onTouchEnd)
   }
 }

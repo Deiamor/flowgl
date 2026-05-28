@@ -17,14 +17,21 @@ export declare class NodeDrag {
     private dragOffsetX;
     private dragOffsetY;
     private didMove;
+    private activeTouchId;
     private readonly onMouseDown;
     private readonly onMouseMove;
     private readonly onMouseUp;
+    private readonly onTouchStart;
+    private readonly onTouchMove;
+    private readonly onTouchEnd;
     constructor(canvas: HTMLCanvasElement, viewport: Viewport, graph: Graph, hitTester: HitTester, onStart: NodeDragStartHandler, onMove: NodeMoveHandler, onEnd: NodeDragEndHandler, shouldBlock?: (clientX: number, clientY: number) => boolean);
     private toWorld;
     private handleMouseDown;
     private handleMouseMove;
     private handleMouseUp;
+    private handleTouchStart;
+    private handleTouchMove;
+    private handleTouchEnd;
     dispose(): void;
 }
 //# sourceMappingURL=drag.d.ts.map

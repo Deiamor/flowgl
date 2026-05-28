@@ -53,6 +53,12 @@ interface FlowChartEvents extends Record<string, unknown> {
   viewportChange:  ViewportState
   connect:         { sourceId: string; targetId: string; sourceHandle: HandleSide; targetHandle: HandleSide }
   selectionChange: { selectedIds: string[]; edgeIds: string[] }
+  nodeAdd:         { node: NodeData }
+  nodeRemove:      { id: string }
+  nodeUpdate:      { id: string; updates: Partial<Omit<NodeData, 'id'>> }
+  edgeAdd:         { edge: EdgeData }
+  edgeRemove:      { id: string }
+  historyChange:   { canUndo: boolean; canRedo: boolean }
 }
 
 export class FlowChart extends EventEmitter<FlowChartEvents> {
@@ -73,6 +79,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private history: History
   private panels!: ContextPanels
   private resizeObserver!: ResizeObserver
+  private ariaLive: HTMLElement
   private rafId: number | null = null
   private failed = false
 
@@ -89,11 +96,16 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
     this.canvas = document.createElement('canvas')
     this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;'
-    // Issue 2: Accessibility attributes
     this.canvas.setAttribute('role', 'application')
     this.canvas.setAttribute('aria-label', options.ariaLabel ?? 'Flowchart')
     this.canvas.setAttribute('tabindex', '0')
     options.container.appendChild(this.canvas)
+
+    this.ariaLive = document.createElement('div')
+    this.ariaLive.setAttribute('aria-live', 'polite')
+    this.ariaLive.setAttribute('aria-atomic', 'true')
+    this.ariaLive.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;'
+    options.container.appendChild(this.ariaLive)
 
     this.labelEditable = options.labelEditable ?? true
     this.bgColor       = options.background ?? '#f7f7f7'
@@ -305,8 +317,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         })
         this.scheduleRender()
       },
-      onUndo: () => this.undo(),
-      onRedo: () => this.redo(),
+      onUndo:     () => this.undo(),
+      onRedo:     () => this.redo(),
+      onTabNext:  () => this.tabSelectNode(1),
+      onTabPrev:  () => this.tabSelectNode(-1),
+      onArrowKey: (dir) => this.moveSelectedByArrow(dir),
     })
 
     // Issue 2: Focus canvas on click so keyboard events are received
@@ -396,6 +411,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         return style ? { ...rest, style: { ...style } } : rest
       }),
     })
+    this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() })
   }
 
   private applySnapshot(snap: { nodes: NodeData[]; edges: EdgeData[] }): void {
@@ -418,6 +434,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     const prev = this.history.undo(current)
     if (!prev) return false
     this.applySnapshot(prev)
+    this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() })
     return true
   }
 
@@ -431,6 +448,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     const next = this.history.redo(current)
     if (!next) return false
     this.applySnapshot(next)
+    this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() })
     return true
   }
 
@@ -479,6 +497,39 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.edgeReroute.getEndpointCircles(),
       )
     })
+  }
+
+  private announceNode(label: string): void {
+    this.ariaLive.textContent = `Selected: ${label}`
+  }
+
+  private tabSelectNode(direction: 1 | -1): void {
+    const nodes = this.graph.getNodes()
+    if (nodes.length === 0) return
+    const currentId = this.selectedIds.size === 1 ? [...this.selectedIds][0]! : null
+    const currentIdx = currentId ? nodes.findIndex(n => n.id === currentId) : -1
+    const nextIdx = ((currentIdx + direction) + nodes.length) % nodes.length
+    const next = nodes[nextIdx]
+    if (!next) return
+    this.selectedIds.clear()
+    this.selectedIds.add(next.id)
+    this.selectedEdgeIds.clear()
+    this.emit('selectionChange', { selectedIds: [next.id], edgeIds: [] })
+    this.announceNode(next.label)
+    this.scheduleRender()
+  }
+
+  private moveSelectedByArrow(direction: 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight'): void {
+    if (this.selectedIds.size === 0) return
+    const STEP = 10
+    const dx = direction === 'ArrowLeft' ? -STEP : direction === 'ArrowRight' ? STEP : 0
+    const dy = direction === 'ArrowUp'   ? -STEP : direction === 'ArrowDown'  ? STEP : 0
+    this.beforeMutation()
+    for (const id of this.selectedIds) {
+      const node = this.graph.getNode(id)
+      if (node) this.graph.updateNode(id, { x: node.x + dx, y: node.y + dy })
+    }
+    this.scheduleRender()
   }
 
   private deleteSelected(): void {
@@ -543,6 +594,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   addNode(node: NodeData): void {
     this.beforeMutation()
     this.graph.addNode(node)
+    this.emit('nodeAdd', { node })
     this.scheduleRender()
   }
 
@@ -554,17 +606,20 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     for (const eid of this.selectedEdgeIds) {
       if (!remaining.has(eid)) this.selectedEdgeIds.delete(eid)
     }
+    this.emit('nodeRemove', { id })
     this.scheduleRender()
   }
 
   updateNode(id: string, updates: Partial<Omit<NodeData, 'id'>>): void {
     this.graph.updateNode(id, updates)
+    this.emit('nodeUpdate', { id, updates })
     this.scheduleRender()
   }
 
   addEdge(edge: EdgeData): void {
     this.beforeMutation()
     this.graph.addEdge(edge)
+    this.emit('edgeAdd', { edge })
     this.scheduleRender()
   }
 
@@ -572,6 +627,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.beforeMutation()
     this.graph.removeEdge(id)
     this.selectedEdgeIds.delete(id)
+    this.emit('edgeRemove', { id })
     this.scheduleRender()
   }
 
@@ -623,6 +679,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.resizeObserver.disconnect()
     this.labelEditor.dispose()
     this.contextMenu.dispose()
+    this.ariaLive.remove()
     this.canvas.remove()
     super.dispose()
   }

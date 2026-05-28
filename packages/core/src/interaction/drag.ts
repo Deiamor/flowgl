@@ -21,10 +21,14 @@ export class NodeDrag {
   private dragOffsetX = 0
   private dragOffsetY = 0
   private didMove = false
+  private activeTouchId: number | null = null
 
-  private readonly onMouseDown: (e: MouseEvent) => void
-  private readonly onMouseMove: (e: MouseEvent) => void
-  private readonly onMouseUp:   (e: MouseEvent) => void
+  private readonly onMouseDown:  (e: MouseEvent) => void
+  private readonly onMouseMove:  (e: MouseEvent) => void
+  private readonly onMouseUp:    (e: MouseEvent) => void
+  private readonly onTouchStart: (e: TouchEvent) => void
+  private readonly onTouchMove:  (e: TouchEvent) => void
+  private readonly onTouchEnd:   (e: TouchEvent) => void
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -45,13 +49,20 @@ export class NodeDrag {
     this.onEnd        = onEnd
     this.shouldBlock  = shouldBlock
 
-    this.onMouseDown = this.handleMouseDown.bind(this)
-    this.onMouseMove = this.handleMouseMove.bind(this)
-    this.onMouseUp   = this.handleMouseUp.bind(this)
+    this.onMouseDown  = this.handleMouseDown.bind(this)
+    this.onMouseMove  = this.handleMouseMove.bind(this)
+    this.onMouseUp    = this.handleMouseUp.bind(this)
+    this.onTouchStart = this.handleTouchStart.bind(this)
+    this.onTouchMove  = this.handleTouchMove.bind(this)
+    this.onTouchEnd   = this.handleTouchEnd.bind(this)
 
-    canvas.addEventListener('mousedown', this.onMouseDown)
-    window.addEventListener('mousemove', this.onMouseMove)
-    window.addEventListener('mouseup',   this.onMouseUp)
+    canvas.addEventListener('mousedown',   this.onMouseDown)
+    window.addEventListener('mousemove',   this.onMouseMove)
+    window.addEventListener('mouseup',     this.onMouseUp)
+    canvas.addEventListener('touchstart',  this.onTouchStart, { passive: false })
+    canvas.addEventListener('touchmove',   this.onTouchMove,  { passive: false })
+    canvas.addEventListener('touchend',    this.onTouchEnd)
+    canvas.addEventListener('touchcancel', this.onTouchEnd)
   }
 
   private toWorld(clientX: number, clientY: number): [number, number] {
@@ -61,7 +72,6 @@ export class NodeDrag {
 
   private handleMouseDown(e: MouseEvent): void {
     if (e.button !== 0) return
-    // ConnectDrag gets priority when near a handle
     if (this.shouldBlock(e.clientX, e.clientY)) return
     const [wx, wy] = this.toWorld(e.clientX, e.clientY)
     const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy)
@@ -72,7 +82,6 @@ export class NodeDrag {
     this.dragOffsetY = wy - node.y
     this.didMove     = false
     this.canvas.style.cursor = 'grab'
-    // onStart is deferred to first actual movement so click-only does not pollute history
   }
 
   private handleMouseMove(e: MouseEvent): void {
@@ -81,7 +90,7 @@ export class NodeDrag {
     const nx = wx - this.dragOffsetX
     const ny = wy - this.dragOffsetY
     if (!this.didMove) {
-      this.onStart()   // capture pre-drag snapshot before first updateNode
+      this.onStart()
       this.didMove = true
     }
     this.graph.updateNode(this.dragging.id, { x: nx, y: ny })
@@ -97,9 +106,58 @@ export class NodeDrag {
     this.canvas.style.cursor = ''
   }
 
+  private handleTouchStart(e: TouchEvent): void {
+    if (this.activeTouchId !== null || e.touches.length !== 1) return
+    const touch = e.touches[0]!
+    if (this.shouldBlock(touch.clientX, touch.clientY)) return
+    const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
+    const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy)
+    if (!node) return
+    e.preventDefault()
+    e.stopPropagation()
+    this.activeTouchId = touch.identifier
+    this.dragging      = node
+    this.dragOffsetX   = wx - node.x
+    this.dragOffsetY   = wy - node.y
+    this.didMove       = false
+    this.canvas.style.cursor = 'grab'
+  }
+
+  private handleTouchMove(e: TouchEvent): void {
+    if (this.activeTouchId === null || !this.dragging) return
+    const touch = Array.from(e.changedTouches).find(t => t.identifier === this.activeTouchId)
+    if (!touch) return
+    e.preventDefault()
+    const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
+    const nx = wx - this.dragOffsetX
+    const ny = wy - this.dragOffsetY
+    if (!this.didMove) {
+      this.onStart()
+      this.didMove = true
+    }
+    this.graph.updateNode(this.dragging.id, { x: nx, y: ny })
+    this.canvas.style.cursor = 'grabbing'
+    this.onMove(this.dragging.id, nx, ny)
+  }
+
+  private handleTouchEnd(e: TouchEvent): void {
+    if (this.activeTouchId === null || !this.dragging) return
+    const touch = Array.from(e.changedTouches).find(t => t.identifier === this.activeTouchId)
+    if (!touch) return
+    const node = this.graph.getNode(this.dragging.id)
+    if (node && this.didMove) this.onEnd(node.id, node.x, node.y)
+    this.dragging      = null
+    this.activeTouchId = null
+    this.canvas.style.cursor = ''
+  }
+
   dispose(): void {
-    this.canvas.removeEventListener('mousedown', this.onMouseDown)
-    window.removeEventListener('mousemove', this.onMouseMove)
-    window.removeEventListener('mouseup',   this.onMouseUp)
+    this.canvas.removeEventListener('mousedown',   this.onMouseDown)
+    window.removeEventListener('mousemove',        this.onMouseMove)
+    window.removeEventListener('mouseup',          this.onMouseUp)
+    this.canvas.removeEventListener('touchstart',  this.onTouchStart)
+    this.canvas.removeEventListener('touchmove',   this.onTouchMove)
+    this.canvas.removeEventListener('touchend',    this.onTouchEnd)
+    this.canvas.removeEventListener('touchcancel', this.onTouchEnd)
   }
 }

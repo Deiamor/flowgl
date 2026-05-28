@@ -6,6 +6,7 @@ import { DEFAULT_NODE_STYLE } from '../../../graph/node'
 
 // Per-vertex: position(2) + uv(2) = 4 floats
 const FLOATS_PER_VERT = 4
+const TEXT_PADDING = 8
 
 const VERT = /* glsl */ `#version 300 es
 precision highp float;
@@ -94,7 +95,8 @@ export class TextProgram {
       if (!node.label) continue
       const style: NodeStyle = { ...DEFAULT_NODE_STYLE, ...node.style }
       const font = `${style.fontSize}px ${style.fontFamily}`
-      const entry = this.atlas.getOrCreate(node.label, font, style.textColor)
+      const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2)
+      const entry = this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight)
       if (!entry) continue
 
       // Center text on node

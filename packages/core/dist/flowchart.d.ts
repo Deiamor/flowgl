@@ -52,6 +52,26 @@ interface FlowChartEvents extends Record<string, unknown> {
         selectedIds: string[];
         edgeIds: string[];
     };
+    nodeAdd: {
+        node: NodeData;
+    };
+    nodeRemove: {
+        id: string;
+    };
+    nodeUpdate: {
+        id: string;
+        updates: Partial<Omit<NodeData, 'id'>>;
+    };
+    edgeAdd: {
+        edge: EdgeData;
+    };
+    edgeRemove: {
+        id: string;
+    };
+    historyChange: {
+        canUndo: boolean;
+        canRedo: boolean;
+    };
 }
 export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     private canvas;
@@ -71,6 +91,7 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     private history;
     private panels;
     private resizeObserver;
+    private ariaLive;
     private rafId;
     private failed;
     private selectedIds;
@@ -105,6 +126,9 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
         viewport?: ViewportState;
     }): void;
     private scheduleRender;
+    private announceNode;
+    private tabSelectNode;
+    private moveSelectedByArrow;
     private deleteSelected;
     setNodeStyle(id: string, style: Partial<NodeStyle>): void;
     setNodeBorderColor(id: string, color: string): void;

@@ -6,6 +6,8 @@ export interface NodeStyle {
     textColor: string;
     fontSize: number;
     fontFamily: string;
+    textAlign: 'left' | 'center' | 'right';
+    lineHeight: number;
 }
 export interface NodeData {
     id: string;

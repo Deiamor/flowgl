@@ -6,6 +6,31 @@ interface AtlasEntry {
   w: number; h: number
 }
 
+function isRTL(text: string): boolean {
+  return /[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text)
+}
+
+function wrapLines(text: string, maxWidth: number, ctx: OffscreenCanvasRenderingContext2D): string[] {
+  if (maxWidth <= 0) return [text]
+  const segments = text.split('\n')
+  const result: string[] = []
+  for (const segment of segments) {
+    const words = segment.split(' ')
+    let current = ''
+    for (const word of words) {
+      const candidate = current.length === 0 ? word : `${current} ${word}`
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        current = candidate
+      } else {
+        if (current.length > 0) result.push(current)
+        current = word
+      }
+    }
+    result.push(current)
+  }
+  return result.length > 0 ? result : ['']
+}
+
 export class TextAtlas {
   private readonly offscreen: OffscreenCanvas
   private readonly ctx: OffscreenCanvasRenderingContext2D
@@ -24,23 +49,34 @@ export class TextAtlas {
     this.ctx.textBaseline = 'top'
   }
 
-  private key(text: string, font: string): string {
-    return `${font}|${text}`
+  private key(text: string, font: string, maxWidth: number, lineHeight: number): string {
+    return `${font}|${maxWidth}|${lineHeight}|${text}`
   }
 
-  getOrCreate(text: string, font: string, color: string): AtlasEntry | null {
-    const k = this.key(text, font)
+  getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number): AtlasEntry | null {
+    const k = this.key(text, font, maxWidth, lineHeight)
     const cached = this.entries.get(k)
     if (cached) return cached
 
     this.ctx.font = font
-    const metrics = this.ctx.measureText(text)
-    const w = Math.ceil(metrics.width) + PADDING * 2
-    const h = Math.ceil(
-      (metrics.actualBoundingBoxAscent ?? 0) + (metrics.actualBoundingBoxDescent ?? 0),
-    ) + PADDING * 2
+    const lines = wrapLines(text, maxWidth, this.ctx)
 
-    if (w > ATLAS_SIZE) return null
+    const sample = this.ctx.measureText(lines[0] ?? '')
+    const lineH = Math.ceil(
+      (sample.actualBoundingBoxAscent ?? 0) + (sample.actualBoundingBoxDescent ?? 0),
+    )
+    const lineStep = Math.max(lineH, Math.ceil(lineH * lineHeight))
+
+    let blockW = 0
+    for (const line of lines) {
+      const lw = Math.ceil(this.ctx.measureText(line).width)
+      if (lw > blockW) blockW = lw
+    }
+
+    const w = blockW + PADDING * 2
+    const h = lines.length * lineStep + PADDING * 2
+
+    if (w > ATLAS_SIZE || h > ATLAS_SIZE) return null
 
     if (this.shelfX + w > ATLAS_SIZE) {
       this.shelfY += this.shelfH
@@ -48,7 +84,6 @@ export class TextAtlas {
       this.shelfH = 0
     }
     if (this.shelfY + h > ATLAS_SIZE) {
-      // Atlas full — clear and start over
       this.ctx.clearRect(0, 0, ATLAS_SIZE, ATLAS_SIZE)
       this.entries.clear()
       this.shelfX = 0
@@ -57,7 +92,11 @@ export class TextAtlas {
     }
 
     this.ctx.fillStyle = color
-    this.ctx.fillText(text, this.shelfX + PADDING, this.shelfY + PADDING)
+    this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+
+    for (let i = 0; i < lines.length; i++) {
+      this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
+    }
 
     const entry: AtlasEntry = {
       u0: this.shelfX / ATLAS_SIZE,

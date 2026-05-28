@@ -1,9 +1,14 @@
+type ArrowDirection = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight'
+
 export interface KeyboardOptions {
   onDelete:    () => void
   onEscape:    () => void
   onSelectAll: () => void
   onUndo:      () => void
   onRedo:      () => void
+  onTabNext:   () => void
+  onTabPrev:   () => void
+  onArrowKey:  (direction: ArrowDirection) => void
 }
 
 const EDITING_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT'])
@@ -27,6 +32,18 @@ export class KeyboardHandler {
         case 'Escape':
           opts.onEscape()
           break
+        case 'Tab':
+          e.preventDefault()
+          if (e.shiftKey) opts.onTabPrev()
+          else opts.onTabNext()
+          break
+        case 'ArrowUp':
+        case 'ArrowDown':
+        case 'ArrowLeft':
+        case 'ArrowRight':
+          e.preventDefault()
+          opts.onArrowKey(e.key as ArrowDirection)
+          break
         case 'z':
           if (e.metaKey || e.ctrlKey) {
             e.preventDefault()
@@ -48,7 +65,6 @@ export class KeyboardHandler {
           break
       }
     }
-    // Attach to canvas so only the focused instance handles events
     canvas.addEventListener('keydown', this.onKeyDown)
   }
 
