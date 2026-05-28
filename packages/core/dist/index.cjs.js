@@ -636,7 +636,7 @@ function parseColor(css, cache) {
     cache.set(css, result);
     return result;
 }
-function handleXY$1(node, side) {
+function handleXY$2(node, side) {
     const cx = node.x + node.width / 2;
     const cy = node.y + node.height / 2;
     switch (side) {
@@ -711,8 +711,8 @@ class EdgeProgram {
                 a = 1.0;
             }
             const halfWidth = isSelected ? style.width * 0.75 : style.width / 2;
-            const [sx, sy] = handleXY$1(src, edge.sourceHandle ?? 'right');
-            const [ex, ey] = handleXY$1(tgt, edge.targetHandle ?? 'left');
+            const [sx, sy] = handleXY$2(src, edge.sourceHandle ?? 'right');
+            const [ex, ey] = handleXY$2(tgt, edge.targetHandle ?? 'left');
             const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle);
             const strip = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth);
             combined.set(strip, offset);
@@ -751,6 +751,9 @@ class EdgeProgram {
 // Per-vertex: position(2) + uv(2) = 4 floats
 const FLOATS_PER_VERT = 4;
 const TEXT_PADDING = 8;
+const EDGE_LABEL_FONT = '12px system-ui, sans-serif';
+const EDGE_LABEL_COLOR = '#374151';
+const EDGE_LABEL_BG = 'rgba(255,255,255,0.92)';
 const VERT$1 = /* glsl */ `#version 300 es
 precision highp float;
 
@@ -779,6 +782,44 @@ void main() {
   fragColor = texture(u_atlas, v_uv);
 }
 `;
+function handleXY$1(node, side) {
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2;
+    switch (side) {
+        case 'top': return [cx, node.y];
+        case 'bottom': return [cx, node.y + node.height];
+        case 'left': return [node.x, cy];
+        case 'right': return [node.x + node.width, cy];
+        default: return [node.x + node.width, cy];
+    }
+}
+function writeQuad(data, cursor, x0, y0, x1, y1, u0, v0, u1, v1) {
+    data[cursor++] = x0;
+    data[cursor++] = y0;
+    data[cursor++] = u0;
+    data[cursor++] = v0;
+    data[cursor++] = x1;
+    data[cursor++] = y0;
+    data[cursor++] = u1;
+    data[cursor++] = v0;
+    data[cursor++] = x1;
+    data[cursor++] = y1;
+    data[cursor++] = u1;
+    data[cursor++] = v1;
+    data[cursor++] = x0;
+    data[cursor++] = y0;
+    data[cursor++] = u0;
+    data[cursor++] = v0;
+    data[cursor++] = x1;
+    data[cursor++] = y1;
+    data[cursor++] = u1;
+    data[cursor++] = v1;
+    data[cursor++] = x0;
+    data[cursor++] = y1;
+    data[cursor++] = u0;
+    data[cursor++] = v1;
+    return cursor;
+}
 class TextProgram {
     constructor(gl, atlas) {
         this.gl = gl;
@@ -815,7 +856,16 @@ class TextProgram {
         if (nodes.length === 0)
             return;
         const gl = this.gl;
-        // 6 verts per label (2 triangles)
+        // Pass 1: pre-warm atlas for all visible nodes — prevents mid-iteration eviction
+        for (const node of nodes) {
+            if (!node.label)
+                continue;
+            const style = { ...DEFAULT_NODE_STYLE, ...node.style };
+            const font = `${style.fontSize}px ${style.fontFamily}`;
+            const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2);
+            this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight);
+        }
+        // Pass 2: generate vertex data from stable atlas state
         const data = new Float32Array(nodes.length * 6 * FLOATS_PER_VERT);
         let cursor = 0;
         let drawCount = 0;
@@ -828,40 +878,55 @@ class TextProgram {
             const entry = this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight);
             if (!entry)
                 continue;
-            // Center text on node
             const cx = node.x + node.width / 2;
             const cy = node.y + node.height / 2;
             const hw = entry.w / 2;
             const hh = entry.h / 2;
-            const x0 = cx - hw, y0 = cy - hh;
-            const x1 = cx + hw, y1 = cy + hh;
-            const { u0, v0, u1, v1 } = entry;
-            // Triangle 1
-            data[cursor++] = x0;
-            data[cursor++] = y0;
-            data[cursor++] = u0;
-            data[cursor++] = v0;
-            data[cursor++] = x1;
-            data[cursor++] = y0;
-            data[cursor++] = u1;
-            data[cursor++] = v0;
-            data[cursor++] = x1;
-            data[cursor++] = y1;
-            data[cursor++] = u1;
-            data[cursor++] = v1;
-            // Triangle 2
-            data[cursor++] = x0;
-            data[cursor++] = y0;
-            data[cursor++] = u0;
-            data[cursor++] = v0;
-            data[cursor++] = x1;
-            data[cursor++] = y1;
-            data[cursor++] = u1;
-            data[cursor++] = v1;
-            data[cursor++] = x0;
-            data[cursor++] = y1;
-            data[cursor++] = u0;
-            data[cursor++] = v1;
+            cursor = writeQuad(data, cursor, cx - hw, cy - hh, cx + hw, cy + hh, entry.u0, entry.v0, entry.u1, entry.v1);
+            drawCount += 6;
+        }
+        if (drawCount === 0)
+            return;
+        this.atlas.flush(gl);
+        this.vertexBuffer.upload(data.subarray(0, cursor));
+        gl.useProgram(this.program);
+        gl.uniformMatrix4fv(this.uMatrix, false, matrix);
+        gl.uniform1i(this.uAtlas, 0);
+        this.atlas.bind(gl, 0);
+        gl.bindVertexArray(this.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, drawCount);
+        gl.bindVertexArray(null);
+    }
+    renderEdgeLabels(edges, nodeMap, matrix) {
+        const labeled = edges.filter(e => e.label);
+        if (labeled.length === 0)
+            return;
+        const gl = this.gl;
+        // Pass 1: pre-warm atlas
+        for (const edge of labeled) {
+            this.atlas.getOrCreate(edge.label, EDGE_LABEL_FONT, EDGE_LABEL_COLOR, 0, 1.0, EDGE_LABEL_BG);
+        }
+        // Pass 2: generate vertex data
+        const data = new Float32Array(labeled.length * 6 * FLOATS_PER_VERT);
+        let cursor = 0;
+        let drawCount = 0;
+        for (const edge of labeled) {
+            if (!edge.label)
+                continue;
+            const src = nodeMap.get(edge.source);
+            const tgt = nodeMap.get(edge.target);
+            if (!src || !tgt)
+                continue;
+            const [sx, sy] = handleXY$1(src, edge.sourceHandle);
+            const [ex, ey] = handleXY$1(tgt, edge.targetHandle);
+            const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle);
+            const [mx, my] = cubicBezierPoint(0.5, sx, sy, c1x, c1y, c2x, c2y, ex, ey);
+            const entry = this.atlas.getOrCreate(edge.label, EDGE_LABEL_FONT, EDGE_LABEL_COLOR, 0, 1.0, EDGE_LABEL_BG);
+            if (!entry)
+                continue;
+            const hw = entry.w / 2;
+            const hh = entry.h / 2;
+            cursor = writeQuad(data, cursor, mx - hw, my - hh, mx + hw, my + hh, entry.u0, entry.v0, entry.u1, entry.v1);
             drawCount += 6;
         }
         if (drawCount === 0)
@@ -1619,11 +1684,11 @@ class TextAtlas {
         this.ctx = ctx;
         this.ctx.textBaseline = 'top';
     }
-    key(text, font, maxWidth, lineHeight) {
-        return `${font}|${maxWidth}|${lineHeight}|${text}`;
+    key(text, font, maxWidth, lineHeight, bgColor) {
+        return `${font}|${maxWidth}|${lineHeight}|${bgColor}|${text}`;
     }
-    getOrCreate(text, font, color, maxWidth, lineHeight) {
-        const k = this.key(text, font, maxWidth, lineHeight);
+    getOrCreate(text, font, color, maxWidth, lineHeight, bgColor = '') {
+        const k = this.key(text, font, maxWidth, lineHeight, bgColor);
         const cached = this.entries.get(k);
         if (cached)
             return cached;
@@ -1653,6 +1718,10 @@ class TextAtlas {
             this.shelfX = 0;
             this.shelfY = 0;
             this.shelfH = 0;
+        }
+        if (bgColor) {
+            this.ctx.fillStyle = bgColor;
+            this.ctx.fillRect(this.shelfX, this.shelfY, w, h);
         }
         this.ctx.fillStyle = color;
         this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr';
@@ -1802,6 +1871,7 @@ class WebGL2Renderer {
         }
         this.nodeProgram.render(visNodes, matrix, selectedIds, targetNodeId);
         this.textProgram.render(visNodes, matrix);
+        this.textProgram.renderEdgeLabels(visEdges, nodeMap, matrix);
     }
     dispose() {
         this.nodeProgram.dispose();
@@ -3358,12 +3428,22 @@ const DEFAULT_GRID_CONFIG = {
 class FlowChart extends EventEmitter {
     constructor(options) {
         super();
+        this.arrowMoveTimer = null;
         this.rafId = null;
         this.failed = false;
         this.selectedIds = new Set();
         this.selectedEdgeIds = new Set();
         this.connectState = null;
         this.rerouteState = null;
+        if (typeof window === 'undefined' || typeof document === 'undefined') {
+            this.failed = true;
+            const err = new Error('@flowchart/core: browser environment required');
+            if (options.onError)
+                options.onError(err);
+            else
+                console.error('[FlowChart]', err.message);
+            return;
+        }
         this.canvas = document.createElement('canvas');
         this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;';
         this.canvas.setAttribute('role', 'application');
@@ -3388,7 +3468,12 @@ class FlowChart extends EventEmitter {
         this.labelEditor = new LabelEditor();
         const { width, height } = options.container.getBoundingClientRect();
         this.viewport.setSize(width, height);
-        // Issue 1: WebGL2 error handling — graceful failure
+        if (options.nodes)
+            for (const n of options.nodes)
+                this.graph.addNode(n);
+        if (options.edges)
+            for (const e of options.edges)
+                this.graph.addEdge(e);
         const ok = this.renderer.initialize(this.canvas, options.renderer);
         if (!ok) {
             this.failed = true;
@@ -3400,12 +3485,6 @@ class FlowChart extends EventEmitter {
             return;
         }
         this.renderer.resize(width, height);
-        if (options.nodes)
-            for (const n of options.nodes)
-                this.graph.addNode(n);
-        if (options.edges)
-            for (const e of options.edges)
-                this.graph.addEdge(e);
         // Issue 9: Context panels extracted to separate module
         this.panels = new ContextPanels({
             graph: this.graph,
@@ -3756,7 +3835,14 @@ class FlowChart extends EventEmitter {
         const STEP = 10;
         const dx = direction === 'ArrowLeft' ? -STEP : direction === 'ArrowRight' ? STEP : 0;
         const dy = direction === 'ArrowUp' ? -STEP : direction === 'ArrowDown' ? STEP : 0;
-        this.beforeMutation();
+        // Save history only on first keydown in a burst — subsequent rapid presses are coalesced
+        if (this.arrowMoveTimer === null) {
+            this.beforeMutation();
+        }
+        else {
+            clearTimeout(this.arrowMoveTimer);
+        }
+        this.arrowMoveTimer = setTimeout(() => { this.arrowMoveTimer = null; }, 400);
         for (const id of this.selectedIds) {
             const node = this.graph.getNode(id);
             if (node)
@@ -3882,6 +3968,8 @@ class FlowChart extends EventEmitter {
     dispose() {
         if (this.rafId !== null)
             cancelAnimationFrame(this.rafId);
+        if (this.arrowMoveTimer !== null)
+            clearTimeout(this.arrowMoveTimer);
         if (!this.failed) {
             this.panZoom.dispose();
             this.drag.dispose();
@@ -3891,11 +3979,11 @@ class FlowChart extends EventEmitter {
             this.keyboardHandler.dispose();
             this.renderer.dispose();
         }
-        this.resizeObserver.disconnect();
-        this.labelEditor.dispose();
-        this.contextMenu.dispose();
-        this.ariaLive.remove();
-        this.canvas.remove();
+        this.resizeObserver?.disconnect();
+        this.labelEditor?.dispose();
+        this.contextMenu?.dispose();
+        this.ariaLive?.remove();
+        this.canvas?.remove();
         super.dispose();
     }
 }

@@ -17,7 +17,7 @@ export declare class TextAtlas {
     dirty: boolean;
     constructor();
     private key;
-    getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number): AtlasEntry | null;
+    getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor?: string): AtlasEntry | null;
     flush(gl: WebGL2RenderingContext): void;
     bind(gl: WebGL2RenderingContext, unit: number): void;
     dispose(gl: WebGL2RenderingContext): void;

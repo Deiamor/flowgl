@@ -92,6 +92,7 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     private panels;
     private resizeObserver;
     private ariaLive;
+    private arrowMoveTimer;
     private rafId;
     private failed;
     private selectedIds;
