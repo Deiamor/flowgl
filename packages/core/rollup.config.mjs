@@ -38,7 +38,7 @@ export default defineConfig({
   input: 'src/index.ts',
   output: [
     {
-      file: 'dist/index.esm.js',
+      file: 'dist/flowchart.esm.js',
       format: 'esm',
       sourcemap: isDev,
     },
