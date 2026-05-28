@@ -62,24 +62,25 @@ interface FlowChartEvents extends Record<string, unknown> {
 }
 
 export class FlowChart extends EventEmitter<FlowChartEvents> {
-  private canvas: HTMLCanvasElement
-  readonly graph: Graph
-  readonly viewport: Viewport
-  private renderer: WebGL2Renderer
-  private hitTester: HitTester
-  private edgeHitTester: EdgeHitTester
+  private canvas!: HTMLCanvasElement
+  readonly graph!: Graph
+  readonly viewport!: Viewport
+  private renderer!: WebGL2Renderer
+  private hitTester!: HitTester
+  private edgeHitTester!: EdgeHitTester
   private panZoom!: PanZoom
   private drag!: NodeDrag
   private connectDrag!: ConnectDrag
   private edgeReroute!: EdgeReroute
-  private contextMenu: ContextMenu
+  private contextMenu!: ContextMenu
   private keyboardHandler!: KeyboardHandler
   private boxSelect!: BoxSelect
-  private labelEditor: LabelEditor
-  private history: History
+  private labelEditor!: LabelEditor
+  private history!: History
   private panels!: ContextPanels
   private resizeObserver!: ResizeObserver
-  private ariaLive: HTMLElement
+  private ariaLive!: HTMLElement
+  private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
   private rafId: number | null = null
   private failed = false
 
@@ -87,12 +88,20 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private selectedEdgeIds  = new Set<string>()
   private connectState: ConnectState | null = null
   private rerouteState: RerouteState | null = null
-  private labelEditable: boolean
-  private bgColor: string
-  private gridConfig: GridConfig
+  private labelEditable!: boolean
+  private bgColor!: string
+  private gridConfig!: GridConfig
 
   constructor(options: FlowChartOptions) {
     super()
+
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      this.failed = true
+      const err = new Error('@flowchart/core: browser environment required')
+      if (options.onError) options.onError(err)
+      else console.error('[FlowChart]', err.message)
+      return
+    }
 
     this.canvas = document.createElement('canvas')
     this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;'
@@ -524,7 +533,13 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     const STEP = 10
     const dx = direction === 'ArrowLeft' ? -STEP : direction === 'ArrowRight' ? STEP : 0
     const dy = direction === 'ArrowUp'   ? -STEP : direction === 'ArrowDown'  ? STEP : 0
-    this.beforeMutation()
+    // Save history only on first keydown in a burst — subsequent rapid presses are coalesced
+    if (this.arrowMoveTimer === null) {
+      this.beforeMutation()
+    } else {
+      clearTimeout(this.arrowMoveTimer)
+    }
+    this.arrowMoveTimer = setTimeout(() => { this.arrowMoveTimer = null }, 400)
     for (const id of this.selectedIds) {
       const node = this.graph.getNode(id)
       if (node) this.graph.updateNode(id, { x: node.x + dx, y: node.y + dy })
@@ -667,6 +682,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
   dispose(): void {
     if (this.rafId !== null) cancelAnimationFrame(this.rafId)
+    if (this.arrowMoveTimer !== null) clearTimeout(this.arrowMoveTimer)
     if (!this.failed) {
       this.panZoom.dispose()
       this.drag.dispose()
@@ -679,8 +695,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.resizeObserver.disconnect()
     this.labelEditor.dispose()
     this.contextMenu.dispose()
-    this.ariaLive.remove()
-    this.canvas.remove()
+    this.ariaLive?.remove()
+    this.canvas?.remove()
     super.dispose()
   }
 }

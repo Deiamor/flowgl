@@ -49,12 +49,12 @@ export class TextAtlas {
     this.ctx.textBaseline = 'top'
   }
 
-  private key(text: string, font: string, maxWidth: number, lineHeight: number): string {
-    return `${font}|${maxWidth}|${lineHeight}|${text}`
+  private key(text: string, font: string, maxWidth: number, lineHeight: number, bgColor: string): string {
+    return `${font}|${maxWidth}|${lineHeight}|${bgColor}|${text}`
   }
 
-  getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number): AtlasEntry | null {
-    const k = this.key(text, font, maxWidth, lineHeight)
+  getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor = ''): AtlasEntry | null {
+    const k = this.key(text, font, maxWidth, lineHeight, bgColor)
     const cached = this.entries.get(k)
     if (cached) return cached
 
@@ -89,6 +89,11 @@ export class TextAtlas {
       this.shelfX = 0
       this.shelfY = 0
       this.shelfH = 0
+    }
+
+    if (bgColor) {
+      this.ctx.fillStyle = bgColor
+      this.ctx.fillRect(this.shelfX, this.shelfY, w, h)
     }
 
     this.ctx.fillStyle = color
