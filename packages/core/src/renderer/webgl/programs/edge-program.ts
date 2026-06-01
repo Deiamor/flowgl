@@ -174,41 +174,22 @@ export class EdgeProgram {
     const vertsPerEdge  = (BEZIER_SEGMENTS + 1) * 2
     const floatsPerEdge = vertsPerEdge * EDGE_FLOATS_PER_VERT
 
-    // ── Step 1+2: fingerprint check + group by dash config (single pass) ───
-    // Merging both loops avoids computing { ...DEFAULT_EDGE_STYLE, ...edge.style }
-    // twice per edge per frame.
-    interface EdgeGroup {
-      edges:   EdgeData[]
-      dashed:  boolean
-      dashLen: number
-      gapLen:  number
-    }
-    const groups: EdgeGroup[] = []
-    const groupIndex = new Map<string, number>()
+    // ── Step 1: fingerprint check (hot path — no style spread) ───────────
+    // Access only the two properties needed for the fingerprint directly,
+    // deferring the full style spread to cache-miss paths only.
     let dirty = false
-
     for (const edge of valid) {
       const src = nodeMap.get(edge.source)!
       const tgt = nodeMap.get(edge.target)!
       const isSelected = selectedEdgeIds.has(edge.id)
-      const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
+      const styleColor = edge.style?.color ?? DEFAULT_EDGE_STYLE.color
+      const styleWidth = edge.style?.width ?? DEFAULT_EDGE_STYLE.width
+      const fp = edgeFingerprint(src, tgt, edge, styleColor, styleWidth, isSelected)
 
-      // Dash grouping
-      const dashed  = !isSelected && !!style.dashArray
-      const dashLen = dashed ? (style.dashArray![0] ?? 8) : 8
-      const gapLen  = dashed ? (style.dashArray![1] ?? 4) : 4
-      const dashKey = dashed ? `${dashLen},${gapLen}` : ''
-      if (!groupIndex.has(dashKey)) {
-        groupIndex.set(dashKey, groups.length)
-        groups.push({ edges: [], dashed, dashLen, gapLen })
-      }
-      groups[groupIndex.get(dashKey)!]!.edges.push(edge)
-
-      // Fingerprint check; recompute geometry only on cache miss
-      const fp = edgeFingerprint(src, tgt, edge, style.color, style.width, isSelected)
       const cached = this.stripCache.get(edge.id)
       if (cached?.key === fp) continue
 
+      const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
       let [r, g, b, a] = parseColor(style.color, this.colorCache)
       if (isSelected) { r = 0.102; g = 0.451; b = 0.910; a = 1.0 }
       const halfWidth = isSelected ? style.width * 0.75 : style.width / 2
@@ -224,24 +205,48 @@ export class EdgeProgram {
       dirty = true
     }
 
-    // Compute total float count including 2 degenerate vertices per intra-group gap.
-    let totalFloats = 0
-    for (const g of groups) {
-      totalFloats += g.edges.length * floatsPerEdge
-      if (g.edges.length > 1) totalFloats += (g.edges.length - 1) * 2 * EDGE_FLOATS_PER_VERT
-    }
-
-    // ── Step 3: detect whether combined buffer needs rebuilding ───────────
+    // ── Step 2: detect whether combined buffer needs rebuilding ───────────
     let sortChanged = valid.length !== this.prevValidIds.length
     if (!sortChanged) {
       for (let i = 0; i < valid.length; i++) {
         if (valid[i]!.id !== this.prevValidIds[i]) { sortChanged = true; break }
       }
     }
-    const needsUpload = dirty || sortChanged || (totalFloats !== this.prevCombinedFloats)
+    const needsUpload = dirty || sortChanged
 
-    // ── Step 4: assemble and upload only when dirty ───────────────────────
+    // ── Step 3: build groups and assemble — only when buffer is stale ─────
+    // Group building (style spread + Map ops × N) is deferred to avoid
+    // per-frame overhead on static scenes.
     if (needsUpload) {
+      interface EdgeGroup {
+        edges:   EdgeData[]
+        dashed:  boolean
+        dashLen: number
+        gapLen:  number
+      }
+      const groups: EdgeGroup[] = []
+      const groupIndex = new Map<string, number>()
+
+      for (const edge of valid) {
+        const isSelected = selectedEdgeIds.has(edge.id)
+        const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
+        const dashed  = !isSelected && !!style.dashArray
+        const dashLen = dashed ? (style.dashArray![0] ?? 8) : 8
+        const gapLen  = dashed ? (style.dashArray![1] ?? 4) : 4
+        const dashKey = dashed ? `${dashLen},${gapLen}` : ''
+        if (!groupIndex.has(dashKey)) {
+          groupIndex.set(dashKey, groups.length)
+          groups.push({ edges: [], dashed, dashLen, gapLen })
+        }
+        groups[groupIndex.get(dashKey)!]!.edges.push(edge)
+      }
+
+      let totalFloats = 0
+      for (const g of groups) {
+        totalFloats += g.edges.length * floatsPerEdge
+        if (g.edges.length > 1) totalFloats += (g.edges.length - 1) * 2 * EDGE_FLOATS_PER_VERT
+      }
+
       if (this.scratch.length < totalFloats) this.scratch = new Float32Array(totalFloats * 2)
 
       const newBatches: DrawBatch[] = []
