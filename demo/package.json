@@ -9,9 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@flowchart/core": "workspace:*"
+    "@flowchart/core": "workspace:*",
+    "@flowchart/react": "workspace:*",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "vite": "^5.3.0"
   }
 }

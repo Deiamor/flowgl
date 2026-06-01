@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [feature] React Wrapper (@flowchart/react)
+- Summary: @flowchart/react 패키지 신규 작성. `<Flowchart>` 컴포넌트(forwardRef) — nodes/edges controlled props, onNodesChange/onEdgesChange/onConnect/onNodeClick/onSelectionChange/onViewportChange 콜백, onInit ref 노출. 내부 변경과 외부 prop 변경 루프 방지(lastNodesRef/lastEdgesRef). @flowchart/core 타입 re-export. demo/react.html + react-app.tsx React 데모 추가. HandleSide 타입 core에서 export 추가.
+- Affected files: packages/react/(신규 패키지: package.json, tsconfig.json, rollup.config.mjs, src/index.ts, src/Flowchart.tsx), packages/core/src/index.ts, demo/react.html(신규), demo/react-app.tsx(신규), demo/package.json, demo/vite.config.ts
+- Timestamp: 2026-06-01
+
 ## [feature] 노드 리사이즈 핸들
 - Summary: Canvas 2D 오버레이로 8방향(nw/n/ne/e/se/s/sw/w) 리사이즈 핸들 구현. 선택된 노드에 흰색 사각형(hover 시 파란색) 핸들 표시. 드래그로 크기 변경, MIN_W=40/MIN_H=30 최소 크기 보장. NodeDrag·PanZoom의 shouldBlock에 isCapturing()/isNearHandle() 연동으로 우선순위 충돌 없음.
 - Affected files: packages/core/src/interaction/node-resize.ts(신규), packages/core/src/flowchart.ts, packages/core/src/index.ts

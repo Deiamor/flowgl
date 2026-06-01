@@ -1,0 +1,157 @@
+import {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type CSSProperties,
+} from 'react'
+import { FlowChart, generateId } from '@flowchart/core'
+import type {
+  NodeData,
+  EdgeData,
+  ViewportState,
+  GridConfig,
+  MinimapConfig,
+  HandleSide,
+} from '@flowchart/core'
+
+export interface ConnectParams {
+  sourceId: string
+  targetId: string
+  sourceHandle: HandleSide
+  targetHandle: HandleSide
+}
+
+export interface FlowchartProps {
+  nodes?: NodeData[]
+  edges?: EdgeData[]
+  onNodesChange?: (nodes: NodeData[]) => void
+  onEdgesChange?: (edges: EdgeData[]) => void
+  /** Called when the user drags a connection handle to create an edge. */
+  onConnect?: (params: ConnectParams) => void
+  onNodeClick?: (node: NodeData) => void
+  onSelectionChange?: (params: { selectedIds: string[]; edgeIds: string[] }) => void
+  onViewportChange?: (state: ViewportState) => void
+  /** Called once after the FlowChart instance is ready. */
+  onInit?: (chart: FlowChart) => void
+  style?: CSSProperties
+  className?: string
+  background?: string
+  minimap?: Partial<MinimapConfig>
+  grid?: Partial<GridConfig>
+  labelEditable?: boolean
+  historyLimit?: number
+  onError?: (err: Error) => void
+}
+
+export const Flowchart = forwardRef<FlowChart | null, FlowchartProps>(
+  function Flowchart(props, ref) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const instanceRef  = useRef<FlowChart | null>(null)
+
+    // Track last-synced refs to avoid re-applying changes that originated internally
+    const lastNodesRef = useRef<NodeData[] | undefined>(undefined)
+    const lastEdgesRef = useRef<EdgeData[] | undefined>(undefined)
+
+    // Stable refs for callbacks — avoids stale closures without re-creating the chart
+    const cbRef = useRef({
+      onNodesChange:      props.onNodesChange,
+      onEdgesChange:      props.onEdgesChange,
+      onConnect:          props.onConnect,
+      onNodeClick:        props.onNodeClick,
+      onSelectionChange:  props.onSelectionChange,
+      onViewportChange:   props.onViewportChange,
+      onInit:             props.onInit,
+    })
+    useEffect(() => {
+      cbRef.current.onNodesChange     = props.onNodesChange
+      cbRef.current.onEdgesChange     = props.onEdgesChange
+      cbRef.current.onConnect         = props.onConnect
+      cbRef.current.onNodeClick       = props.onNodeClick
+      cbRef.current.onSelectionChange = props.onSelectionChange
+      cbRef.current.onViewportChange  = props.onViewportChange
+    })
+
+    // Create/destroy chart instance
+    useLayoutEffect(() => {
+      if (!containerRef.current) return
+
+      const chart = new FlowChart({
+        container: containerRef.current,
+        nodes:     props.nodes ?? [],
+        edges:     props.edges ?? [],
+        ...(props.background    !== undefined && { background:    props.background    }),
+        ...(props.minimap       !== undefined && { minimap:       props.minimap       }),
+        ...(props.grid          !== undefined && { grid:          props.grid          }),
+        ...(props.labelEditable !== undefined && { labelEditable: props.labelEditable }),
+        ...(props.historyLimit  !== undefined && { historyLimit:  props.historyLimit  }),
+        ...(props.onError       !== undefined && { onError:       props.onError       }),
+      })
+
+      lastNodesRef.current = props.nodes
+      lastEdgesRef.current = props.edges
+
+      chart.on('nodeDragEnd', () => {
+        const nodes = chart.graph.getNodes()
+        lastNodesRef.current = nodes
+        cbRef.current.onNodesChange?.(nodes)
+      })
+
+      chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
+        chart.addEdge({
+          id: generateId('e'),
+          source: sourceId,
+          target: targetId,
+          sourceHandle,
+          targetHandle,
+        })
+        const edges = chart.graph.getEdges()
+        lastEdgesRef.current = edges
+        cbRef.current.onEdgesChange?.(edges)
+        cbRef.current.onConnect?.({ sourceId, targetId, sourceHandle, targetHandle })
+      })
+
+      chart.on('nodeClick',        ({ node })   => cbRef.current.onNodeClick?.(node))
+      chart.on('selectionChange',  (params)     => cbRef.current.onSelectionChange?.(params))
+      chart.on('viewportChange',   (state)      => cbRef.current.onViewportChange?.(state))
+
+      instanceRef.current = chart
+      if (typeof ref === 'function') ref(chart)
+      else if (ref) (ref as React.MutableRefObject<FlowChart | null>).current = chart
+
+      cbRef.current.onInit?.(chart)
+
+      return () => {
+        chart.dispose()
+        instanceRef.current = null
+        if (typeof ref === 'function') ref(null)
+        else if (ref) (ref as React.MutableRefObject<FlowChart | null>).current = null
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    // Sync nodes prop → chart (skip when change originated from internal mutation)
+    useEffect(() => {
+      const chart = instanceRef.current
+      if (!chart || props.nodes === lastNodesRef.current) return
+      chart.setNodes(props.nodes ?? [])
+      lastNodesRef.current = props.nodes
+    }, [props.nodes])
+
+    // Sync edges prop → chart
+    useEffect(() => {
+      const chart = instanceRef.current
+      if (!chart || props.edges === lastEdgesRef.current) return
+      chart.setEdges(props.edges ?? [])
+      lastEdgesRef.current = props.edges
+    }, [props.edges])
+
+    return (
+      <div
+        ref={containerRef}
+        className={props.className}
+        style={{ position: 'relative', width: '100%', height: '100%', ...props.style }}
+      />
+    )
+  },
+)
