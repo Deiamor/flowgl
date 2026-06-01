@@ -38,10 +38,10 @@ export function edgeControlPoints(
 
   let c2x: number, c2y: number
   switch (targetHandle) {
-    case 'right':  c2x = ex + mag(dx >= 0, absDx, absDy); c2y = ey;                          break
+    case 'right':  c2x = ex + mag(dx <= 0, absDx, absDy); c2y = ey;                          break
     case 'top':    c2x = ex;                               c2y = ey - mag(dy <= 0, absDy, absDx); break
     case 'bottom': c2x = ex;                               c2y = ey + mag(dy >= 0, absDy, absDx); break
-    default:       c2x = ex - mag(dx <= 0, absDx, absDy); c2y = ey;                          break
+    default:       c2x = ex - mag(dx >= 0, absDx, absDy); c2y = ey;                          break
   }
 
   return [c1x, c1y, c2x, c2y]
