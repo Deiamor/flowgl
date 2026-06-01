@@ -15,6 +15,7 @@ import { LabelEditor } from './interaction/label-edit'
 import { History } from './history/history'
 import { ContextPanels } from './ui/context-panels'
 import { Minimap } from './ui/minimap'
+import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
 import type { NodeData, NodeStyle } from './graph/node'
 import type { EdgeData } from './graph/edge'
@@ -92,6 +93,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private connectState: ConnectState | null = null
   private rerouteState: RerouteState | null = null
   private minimap: Minimap | null = null
+  private htmlOverlay!: HtmlOverlay
   private labelEditable!: boolean
   private bgColor!: string
   private gridConfig!: GridConfig
@@ -148,6 +150,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       return
     }
     this.renderer.resize(width, height)
+    this.htmlOverlay = new HtmlOverlay(options.container)
 
     // Issue 9: Context panels extracted to separate module
     this.panels = new ContextPanels({
@@ -521,6 +524,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.rerouteState,
         this.edgeReroute.getEndpointCircles(),
       )
+      this.htmlOverlay.sync(this.graph.getNodes(), this.viewport)
       this.minimap?.render(this.graph.getNodes(), this.graph.getEdges(), this.viewport)
     })
   }
@@ -737,6 +741,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.renderer.dispose()
     }
     this.resizeObserver?.disconnect()
+    this.htmlOverlay?.dispose()
     this.minimap?.dispose()
     this.labelEditor?.dispose()
     this.contextMenu?.dispose()

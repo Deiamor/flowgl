@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [feature] 커스텀 노드 모양 + HTML 오버레이
+- Summary: NodeStyle에 shape 필드(rectangle/circle/diamond/hexagon) 추가. NodeProgram GLSL에 shape별 SDF 함수 구현(sdfCircle·sdfDiamond·sdfHexagon·sdfRect). FLOATS_PER_INSTANCE 15→16. NodeData에 htmlContent 필드 추가 — HTML 콘텐츠를 Canvas 위에 절대 위치 div로 오버레이, 해당 노드는 WebGL 텍스트 레이블 생략. HtmlOverlay 클래스 신규 작성.
+- Affected files: packages/core/src/graph/node.ts, packages/core/src/renderer/webgl/programs/node-program.ts, packages/core/src/renderer/webgl/index.ts, packages/core/src/ui/html-overlay.ts(신규), packages/core/src/flowchart.ts, packages/core/src/index.ts
+- Timestamp: 2026-06-01
+
 ## [feature] 미니맵 오버레이 추가
 - Summary: Canvas 2D 기반 미니맵 구현. 모든 노드·엣지를 축소 렌더링하고 뷰포트 영역을 파란 직사각형으로 표시. 클릭/드래그로 뷰포트 이동. FlowChartOptions에 minimap 옵션 추가, setMinimap() 런타임 API 제공. MinimapConfig: width/height/position/background/nodeColor 설정 가능.
 - Affected files: packages/core/src/ui/minimap.ts(신규), packages/core/src/types.ts, packages/core/src/flowchart.ts, packages/core/src/index.ts

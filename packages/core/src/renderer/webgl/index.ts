@@ -139,7 +139,9 @@ export class WebGL2Renderer implements Renderer {
     }
 
     this.nodeProgram.render(visNodes, matrix, selectedIds, targetNodeId)
-    this.textProgram.render(visNodes, matrix, viewport.zoom)
+    // Skip text for nodes that provide their own HTML content
+    const textNodes = visNodes.filter(n => !n.htmlContent)
+    this.textProgram.render(textNodes, matrix, viewport.zoom)
     this.textProgram.renderEdgeLabels(visEdges, nodeMap, matrix, viewport.zoom)
   }
 

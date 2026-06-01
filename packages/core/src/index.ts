@@ -2,7 +2,7 @@ export { FlowChart } from './flowchart'
 export type { FlowChartOptions } from './flowchart'
 
 export { Graph } from './graph/graph'
-export type { NodeData, NodeStyle } from './graph/node'
+export type { NodeData, NodeStyle, NodeShape } from './graph/node'
 export type { EdgeData, EdgeStyle, EdgeType } from './graph/edge'
 export { DEFAULT_NODE_STYLE } from './graph/node'
 export { DEFAULT_EDGE_STYLE } from './graph/edge'

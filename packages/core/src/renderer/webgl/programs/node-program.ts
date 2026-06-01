@@ -2,9 +2,9 @@ import { createProgram } from '../context'
 import { DynamicBuffer } from '../buffers/dynamic-buffer'
 import { parseColor } from '../util/color'
 import type { NodeData, NodeStyle } from '../../../graph/node'
-import { DEFAULT_NODE_STYLE } from '../../../graph/node'
+import { DEFAULT_NODE_STYLE, shapeToFloat } from '../../../graph/node'
 
-// Per-instance (15 floats):
+// Per-instance (16 floats):
 // [0-1]  center (cx, cy)
 // [2-3]  size (w, h)
 // [4-7]  fill (r,g,b,a)
@@ -12,7 +12,8 @@ import { DEFAULT_NODE_STYLE } from '../../../graph/node'
 // [12]   border width
 // [13]   border radius
 // [14]   state  0=normal  0.5=connection-target  1=selected
-const FLOATS_PER_INSTANCE = 15
+// [15]   shape  0=rect  1=circle  2=diamond  3=hexagon
+const FLOATS_PER_INSTANCE = 16
 
 const VERT = /* glsl */ `#version 300 es
 precision highp float;
@@ -25,6 +26,7 @@ in vec4  a_stroke;
 in float a_strokeWidth;
 in float a_radius;
 in float a_state;
+in float a_shape;
 
 uniform mat4 u_matrix;
 
@@ -35,16 +37,18 @@ out vec4  v_stroke;
 out float v_strokeWidth;
 out float v_radius;
 out float v_state;
+out float v_shape;
 
 void main() {
-  v_local      = a_quad * a_size;
-  v_halfSize   = a_size * 0.5;
-  v_fill       = a_fill;
-  v_stroke     = a_stroke;
+  v_local       = a_quad * a_size;
+  v_halfSize    = a_size * 0.5;
+  v_fill        = a_fill;
+  v_stroke      = a_stroke;
   v_strokeWidth = a_strokeWidth;
-  v_radius     = a_radius;
-  v_state      = a_state;
-  gl_Position  = u_matrix * vec4(a_offset + a_quad * a_size, 0.0, 1.0);
+  v_radius      = a_radius;
+  v_state       = a_state;
+  v_shape       = a_shape;
+  gl_Position   = u_matrix * vec4(a_offset + a_quad * a_size, 0.0, 1.0);
 }
 `
 
@@ -58,20 +62,56 @@ in vec4  v_stroke;
 in float v_strokeWidth;
 in float v_radius;
 in float v_state;
+in float v_shape;
 
 out vec4 fragColor;
 
-float roundedBoxSDF(vec2 p, vec2 b, float r) {
+// ── Shape SDFs ──────────────────────────────────────────────────────────────
+
+float sdfRect(vec2 p, vec2 b, float r) {
   vec2 q = abs(p) - b + r;
   return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
 }
 
-void main() {
-  float r = clamp(v_radius, 0.0, min(v_halfSize.x, v_halfSize.y));
-  float d = roundedBoxSDF(v_local, v_halfSize, r);
+// Ellipse (fits bounding box)
+float sdfCircle(vec2 p, vec2 b) {
+  float k1 = length(p / b);
+  return (k1 - 1.0) * min(b.x, b.y);
+}
 
-  vec4  selColor = vec4(0.18, 0.52, 0.98, 1.0);  // blue  – selected
-  vec4  tgtColor = vec4(0.12, 0.78, 0.47, 1.0);  // green – connection target
+// Diamond (rhombus touching midpoints of bounding box edges)
+float sdfDiamond(vec2 p, vec2 b) {
+  vec2 q = abs(p) / b;
+  return (q.x + q.y - 1.0) * min(b.x, b.y);
+}
+
+// Flat-top hexagon scaled to fit bounding box
+float sdfHexagon(vec2 p, vec2 b) {
+  const float k = 0.8660254; // sqrt(3)/2
+  // Scale y so the hex's inradius matches b.y
+  float sy = k * b.x / max(b.y, 0.001);
+  vec2  q  = abs(vec2(p.x, p.y * sy));
+  float d  = max(q.y - k * b.x, q.x * k + q.y * 0.5 - k * b.x);
+  return d;
+}
+
+float shapeSDF(vec2 p, vec2 b, float r, float shape) {
+  if (shape < 0.5) return sdfRect(p, b, r);
+  if (shape < 1.5) return sdfCircle(p, b);
+  if (shape < 2.5) return sdfDiamond(p, b);
+  return sdfHexagon(p, b);
+}
+
+// ── Main ────────────────────────────────────────────────────────────────────
+
+void main() {
+  float r = (v_shape < 0.5)
+    ? clamp(v_radius, 0.0, min(v_halfSize.x, v_halfSize.y))
+    : 0.0;
+  float d = shapeSDF(v_local, v_halfSize, r, v_shape);
+
+  vec4  selColor = vec4(0.18, 0.52, 0.98, 1.0);
+  vec4  tgtColor = vec4(0.12, 0.78, 0.47, 1.0);
 
   vec4  activeBorder;
   float activeBW;
@@ -151,6 +191,7 @@ export class NodeProgram {
     def('a_strokeWidth', 1, 12)
     def('a_radius',      1, 13)
     def('a_state',       1, 14)
+    def('a_shape',       1, 15)
     gl.bindVertexArray(null)
 
     const matLoc = gl.getUniformLocation(this.program, 'u_matrix')
@@ -167,8 +208,6 @@ export class NodeProgram {
     if (nodes.length === 0) return
     const gl = this.gl
 
-    // Fast path: rebuild instance buffer only when data actually changed.
-    // selectedIds is a mutated Set, so compare size + sorted-joined for correctness.
     const selSize   = selectedIds.size
     const selJoined = selSize === 0 ? '' : [...selectedIds].sort().join(',')
     const dataChanged = (
@@ -190,8 +229,8 @@ export class NodeProgram {
         const [sr, sg, sb, sa] = parseColor(style.borderColor)
 
         let state = 0
-        if (selectedIds.has(node.id))      state = 1
-        else if (node.id === targetNodeId)  state = 0.5
+        if (selectedIds.has(node.id))     state = 1
+        else if (node.id === targetNodeId) state = 0.5
 
         data[i++] = node.x + node.width  / 2
         data[i++] = node.y + node.height / 2
@@ -202,13 +241,14 @@ export class NodeProgram {
         data[i++] = style.borderWidth
         data[i++] = style.borderRadius
         data[i++] = state
+        data[i++] = shapeToFloat(style.shape)
       }
       this.instanceBuffer.upload(data.subarray(0, needed))
-      this.prevNodes         = nodes
-      this.prevInstanceCount = nodes.length
-      this.prevSelectedSize  = selSize
+      this.prevNodes          = nodes
+      this.prevInstanceCount  = nodes.length
+      this.prevSelectedSize   = selSize
       this.prevSelectedJoined = selJoined
-      this.prevTargetNodeId  = targetNodeId
+      this.prevTargetNodeId   = targetNodeId
     }
 
     gl.useProgram(this.program)
