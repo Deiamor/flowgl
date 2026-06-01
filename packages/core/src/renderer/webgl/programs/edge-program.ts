@@ -74,6 +74,14 @@ function handleXY(node: NodeData, side: string | undefined): [number, number] {
   }
 }
 
+// Encodes all inputs that affect edge geometry into a single comparable string.
+function edgeFingerprint(
+  src: NodeData, tgt: NodeData, edge: EdgeData,
+  styleColor: string, styleWidth: number, isSelected: boolean,
+): string {
+  return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}`
+}
+
 export class EdgeProgram {
   private gl: WebGL2RenderingContext
   private program: WebGLProgram
@@ -81,11 +89,18 @@ export class EdgeProgram {
   private vertexBuffer: DynamicBuffer
   private colorCache = new Map<string, [number, number, number, number]>()
 
+  // Per-edge geometry cache: recomputed only when fingerprint changes.
+  private stripCache = new Map<string, { strip: Float32Array; key: string }>()
+  // Tracks the ordered edge IDs of the last uploaded combined buffer.
+  private prevValidIds: string[] = []
+  private prevCombinedFloats = 0
+  // Reusable assembly buffer for building the combined VBO on the CPU side.
+  private scratch = new Float32Array(0)
+
   private uMatrix:  WebGLUniformLocation
   private uDashed:  WebGLUniformLocation
   private uDashLen: WebGLUniformLocation
   private uGapLen:  WebGLUniformLocation
-  private scratch = new Float32Array(0)
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl
@@ -127,28 +142,41 @@ export class EdgeProgram {
     matrix: Float32Array,
     selectedEdgeIds: Set<string> = new Set(),
   ): void {
-    if (edges.length === 0) return
+    if (edges.length === 0) {
+      this.prevValidIds = []
+      this.prevCombinedFloats = 0
+      return
+    }
     const gl = this.gl
 
-    // Render selected edges last so they appear on top
+    // Selected edges drawn last so they appear on top.
     const sorted = [...edges].sort((a, b) =>
       (selectedEdgeIds.has(a.id) ? 1 : 0) - (selectedEdgeIds.has(b.id) ? 1 : 0),
     )
 
-    const vertsPerEdge = (BEZIER_SEGMENTS + 1) * 2
-    const needed = sorted.length * vertsPerEdge * EDGE_FLOATS_PER_VERT
-    if (this.scratch.length < needed) this.scratch = new Float32Array(needed * 2)
-    const combined = this.scratch
-    let offset = 0
-    const drawList: { edge: EdgeData; isSelected: boolean }[] = []
+    // Keep only edges whose endpoints exist in the graph.
+    const valid: EdgeData[] = []
+    for (const e of sorted) {
+      if (nodeMap.has(e.source) && nodeMap.has(e.target)) valid.push(e)
+    }
+    if (valid.length === 0) return
 
-    for (const edge of sorted) {
-      const src = nodeMap.get(edge.source)
-      const tgt = nodeMap.get(edge.target)
-      if (!src || !tgt) continue
+    const vertsPerEdge  = (BEZIER_SEGMENTS + 1) * 2
+    const floatsPerEdge = vertsPerEdge * EDGE_FLOATS_PER_VERT
+    const totalFloats   = valid.length * floatsPerEdge
 
+    // ── Step 1: per-edge fingerprint check; recompute only on cache miss ──
+    let dirty = false
+    for (const edge of valid) {
+      const src = nodeMap.get(edge.source)!
+      const tgt = nodeMap.get(edge.target)!
       const isSelected = selectedEdgeIds.has(edge.id)
       const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
+      const fp = edgeFingerprint(src, tgt, edge, style.color, style.width, isSelected)
+
+      const cached = this.stripCache.get(edge.id)
+      if (cached?.key === fp) continue  // geometry unchanged
+
       let [r, g, b, a] = parseColor(style.color, this.colorCache)
       if (isSelected) { r = 0.102; g = 0.451; b = 0.910; a = 1.0 }
       const halfWidth = isSelected ? style.width * 0.75 : style.width / 2
@@ -159,26 +187,54 @@ export class EdgeProgram {
         sx, sy, edge.sourceHandle,
         ex, ey, edge.targetHandle,
       )
-      const strip = buildBezierStrip(
-        sx, sy, c1x, c1y, c2x, c2y, ex, ey,
-        r, g, b, a, halfWidth,
-      )
-      combined.set(strip, offset)
-      offset += strip.length
-      drawList.push({ edge, isSelected })
+      const strip = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth)
+      this.stripCache.set(edge.id, { strip, key: fp })
+      dirty = true
     }
 
-    if (drawList.length === 0) return
+    // ── Step 2: detect whether the combined buffer needs rebuilding ────────
+    let sortChanged = valid.length !== this.prevValidIds.length
+    if (!sortChanged) {
+      for (let i = 0; i < valid.length; i++) {
+        if (valid[i]!.id !== this.prevValidIds[i]) { sortChanged = true; break }
+      }
+    }
+    const needsUpload = dirty || sortChanged || (totalFloats !== this.prevCombinedFloats)
 
-    this.vertexBuffer.upload(combined.subarray(0, offset))
+    // ── Step 3: assemble combined buffer and upload only when dirty ────────
+    if (needsUpload) {
+      if (this.scratch.length < totalFloats) {
+        this.scratch = new Float32Array(totalFloats * 2)
+      }
+      let offset = 0
+      for (const edge of valid) {
+        this.scratch.set(this.stripCache.get(edge.id)!.strip, offset)
+        offset += floatsPerEdge
+      }
+      this.vertexBuffer.upload(this.scratch.subarray(0, totalFloats))
+      this.prevValidIds     = valid.map(e => e.id)
+      this.prevCombinedFloats = totalFloats
+    }
+    // When !needsUpload the GPU buffer already holds the correct geometry —
+    // only the view matrix changes, which is set as a uniform below.
 
+    // ── Step 4: evict cache entries for edges no longer in the graph ──────
+    if (this.stripCache.size > valid.length) {
+      const currentIds = new Set(valid.map(e => e.id))
+      for (const id of this.stripCache.keys()) {
+        if (!currentIds.has(id)) this.stripCache.delete(id)
+      }
+    }
+
+    // ── Step 5: draw ──────────────────────────────────────────────────────
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.bindVertexArray(this.vao)
 
     let vertOffset = 0
-    for (const { edge, isSelected } of drawList) {
+    for (const edge of valid) {
       const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
+      const isSelected = selectedEdgeIds.has(edge.id)
       if (!isSelected && style.dashArray) {
         gl.uniform1i(this.uDashed, 1)
         gl.uniform1f(this.uDashLen, style.dashArray[0] ?? 8)
@@ -194,6 +250,7 @@ export class EdgeProgram {
   }
 
   dispose(): void {
+    this.stripCache.clear()
     this.gl.deleteProgram(this.program)
     this.gl.deleteVertexArray(this.vao)
     this.vertexBuffer.dispose()

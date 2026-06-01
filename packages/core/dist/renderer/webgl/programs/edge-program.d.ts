@@ -6,11 +6,14 @@ export declare class EdgeProgram {
     private vao;
     private vertexBuffer;
     private colorCache;
+    private stripCache;
+    private prevValidIds;
+    private prevCombinedFloats;
+    private scratch;
     private uMatrix;
     private uDashed;
     private uDashLen;
     private uGapLen;
-    private scratch;
     constructor(gl: WebGL2RenderingContext);
     render(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array, selectedEdgeIds?: Set<string>): void;
     dispose(): void;
