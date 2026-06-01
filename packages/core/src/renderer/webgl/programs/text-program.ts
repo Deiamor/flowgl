@@ -8,6 +8,7 @@ import type { EdgeData } from '../../../graph/edge'
 
 // Per-vertex: position(2) + uv(2) = 4 floats
 const FLOATS_PER_VERT = 4
+const FLOATS_PER_QUAD = 6 * FLOATS_PER_VERT
 const TEXT_PADDING = 8
 const EDGE_LABEL_FONT = '12px system-ui, sans-serif'
 const EDGE_LABEL_COLOR = '#374151'
@@ -80,6 +81,18 @@ export class TextProgram {
   private uMatrix: WebGLUniformLocation
   private uAtlas: WebGLUniformLocation
 
+  // Per-node quad cache
+  private quadCache = new Map<string, { quad: Float32Array; key: string }>()
+  private prevNodeIds: string[] = []
+  private prevAtlasGeneration = -1
+  private scratch = new Float32Array(0)
+
+  // Per-edge-label quad cache
+  private edgeLabelCache = new Map<string, { quad: Float32Array; key: string }>()
+  private prevLabeledEdgeIds: string[] = []
+  private prevLabelAtlasGeneration = -1
+  private labelScratch = new Float32Array(0)
+
   constructor(gl: WebGL2RenderingContext, atlas: TextAtlas) {
     this.gl = gl
     this.atlas = atlas
@@ -127,16 +140,26 @@ export class TextProgram {
       this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight)
     }
 
-    // Pass 2: generate vertex data from stable atlas state
-    const data = new Float32Array(nodes.length * 6 * FLOATS_PER_VERT)
-    let cursor = 0
-    let drawCount = 0
+    const gen = this.atlas.generation
 
+    // On atlas eviction all cached UVs are stale — discard.
+    if (gen !== this.prevAtlasGeneration) {
+      this.quadCache.clear()
+      this.prevAtlasGeneration = gen
+    }
+
+    // Pass 2: fingerprint check; recompute only on cache miss
+    let dirty = false
     for (const node of nodes) {
       if (!node.label) continue
       const style: NodeStyle = { ...DEFAULT_NODE_STYLE, ...node.style }
       const font = `${style.fontSize}px ${style.fontFamily}`
       const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2)
+      const fp = `${node.x}|${node.y}|${node.width}|${node.height}|${node.label}|${font}|${style.textColor}|${style.lineHeight}`
+
+      const cached = this.quadCache.get(node.id)
+      if (cached?.key === fp) continue
+
       const entry = this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight)
       if (!entry) continue
 
@@ -145,15 +168,49 @@ export class TextProgram {
       const hw = entry.w / 2
       const hh = entry.h / 2
 
-      cursor = writeQuad(data, cursor, cx - hw, cy - hh, cx + hw, cy + hh, entry.u0, entry.v0, entry.u1, entry.v1)
-      drawCount += 6
+      const quad = new Float32Array(FLOATS_PER_QUAD)
+      writeQuad(quad, 0, cx - hw, cy - hh, cx + hw, cy + hh, entry.u0, entry.v0, entry.u1, entry.v1)
+      this.quadCache.set(node.id, { quad, key: fp })
+      dirty = true
+    }
+
+    // Detect sort/count change
+    const labeled = nodes.filter(n => n.label)
+    let sortChanged = labeled.length !== this.prevNodeIds.length
+    if (!sortChanged) {
+      for (let i = 0; i < labeled.length; i++) {
+        if (labeled[i]!.id !== this.prevNodeIds[i]) { sortChanged = true; break }
+      }
+    }
+    const needsUpload = dirty || sortChanged
+
+    let drawCount = labeled.length * 6
+
+    if (needsUpload) {
+      const totalFloats = labeled.length * FLOATS_PER_QUAD
+      if (this.scratch.length < totalFloats) this.scratch = new Float32Array(totalFloats * 2)
+      let offset = 0
+      for (const node of labeled) {
+        const cached = this.quadCache.get(node.id)
+        if (!cached) { drawCount -= 6; continue }
+        this.scratch.set(cached.quad, offset)
+        offset += FLOATS_PER_QUAD
+      }
+      this.vertexBuffer.upload(this.scratch.subarray(0, offset))
+      this.prevNodeIds = labeled.map(n => n.id)
+    }
+
+    // Evict stale quad cache entries
+    if (this.quadCache.size > labeled.length) {
+      const currentIds = new Set(labeled.map(n => n.id))
+      for (const id of this.quadCache.keys()) {
+        if (!currentIds.has(id)) this.quadCache.delete(id)
+      }
     }
 
     if (drawCount === 0) return
 
     this.atlas.flush(gl)
-    this.vertexBuffer.upload(data.subarray(0, cursor))
-
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.uniform1i(this.uAtlas, 0)
@@ -173,16 +230,24 @@ export class TextProgram {
       this.atlas.getOrCreate(edge.label!, EDGE_LABEL_FONT, EDGE_LABEL_COLOR, 0, 1.0, EDGE_LABEL_BG)
     }
 
-    // Pass 2: generate vertex data
-    const data = new Float32Array(labeled.length * 6 * FLOATS_PER_VERT)
-    let cursor = 0
-    let drawCount = 0
+    const gen = this.atlas.generation
 
+    if (gen !== this.prevLabelAtlasGeneration) {
+      this.edgeLabelCache.clear()
+      this.prevLabelAtlasGeneration = gen
+    }
+
+    // Pass 2: fingerprint check; recompute only on cache miss
+    let dirty = false
     for (const edge of labeled) {
       if (!edge.label) continue
       const src = nodeMap.get(edge.source)
       const tgt = nodeMap.get(edge.target)
       if (!src || !tgt) continue
+
+      const fp = `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${edge.label}`
+      const cached = this.edgeLabelCache.get(edge.id)
+      if (cached?.key === fp) continue
 
       const [sx, sy] = handleXY(src, edge.sourceHandle)
       const [ex, ey] = handleXY(tgt, edge.targetHandle)
@@ -194,15 +259,46 @@ export class TextProgram {
 
       const hw = entry.w / 2
       const hh = entry.h / 2
-      cursor = writeQuad(data, cursor, mx - hw, my - hh, mx + hw, my + hh, entry.u0, entry.v0, entry.u1, entry.v1)
-      drawCount += 6
+      const quad = new Float32Array(FLOATS_PER_QUAD)
+      writeQuad(quad, 0, mx - hw, my - hh, mx + hw, my + hh, entry.u0, entry.v0, entry.u1, entry.v1)
+      this.edgeLabelCache.set(edge.id, { quad, key: fp })
+      dirty = true
+    }
+
+    let sortChanged = labeled.length !== this.prevLabeledEdgeIds.length
+    if (!sortChanged) {
+      for (let i = 0; i < labeled.length; i++) {
+        if (labeled[i]!.id !== this.prevLabeledEdgeIds[i]) { sortChanged = true; break }
+      }
+    }
+    const needsUpload = dirty || sortChanged
+
+    let drawCount = labeled.length * 6
+
+    if (needsUpload) {
+      const totalFloats = labeled.length * FLOATS_PER_QUAD
+      if (this.labelScratch.length < totalFloats) this.labelScratch = new Float32Array(totalFloats * 2)
+      let offset = 0
+      for (const edge of labeled) {
+        const cached = this.edgeLabelCache.get(edge.id)
+        if (!cached) { drawCount -= 6; continue }
+        this.labelScratch.set(cached.quad, offset)
+        offset += FLOATS_PER_QUAD
+      }
+      this.vertexBuffer.upload(this.labelScratch.subarray(0, offset))
+      this.prevLabeledEdgeIds = labeled.map(e => e.id)
+    }
+
+    if (this.edgeLabelCache.size > labeled.length) {
+      const currentIds = new Set(labeled.map(e => e.id))
+      for (const id of this.edgeLabelCache.keys()) {
+        if (!currentIds.has(id)) this.edgeLabelCache.delete(id)
+      }
     }
 
     if (drawCount === 0) return
 
     this.atlas.flush(gl)
-    this.vertexBuffer.upload(data.subarray(0, cursor))
-
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.uniform1i(this.uAtlas, 0)

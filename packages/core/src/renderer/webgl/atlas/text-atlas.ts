@@ -40,6 +40,7 @@ export class TextAtlas {
   private shelfY = 0
   private shelfH = 0
   dirty = false
+  generation = 0
 
   constructor() {
     this.offscreen = new OffscreenCanvas(ATLAS_SIZE, ATLAS_SIZE)
@@ -89,6 +90,7 @@ export class TextAtlas {
       this.shelfX = 0
       this.shelfY = 0
       this.shelfH = 0
+      this.generation++
     }
 
     if (bgColor) {
