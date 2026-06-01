@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [feature] 미니맵 오버레이 추가
+- Summary: Canvas 2D 기반 미니맵 구현. 모든 노드·엣지를 축소 렌더링하고 뷰포트 영역을 파란 직사각형으로 표시. 클릭/드래그로 뷰포트 이동. FlowChartOptions에 minimap 옵션 추가, setMinimap() 런타임 API 제공. MinimapConfig: width/height/position/background/nodeColor 설정 가능.
+- Affected files: packages/core/src/ui/minimap.ts(신규), packages/core/src/types.ts, packages/core/src/flowchart.ts, packages/core/src/index.ts
+- Timestamp: 2026-06-01
+
 ## [perf] zoom 기반 텍스트 스킵으로 SPEC 목표 달성 (5K@60fps, 10K@30fps)
 - Summary: zoom < 0.12 시 TextProgram 렌더링 완전 스킵. 5K 노드 fitView zoom(~0.06)에서 TextAtlas가 매 프레임 overflow→eviction→generation++ 루프를 유발하던 atlas overflow 문제 해결. EdgeProgram/TextProgram의 reference fast path(prevEdgesRef, prevNodesRef) 제거 — 이전 세션에서 추가했던 해당 최적화가 atlas overflow 루프와 결합하여 5K에서 4.8fps까지 하락하는 regression 유발. 벤치마크 결과: 5K 113.6fps (목표 60fps ✅), 10K 114.1fps (목표 30fps ✅).
 - Affected files: packages/core/src/renderer/webgl/programs/text-program.ts, packages/core/src/renderer/webgl/programs/edge-program.ts, packages/core/src/renderer/webgl/index.ts

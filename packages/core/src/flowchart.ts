@@ -14,6 +14,7 @@ import { BoxSelect } from './interaction/box-select'
 import { LabelEditor } from './interaction/label-edit'
 import { History } from './history/history'
 import { ContextPanels } from './ui/context-panels'
+import { Minimap } from './ui/minimap'
 import { computeNodeBounds } from './renderer/webgl/cull'
 import type { NodeData, NodeStyle } from './graph/node'
 import type { EdgeData } from './graph/edge'
@@ -21,7 +22,7 @@ import type { ViewportState } from './viewport/viewport'
 import type { RendererOptions } from './renderer/interface'
 import type { ConnectState, HandleSide } from './interaction/connect'
 import type { RerouteState } from './interaction/edge-reroute'
-import type { GridConfig } from './types'
+import type { GridConfig, MinimapConfig } from './types'
 import { DEFAULT_GRID_CONFIG } from './types'
 
 export interface FlowChartOptions {
@@ -35,6 +36,8 @@ export interface FlowChartOptions {
   background?: string
   /** Grid overlay config. */
   grid?: Partial<GridConfig>
+  /** Minimap overlay config. Omit to disable. */
+  minimap?: Partial<MinimapConfig>
   /** Accessible label for screen readers. Default: 'Flowchart'. */
   ariaLabel?: string
   /** Max undo history entries. Default: 100. */
@@ -88,6 +91,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private selectedEdgeIds  = new Set<string>()
   private connectState: ConnectState | null = null
   private rerouteState: RerouteState | null = null
+  private minimap: Minimap | null = null
   private labelEditable!: boolean
   private bgColor!: string
   private gridConfig!: GridConfig
@@ -402,6 +406,19 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     })
     this.resizeObserver.observe(options.container)
 
+    if (options.minimap) {
+      this.minimap = new Minimap(
+        options.container,
+        options.minimap,
+        (wx, wy) => {
+          this.viewport.x = this.viewport.canvasWidth  / 2 - wx * this.viewport.zoom
+          this.viewport.y = this.viewport.canvasHeight / 2 - wy * this.viewport.zoom
+          this.scheduleRender()
+          this.emit('viewportChange', this.viewport.getState())
+        },
+      )
+    }
+
     this.scheduleRender()
   }
 
@@ -504,6 +521,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.rerouteState,
         this.edgeReroute.getEndpointCircles(),
       )
+      this.minimap?.render(this.graph.getNodes(), this.graph.getEdges(), this.viewport)
     })
   }
 
@@ -680,6 +698,30 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   /** Request a render on the next animation frame. Useful for continuous rendering in benchmarks. */
   requestRender(): void { this.scheduleRender() }
 
+  // ── Minimap API ───────────────────────────────────────────────────────────────
+
+  /** Enable the minimap (or reconfigure it). Pass null to disable. */
+  setMinimap(config: Partial<MinimapConfig> | null): void {
+    if (config === null) {
+      this.minimap?.dispose()
+      this.minimap = null
+      return
+    }
+    if (this.minimap) {
+      this.minimap.setConfig(config)
+    } else {
+      const container = this.canvas.parentElement
+      if (!container) return
+      this.minimap = new Minimap(container, config, (wx, wy) => {
+        this.viewport.x = this.viewport.canvasWidth  / 2 - wx * this.viewport.zoom
+        this.viewport.y = this.viewport.canvasHeight / 2 - wy * this.viewport.zoom
+        this.scheduleRender()
+        this.emit('viewportChange', this.viewport.getState())
+      })
+    }
+    this.scheduleRender()
+  }
+
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
   dispose(): void {
@@ -695,6 +737,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.renderer.dispose()
     }
     this.resizeObserver?.disconnect()
+    this.minimap?.dispose()
     this.labelEditor?.dispose()
     this.contextMenu?.dispose()
     this.ariaLive?.remove()

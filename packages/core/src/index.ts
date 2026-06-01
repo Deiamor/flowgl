@@ -32,8 +32,8 @@ export { LabelEditor } from './interaction/label-edit'
 export { EdgeReroute } from './interaction/edge-reroute'
 export type { RerouteState, EndpointCircle } from './interaction/edge-reroute'
 
-export type { GridConfig } from './types'
-export { DEFAULT_GRID_CONFIG } from './types'
+export type { GridConfig, MinimapConfig } from './types'
+export { DEFAULT_GRID_CONFIG, DEFAULT_MINIMAP_CONFIG } from './types'
 
 export { hierarchicalLayout, forceLayout, gridLayout } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'
