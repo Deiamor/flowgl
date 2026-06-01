@@ -1,1 +1,4818 @@
-'use strict';const _0x985f80=_0x3c40;(function(_0x339268,_0x11b73f){const _0xb4f92b=_0x3c40,_0x50f545=_0x339268();while(!![]){try{const _0xa88e9a=parseInt(_0xb4f92b(0x4b2))/0x1*(parseInt(_0xb4f92b(0x22d))/0x2)+parseInt(_0xb4f92b(0x15d))/0x3*(parseInt(_0xb4f92b(0x315))/0x4)+parseInt(_0xb4f92b(0x33f))/0x5+-parseInt(_0xb4f92b(0x256))/0x6*(parseInt(_0xb4f92b(0x3ac))/0x7)+-parseInt(_0xb4f92b(0x37e))/0x8+parseInt(_0xb4f92b(0x111))/0x9*(-parseInt(_0xb4f92b(0x39b))/0xa)+parseInt(_0xb4f92b(0x52e))/0xb*(parseInt(_0xb4f92b(0x49a))/0xc);if(_0xa88e9a===_0x11b73f)break;else _0x50f545['push'](_0x50f545['shift']());}catch(_0x31ab8c){_0x50f545['push'](_0x50f545['shift']());}}}(_0x3ee5,0x92f21));class EventEmitter{constructor(){const _0x58d597=_0x3c40;this[_0x58d597(0x3bd)]={};}['on'](_0x237aea,_0x438fc0){const _0x58fcd2=_0x3c40;let _0x3279d7=this[_0x58fcd2(0x3bd)][_0x237aea];return!_0x3279d7&&(_0x3279d7=new Set(),this[_0x58fcd2(0x3bd)][_0x237aea]=_0x3279d7),_0x3279d7['add'](_0x438fc0),()=>this[_0x58fcd2(0x4d6)](_0x237aea,_0x438fc0);}[_0x985f80(0x4d6)](_0x363eb6,_0x2be7d1){const _0x201515=_0x985f80;this[_0x201515(0x3bd)][_0x363eb6]?.[_0x201515(0x2af)](_0x2be7d1);}['emit'](_0x5ac168,_0x309774){const _0x505a37=_0x985f80;this[_0x505a37(0x3bd)][_0x5ac168]?.['forEach'](_0x1bde78=>_0x1bde78(_0x309774));}[_0x985f80(0x40e)](){const _0x3fe697=_0x985f80;for(const _0x1b4fdc in this[_0x3fe697(0x3bd)]){delete this['listeners'][_0x1b4fdc];}}}class Graph{constructor(){const _0x52dfd5=_0x985f80;this['nodes']=new Map(),this[_0x52dfd5(0x1ee)]=new Map(),this[_0x52dfd5(0x13a)]=new Map(),this[_0x52dfd5(0x356)]=0x0;}[_0x985f80(0x36b)](_0x1d96e1){const _0x39f9b4=_0x985f80;this['nodes']['set'](_0x1d96e1['id'],{..._0x1d96e1}),!this[_0x39f9b4(0x13a)][_0x39f9b4(0x21c)](_0x1d96e1['id'])&&this[_0x39f9b4(0x13a)][_0x39f9b4(0x14a)](_0x1d96e1['id'],new Set()),this['version']++;}[_0x985f80(0x3d0)](_0xa4682b){const _0x261eab=_0x985f80,_0x5ad7e7=this[_0x261eab(0x13a)][_0x261eab(0x53a)](_0xa4682b);if(_0x5ad7e7)for(const _0x191d46 of _0x5ad7e7){const _0x3ba002=this['edges']['get'](_0x191d46);if(_0x3ba002){const _0xf27c09=_0x3ba002[_0x261eab(0x532)]===_0xa4682b?_0x3ba002['target']:_0x3ba002[_0x261eab(0x532)];this['nodeEdgeIndex'][_0x261eab(0x53a)](_0xf27c09)?.[_0x261eab(0x2af)](_0x191d46);}this[_0x261eab(0x1ee)][_0x261eab(0x2af)](_0x191d46);}this[_0x261eab(0x3f2)]['delete'](_0xa4682b),this['nodeEdgeIndex'][_0x261eab(0x2af)](_0xa4682b),this[_0x261eab(0x356)]++;}[_0x985f80(0x251)](_0x25f4f1,_0x4ebcd9){const _0x2f6a5e=_0x985f80,_0x5160db=this[_0x2f6a5e(0x3f2)][_0x2f6a5e(0x53a)](_0x25f4f1);_0x5160db&&(this[_0x2f6a5e(0x3f2)][_0x2f6a5e(0x14a)](_0x25f4f1,{..._0x5160db,..._0x4ebcd9}),this[_0x2f6a5e(0x356)]++);}[_0x985f80(0x357)](_0x17991f){const _0x2cde46=_0x985f80;if(!this[_0x2cde46(0x3f2)][_0x2cde46(0x21c)](_0x17991f['source'])){console['warn'](_0x2cde46(0x3b3)+_0x17991f[_0x2cde46(0x532)]+_0x2cde46(0x4a7));return;}if(!this[_0x2cde46(0x3f2)][_0x2cde46(0x21c)](_0x17991f[_0x2cde46(0x390)])){console[_0x2cde46(0x3d9)](_0x2cde46(0x1bf)+_0x17991f[_0x2cde46(0x390)]+_0x2cde46(0x4a7));return;}this[_0x2cde46(0x1ee)][_0x2cde46(0x14a)](_0x17991f['id'],{..._0x17991f}),this[_0x2cde46(0x13a)][_0x2cde46(0x53a)](_0x17991f[_0x2cde46(0x532)])['add'](_0x17991f['id']),this[_0x2cde46(0x13a)]['get'](_0x17991f[_0x2cde46(0x390)])[_0x2cde46(0x3a5)](_0x17991f['id']),this[_0x2cde46(0x356)]++;}['removeEdge'](_0x3416e3){const _0x2a1b3b=_0x985f80,_0x423249=this[_0x2a1b3b(0x1ee)]['get'](_0x3416e3);_0x423249&&(this[_0x2a1b3b(0x13a)][_0x2a1b3b(0x53a)](_0x423249['source'])?.[_0x2a1b3b(0x2af)](_0x3416e3),this[_0x2a1b3b(0x13a)][_0x2a1b3b(0x53a)](_0x423249[_0x2a1b3b(0x390)])?.['delete'](_0x3416e3)),this[_0x2a1b3b(0x1ee)][_0x2a1b3b(0x2af)](_0x3416e3),this[_0x2a1b3b(0x356)]++;}[_0x985f80(0x1e0)](_0x44d9ed,_0x368d8c){const _0x81e919=_0x985f80,_0xc10365={'Cjuly':function(_0x111680,_0x4ad92c){return _0x111680!==_0x4ad92c;}},_0x5f4595=this[_0x81e919(0x1ee)][_0x81e919(0x53a)](_0x44d9ed);if(!_0x5f4595)return;_0x368d8c[_0x81e919(0x532)]!==undefined&&_0x368d8c['source']!==_0x5f4595['source']&&(this[_0x81e919(0x13a)][_0x81e919(0x53a)](_0x5f4595[_0x81e919(0x532)])?.['delete'](_0x44d9ed),this[_0x81e919(0x13a)][_0x81e919(0x53a)](_0x368d8c['source'])?.['add'](_0x44d9ed)),_0xc10365['Cjuly'](_0x368d8c['target'],undefined)&&_0x368d8c[_0x81e919(0x390)]!==_0x5f4595['target']&&(this[_0x81e919(0x13a)][_0x81e919(0x53a)](_0x5f4595[_0x81e919(0x390)])?.['delete'](_0x44d9ed),this['nodeEdgeIndex'][_0x81e919(0x53a)](_0x368d8c[_0x81e919(0x390)])?.[_0x81e919(0x3a5)](_0x44d9ed)),this[_0x81e919(0x1ee)][_0x81e919(0x14a)](_0x44d9ed,{..._0x5f4595,..._0x368d8c}),this[_0x81e919(0x356)]++;}[_0x985f80(0x208)](_0x526af9){const _0x1dfe5e=_0x985f80;return this[_0x1dfe5e(0x3f2)][_0x1dfe5e(0x53a)](_0x526af9);}[_0x985f80(0x27c)](_0x277719){const _0xa9310e=_0x985f80;return this['edges'][_0xa9310e(0x53a)](_0x277719);}['getNodes'](){const _0x5f3777=_0x985f80;return Array[_0x5f3777(0x26f)](this['nodes']['values']());}[_0x985f80(0x285)](){const _0x47adb1=_0x985f80;return Array[_0x47adb1(0x26f)](this['edges']['values']());}get[_0x985f80(0x28d)](){const _0x2d125f=_0x985f80;return this['nodes'][_0x2d125f(0x456)];}get[_0x985f80(0x457)](){const _0x40e16b=_0x985f80;return this['edges'][_0x40e16b(0x456)];}[_0x985f80(0x3ab)](){const _0x49eb4b=_0x985f80;this['nodes'][_0x49eb4b(0x3ab)](),this[_0x49eb4b(0x1ee)][_0x49eb4b(0x3ab)](),this[_0x49eb4b(0x13a)][_0x49eb4b(0x3ab)](),this[_0x49eb4b(0x356)]++;}}const MIN_ZOOM=0.05,MAX_ZOOM=0x4;class Viewport{constructor(){const _0x5e0e68=_0x985f80,_0x987e52='3|4|0|2|1'['split']('|');let _0x48fbc0=0x0;while(!![]){switch(_0x987e52[_0x48fbc0++]){case'0':this['zoom']=0x1;continue;case'1':this[_0x5e0e68(0x2e0)]=0x1;continue;case'2':this[_0x5e0e68(0x31c)]=0x1;continue;case'3':this['x']=0x0;continue;case'4':this['y']=0x0;continue;}break;}}[_0x985f80(0x197)](_0x270c32,_0x3bccda){const _0x5be835=_0x985f80;this[_0x5be835(0x31c)]=_0x270c32,this[_0x5be835(0x2e0)]=_0x3bccda;}get[_0x985f80(0x3f8)](){const _0x3c2449=_0x985f80;return this[_0x3c2449(0x31c)];}get[_0x985f80(0x4fd)](){return this['height'];}['worldToScreen'](_0x2ce87a,_0x44f453){const _0x3996a9=_0x985f80,_0x1d8081={'juyfr':function(_0x51fe9e,_0xfbf60f){return _0x51fe9e+_0xfbf60f;},'meymh':function(_0x3f006a,_0xf1c550){return _0x3f006a*_0xf1c550;}};return[_0x1d8081['juyfr'](_0x2ce87a*this['zoom'],this['x']),_0x1d8081[_0x3996a9(0x46e)](_0x1d8081[_0x3996a9(0x179)](_0x44f453,this[_0x3996a9(0x330)]),this['y'])];}['screenToWorld'](_0x233964,_0x4da4d1){const _0x577abd=_0x985f80,_0x50007b={'BjMGK':function(_0x3af5f5,_0x47d9aa){return _0x3af5f5/_0x47d9aa;},'oHblA':function(_0x2680a2,_0x3b3584){return _0x2680a2/_0x3b3584;}};return[_0x50007b[_0x577abd(0x4d8)](_0x233964-this['x'],this[_0x577abd(0x330)]),_0x50007b[_0x577abd(0x4ab)](_0x4da4d1-this['y'],this['zoom'])];}[_0x985f80(0x3e7)](_0x2edbb0,_0x18a85c){this['x']+=_0x2edbb0,this['y']+=_0x18a85c;}[_0x985f80(0x3f7)](_0x170fb5,_0xd9738e,_0xdfde03){const _0x219e22=_0x985f80,_0x5ef6a6={'SxoGc':function(_0x17b41b,_0x3a66c7){return _0x17b41b-_0x3a66c7;},'cMdKo':function(_0x19be20,_0x3f93eb){return _0x19be20-_0x3f93eb;}},_0x53c935=Math[_0x219e22(0x1aa)](MAX_ZOOM,Math[_0x219e22(0x4cd)](MIN_ZOOM,this[_0x219e22(0x330)]*_0xdfde03)),_0x20f146=_0x53c935/this[_0x219e22(0x330)];this['x']=_0x5ef6a6[_0x219e22(0x112)](_0x170fb5,(_0x170fb5-this['x'])*_0x20f146),this['y']=_0x5ef6a6[_0x219e22(0x35e)](_0xd9738e,(_0xd9738e-this['y'])*_0x20f146),this[_0x219e22(0x330)]=_0x53c935;}[_0x985f80(0x131)](){const _0x49b344=_0x985f80,_0x5d737b={'hqeKg':function(_0x4bc820,_0x57e342){return _0x4bc820/_0x57e342;},'NcDrS':function(_0x5c1327,_0x307dcb){return _0x5c1327/_0x307dcb;},'JXitK':function(_0xc6b35f,_0x5b2481){return _0xc6b35f/_0x5b2481;}},_0x211e71=_0x5d737b[_0x49b344(0x38a)](0x2*this[_0x49b344(0x330)],this[_0x49b344(0x31c)]),_0xa05f31=_0x5d737b[_0x49b344(0x278)](-0x2*this[_0x49b344(0x330)],this[_0x49b344(0x2e0)]),_0x3ca5e3=0x2*this['x']/this[_0x49b344(0x31c)]-0x1,_0xc7d426=_0x5d737b[_0x49b344(0x3a6)](-0x2*this['y'],this[_0x49b344(0x2e0)])+0x1;return new Float32Array([_0x211e71,0x0,0x0,0x0,0x0,_0xa05f31,0x0,0x0,0x0,0x0,0x1,0x0,_0x3ca5e3,_0xc7d426,0x0,0x1]);}[_0x985f80(0x17c)](){const _0x3f2cd6=_0x985f80,[_0x49d67d,_0x3df8b3]=this['screenToWorld'](0x0,0x0),[_0x4107cb,_0xd56b22]=this[_0x3f2cd6(0x266)](this['width'],this[_0x3f2cd6(0x2e0)]);return{'minX':_0x49d67d,'minY':_0x3df8b3,'maxX':_0x4107cb,'maxY':_0xd56b22};}[_0x985f80(0x118)](_0x5e91f7,_0x36d33e=0x28){const _0x562de2=_0x985f80,_0x4a4505={'stxjm':function(_0x2bc3a2,_0x5ef94f){return _0x2bc3a2===_0x5ef94f;},'Qkyte':function(_0x4f8de6,_0x1a79d9){return _0x4f8de6===_0x1a79d9;},'HnPYc':function(_0x9ecfd6,_0x2024d6){return _0x9ecfd6/_0x2024d6;},'IlGCG':function(_0x2d78e9,_0x3dc28f){return _0x2d78e9-_0x3dc28f;},'iGSYU':function(_0xf3ff9f,_0x29bed3){return _0xf3ff9f*_0x29bed3;}},_0x55acef=_0x5e91f7[_0x562de2(0x132)]-_0x5e91f7[_0x562de2(0x1ad)],_0x3039bb=_0x5e91f7['maxY']-_0x5e91f7[_0x562de2(0x1c4)];if(_0x4a4505[_0x562de2(0x416)](_0x55acef,0x0)&&_0x4a4505['Qkyte'](_0x3039bb,0x0))return;const _0x1d13b5=Math[_0x562de2(0x1aa)]((this[_0x562de2(0x31c)]-_0x36d33e*0x2)/Math[_0x562de2(0x4cd)](_0x55acef,0x1),_0x4a4505[_0x562de2(0x45f)](_0x4a4505['IlGCG'](this[_0x562de2(0x2e0)],_0x4a4505[_0x562de2(0x1ef)](_0x36d33e,0x2)),Math['max'](_0x3039bb,0x1)));this[_0x562de2(0x330)]=Math[_0x562de2(0x1aa)](MAX_ZOOM,Math[_0x562de2(0x4cd)](MIN_ZOOM,_0x1d13b5)),this['x']=this[_0x562de2(0x31c)]/0x2-(_0x5e91f7[_0x562de2(0x1ad)]+_0x55acef/0x2)*this['zoom'],this['y']=this[_0x562de2(0x2e0)]/0x2-_0x4a4505['iGSYU'](_0x5e91f7[_0x562de2(0x1c4)]+_0x4a4505[_0x562de2(0x45f)](_0x3039bb,0x2),this[_0x562de2(0x330)]);}[_0x985f80(0x4bc)](){const _0x1fadba=_0x985f80;return{'x':this['x'],'y':this['y'],'zoom':this[_0x1fadba(0x330)]};}[_0x985f80(0x1c7)](_0x4dcca5){const _0x243d9c=_0x985f80;this['x']=_0x4dcca5['x'],this['y']=_0x4dcca5['y'],this[_0x243d9c(0x330)]=Math[_0x243d9c(0x1aa)](MAX_ZOOM,Math['max'](MIN_ZOOM,_0x4dcca5[_0x243d9c(0x330)]));}}function createWebGL2Context(_0x252d4e,_0x2d080b){const _0x22c852=_0x985f80,_0x4af3d5={'VukLp':_0x22c852(0x2cf)},_0xe577e2=_0x252d4e[_0x22c852(0x506)](_0x4af3d5['VukLp'],{'antialias':_0x2d080b,'premultipliedAlpha':![],'alpha':!![]});if(!_0xe577e2)return null;return _0xe577e2[_0x22c852(0x1ae)](_0xe577e2[_0x22c852(0x447)]),_0xe577e2[_0x22c852(0x36a)](_0xe577e2[_0x22c852(0x4a9)],_0xe577e2[_0x22c852(0x324)],_0xe577e2[_0x22c852(0x423)],_0xe577e2['ONE_MINUS_SRC_ALPHA']),_0xe577e2;}function createShader(_0x30863e,_0x5b1ed1,_0x93ea20){const _0x2445ef=_0x985f80,_0x51e115=_0x30863e[_0x2445ef(0x4e2)](_0x5b1ed1);if(!_0x51e115)throw new Error(_0x2445ef(0x381));_0x30863e['shaderSource'](_0x51e115,_0x93ea20),_0x30863e[_0x2445ef(0x260)](_0x51e115);if(!_0x30863e[_0x2445ef(0x22f)](_0x51e115,_0x30863e[_0x2445ef(0x363)])){const _0x3346de=_0x30863e[_0x2445ef(0x35f)](_0x51e115)??'';_0x30863e['deleteShader'](_0x51e115);throw new Error(_0x2445ef(0x21b)+_0x3346de);}return _0x51e115;}function createProgram(_0x4fe9a9,_0x4c66de,_0x5ab430){const _0x574ca8=_0x985f80,_0x1f9fd7=createShader(_0x4fe9a9,_0x4fe9a9['VERTEX_SHADER'],_0x4c66de),_0x267997=createShader(_0x4fe9a9,_0x4fe9a9[_0x574ca8(0x2be)],_0x5ab430),_0xa3fdff=_0x4fe9a9[_0x574ca8(0x203)]();if(!_0xa3fdff)throw new Error(_0x574ca8(0x335));_0x4fe9a9[_0x574ca8(0x142)](_0xa3fdff,_0x1f9fd7),_0x4fe9a9['attachShader'](_0xa3fdff,_0x267997),_0x4fe9a9[_0x574ca8(0x289)](_0xa3fdff),_0x4fe9a9[_0x574ca8(0x365)](_0x1f9fd7),_0x4fe9a9[_0x574ca8(0x365)](_0x267997);if(!_0x4fe9a9[_0x574ca8(0x51d)](_0xa3fdff,_0x4fe9a9[_0x574ca8(0x172)])){const _0x3667c3=_0x4fe9a9[_0x574ca8(0x50f)](_0xa3fdff)??'';_0x4fe9a9[_0x574ca8(0x2c3)](_0xa3fdff);throw new Error('Program\x20link\x20error:\x0a'+_0x3667c3);}return _0xa3fdff;}class DynamicBuffer{constructor(_0x1b3d1c,_0x199315=0x10000){const _0x543eff=_0x985f80,_0x45f19c={'EUKtf':_0x543eff(0x2ce)};this['gl']=_0x1b3d1c,this[_0x543eff(0x500)]=_0x199315;const _0x129c3e=_0x1b3d1c[_0x543eff(0x3ca)]();if(!_0x129c3e)throw new Error(_0x45f19c['EUKtf']);this['buffer']=_0x129c3e,_0x1b3d1c[_0x543eff(0x48b)](_0x1b3d1c['ARRAY_BUFFER'],_0x129c3e),_0x1b3d1c[_0x543eff(0x39a)](_0x1b3d1c['ARRAY_BUFFER'],_0x199315,_0x1b3d1c[_0x543eff(0x39d)]);}[_0x985f80(0x12a)](_0x1c7683){const _0x3cb267=_0x985f80,_0x162386=this['gl'],_0x53471f=_0x1c7683[_0x3cb267(0x4d0)];_0x162386[_0x3cb267(0x48b)](_0x162386[_0x3cb267(0x17d)],this[_0x3cb267(0x223)]),_0x53471f>this[_0x3cb267(0x500)]&&(this['capacityBytes']=_0x53471f*0x2,_0x162386[_0x3cb267(0x39a)](_0x162386[_0x3cb267(0x17d)],this[_0x3cb267(0x500)],_0x162386[_0x3cb267(0x39d)])),_0x162386[_0x3cb267(0x329)](_0x162386[_0x3cb267(0x17d)],0x0,_0x1c7683);}[_0x985f80(0x40e)](){const _0x51802b=_0x985f80;this['gl'][_0x51802b(0x4ac)](this[_0x51802b(0x223)]);}}const cache=new Map();function parseColor$1(_0x32b953){const _0x2b3546=_0x985f80,_0x16d75c=cache[_0x2b3546(0x53a)](_0x32b953);if(_0x16d75c)return _0x16d75c;const _0x30d2d7=document['createElement'](_0x2b3546(0x2ea));_0x30d2d7[_0x2b3546(0x31c)]=_0x30d2d7[_0x2b3546(0x2e0)]=0x1;const _0x54ee83=_0x30d2d7[_0x2b3546(0x506)]('2d');_0x54ee83[_0x2b3546(0x348)]=_0x32b953,_0x54ee83[_0x2b3546(0x385)](0x0,0x0,0x1,0x1);const _0x434f9d=_0x54ee83[_0x2b3546(0x426)](0x0,0x0,0x1,0x1)[_0x2b3546(0x4c8)],_0xbd25ff=[_0x434f9d[0x0]/0xff,_0x434f9d[0x1]/0xff,_0x434f9d[0x2]/0xff,_0x434f9d[0x3]/0xff];return cache[_0x2b3546(0x14a)](_0x32b953,_0xbd25ff),_0xbd25ff;}const DEFAULT_NODE_STYLE={'backgroundColor':_0x985f80(0x1b3),'borderColor':_0x985f80(0x318),'borderWidth':0x2,'borderRadius':0x8,'textColor':_0x985f80(0x2a7),'fontSize':0xe,'fontFamily':'system-ui,\x20sans-serif','textAlign':_0x985f80(0x508),'lineHeight':1.4},FLOATS_PER_INSTANCE=0xf,VERT$3=_0x985f80(0x473),FRAG$3=_0x985f80(0x255);class NodeProgram{constructor(_0xf3586a){const _0x3bbb18=_0x985f80,_0x4cf649={'HxcZM':function(_0x4caa15,_0x137369,_0x1bb1c0,_0x569453){return _0x4caa15(_0x137369,_0x1bb1c0,_0x569453);},'MdqUZ':_0x3bbb18(0x29c),'kRSqW':function(_0xba0748,_0x4b139f,_0x3e7597,_0x1e3916){return _0xba0748(_0x4b139f,_0x3e7597,_0x1e3916);},'cfTDF':_0x3bbb18(0x1df),'xUwMP':function(_0x1d3909,_0x25b4cd,_0x5083e9,_0x5cb2c4){return _0x1d3909(_0x25b4cd,_0x5083e9,_0x5cb2c4);},'PgByV':_0x3bbb18(0x2b6),'gKAnb':_0x3bbb18(0x552),'XJvXa':_0x3bbb18(0x205),'kWMFg':_0x3bbb18(0x245),'pQOPs':_0x3bbb18(0x3bf)};this[_0x3bbb18(0x189)]=new Float32Array(0x0),this['prevNodes']=null,this[_0x3bbb18(0x28f)]=-0x1,this[_0x3bbb18(0x433)]='',this[_0x3bbb18(0x1b5)]=null,this['prevInstanceCount']=0x0,this['gl']=_0xf3586a,this[_0x3bbb18(0x4f7)]=_0x4cf649[_0x3bbb18(0x25a)](createProgram,_0xf3586a,VERT$3,FRAG$3),this[_0x3bbb18(0x12e)]=new DynamicBuffer(_0xf3586a);const _0x42560d=_0xf3586a[_0x3bbb18(0x2f9)]();if(!_0x42560d)throw new Error('NodeProgram:\x20createVertexArray\x20failed');this[_0x3bbb18(0x3f6)]=_0x42560d;const _0x31bd9d=_0xf3586a[_0x3bbb18(0x3ca)]();if(!_0x31bd9d)throw new Error(_0x3bbb18(0x3bb));this[_0x3bbb18(0x292)]=_0x31bd9d,_0xf3586a[_0x3bbb18(0x48b)](_0xf3586a['ARRAY_BUFFER'],_0x31bd9d),_0xf3586a[_0x3bbb18(0x39a)](_0xf3586a['ARRAY_BUFFER'],new Float32Array([-0.5,-0.5,0.5,-0.5,0.5,0.5,-0.5,-0.5,0.5,0.5,-0.5,0.5]),_0xf3586a[_0x3bbb18(0x544)]),_0xf3586a[_0x3bbb18(0x47f)](this[_0x3bbb18(0x3f6)]);const _0x4ede63=_0xf3586a[_0x3bbb18(0x204)](this['program'],_0x4cf649[_0x3bbb18(0x4da)]);_0xf3586a[_0x3bbb18(0x48b)](_0xf3586a[_0x3bbb18(0x17d)],_0x31bd9d),_0xf3586a[_0x3bbb18(0x1e3)](_0x4ede63),_0xf3586a[_0x3bbb18(0x43b)](_0x4ede63,0x2,_0xf3586a[_0x3bbb18(0x4e6)],![],0x0,0x0);const _0x58591c=FLOATS_PER_INSTANCE*0x4;_0xf3586a[_0x3bbb18(0x48b)](_0xf3586a[_0x3bbb18(0x17d)],this[_0x3bbb18(0x12e)][_0x3bbb18(0x223)]);const _0xa1ca70=(_0x5bf603,_0x29e153,_0x103813)=>{const _0x3fa33c=_0x3bbb18,_0x5e6e08=_0xf3586a[_0x3fa33c(0x204)](this[_0x3fa33c(0x4f7)],_0x5bf603);if(_0x5e6e08<0x0)return;_0xf3586a[_0x3fa33c(0x1e3)](_0x5e6e08),_0xf3586a[_0x3fa33c(0x43b)](_0x5e6e08,_0x29e153,_0xf3586a[_0x3fa33c(0x4e6)],![],_0x58591c,_0x103813*0x4),_0xf3586a[_0x3fa33c(0x127)](_0x5e6e08,0x1);};_0x4cf649[_0x3bbb18(0x30a)](_0xa1ca70,_0x4cf649[_0x3bbb18(0x408)],0x2,0x0),_0xa1ca70(_0x3bbb18(0x13e),0x2,0x2),_0xa1ca70(_0x3bbb18(0x269),0x4,0x4),_0xa1ca70(_0x3bbb18(0x530),0x4,0x8),_0x4cf649[_0x3bbb18(0x2ef)](_0xa1ca70,_0x4cf649[_0x3bbb18(0x274)],0x1,0xc),_0xa1ca70(_0x4cf649[_0x3bbb18(0x265)],0x1,0xd),_0xa1ca70(_0x4cf649[_0x3bbb18(0x487)],0x1,0xe),_0xf3586a[_0x3bbb18(0x47f)](null);const _0x503f15=_0xf3586a[_0x3bbb18(0x295)](this[_0x3bbb18(0x4f7)],_0x4cf649[_0x3bbb18(0x3ee)]);if(!_0x503f15)throw new Error(_0x4cf649[_0x3bbb18(0x21a)]);this[_0x3bbb18(0x498)]=_0x503f15;}[_0x985f80(0x1a5)](_0x471b61,_0x38bd39,_0x23310a,_0x4afb89){const _0x578426=_0x985f80,_0x4c15b2={'nraZQ':function(_0x5389d6,_0x385f5f){return _0x5389d6===_0x385f5f;},'DKEzP':function(_0x527dc5,_0x3620f7){return _0x527dc5!==_0x3620f7;},'eCmfv':function(_0x4b7087,_0xf93d53){return _0x4b7087!==_0xf93d53;},'QktBx':function(_0x1cb840,_0x175aee){return _0x1cb840<_0x175aee;},'MExcn':function(_0x242cf8,_0x3b64c8){return _0x242cf8*_0x3b64c8;}};if(_0x471b61['length']===0x0)return;const _0x603c53=this['gl'],_0x150113=_0x23310a[_0x578426(0x456)],_0x2e63e0=_0x4c15b2[_0x578426(0x1c2)](_0x150113,0x0)?'':[..._0x23310a]['sort']()['join'](','),_0x21eb74=_0x471b61!==this[_0x578426(0x369)]||_0x471b61['length']!==this[_0x578426(0x492)]||_0x4c15b2[_0x578426(0x393)](_0x150113,this[_0x578426(0x28f)])||_0x2e63e0!==this[_0x578426(0x433)]||_0x4c15b2[_0x578426(0x484)](_0x4afb89,this[_0x578426(0x1b5)]);if(_0x21eb74){const _0x363d67=_0x471b61['length']*FLOATS_PER_INSTANCE;if(_0x4c15b2[_0x578426(0x3f1)](this[_0x578426(0x189)]['length'],_0x363d67))this['scratch']=new Float32Array(_0x4c15b2[_0x578426(0x54e)](_0x363d67,0x2));const _0x225715=this['scratch'];let _0x50e056=0x0;for(const _0xc72025 of _0x471b61){const _0x41afef={...DEFAULT_NODE_STYLE,..._0xc72025[_0x578426(0x2e7)]},[_0x203027,_0x43bcb2,_0x4ceda8,_0x3591e2]=parseColor$1(_0x41afef[_0x578426(0x3a8)]),[_0x3e93a2,_0x46e252,_0x314161,_0x35cac0]=parseColor$1(_0x41afef[_0x578426(0x55d)]);let _0x3e80d1=0x0;if(_0x23310a[_0x578426(0x21c)](_0xc72025['id']))_0x3e80d1=0x1;else{if(_0xc72025['id']===_0x4afb89)_0x3e80d1=0.5;}_0x225715[_0x50e056++]=_0xc72025['x']+_0xc72025['width']/0x2,_0x225715[_0x50e056++]=_0xc72025['y']+_0xc72025[_0x578426(0x2e0)]/0x2,_0x225715[_0x50e056++]=_0xc72025[_0x578426(0x31c)],_0x225715[_0x50e056++]=_0xc72025[_0x578426(0x2e0)],_0x225715[_0x50e056++]=_0x203027,_0x225715[_0x50e056++]=_0x43bcb2,_0x225715[_0x50e056++]=_0x4ceda8,_0x225715[_0x50e056++]=_0x3591e2,_0x225715[_0x50e056++]=_0x3e93a2,_0x225715[_0x50e056++]=_0x46e252,_0x225715[_0x50e056++]=_0x314161,_0x225715[_0x50e056++]=_0x35cac0,_0x225715[_0x50e056++]=_0x41afef[_0x578426(0x2a3)],_0x225715[_0x50e056++]=_0x41afef[_0x578426(0x29f)],_0x225715[_0x50e056++]=_0x3e80d1;}this[_0x578426(0x12e)][_0x578426(0x12a)](_0x225715[_0x578426(0x174)](0x0,_0x363d67)),this[_0x578426(0x369)]=_0x471b61,this['prevInstanceCount']=_0x471b61['length'],this['prevSelectedSize']=_0x150113,this[_0x578426(0x433)]=_0x2e63e0,this[_0x578426(0x1b5)]=_0x4afb89;}_0x603c53[_0x578426(0x428)](this['program']),_0x603c53[_0x578426(0x495)](this['uMatrix'],![],_0x38bd39),_0x603c53[_0x578426(0x47f)](this['vao']),_0x603c53['drawArraysInstanced'](_0x603c53[_0x578426(0x143)],0x0,0x6,_0x471b61[_0x578426(0x193)]),_0x603c53[_0x578426(0x47f)](null);}[_0x985f80(0x40e)](){const _0x2aad22=_0x985f80,_0x4b5996=this['gl'];_0x4b5996[_0x2aad22(0x2c3)](this['program']),_0x4b5996[_0x2aad22(0x27b)](this[_0x2aad22(0x3f6)]),_0x4b5996['deleteBuffer'](this['quadBuffer']),this[_0x2aad22(0x12e)][_0x2aad22(0x40e)]();}}function _0x3c40(_0xdc572c,_0xd086ed){_0xdc572c=_0xdc572c-0x110;const _0x3ee510=_0x3ee5();let _0x3c4068=_0x3ee510[_0xdc572c];if(_0x3c40['atCdqd']===undefined){var _0x2cf70a=function(_0x9beeb6){const _0x647aa4='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x1f5968='',_0x3f0f7c='';for(let _0x500aa8=0x0,_0x534f7a,_0x5a694d,_0x1597f6=0x0;_0x5a694d=_0x9beeb6['charAt'](_0x1597f6++);~_0x5a694d&&(_0x534f7a=_0x500aa8%0x4?_0x534f7a*0x40+_0x5a694d:_0x5a694d,_0x500aa8++%0x4)?_0x1f5968+=String['fromCharCode'](0xff&_0x534f7a>>(-0x2*_0x500aa8&0x6)):0x0){_0x5a694d=_0x647aa4['indexOf'](_0x5a694d);}for(let _0x4b85bc=0x0,_0x255d1e=_0x1f5968['length'];_0x4b85bc<_0x255d1e;_0x4b85bc++){_0x3f0f7c+='%'+('00'+_0x1f5968['charCodeAt'](_0x4b85bc)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x3f0f7c);};_0x3c40['MdsaiL']=_0x2cf70a,_0x3c40['JdPkfG']={},_0x3c40['atCdqd']=!![];}const _0x1e941d=_0x3ee510[0x0],_0x2ad2d3=_0xdc572c+_0x1e941d,_0x3b1b3e=_0x3c40['JdPkfG'][_0x2ad2d3];return!_0x3b1b3e?(_0x3c4068=_0x3c40['MdsaiL'](_0x3c4068),_0x3c40['JdPkfG'][_0x2ad2d3]=_0x3c4068):_0x3c4068=_0x3b1b3e,_0x3c4068;}const EDGE_FLOATS_PER_VERT=0x7,BEZIER_SEGMENTS=0x10;function edgeControlPoints(_0x3dbf9f,_0x9a7b06,_0xcee797,_0x88ce3d,_0x3d6a3c,_0x2d4226){const _0x32521f=_0x985f80,_0x3c1b1b={'mJhLo':function(_0x5de556,_0x2646c1){return _0x5de556-_0x2646c1;},'efcEJ':function(_0x399e87,_0x4744d2){return _0x399e87*_0x4744d2;},'wbfCU':_0x32521f(0x1f8),'RbFHG':_0x32521f(0x50d),'OcbrV':_0x32521f(0x32b),'TqTLf':function(_0xde36d5,_0x156af2){return _0xde36d5+_0x156af2;}},_0x3e0197=Math[_0x32521f(0x1fa)](_0x88ce3d-_0x3dbf9f,_0x3c1b1b[_0x32521f(0x531)](_0x3d6a3c,_0x9a7b06)),_0x128b43=Math[_0x32521f(0x4cd)](Math[_0x32521f(0x1aa)](_0x3c1b1b['efcEJ'](_0x3e0197,0.5),0x96),0x32);let _0xb35fae,_0x4421b7;switch(_0xcee797){case _0x3c1b1b['wbfCU']:_0xb35fae=_0x3dbf9f-_0x128b43,_0x4421b7=_0x9a7b06;break;case _0x3c1b1b[_0x32521f(0x25c)]:_0xb35fae=_0x3dbf9f,_0x4421b7=_0x3c1b1b['mJhLo'](_0x9a7b06,_0x128b43);break;case _0x32521f(0x2e5):_0xb35fae=_0x3dbf9f,_0x4421b7=_0x9a7b06+_0x128b43;break;default:_0xb35fae=_0x3dbf9f+_0x128b43,_0x4421b7=_0x9a7b06;break;}let _0x21ec02,_0x467338;switch(_0x2d4226){case _0x3c1b1b[_0x32521f(0x559)]:_0x21ec02=_0x3c1b1b[_0x32521f(0x119)](_0x88ce3d,_0x128b43),_0x467338=_0x3d6a3c;break;case _0x32521f(0x50d):_0x21ec02=_0x88ce3d,_0x467338=_0x3d6a3c-_0x128b43;break;case _0x32521f(0x2e5):_0x21ec02=_0x88ce3d,_0x467338=_0x3d6a3c+_0x128b43;break;default:_0x21ec02=_0x3c1b1b[_0x32521f(0x531)](_0x88ce3d,_0x128b43),_0x467338=_0x3d6a3c;break;}return[_0xb35fae,_0x4421b7,_0x21ec02,_0x467338];}function cubicBezierPoint(_0x587212,_0x5b3d0d,_0x25d938,_0x165af7,_0x928335,_0x398961,_0x187327,_0x1c485e,_0x46ab50){const _0x4bb9be=_0x985f80,_0xf4883f={'sHqrX':function(_0x31cf28,_0x7e328a){return _0x31cf28*_0x7e328a;},'zSKlM':function(_0x43cb36,_0x1bf054){return _0x43cb36+_0x1bf054;},'VSxaN':function(_0x3fdc54,_0x4043c5){return _0x3fdc54*_0x4043c5;},'wFtuN':function(_0x3181a9,_0x19866d){return _0x3181a9*_0x19866d;},'xJUSn':function(_0x4345f9,_0x3eab63){return _0x4345f9*_0x3eab63;},'hGzju':function(_0x32b084,_0x58e1ee){return _0x32b084*_0x58e1ee;},'YOOvq':function(_0x3ecde1,_0x2eff71){return _0x3ecde1*_0x2eff71;},'XTdYt':function(_0x3afecc,_0x804049){return _0x3afecc+_0x804049;},'jkwXW':function(_0x3fe93f,_0x45752c){return _0x3fe93f+_0x45752c;},'FeYqY':function(_0x482d15,_0x3916b0){return _0x482d15*_0x3916b0;},'vgsyA':function(_0x16b781,_0x5c1733){return _0x16b781*_0x5c1733;},'IGHSE':function(_0x23bf65,_0x4f0d98){return _0x23bf65*_0x4f0d98;},'kDBlv':function(_0x4156f0,_0x31325c){return _0x4156f0*_0x31325c;},'xtSHl':function(_0x1aa6ef,_0x4d2653){return _0x1aa6ef*_0x4d2653;},'hlwkr':function(_0x229038,_0x1bbc4c){return _0x229038*_0x1bbc4c;}},_0x27ec24=0x1-_0x587212,_0x978600=_0x27ec24*_0x27ec24,_0x271a7a=_0xf4883f[_0x4bb9be(0x353)](_0x587212,_0x587212);return[_0xf4883f[_0x4bb9be(0x141)](_0x978600*_0x27ec24*_0x5b3d0d+_0xf4883f[_0x4bb9be(0x145)](_0xf4883f[_0x4bb9be(0x173)](_0xf4883f[_0x4bb9be(0x117)](0x3,_0x978600),_0x587212),_0x165af7),_0xf4883f[_0x4bb9be(0x2c5)](_0xf4883f['YOOvq'](0x3*_0x27ec24,_0x271a7a),_0x398961))+_0x271a7a*_0x587212*_0x1c485e,_0xf4883f[_0x4bb9be(0x178)](_0xf4883f['jkwXW'](_0xf4883f[_0x4bb9be(0x43a)](_0x978600,_0x27ec24)*_0x25d938,_0xf4883f['sHqrX'](_0xf4883f[_0x4bb9be(0x2b7)](0x3*_0x978600,_0x587212),_0x928335)),_0xf4883f['IGHSE'](_0xf4883f[_0x4bb9be(0x47a)](0x3,_0x27ec24)*_0x271a7a,_0x187327))+_0xf4883f[_0x4bb9be(0x2db)](_0xf4883f[_0x4bb9be(0x4b3)](_0x271a7a,_0x587212),_0x46ab50)];}function buildBezierStrip(_0x333fc8,_0x511dce,_0x30c016,_0xfb57d7,_0xb0dae9,_0x4bf5c8,_0x25b7ba,_0x45771f,_0x593f8b,_0x50f5ee,_0x3fc3b3,_0x5a6305,_0x41f8f6,_0x2b5404=BEZIER_SEGMENTS){const _0x2310cb=_0x985f80,_0x1bba20={'ZmgVz':function(_0x571877,_0xbf2fc3){return _0x571877/_0xbf2fc3;},'tZXkJ':function(_0x238550,_0x2c7ea8){return _0x238550*_0x2c7ea8;},'TEkHx':function(_0x537ebe,_0x27e256){return _0x537ebe*_0x27e256;},'UjnZD':function(_0x43ec92,_0x137718){return _0x43ec92<=_0x137718;},'cgWOu':function(_0x589cbe,_0x591e12){return _0x589cbe-_0x591e12;},'GiSbK':function(_0x193225,_0x40e27e){return _0x193225-_0x40e27e;},'NodVu':function(_0x5d4dd9,_0x34d461,_0x3a6d17,_0x109b18){return _0x5d4dd9(_0x34d461,_0x3a6d17,_0x109b18);},'DGlSz':function(_0x4b47fa,_0x4bf56e,_0xa2ddfd,_0x4cfa89){return _0x4b47fa(_0x4bf56e,_0xa2ddfd,_0x4cfa89);},'IMRvc':function(_0x79ae1f,_0xdaefa8){return _0x79ae1f-_0xdaefa8;}},_0x381a52=[];for(let _0x1894c2=0x0;_0x1894c2<=_0x2b5404;_0x1894c2++){_0x381a52[_0x2310cb(0x2f5)](cubicBezierPoint(_0x1bba20[_0x2310cb(0x236)](_0x1894c2,_0x2b5404),_0x333fc8,_0x511dce,_0x30c016,_0xfb57d7,_0xb0dae9,_0x4bf5c8,_0x25b7ba,_0x45771f));}const _0xb28574=_0x1bba20['tZXkJ'](_0x2b5404+0x1,0x2),_0x59a14e=new Float32Array(_0x1bba20[_0x2310cb(0x316)](_0xb28574,EDGE_FLOATS_PER_VERT));let _0x1630cc=0x0,_0x2cb148=0x0;const _0x2db3b=(_0x2bca68,_0x214a58,_0x5df450)=>{_0x59a14e[_0x2cb148++]=_0x2bca68,_0x59a14e[_0x2cb148++]=_0x214a58,_0x59a14e[_0x2cb148++]=_0x5df450,_0x59a14e[_0x2cb148++]=_0x593f8b,_0x59a14e[_0x2cb148++]=_0x50f5ee,_0x59a14e[_0x2cb148++]=_0x3fc3b3,_0x59a14e[_0x2cb148++]=_0x5a6305;};for(let _0x30dcbc=0x0;_0x1bba20[_0x2310cb(0x430)](_0x30dcbc,_0x2b5404);_0x30dcbc++){const [_0x2ab4cb,_0x5bb73c]=_0x381a52[_0x30dcbc];if(_0x30dcbc>0x0){const [_0x51de9a,_0x1824ea]=_0x381a52[_0x30dcbc-0x1];_0x1630cc+=Math[_0x2310cb(0x1fa)](_0x1bba20[_0x2310cb(0x199)](_0x2ab4cb,_0x51de9a),_0x5bb73c-_0x1824ea);}let _0xbbc1e8,_0x13f346;if(_0x30dcbc<_0x2b5404){const [_0x1aad97,_0x245ed7]=_0x381a52[_0x30dcbc+0x1];_0xbbc1e8=_0x1bba20[_0x2310cb(0x37d)](_0x245ed7,_0x5bb73c),_0x13f346=_0x2ab4cb-_0x1aad97;}else{const [_0x20533e,_0x80dec7]=_0x381a52[_0x30dcbc-0x1];_0xbbc1e8=_0x5bb73c-_0x80dec7,_0x13f346=_0x1bba20[_0x2310cb(0x37d)](_0x20533e,_0x2ab4cb);}const _0x2df313=Math[_0x2310cb(0x1fa)](_0xbbc1e8,_0x13f346)||0x1,_0x1a5eaa=_0xbbc1e8/_0x2df313*_0x41f8f6,_0x25594c=_0x1bba20[_0x2310cb(0x44b)](_0x13f346/_0x2df313,_0x41f8f6);_0x1bba20[_0x2310cb(0x449)](_0x2db3b,_0x2ab4cb+_0x1a5eaa,_0x5bb73c+_0x25594c,_0x1630cc),_0x1bba20[_0x2310cb(0x17e)](_0x2db3b,_0x2ab4cb-_0x1a5eaa,_0x1bba20[_0x2310cb(0x326)](_0x5bb73c,_0x25594c),_0x1630cc);}return _0x59a14e;}const DEFAULT_EDGE_STYLE={'color':_0x985f80(0x379),'width':0x2},VERT$2=_0x985f80(0x229),FRAG$2=_0x985f80(0x241);function parseColor(_0x27db1c,_0x264297){const _0x154d5e=_0x985f80,_0x1301cf={'RyfFo':'canvas','vigLs':function(_0x5ecf17,_0x4cf12c){return _0x5ecf17/_0x4cf12c;}},_0x43b49a=_0x264297['get'](_0x27db1c);if(_0x43b49a)return _0x43b49a;const _0x459cce=document['createElement'](_0x1301cf[_0x154d5e(0x41d)]);_0x459cce['width']=_0x459cce[_0x154d5e(0x2e0)]=0x1;const _0x474e9a=_0x459cce[_0x154d5e(0x506)]('2d');_0x474e9a[_0x154d5e(0x348)]=_0x27db1c,_0x474e9a[_0x154d5e(0x385)](0x0,0x0,0x1,0x1);const _0x5544b0=_0x474e9a[_0x154d5e(0x426)](0x0,0x0,0x1,0x1)['data'],_0x2056e7=[_0x5544b0[0x0]/0xff,_0x5544b0[0x1]/0xff,_0x1301cf[_0x154d5e(0x4c4)](_0x5544b0[0x2],0xff),_0x5544b0[0x3]/0xff];return _0x264297[_0x154d5e(0x14a)](_0x27db1c,_0x2056e7),_0x2056e7;}function handleXY$2(_0x9a22df,_0x298950){const _0x5ed51f=_0x985f80,_0x207761={'QVaZb':function(_0x537d25,_0x7e35c6){return _0x537d25/_0x7e35c6;},'jiAlD':function(_0x46d6e9,_0xd8144c){return _0x46d6e9+_0xd8144c;},'IRGeh':'top','MSPOt':_0x5ed51f(0x2e5),'nEIHB':'left'},_0x2f1f7e=_0x9a22df['x']+_0x207761[_0x5ed51f(0x502)](_0x9a22df[_0x5ed51f(0x31c)],0x2),_0xffaaf=_0x207761[_0x5ed51f(0x2d1)](_0x9a22df['y'],_0x9a22df[_0x5ed51f(0x2e0)]/0x2);switch(_0x298950){case _0x207761[_0x5ed51f(0x4a4)]:return[_0x2f1f7e,_0x9a22df['y']];case _0x207761[_0x5ed51f(0x3c5)]:return[_0x2f1f7e,_0x9a22df['y']+_0x9a22df[_0x5ed51f(0x2e0)]];case _0x207761[_0x5ed51f(0x1c5)]:return[_0x9a22df['x'],_0xffaaf];case'right':return[_0x9a22df['x']+_0x9a22df[_0x5ed51f(0x31c)],_0xffaaf];default:return[_0x9a22df['x']+_0x9a22df['width'],_0xffaaf];}}function edgeFingerprint(_0x4b197d,_0x58d0e5,_0x9853e7,_0xa89717,_0x18ccda,_0x15672f){const _0x1f9e65=_0x985f80;return _0x4b197d['x']+'|'+_0x4b197d['y']+'|'+_0x4b197d[_0x1f9e65(0x31c)]+'|'+_0x4b197d[_0x1f9e65(0x2e0)]+'|'+_0x58d0e5['x']+'|'+_0x58d0e5['y']+'|'+_0x58d0e5[_0x1f9e65(0x31c)]+'|'+_0x58d0e5[_0x1f9e65(0x2e0)]+'|'+(_0x9853e7[_0x1f9e65(0x37a)]??'')+'|'+(_0x9853e7[_0x1f9e65(0x320)]??'')+'|'+_0xa89717+'|'+_0x18ccda+'|'+(_0x15672f?0x1:0x0);}class EdgeProgram{constructor(_0x511168){const _0x4b8efc=_0x985f80,_0x7a4e6d={'duRcT':function(_0x17c1ec,_0x3f0448){return _0x17c1ec<_0x3f0448;},'sMolm':function(_0xe53164,_0x2122e3,_0x5d3ab0,_0x461598){return _0xe53164(_0x2122e3,_0x5d3ab0,_0x461598);},'pORke':_0x4b8efc(0x361),'bmjGI':function(_0x1a2d5d,_0x1a7b35,_0x1e270d,_0x473894){return _0x1a2d5d(_0x1a7b35,_0x1e270d,_0x473894);},'UiWfQ':function(_0x63ede,_0x4b0ecc,_0x17a88e,_0x195058){return _0x63ede(_0x4b0ecc,_0x17a88e,_0x195058);},'KAYDd':_0x4b8efc(0x245),'qDFLL':function(_0x201f53,_0x476803){return _0x201f53(_0x476803);}};this['colorCache']=new Map(),this[_0x4b8efc(0x36e)]=new Map(),this['prevValidIds']=[],this[_0x4b8efc(0x4fa)]=0x0,this[_0x4b8efc(0x184)]=[],this[_0x4b8efc(0x189)]=new Float32Array(0x0),this['gl']=_0x511168,this['program']=createProgram(_0x511168,VERT$2,FRAG$2),this[_0x4b8efc(0x2a9)]=new DynamicBuffer(_0x511168);const _0x39c720=_0x511168[_0x4b8efc(0x2f9)]();if(!_0x39c720)throw new Error(_0x4b8efc(0x244));this[_0x4b8efc(0x3f6)]=_0x39c720;const _0x41c016=EDGE_FLOATS_PER_VERT*0x4;_0x511168[_0x4b8efc(0x47f)](this[_0x4b8efc(0x3f6)]),_0x511168[_0x4b8efc(0x48b)](_0x511168[_0x4b8efc(0x17d)],this[_0x4b8efc(0x2a9)][_0x4b8efc(0x223)]);const _0x1a91db=(_0x4b187a,_0x23bc28,_0x6fede1)=>{const _0x43116b=_0x4b8efc,_0x19dd01=_0x511168[_0x43116b(0x204)](this[_0x43116b(0x4f7)],_0x4b187a);if(_0x7a4e6d[_0x43116b(0x458)](_0x19dd01,0x0))return;_0x511168[_0x43116b(0x1e3)](_0x19dd01),_0x511168[_0x43116b(0x43b)](_0x19dd01,_0x23bc28,_0x511168[_0x43116b(0x4e6)],![],_0x41c016,_0x6fede1*0x4);};_0x7a4e6d['sMolm'](_0x1a91db,_0x7a4e6d[_0x4b8efc(0x177)],0x2,0x0),_0x7a4e6d[_0x4b8efc(0x1de)](_0x1a91db,_0x4b8efc(0x217),0x1,0x2),_0x7a4e6d[_0x4b8efc(0x437)](_0x1a91db,_0x4b8efc(0x4b6),0x4,0x3),_0x511168[_0x4b8efc(0x47f)](null);const _0x3946be=_0x3dc4b2=>{const _0x47c4f5=_0x4b8efc,_0x4c7768=_0x511168[_0x47c4f5(0x295)](this[_0x47c4f5(0x4f7)],_0x3dc4b2);if(!_0x4c7768)throw new Error(_0x47c4f5(0x168)+_0x3dc4b2+_0x47c4f5(0x52f));return _0x4c7768;};this['uMatrix']=_0x3946be(_0x7a4e6d[_0x4b8efc(0x228)]),this[_0x4b8efc(0x2cb)]=_0x3946be(_0x4b8efc(0x27f)),this[_0x4b8efc(0x140)]=_0x3946be(_0x4b8efc(0x362)),this[_0x4b8efc(0x4c5)]=_0x7a4e6d[_0x4b8efc(0x22c)](_0x3946be,_0x4b8efc(0x3b9));}[_0x985f80(0x1a5)](_0x5704c1,_0x4633c1,_0x450cac,_0x1307f9=new Set()){const _0xf6d364=_0x985f80,_0x4d77e7={'TPIIh':function(_0x2ec530,_0x2e440a){return _0x2ec530===_0x2e440a;},'tIErT':function(_0x4c7a45,_0xd83942){return _0x4c7a45*_0xd83942;},'aBynL':function(_0x431f28,_0x36acf4){return _0x431f28+_0x36acf4;},'TVIwR':function(_0x2c16fd,_0x34903e,_0x5144f8){return _0x2c16fd(_0x34903e,_0x5144f8);},'JOADd':function(_0x277f97,_0x25fed9){return _0x277f97!==_0x25fed9;},'GdpBA':function(_0x198c64,_0x55c677){return _0x198c64<_0x55c677;},'JGCNP':function(_0x3a94c2,_0x4c01da){return _0x3a94c2!==_0x4c01da;},'wsJAw':function(_0xcb3724,_0x3f3322){return _0xcb3724>_0x3f3322;},'FLmYb':function(_0x44bb2e,_0x46d139){return _0x44bb2e-_0x46d139;},'PazZk':function(_0x185862,_0x223070){return _0x185862-_0x223070;}};if(_0x4d77e7[_0xf6d364(0x1f6)](_0x5704c1['length'],0x0)){this['prevValidIds']=[],this[_0xf6d364(0x4fa)]=0x0,this[_0xf6d364(0x184)]=[];return;}const _0x59d2c7=this['gl'],_0x35cafd=_0x1307f9[_0xf6d364(0x456)],_0x8af4e6=_0x35cafd===0x0?_0x5704c1:[..._0x5704c1][_0xf6d364(0x4f8)]((_0x59fd0c,_0x18145c)=>(_0x1307f9['has'](_0x59fd0c['id'])?0x1:0x0)-(_0x1307f9[_0xf6d364(0x21c)](_0x18145c['id'])?0x1:0x0)),_0x2e9d1a=[];for(const _0xc0b274 of _0x8af4e6){if(_0x4633c1[_0xf6d364(0x21c)](_0xc0b274['source'])&&_0x4633c1[_0xf6d364(0x21c)](_0xc0b274[_0xf6d364(0x390)]))_0x2e9d1a[_0xf6d364(0x2f5)](_0xc0b274);}if(_0x4d77e7[_0xf6d364(0x1f6)](_0x2e9d1a[_0xf6d364(0x193)],0x0))return;const _0x27faca=_0x4d77e7[_0xf6d364(0x438)](_0x4d77e7['aBynL'](BEZIER_SEGMENTS,0x1),0x2),_0xf38c12=_0x4d77e7[_0xf6d364(0x438)](_0x27faca,EDGE_FLOATS_PER_VERT);let _0x2e0deb=![];for(const _0x43e2ef of _0x2e9d1a){const _0x2919be=_0x4633c1['get'](_0x43e2ef[_0xf6d364(0x532)]),_0x23a093=_0x4633c1[_0xf6d364(0x53a)](_0x43e2ef['target']),_0x2b2743=_0x1307f9[_0xf6d364(0x21c)](_0x43e2ef['id']),_0x2b7ecd=_0x43e2ef[_0xf6d364(0x2e7)]?.['color']??DEFAULT_EDGE_STYLE[_0xf6d364(0x343)],_0x3dd863=_0x43e2ef[_0xf6d364(0x2e7)]?.[_0xf6d364(0x31c)]??DEFAULT_EDGE_STYLE[_0xf6d364(0x31c)],_0x43d525=edgeFingerprint(_0x2919be,_0x23a093,_0x43e2ef,_0x2b7ecd,_0x3dd863,_0x2b2743),_0x427e05=this[_0xf6d364(0x36e)][_0xf6d364(0x53a)](_0x43e2ef['id']);if(_0x4d77e7[_0xf6d364(0x1f6)](_0x427e05?.[_0xf6d364(0x4a0)],_0x43d525))continue;const _0x5abd1f={...DEFAULT_EDGE_STYLE,..._0x43e2ef[_0xf6d364(0x2e7)]};let [_0x390a18,_0x6ee10a,_0xe4da29,_0x4fb556]=parseColor(_0x5abd1f[_0xf6d364(0x343)],this[_0xf6d364(0x407)]);_0x2b2743&&(_0x390a18=0.102,_0x6ee10a=0.451,_0xe4da29=0.91,_0x4fb556=0x1);const _0x34a3e1=_0x2b2743?_0x5abd1f['width']*0.75:_0x5abd1f[_0xf6d364(0x31c)]/0x2,[_0x114212,_0x454855]=handleXY$2(_0x2919be,_0x43e2ef['sourceHandle']??_0xf6d364(0x32b)),[_0x4b3039,_0x43628c]=_0x4d77e7[_0xf6d364(0x35c)](handleXY$2,_0x23a093,_0x43e2ef[_0xf6d364(0x320)]??_0xf6d364(0x1f8)),[_0x3300c1,_0x576949,_0x178bd8,_0x2f7bc5]=edgeControlPoints(_0x114212,_0x454855,_0x43e2ef[_0xf6d364(0x37a)],_0x4b3039,_0x43628c,_0x43e2ef['targetHandle']),_0x40b992=buildBezierStrip(_0x114212,_0x454855,_0x3300c1,_0x576949,_0x178bd8,_0x2f7bc5,_0x4b3039,_0x43628c,_0x390a18,_0x6ee10a,_0xe4da29,_0x4fb556,_0x34a3e1);this[_0xf6d364(0x36e)][_0xf6d364(0x14a)](_0x43e2ef['id'],{'strip':_0x40b992,'key':_0x43d525}),_0x2e0deb=!![];}let _0x127653=_0x4d77e7[_0xf6d364(0x322)](_0x2e9d1a[_0xf6d364(0x193)],this['prevValidIds']['length']);if(!_0x127653)for(let _0x168e02=0x0;_0x4d77e7['GdpBA'](_0x168e02,_0x2e9d1a[_0xf6d364(0x193)]);_0x168e02++){if(_0x4d77e7[_0xf6d364(0x1f5)](_0x2e9d1a[_0x168e02]['id'],this[_0xf6d364(0x376)][_0x168e02])){_0x127653=!![];break;}}const _0xe347c8=_0x2e0deb||_0x127653;if(_0xe347c8){const _0x1b2190=[],_0x24a37d=new Map();for(const _0x443ce4 of _0x2e9d1a){const _0x94225f=_0x1307f9['has'](_0x443ce4['id']),_0x8822af={...DEFAULT_EDGE_STYLE,..._0x443ce4[_0xf6d364(0x2e7)]},_0x46548a=!_0x94225f&&!!_0x8822af[_0xf6d364(0x206)],_0xf63c04=_0x46548a?_0x8822af[_0xf6d364(0x206)][0x0]??0x8:0x8,_0x3d7cfa=_0x46548a?_0x8822af[_0xf6d364(0x206)][0x1]??0x4:0x4,_0x48c6ae=_0x46548a?_0xf63c04+','+_0x3d7cfa:'';!_0x24a37d[_0xf6d364(0x21c)](_0x48c6ae)&&(_0x24a37d['set'](_0x48c6ae,_0x1b2190[_0xf6d364(0x193)]),_0x1b2190[_0xf6d364(0x2f5)]({'edges':[],'dashed':_0x46548a,'dashLen':_0xf63c04,'gapLen':_0x3d7cfa})),_0x1b2190[_0x24a37d[_0xf6d364(0x53a)](_0x48c6ae)]['edges'][_0xf6d364(0x2f5)](_0x443ce4);}let _0x1d7827=0x0;for(const _0x1f63c9 of _0x1b2190){_0x1d7827+=_0x4d77e7[_0xf6d364(0x438)](_0x1f63c9[_0xf6d364(0x1ee)][_0xf6d364(0x193)],_0xf38c12);if(_0x4d77e7[_0xf6d364(0x3e5)](_0x1f63c9[_0xf6d364(0x1ee)][_0xf6d364(0x193)],0x1))_0x1d7827+=_0x4d77e7['tIErT'](_0x4d77e7[_0xf6d364(0x384)](_0x1f63c9[_0xf6d364(0x1ee)][_0xf6d364(0x193)],0x1)*0x2,EDGE_FLOATS_PER_VERT);}if(_0x4d77e7[_0xf6d364(0x3c9)](this[_0xf6d364(0x189)][_0xf6d364(0x193)],_0x1d7827))this[_0xf6d364(0x189)]=new Float32Array(_0x1d7827*0x2);const _0x2c4f59=[];let _0x30e0a=0x0,_0x485635=0x0;for(const _0x278ec5 of _0x1b2190){const _0x2a934a=_0x485635;for(let _0x47aaa2=0x0;_0x4d77e7[_0xf6d364(0x3c9)](_0x47aaa2,_0x278ec5[_0xf6d364(0x1ee)]['length']);_0x47aaa2++){const _0x3dcb5a=this[_0xf6d364(0x36e)][_0xf6d364(0x53a)](_0x278ec5['edges'][_0x47aaa2]['id'])[_0xf6d364(0x3af)];this['scratch'][_0xf6d364(0x14a)](_0x3dcb5a,_0x30e0a),_0x30e0a+=_0xf38c12,_0x485635+=_0x27faca;if(_0x47aaa2<_0x4d77e7[_0xf6d364(0x2aa)](_0x278ec5['edges'][_0xf6d364(0x193)],0x1)){this[_0xf6d364(0x189)]['set'](_0x3dcb5a[_0xf6d364(0x174)](_0x3dcb5a[_0xf6d364(0x193)]-EDGE_FLOATS_PER_VERT),_0x30e0a),_0x30e0a+=EDGE_FLOATS_PER_VERT;const _0x406363=this[_0xf6d364(0x36e)]['get'](_0x278ec5[_0xf6d364(0x1ee)][_0x47aaa2+0x1]['id'])[_0xf6d364(0x3af)];this[_0xf6d364(0x189)]['set'](_0x406363[_0xf6d364(0x174)](0x0,EDGE_FLOATS_PER_VERT),_0x30e0a),_0x30e0a+=EDGE_FLOATS_PER_VERT,_0x485635+=0x2;}}_0x2c4f59[_0xf6d364(0x2f5)]({'vertStart':_0x2a934a,'vertCount':_0x485635-_0x2a934a,'dashed':_0x278ec5[_0xf6d364(0x537)],'dashLen':_0x278ec5[_0xf6d364(0x1bd)],'gapLen':_0x278ec5[_0xf6d364(0x270)]});}this[_0xf6d364(0x2a9)][_0xf6d364(0x12a)](this[_0xf6d364(0x189)][_0xf6d364(0x174)](0x0,_0x1d7827)),this[_0xf6d364(0x376)]=_0x2e9d1a[_0xf6d364(0x2ba)](_0x64b2f6=>_0x64b2f6['id']),this[_0xf6d364(0x4fa)]=_0x1d7827,this[_0xf6d364(0x184)]=_0x2c4f59;}if(this[_0xf6d364(0x36e)][_0xf6d364(0x456)]>_0x2e9d1a[_0xf6d364(0x193)]){const _0x1aa9c2=new Set(_0x2e9d1a[_0xf6d364(0x2ba)](_0x1bdf87=>_0x1bdf87['id']));for(const _0x1fc89f of this[_0xf6d364(0x36e)][_0xf6d364(0x19d)]()){if(!_0x1aa9c2[_0xf6d364(0x21c)](_0x1fc89f))this[_0xf6d364(0x36e)][_0xf6d364(0x2af)](_0x1fc89f);}}_0x59d2c7[_0xf6d364(0x428)](this[_0xf6d364(0x4f7)]),_0x59d2c7[_0xf6d364(0x495)](this[_0xf6d364(0x498)],![],_0x450cac),_0x59d2c7['bindVertexArray'](this['vao']);for(const _0x5c6349 of this[_0xf6d364(0x184)]){_0x59d2c7[_0xf6d364(0x33c)](this[_0xf6d364(0x2cb)],_0x5c6349[_0xf6d364(0x537)]?0x1:0x0),_0x5c6349[_0xf6d364(0x537)]&&(_0x59d2c7[_0xf6d364(0x41b)](this[_0xf6d364(0x140)],_0x5c6349['dashLen']),_0x59d2c7[_0xf6d364(0x41b)](this[_0xf6d364(0x4c5)],_0x5c6349[_0xf6d364(0x270)])),_0x59d2c7[_0xf6d364(0x45e)](_0x59d2c7[_0xf6d364(0x2bf)],_0x5c6349[_0xf6d364(0x2eb)],_0x5c6349[_0xf6d364(0x2b0)]);}_0x59d2c7['bindVertexArray'](null);}[_0x985f80(0x40e)](){const _0x390a73=_0x985f80;this['stripCache'][_0x390a73(0x3ab)](),this['gl']['deleteProgram'](this[_0x390a73(0x4f7)]),this['gl'][_0x390a73(0x27b)](this[_0x390a73(0x3f6)]),this[_0x390a73(0x2a9)][_0x390a73(0x40e)]();}}const FLOATS_PER_VERT=0x4,FLOATS_PER_QUAD=0x6*FLOATS_PER_VERT,TEXT_PADDING=0x8,EDGE_LABEL_FONT=_0x985f80(0x3ad),EDGE_LABEL_COLOR=_0x985f80(0x16a),EDGE_LABEL_BG=_0x985f80(0x4df),VERT$1=_0x985f80(0x16d),FRAG$1=_0x985f80(0x30d);function handleXY$1(_0x2d8910,_0x575e52){const _0x11c82b=_0x985f80,_0x50337d={'FPnkf':function(_0x31a70b,_0x948016){return _0x31a70b/_0x948016;},'AQYei':function(_0x19a6fd,_0x11463e){return _0x19a6fd+_0x11463e;},'ACIpP':_0x11c82b(0x1f8)},_0x571e42=_0x2d8910['x']+_0x50337d['FPnkf'](_0x2d8910[_0x11c82b(0x31c)],0x2),_0x551837=_0x2d8910['y']+_0x2d8910[_0x11c82b(0x2e0)]/0x2;switch(_0x575e52){case _0x11c82b(0x50d):return[_0x571e42,_0x2d8910['y']];case _0x11c82b(0x2e5):return[_0x571e42,_0x50337d['AQYei'](_0x2d8910['y'],_0x2d8910[_0x11c82b(0x2e0)])];case _0x50337d[_0x11c82b(0x21e)]:return[_0x2d8910['x'],_0x551837];case'right':return[_0x2d8910['x']+_0x2d8910[_0x11c82b(0x31c)],_0x551837];default:return[_0x2d8910['x']+_0x2d8910[_0x11c82b(0x31c)],_0x551837];}}function writeQuad(_0x5c327c,_0x1fd321,_0x28b980,_0x206634,_0x5cb889,_0x2ca983,_0x21fc37,_0x1b0fc5,_0x7d9c5c,_0x21c3bb){const _0x1776de=_0x985f80,_0x576b47='18|5|16|23|8|19|12|24|22|15|6|1|7|11|9|3|20|0|14|10|4|13|17|21|2'[_0x1776de(0x392)]('|');let _0x57fe74=0x0;while(!![]){switch(_0x576b47[_0x57fe74++]){case'0':_0x5c327c[_0x1fd321++]=_0x2ca983;continue;case'1':_0x5c327c[_0x1fd321++]=_0x21c3bb;continue;case'2':return _0x1fd321;case'3':_0x5c327c[_0x1fd321++]=_0x1b0fc5;continue;case'4':_0x5c327c[_0x1fd321++]=_0x28b980;continue;case'5':_0x5c327c[_0x1fd321++]=_0x206634;continue;case'6':_0x5c327c[_0x1fd321++]=_0x7d9c5c;continue;case'7':_0x5c327c[_0x1fd321++]=_0x28b980;continue;case'8':_0x5c327c[_0x1fd321++]=_0x5cb889;continue;case'9':_0x5c327c[_0x1fd321++]=_0x21fc37;continue;case'10':_0x5c327c[_0x1fd321++]=_0x21c3bb;continue;case'11':_0x5c327c[_0x1fd321++]=_0x206634;continue;case'12':_0x5c327c[_0x1fd321++]=_0x7d9c5c;continue;case'13':_0x5c327c[_0x1fd321++]=_0x2ca983;continue;case'14':_0x5c327c[_0x1fd321++]=_0x7d9c5c;continue;case'15':_0x5c327c[_0x1fd321++]=_0x2ca983;continue;case'16':_0x5c327c[_0x1fd321++]=_0x21fc37;continue;case'17':_0x5c327c[_0x1fd321++]=_0x21fc37;continue;case'18':_0x5c327c[_0x1fd321++]=_0x28b980;continue;case'19':_0x5c327c[_0x1fd321++]=_0x206634;continue;case'20':_0x5c327c[_0x1fd321++]=_0x5cb889;continue;case'21':_0x5c327c[_0x1fd321++]=_0x21c3bb;continue;case'22':_0x5c327c[_0x1fd321++]=_0x5cb889;continue;case'23':_0x5c327c[_0x1fd321++]=_0x1b0fc5;continue;case'24':_0x5c327c[_0x1fd321++]=_0x1b0fc5;continue;}break;}}class TextProgram{constructor(_0x1fa93b,_0x55a301){const _0x216f82=_0x985f80,_0x1229e1={'wScSR':function(_0x4ec62c,_0x520595){return _0x4ec62c<_0x520595;},'Chbzd':function(_0x1dbd38,_0x4f0077,_0x35855f,_0x3a633f){return _0x1dbd38(_0x4f0077,_0x35855f,_0x3a633f);},'sDHiL':_0x216f82(0x361),'AyGGQ':function(_0x3a8440,_0x5edae1){return _0x3a8440(_0x5edae1);},'szQZp':_0x216f82(0x468)};this[_0x216f82(0x267)]=new Map(),this['prevNodeIds']=[],this[_0x216f82(0x44e)]=-0x1,this[_0x216f82(0x189)]=new Float32Array(0x0),this['prevNodeDrawCount']=0x0,this[_0x216f82(0x4de)]=new Map(),this['edgeLabelCache']=new Map(),this[_0x216f82(0x471)]=[],this[_0x216f82(0x3a0)]=-0x1,this[_0x216f82(0x364)]=new Float32Array(0x0),this['gl']=_0x1fa93b,this[_0x216f82(0x209)]=_0x55a301,this['program']=_0x1229e1['Chbzd'](createProgram,_0x1fa93b,VERT$1,FRAG$1),this[_0x216f82(0x2a9)]=new DynamicBuffer(_0x1fa93b);const _0x5dd6de=_0x1fa93b[_0x216f82(0x2f9)]();if(!_0x5dd6de)throw new Error('TextProgram:\x20createVertexArray\x20failed');this[_0x216f82(0x3f6)]=_0x5dd6de;const _0x206389=FLOATS_PER_VERT*0x4;_0x1fa93b[_0x216f82(0x47f)](this[_0x216f82(0x3f6)]),_0x1fa93b['bindBuffer'](_0x1fa93b[_0x216f82(0x17d)],this[_0x216f82(0x2a9)][_0x216f82(0x223)]);const _0x59362d=(_0xd93b55,_0x153152,_0x13f46f)=>{const _0x2f140a=_0x216f82,_0x376711=_0x1fa93b[_0x2f140a(0x204)](this['program'],_0xd93b55);if(_0x1229e1['wScSR'](_0x376711,0x0))return;_0x1fa93b[_0x2f140a(0x1e3)](_0x376711),_0x1fa93b[_0x2f140a(0x43b)](_0x376711,_0x153152,_0x1fa93b['FLOAT'],![],_0x206389,_0x13f46f*0x4);};_0x59362d(_0x1229e1[_0x216f82(0x275)],0x2,0x0),_0x59362d(_0x216f82(0x23e),0x2,0x2),_0x1fa93b['bindVertexArray'](null);const _0x1452bf=_0x3c98bc=>{const _0x443458=_0x216f82,_0x51b5d6=_0x1fa93b[_0x443458(0x295)](this[_0x443458(0x4f7)],_0x3c98bc);if(!_0x51b5d6)throw new Error('TextProgram:\x20uniform\x20\x27'+_0x3c98bc+'\x27\x20not\x20found');return _0x51b5d6;};this[_0x216f82(0x498)]=_0x1229e1[_0x216f82(0x1f4)](_0x1452bf,_0x216f82(0x245)),this['uAtlas']=_0x1452bf(_0x1229e1[_0x216f82(0x156)]);}[_0x985f80(0x1a5)](_0x1b87d8,_0x834b3c,_0x21ad55){const _0x5d25f=_0x985f80,_0x376a67={'drtfj':function(_0x4402d6,_0x227df2){return _0x4402d6===_0x227df2;},'PKMuM':function(_0x254628,_0x2f8165){return _0x254628<_0x2f8165;},'cdgaR':function(_0x6ccfe0,_0x3acccb){return _0x6ccfe0>_0x3acccb;},'Ouary':function(_0x373fc7,_0x3c0793){return _0x373fc7*_0x3c0793;},'Wlrxx':function(_0x3aad23,_0x235d14){return _0x3aad23-_0x235d14;},'bgsGw':function(_0xd3e46b,_0x1dc49e){return _0xd3e46b+_0x1dc49e;},'aBAHi':function(_0x2b9d4a,_0x51b5cb){return _0x2b9d4a-_0x51b5cb;},'ZIzSw':function(_0x4d3e25,_0x6247f6){return _0x4d3e25-_0x6247f6;}};if(_0x1b87d8[_0x5d25f(0x193)]===0x0||_0x21ad55<0.12)return;const _0x3a6381=this['gl'],_0x223a3a=this[_0x5d25f(0x209)]['generation'];_0x223a3a!==this[_0x5d25f(0x44e)]&&(this['quadCache'][_0x5d25f(0x3ab)](),this[_0x5d25f(0x4de)][_0x5d25f(0x3ab)](),this[_0x5d25f(0x44e)]=_0x223a3a);const _0x1ce612=[];for(const _0x4de6c8 of _0x1b87d8){if(!_0x4de6c8[_0x5d25f(0x481)])continue;if(this[_0x5d25f(0x4de)][_0x5d25f(0x53a)](_0x4de6c8['id'])===_0x4de6c8&&this[_0x5d25f(0x267)][_0x5d25f(0x21c)](_0x4de6c8['id']))continue;const _0x2c43bb=_0x4de6c8[_0x5d25f(0x2e7)]?.[_0x5d25f(0x216)]??DEFAULT_NODE_STYLE['fontSize'],_0x258040=_0x4de6c8[_0x5d25f(0x2e7)]?.['fontFamily']??DEFAULT_NODE_STYLE[_0x5d25f(0x491)],_0x5240bc=_0x4de6c8[_0x5d25f(0x2e7)]?.[_0x5d25f(0x213)]??DEFAULT_NODE_STYLE[_0x5d25f(0x213)],_0x25cb0d=_0x4de6c8[_0x5d25f(0x2e7)]?.[_0x5d25f(0x444)]??DEFAULT_NODE_STYLE[_0x5d25f(0x444)],_0x1f814e=_0x2c43bb+_0x5d25f(0x2b1)+_0x258040,_0x1601f0=_0x4de6c8['x']+'|'+_0x4de6c8['y']+'|'+_0x4de6c8[_0x5d25f(0x31c)]+'|'+_0x4de6c8[_0x5d25f(0x2e0)]+'|'+_0x4de6c8[_0x5d25f(0x481)]+'|'+_0x1f814e+'|'+_0x5240bc+'|'+_0x25cb0d;if(_0x376a67[_0x5d25f(0x1cd)](this[_0x5d25f(0x267)][_0x5d25f(0x53a)](_0x4de6c8['id'])?.[_0x5d25f(0x4a0)],_0x1601f0)){this[_0x5d25f(0x4de)][_0x5d25f(0x14a)](_0x4de6c8['id'],_0x4de6c8);continue;}_0x1ce612[_0x5d25f(0x2f5)](_0x4de6c8);}const _0x4c866f=_0x1b87d8[_0x5d25f(0x3da)](_0x46b4a2=>_0x46b4a2['label']);let _0x441cdf=_0x4c866f[_0x5d25f(0x193)]!==this[_0x5d25f(0x387)][_0x5d25f(0x193)];if(!_0x441cdf)for(let _0x306b06=0x0;_0x376a67['PKMuM'](_0x306b06,_0x4c866f[_0x5d25f(0x193)]);_0x306b06++){if(_0x4c866f[_0x306b06]['id']!==this[_0x5d25f(0x387)][_0x306b06]){_0x441cdf=!![];break;}}const _0x288214=_0x376a67[_0x5d25f(0x4ee)](_0x1ce612[_0x5d25f(0x193)],0x0)||_0x441cdf;if(_0x288214){for(const _0x588c77 of _0x4c866f){const _0x2aaa25=_0x588c77['style']?.[_0x5d25f(0x216)]??DEFAULT_NODE_STYLE[_0x5d25f(0x216)],_0x45fa78=_0x588c77[_0x5d25f(0x2e7)]?.[_0x5d25f(0x491)]??DEFAULT_NODE_STYLE[_0x5d25f(0x491)],_0x308349=_0x588c77[_0x5d25f(0x2e7)]?.[_0x5d25f(0x213)]??DEFAULT_NODE_STYLE[_0x5d25f(0x213)],_0x371cd9=_0x588c77[_0x5d25f(0x2e7)]?.[_0x5d25f(0x444)]??DEFAULT_NODE_STYLE[_0x5d25f(0x444)],_0x42b38a=Math[_0x5d25f(0x4cd)](0x0,_0x588c77[_0x5d25f(0x31c)]-_0x376a67[_0x5d25f(0x524)](TEXT_PADDING,0x2)),_0x3aa920=_0x2aaa25+_0x5d25f(0x2b1)+_0x45fa78;this[_0x5d25f(0x209)][_0x5d25f(0x299)](_0x588c77[_0x5d25f(0x481)],_0x3aa920,_0x308349,_0x42b38a,_0x371cd9);}for(const _0x24e927 of _0x1ce612){const _0x21e007=_0x24e927['style']?.[_0x5d25f(0x216)]??DEFAULT_NODE_STYLE['fontSize'],_0x4e0306=_0x24e927[_0x5d25f(0x2e7)]?.[_0x5d25f(0x491)]??DEFAULT_NODE_STYLE[_0x5d25f(0x491)],_0x683b9d=_0x24e927['style']?.[_0x5d25f(0x213)]??DEFAULT_NODE_STYLE['textColor'],_0x1e0871=_0x24e927[_0x5d25f(0x2e7)]?.[_0x5d25f(0x444)]??DEFAULT_NODE_STYLE[_0x5d25f(0x444)],_0x85c8e7=Math[_0x5d25f(0x4cd)](0x0,_0x376a67[_0x5d25f(0x4ed)](_0x24e927[_0x5d25f(0x31c)],TEXT_PADDING*0x2)),_0x4bc0aa=_0x21e007+_0x5d25f(0x2b1)+_0x4e0306,_0x46f517=_0x24e927['x']+'|'+_0x24e927['y']+'|'+_0x24e927[_0x5d25f(0x31c)]+'|'+_0x24e927[_0x5d25f(0x2e0)]+'|'+_0x24e927[_0x5d25f(0x481)]+'|'+_0x4bc0aa+'|'+_0x683b9d+'|'+_0x1e0871,_0x1e408a=this[_0x5d25f(0x209)][_0x5d25f(0x299)](_0x24e927['label'],_0x4bc0aa,_0x683b9d,_0x85c8e7,_0x1e0871);if(!_0x1e408a)continue;const _0x427052=_0x24e927['x']+_0x24e927[_0x5d25f(0x31c)]/0x2,_0x47003f=_0x376a67[_0x5d25f(0x3c1)](_0x24e927['y'],_0x24e927[_0x5d25f(0x2e0)]/0x2),_0x3aa4d2=new Float32Array(FLOATS_PER_QUAD);writeQuad(_0x3aa4d2,0x0,_0x376a67['aBAHi'](_0x427052,_0x1e408a['w']/0x2),_0x376a67[_0x5d25f(0x31a)](_0x47003f,_0x1e408a['h']/0x2),_0x376a67[_0x5d25f(0x3c1)](_0x427052,_0x1e408a['w']/0x2),_0x47003f+_0x1e408a['h']/0x2,_0x1e408a['u0'],_0x1e408a['v0'],_0x1e408a['u1'],_0x1e408a['v1']),this[_0x5d25f(0x267)][_0x5d25f(0x14a)](_0x24e927['id'],{'quad':_0x3aa4d2,'key':_0x46f517}),this[_0x5d25f(0x4de)]['set'](_0x24e927['id'],_0x24e927);}let _0x1e0be6=0x0;const _0xfd4265=_0x4c866f[_0x5d25f(0x193)]*FLOATS_PER_QUAD;if(this['scratch']['length']<_0xfd4265)this[_0x5d25f(0x189)]=new Float32Array(_0xfd4265*0x2);let _0x498c84=0x0;for(const _0xd7c05f of _0x4c866f){const _0x5d7359=this['quadCache'][_0x5d25f(0x53a)](_0xd7c05f['id']);if(!_0x5d7359)continue;this['scratch'][_0x5d25f(0x14a)](_0x5d7359[_0x5d25f(0x4e3)],_0x498c84),_0x498c84+=FLOATS_PER_QUAD,_0x1e0be6+=0x6;}this[_0x5d25f(0x2a9)][_0x5d25f(0x12a)](this[_0x5d25f(0x189)][_0x5d25f(0x174)](0x0,_0x498c84)),this[_0x5d25f(0x387)]=_0x4c866f[_0x5d25f(0x2ba)](_0x715092=>_0x715092['id']),this[_0x5d25f(0x1e1)]=_0x1e0be6;if(_0x376a67['cdgaR'](this[_0x5d25f(0x267)][_0x5d25f(0x456)],_0x4c866f[_0x5d25f(0x193)])){const _0x56ea5f=new Set(_0x4c866f[_0x5d25f(0x2ba)](_0x127a03=>_0x127a03['id']));for(const _0x523d3d of this[_0x5d25f(0x267)][_0x5d25f(0x19d)]()){!_0x56ea5f[_0x5d25f(0x21c)](_0x523d3d)&&(this[_0x5d25f(0x267)][_0x5d25f(0x2af)](_0x523d3d),this[_0x5d25f(0x4de)][_0x5d25f(0x2af)](_0x523d3d));}}if(_0x1e0be6===0x0)return;}else{if(_0x4c866f['length']===0x0)return;}if(this[_0x5d25f(0x1e1)]===0x0)return;this[_0x5d25f(0x209)][_0x5d25f(0x2f8)](_0x3a6381),_0x3a6381['useProgram'](this['program']),_0x3a6381[_0x5d25f(0x495)](this[_0x5d25f(0x498)],![],_0x834b3c),_0x3a6381[_0x5d25f(0x33c)](this[_0x5d25f(0x4f2)],0x0),this['atlas'][_0x5d25f(0x1b0)](_0x3a6381,0x0),_0x3a6381[_0x5d25f(0x47f)](this[_0x5d25f(0x3f6)]),_0x3a6381['drawArrays'](_0x3a6381[_0x5d25f(0x143)],0x0,this[_0x5d25f(0x1e1)]),_0x3a6381[_0x5d25f(0x47f)](null);}['renderEdgeLabels'](_0x321f0,_0x4ef824,_0x4c60b4,_0x488cc9){const _0x2ae4e3=_0x985f80,_0x3c898c={'TfEZG':function(_0x28c057,_0x5d24fd){return _0x28c057!==_0x5d24fd;},'MDLZL':function(_0x2099cf,_0x1b92e7){return _0x2099cf||_0x1b92e7;},'jkrad':function(_0x3224b4,_0xc0b94f,_0x49fda7){return _0x3224b4(_0xc0b94f,_0x49fda7);},'sBldx':function(_0x3ad4c6,_0x1ef0fa,_0x3914f3){return _0x3ad4c6(_0x1ef0fa,_0x3914f3);},'COOmF':function(_0x1ce953,_0xa36ad3,_0x17a9d9,_0x27dae6,_0x369656,_0x1ee734,_0x4374d4){return _0x1ce953(_0xa36ad3,_0x17a9d9,_0x27dae6,_0x369656,_0x1ee734,_0x4374d4);},'gEBvV':function(_0x23fca8,_0x1cd58d,_0x8e39ea,_0x15f617,_0x1d4ab6,_0x7f2625,_0x393ebb,_0x2d45b9,_0x267b96,_0x9ab432){return _0x23fca8(_0x1cd58d,_0x8e39ea,_0x15f617,_0x1d4ab6,_0x7f2625,_0x393ebb,_0x2d45b9,_0x267b96,_0x9ab432);},'ReLxA':function(_0x100f0f,_0x4c25be){return _0x100f0f/_0x4c25be;},'cFeUX':function(_0x1023bb,_0x33b520){return _0x1023bb-_0x33b520;},'vcYzY':function(_0x191a46,_0x305e93){return _0x191a46+_0x305e93;},'GSmVF':function(_0x11cbe7,_0xf156cb){return _0x11cbe7<_0xf156cb;},'khFUn':function(_0x1ff48d,_0x1bccec){return _0x1ff48d*_0x1bccec;},'RJlKf':function(_0x4a9b04,_0x49bae1){return _0x4a9b04===_0x49bae1;}},_0x550022=_0x321f0[_0x2ae4e3(0x3da)](_0x1ae7fa=>_0x1ae7fa[_0x2ae4e3(0x481)]);if(_0x550022[_0x2ae4e3(0x193)]===0x0||_0x488cc9<0.12)return;const _0x52973b=this['gl'];for(const _0x3f3b31 of _0x550022){this[_0x2ae4e3(0x209)][_0x2ae4e3(0x299)](_0x3f3b31[_0x2ae4e3(0x481)],EDGE_LABEL_FONT,EDGE_LABEL_COLOR,0x0,0x1,EDGE_LABEL_BG);}const _0x23c322=this[_0x2ae4e3(0x209)][_0x2ae4e3(0x2c4)];_0x3c898c[_0x2ae4e3(0x514)](_0x23c322,this[_0x2ae4e3(0x3a0)])&&(this[_0x2ae4e3(0x557)][_0x2ae4e3(0x3ab)](),this[_0x2ae4e3(0x3a0)]=_0x23c322);let _0xa40cb9=![];for(const _0x2b78ee of _0x550022){if(!_0x2b78ee[_0x2ae4e3(0x481)])continue;const _0x401b34=_0x4ef824['get'](_0x2b78ee[_0x2ae4e3(0x532)]),_0x58949d=_0x4ef824[_0x2ae4e3(0x53a)](_0x2b78ee['target']);if(_0x3c898c[_0x2ae4e3(0x3a4)](!_0x401b34,!_0x58949d))continue;const _0x35d636=_0x401b34['x']+'|'+_0x401b34['y']+'|'+_0x401b34[_0x2ae4e3(0x31c)]+'|'+_0x401b34[_0x2ae4e3(0x2e0)]+'|'+_0x58949d['x']+'|'+_0x58949d['y']+'|'+_0x58949d[_0x2ae4e3(0x31c)]+'|'+_0x58949d[_0x2ae4e3(0x2e0)]+'|'+(_0x2b78ee[_0x2ae4e3(0x37a)]??'')+'|'+(_0x2b78ee[_0x2ae4e3(0x320)]??'')+'|'+_0x2b78ee[_0x2ae4e3(0x481)],_0xdc5b1a=this[_0x2ae4e3(0x557)]['get'](_0x2b78ee['id']);if(_0xdc5b1a?.[_0x2ae4e3(0x4a0)]===_0x35d636)continue;const [_0x117c26,_0x579231]=_0x3c898c[_0x2ae4e3(0x2e8)](handleXY$1,_0x401b34,_0x2b78ee[_0x2ae4e3(0x37a)]),[_0x1f5925,_0x29c4b6]=_0x3c898c[_0x2ae4e3(0x1c6)](handleXY$1,_0x58949d,_0x2b78ee[_0x2ae4e3(0x320)]),[_0x82eaf5,_0x2230cd,_0x4fceee,_0x5e255d]=_0x3c898c[_0x2ae4e3(0x3fd)](edgeControlPoints,_0x117c26,_0x579231,_0x2b78ee[_0x2ae4e3(0x37a)],_0x1f5925,_0x29c4b6,_0x2b78ee[_0x2ae4e3(0x320)]),[_0x10941e,_0x326107]=_0x3c898c[_0x2ae4e3(0x1f2)](cubicBezierPoint,0.5,_0x117c26,_0x579231,_0x82eaf5,_0x2230cd,_0x4fceee,_0x5e255d,_0x1f5925,_0x29c4b6),_0xbc8e5b=this[_0x2ae4e3(0x209)][_0x2ae4e3(0x299)](_0x2b78ee['label'],EDGE_LABEL_FONT,EDGE_LABEL_COLOR,0x0,0x1,EDGE_LABEL_BG);if(!_0xbc8e5b)continue;const _0x311aa7=_0xbc8e5b['w']/0x2,_0x1e3781=_0x3c898c[_0x2ae4e3(0x16b)](_0xbc8e5b['h'],0x2),_0x21be4c=new Float32Array(FLOATS_PER_QUAD);writeQuad(_0x21be4c,0x0,_0x10941e-_0x311aa7,_0x3c898c[_0x2ae4e3(0x432)](_0x326107,_0x1e3781),_0x10941e+_0x311aa7,_0x3c898c['vcYzY'](_0x326107,_0x1e3781),_0xbc8e5b['u0'],_0xbc8e5b['v0'],_0xbc8e5b['u1'],_0xbc8e5b['v1']),this[_0x2ae4e3(0x557)][_0x2ae4e3(0x14a)](_0x2b78ee['id'],{'quad':_0x21be4c,'key':_0x35d636}),_0xa40cb9=!![];}let _0x382fa7=_0x550022[_0x2ae4e3(0x193)]!==this[_0x2ae4e3(0x471)]['length'];if(!_0x382fa7)for(let _0x28f886=0x0;_0x3c898c[_0x2ae4e3(0x200)](_0x28f886,_0x550022['length']);_0x28f886++){if(_0x550022[_0x28f886]['id']!==this['prevLabeledEdgeIds'][_0x28f886]){_0x382fa7=!![];break;}}const _0x87016f=_0xa40cb9||_0x382fa7;let _0x5592ed=_0x550022[_0x2ae4e3(0x193)]*0x6;if(_0x87016f){const _0x4c4046=_0x3c898c['khFUn'](_0x550022[_0x2ae4e3(0x193)],FLOATS_PER_QUAD);if(_0x3c898c[_0x2ae4e3(0x200)](this[_0x2ae4e3(0x364)]['length'],_0x4c4046))this[_0x2ae4e3(0x364)]=new Float32Array(_0x4c4046*0x2);let _0x1fb991=0x0;for(const _0x251dec of _0x550022){const _0x5c2ace=this['edgeLabelCache'][_0x2ae4e3(0x53a)](_0x251dec['id']);if(!_0x5c2ace){_0x5592ed-=0x6;continue;}this[_0x2ae4e3(0x364)][_0x2ae4e3(0x14a)](_0x5c2ace[_0x2ae4e3(0x4e3)],_0x1fb991),_0x1fb991+=FLOATS_PER_QUAD;}this[_0x2ae4e3(0x2a9)][_0x2ae4e3(0x12a)](this[_0x2ae4e3(0x364)][_0x2ae4e3(0x174)](0x0,_0x1fb991)),this['prevLabeledEdgeIds']=_0x550022[_0x2ae4e3(0x2ba)](_0x416861=>_0x416861['id']);}if(this[_0x2ae4e3(0x557)][_0x2ae4e3(0x456)]>_0x550022['length']){const _0x4389ff=new Set(_0x550022[_0x2ae4e3(0x2ba)](_0x430fc1=>_0x430fc1['id']));for(const _0x1c7328 of this[_0x2ae4e3(0x557)][_0x2ae4e3(0x19d)]()){if(!_0x4389ff[_0x2ae4e3(0x21c)](_0x1c7328))this[_0x2ae4e3(0x557)][_0x2ae4e3(0x2af)](_0x1c7328);}}if(_0x3c898c[_0x2ae4e3(0x2fc)](_0x5592ed,0x0))return;this[_0x2ae4e3(0x209)][_0x2ae4e3(0x2f8)](_0x52973b),_0x52973b['useProgram'](this[_0x2ae4e3(0x4f7)]),_0x52973b[_0x2ae4e3(0x495)](this[_0x2ae4e3(0x498)],![],_0x4c60b4),_0x52973b[_0x2ae4e3(0x33c)](this[_0x2ae4e3(0x4f2)],0x0),this['atlas']['bind'](_0x52973b,0x0),_0x52973b[_0x2ae4e3(0x47f)](this[_0x2ae4e3(0x3f6)]),_0x52973b[_0x2ae4e3(0x45e)](_0x52973b[_0x2ae4e3(0x143)],0x0,_0x5592ed),_0x52973b[_0x2ae4e3(0x47f)](null);}[_0x985f80(0x40e)](){const _0x177771=_0x985f80;this['gl']['deleteProgram'](this['program']),this['gl'][_0x177771(0x27b)](this[_0x177771(0x3f6)]),this[_0x177771(0x2a9)][_0x177771(0x40e)]();}}const HANDLE_HIT_PX$1=0xe;function getHandlePositions(_0x7fc3d5){const _0x1c2b30=_0x985f80,_0x4a9de0={'CSsCZ':function(_0xad58a4,_0x13677b){return _0xad58a4/_0x13677b;},'EueFq':function(_0x1c25fc,_0x50bbfb){return _0x1c25fc+_0x50bbfb;},'NYnhH':function(_0x3a8e6e,_0x151bf0){return _0x3a8e6e+_0x151bf0;},'rJTYp':'left','ACKWa':_0x1c2b30(0x2e5),'YBDAS':function(_0x30d1bc,_0x3a1cec){return _0x30d1bc+_0x3a1cec;},'VKODY':_0x1c2b30(0x50d)},_0x1b26aa=_0x7fc3d5['x']+_0x4a9de0[_0x1c2b30(0x15f)](_0x7fc3d5[_0x1c2b30(0x31c)],0x2),_0xe9be26=_0x4a9de0['EueFq'](_0x7fc3d5['y'],_0x7fc3d5['height']/0x2);return[{'nodeId':_0x7fc3d5['id'],'side':_0x1c2b30(0x32b),'wx':_0x4a9de0['NYnhH'](_0x7fc3d5['x'],_0x7fc3d5[_0x1c2b30(0x31c)]),'wy':_0xe9be26},{'nodeId':_0x7fc3d5['id'],'side':_0x4a9de0[_0x1c2b30(0x1e9)],'wx':_0x7fc3d5['x'],'wy':_0xe9be26},{'nodeId':_0x7fc3d5['id'],'side':_0x4a9de0['ACKWa'],'wx':_0x1b26aa,'wy':_0x4a9de0[_0x1c2b30(0x129)](_0x7fc3d5['y'],_0x7fc3d5[_0x1c2b30(0x2e0)])},{'nodeId':_0x7fc3d5['id'],'side':_0x4a9de0[_0x1c2b30(0x328)],'wx':_0x1b26aa,'wy':_0x7fc3d5['y']}];}class ConnectDrag{constructor(_0x328398,_0x2cad11,_0x5e5568,_0x4fa898,_0x1c931c,_0x172e94){const _0x282d2b=_0x985f80,_0x2c8e0b={'LhpDe':_0x282d2b(0x462),'nQHFl':_0x282d2b(0x26a),'bcNKQ':_0x282d2b(0x35a),'uEEQA':_0x282d2b(0x3d2),'fWNZe':_0x282d2b(0x40b),'JLoTE':_0x282d2b(0x18a),'LDSdg':'touchcancel'};this[_0x282d2b(0x46b)]={'hoveredNodeId':null,'hoveredHandle':null,'connectingFrom':null,'pendingEndWx':0x0,'pendingEndWy':0x0,'targetNodeId':null,'targetHandle':null},this['connectTouchId']=null,this[_0x282d2b(0x2ea)]=_0x328398,this[_0x282d2b(0x466)]=_0x2cad11,this[_0x282d2b(0x1cc)]=_0x5e5568,this[_0x282d2b(0x467)]=_0x4fa898,this[_0x282d2b(0x29e)]=_0x1c931c,this[_0x282d2b(0x3c2)]=_0x172e94,this[_0x282d2b(0x1c0)]=this['handleMouseMove']['bind'](this),this[_0x282d2b(0x239)]=this[_0x282d2b(0x556)][_0x282d2b(0x1b0)](this),this[_0x282d2b(0x4d9)]=this[_0x282d2b(0x44f)][_0x282d2b(0x1b0)](this),this['onMouseLeave']=this[_0x282d2b(0x526)][_0x282d2b(0x1b0)](this),this[_0x282d2b(0x1a6)]=this['handleTouchStart'][_0x282d2b(0x1b0)](this),this[_0x282d2b(0x38d)]=this['handleTouchMove'][_0x282d2b(0x1b0)](this),this[_0x282d2b(0x2a4)]=this[_0x282d2b(0x298)][_0x282d2b(0x1b0)](this),_0x328398[_0x282d2b(0x296)](_0x2c8e0b[_0x282d2b(0x3f4)],this['onMouseMove']),_0x328398[_0x282d2b(0x296)](_0x2c8e0b['nQHFl'],this[_0x282d2b(0x239)]),window[_0x282d2b(0x296)](_0x2c8e0b[_0x282d2b(0x164)],this[_0x282d2b(0x4d9)]),_0x328398[_0x282d2b(0x296)](_0x2c8e0b[_0x282d2b(0x323)],this[_0x282d2b(0x4aa)]),_0x328398[_0x282d2b(0x296)](_0x2c8e0b[_0x282d2b(0x238)],this[_0x282d2b(0x1a6)],{'passive':![]}),_0x328398['addEventListener'](_0x2c8e0b[_0x282d2b(0x4be)],this[_0x282d2b(0x38d)],{'passive':![]}),_0x328398[_0x282d2b(0x296)](_0x282d2b(0x336),this[_0x282d2b(0x2a4)]),_0x328398[_0x282d2b(0x296)](_0x2c8e0b[_0x282d2b(0x24f)],this['onTouchEnd']);}[_0x985f80(0x13d)](){const _0x49fe87=_0x985f80,_0x55824e={'GPbjS':function(_0x2c652b,_0x35990d){return _0x2c652b!==_0x35990d;}};return _0x55824e[_0x49fe87(0x1ec)](this['state'][_0x49fe87(0x159)],null);}[_0x985f80(0x3eb)](_0x909612,_0x458576){const _0x530f23=_0x985f80,[_0x251012,_0x3826a3]=this[_0x530f23(0x515)](_0x909612,_0x458576);return this[_0x530f23(0x18c)](_0x251012,_0x3826a3)!==null;}[_0x985f80(0x281)](){const _0x22efda=_0x985f80;if(!this[_0x22efda(0x46b)][_0x22efda(0x159)])return;this[_0x22efda(0x1c7)]({'connectingFrom':null,'pendingEndWx':0x0,'pendingEndWy':0x0,'targetNodeId':null,'targetHandle':null}),this[_0x22efda(0x2ea)][_0x22efda(0x2e7)][_0x22efda(0x52d)]='';}[_0x985f80(0x515)](_0x581e58,_0x1d0b36){const _0x2b7eb1=_0x985f80,_0x295a90={'nhIxL':function(_0x503533,_0x5b62dc){return _0x503533-_0x5b62dc;}},_0x1d168b=this[_0x2b7eb1(0x2ea)]['getBoundingClientRect']();return this[_0x2b7eb1(0x466)][_0x2b7eb1(0x266)](_0x295a90[_0x2b7eb1(0x354)](_0x581e58,_0x1d168b[_0x2b7eb1(0x1f8)]),_0x1d0b36-_0x1d168b[_0x2b7eb1(0x50d)]);}['findNearestHandle'](_0x3171f9,_0x22e6ea){const _0x2b510e=_0x985f80,_0x5b0b59={'TBlgh':function(_0x35cb68,_0x2d02cc){return _0x35cb68/_0x2d02cc;},'wnUtk':function(_0x21b793,_0x1b7b18){return _0x21b793(_0x1b7b18);},'gLuBP':function(_0x5ccfaf,_0x50ae5d){return _0x5ccfaf-_0x50ae5d;}},_0x19a913=_0x5b0b59[_0x2b510e(0x49f)](HANDLE_HIT_PX$1,this[_0x2b510e(0x466)][_0x2b510e(0x330)]),_0x101947=this[_0x2b510e(0x1cc)][_0x2b510e(0x352)](),_0x53d8db=this[_0x2b510e(0x46b)][_0x2b510e(0x497)]?[..._0x101947[_0x2b510e(0x3da)](_0x10036a=>_0x10036a['id']===this[_0x2b510e(0x46b)][_0x2b510e(0x497)]),..._0x101947['filter'](_0x577aee=>_0x577aee['id']!==this[_0x2b510e(0x46b)][_0x2b510e(0x497)])]:_0x101947;for(const _0x352877 of _0x53d8db){for(const _0x49e494 of _0x5b0b59[_0x2b510e(0x3ba)](getHandlePositions,_0x352877)){if(Math[_0x2b510e(0x1fa)](_0x3171f9-_0x49e494['wx'],_0x5b0b59[_0x2b510e(0x4f0)](_0x22e6ea,_0x49e494['wy']))<=_0x19a913)return _0x49e494;}}return null;}['findTargetHandle'](_0x33c017,_0x4b7a4a,_0x1b2a80){const _0x3e84dd=_0x985f80,_0x130d79={'RQMru':function(_0x505b70,_0x136eaa){return _0x505b70<=_0x136eaa;},'tKvMS':function(_0x1070da,_0x5e6873){return _0x1070da-_0x5e6873;},'jcDVv':function(_0x3f386e,_0xe50acf){return _0x3f386e===_0xe50acf;}},_0x3f7451=HANDLE_HIT_PX$1/this[_0x3e84dd(0x466)][_0x3e84dd(0x330)];for(const _0x275ad5 of this[_0x3e84dd(0x1cc)][_0x3e84dd(0x352)]()){if(_0x275ad5['id']===_0x1b2a80)continue;for(const _0x81c0da of getHandlePositions(_0x275ad5)){if(_0x130d79[_0x3e84dd(0x4d2)](Math[_0x3e84dd(0x1fa)](_0x130d79[_0x3e84dd(0x1ca)](_0x33c017,_0x81c0da['wx']),_0x130d79[_0x3e84dd(0x1ca)](_0x4b7a4a,_0x81c0da['wy'])),_0x3f7451))return _0x81c0da;}}const _0x5797f2=this['hitTester'][_0x3e84dd(0x3a2)](this[_0x3e84dd(0x1cc)]['getNodes'](),_0x33c017,_0x4b7a4a);if(!_0x5797f2||_0x130d79[_0x3e84dd(0x253)](_0x5797f2['id'],_0x1b2a80))return null;return this[_0x3e84dd(0x3e6)](_0x5797f2,_0x33c017,_0x4b7a4a);}[_0x985f80(0x3e6)](_0x23451a,_0x158c80,_0x2f186a){const _0x23c268=_0x985f80,_0x259b5f={'roNxJ':function(_0x1cde79,_0x44e322){return _0x1cde79-_0x44e322;},'IFAwy':function(_0x49ef90,_0x38fe46){return _0x49ef90<_0x38fe46;}};let _0x2f8cf0=null,_0xaea475=Infinity;for(const _0x36360a of getHandlePositions(_0x23451a)){const _0x5a1c2f=Math['hypot'](_0x259b5f[_0x23c268(0x25b)](_0x158c80,_0x36360a['wx']),_0x2f186a-_0x36360a['wy']);_0x259b5f[_0x23c268(0x54f)](_0x5a1c2f,_0xaea475)&&(_0xaea475=_0x5a1c2f,_0x2f8cf0=_0x36360a);}return _0x2f8cf0;}[_0x985f80(0x1c7)](_0x11484f){const _0x2302b7=_0x985f80;this[_0x2302b7(0x46b)]={...this['state'],..._0x11484f},this['onStateChange'](this[_0x2302b7(0x46b)]);}[_0x985f80(0x334)](_0x11a4eb){const _0x130b88=_0x985f80,_0x3e3385={'knQGB':function(_0x55a162,_0x24732d){return _0x55a162!==_0x24732d;},'FPDHo':function(_0x5b73b9,_0x2e30b1){return _0x5b73b9??_0x2e30b1;}},[_0x1b9d12,_0x291955]=this[_0x130b88(0x515)](_0x11a4eb['clientX'],_0x11a4eb[_0x130b88(0x37b)]);if(this[_0x130b88(0x46b)][_0x130b88(0x159)]){const _0x5c9b08=this[_0x130b88(0x46b)][_0x130b88(0x159)][_0x130b88(0x54d)],_0xeb002f=this['findTargetHandle'](_0x1b9d12,_0x291955,_0x5c9b08);this['setState']({'pendingEndWx':_0xeb002f?_0xeb002f['wx']:_0x1b9d12,'pendingEndWy':_0xeb002f?_0xeb002f['wy']:_0x291955,'targetNodeId':_0xeb002f?_0xeb002f[_0x130b88(0x54d)]:null,'targetHandle':_0xeb002f?_0xeb002f[_0x130b88(0x4b7)]:null});return;}const _0x18a498=this[_0x130b88(0x467)]['findNodeAt'](this['graph'][_0x130b88(0x352)](),_0x1b9d12,_0x291955),_0x5519d8=this[_0x130b88(0x18c)](_0x1b9d12,_0x291955),_0x355e53=_0x5519d8?.[_0x130b88(0x54d)]??_0x18a498?.['id']??null;this[_0x130b88(0x2ea)][_0x130b88(0x2e7)]['cursor']=_0x5519d8?_0x130b88(0x40c):'',(_0x355e53!==this[_0x130b88(0x46b)][_0x130b88(0x497)]||_0x3e3385[_0x130b88(0x11e)](_0x5519d8?.[_0x130b88(0x4b7)],this['state'][_0x130b88(0x273)]?.[_0x130b88(0x4b7)])||_0x3e3385[_0x130b88(0x11e)](_0x5519d8?.[_0x130b88(0x54d)],this[_0x130b88(0x46b)][_0x130b88(0x273)]?.['nodeId']))&&this[_0x130b88(0x1c7)]({'hoveredNodeId':_0x355e53,'hoveredHandle':_0x3e3385[_0x130b88(0x372)](_0x5519d8,null)});}[_0x985f80(0x556)](_0x290937){const _0x2b6cc5=_0x985f80,_0x5e76fe={'nvzws':_0x2b6cc5(0x40c)};if(_0x290937[_0x2b6cc5(0x4cb)]!==0x0)return;const _0x453149=this[_0x2b6cc5(0x46b)][_0x2b6cc5(0x273)];if(!_0x453149)return;_0x290937['stopPropagation']();const [_0x98274a,_0x1528d1]=this[_0x2b6cc5(0x515)](_0x290937[_0x2b6cc5(0x41a)],_0x290937[_0x2b6cc5(0x37b)]);this[_0x2b6cc5(0x1c7)]({'connectingFrom':_0x453149,'pendingEndWx':_0x98274a,'pendingEndWy':_0x1528d1,'targetNodeId':null,'targetHandle':null}),this[_0x2b6cc5(0x2ea)][_0x2b6cc5(0x2e7)][_0x2b6cc5(0x52d)]=_0x5e76fe[_0x2b6cc5(0x28c)];}[_0x985f80(0x44f)](_0x3d3ef4){const _0x599af2=_0x985f80,_0x1e51be={'dmMdY':function(_0x4c07af,_0x5d4b65){return _0x4c07af&&_0x5d4b65;}};if(!this[_0x599af2(0x46b)][_0x599af2(0x159)])return;const _0x4b40fb=this[_0x599af2(0x46b)]['connectingFrom'],_0x1a596f=this[_0x599af2(0x46b)][_0x599af2(0x3c3)],_0x439e48=this['state'][_0x599af2(0x320)];this['setState']({'connectingFrom':null,'pendingEndWx':0x0,'pendingEndWy':0x0,'targetNodeId':null,'targetHandle':null,'hoveredNodeId':_0x1a596f??null,'hoveredHandle':null}),this[_0x599af2(0x2ea)][_0x599af2(0x2e7)][_0x599af2(0x52d)]='',_0x1e51be[_0x599af2(0x3c8)](_0x1a596f,_0x439e48)&&this[_0x599af2(0x3c2)](_0x4b40fb[_0x599af2(0x54d)],_0x1a596f,_0x4b40fb['side'],_0x439e48);}[_0x985f80(0x526)](){const _0x40a32d=_0x985f80;if(this[_0x40a32d(0x46b)]['connectingFrom'])return;(this['state'][_0x40a32d(0x497)]||this['state'][_0x40a32d(0x273)])&&(this[_0x40a32d(0x1c7)]({'hoveredNodeId':null,'hoveredHandle':null}),this[_0x40a32d(0x2ea)][_0x40a32d(0x2e7)][_0x40a32d(0x52d)]='');}['handleTouchStart'](_0x1c26f6){const _0x4df52e=_0x985f80,_0x55f8ca={'yFZLh':function(_0x2d164a,_0x3409fb){return _0x2d164a!==_0x3409fb;}};if(_0x55f8ca[_0x4df52e(0x4f6)](this[_0x4df52e(0x2c8)],null)||_0x55f8ca[_0x4df52e(0x4f6)](_0x1c26f6[_0x4df52e(0x453)][_0x4df52e(0x193)],0x1))return;const _0x1bf1eb=_0x1c26f6[_0x4df52e(0x453)][0x0],[_0x21aa7f,_0x26ca18]=this[_0x4df52e(0x515)](_0x1bf1eb[_0x4df52e(0x41a)],_0x1bf1eb[_0x4df52e(0x37b)]),_0x3662a3=this[_0x4df52e(0x18c)](_0x21aa7f,_0x26ca18);if(!_0x3662a3)return;_0x1c26f6[_0x4df52e(0x53d)](),_0x1c26f6['stopPropagation'](),this[_0x4df52e(0x2c8)]=_0x1bf1eb['identifier'],this['setState']({'connectingFrom':_0x3662a3,'pendingEndWx':_0x21aa7f,'pendingEndWy':_0x26ca18,'targetNodeId':null,'targetHandle':null}),this[_0x4df52e(0x2ea)][_0x4df52e(0x2e7)][_0x4df52e(0x52d)]=_0x4df52e(0x40c);}[_0x985f80(0x535)](_0x1c414d){const _0x3aad26=_0x985f80;if(this['connectTouchId']===null||!this[_0x3aad26(0x46b)][_0x3aad26(0x159)])return;const _0x557811=Array['from'](_0x1c414d[_0x3aad26(0x2e9)])['find'](_0x2167a9=>_0x2167a9['identifier']===this['connectTouchId']);if(!_0x557811)return;_0x1c414d[_0x3aad26(0x53d)]();const [_0x5213a1,_0x226a54]=this[_0x3aad26(0x515)](_0x557811['clientX'],_0x557811[_0x3aad26(0x37b)]),_0x47e059=this[_0x3aad26(0x46b)][_0x3aad26(0x159)][_0x3aad26(0x54d)],_0x1ee0ef=this[_0x3aad26(0x450)](_0x5213a1,_0x226a54,_0x47e059);this[_0x3aad26(0x1c7)]({'pendingEndWx':_0x1ee0ef?_0x1ee0ef['wx']:_0x5213a1,'pendingEndWy':_0x1ee0ef?_0x1ee0ef['wy']:_0x226a54,'targetNodeId':_0x1ee0ef?_0x1ee0ef[_0x3aad26(0x54d)]:null,'targetHandle':_0x1ee0ef?_0x1ee0ef['side']:null});}[_0x985f80(0x298)](_0x4d629e){const _0x5c713a=_0x985f80,_0x503f85={'YsWJe':function(_0x2673bb,_0x3dd99f){return _0x2673bb&&_0x3dd99f;}};if(this[_0x5c713a(0x2c8)]===null||!this[_0x5c713a(0x46b)][_0x5c713a(0x159)])return;const _0x1c0f7c=Array[_0x5c713a(0x26f)](_0x4d629e[_0x5c713a(0x2e9)])[_0x5c713a(0x12f)](_0x248249=>_0x248249[_0x5c713a(0x39c)]===this[_0x5c713a(0x2c8)]);if(!_0x1c0f7c)return;const _0x2d6e2d=this['state']['connectingFrom'],_0x6d4ac2=this['state']['targetNodeId'],_0x3962ca=this['state']['targetHandle'];this[_0x5c713a(0x2c8)]=null,this[_0x5c713a(0x1c7)]({'connectingFrom':null,'pendingEndWx':0x0,'pendingEndWy':0x0,'targetNodeId':null,'targetHandle':null}),this[_0x5c713a(0x2ea)][_0x5c713a(0x2e7)][_0x5c713a(0x52d)]='',_0x503f85[_0x5c713a(0x1fb)](_0x6d4ac2,_0x3962ca)&&this[_0x5c713a(0x3c2)](_0x2d6e2d[_0x5c713a(0x54d)],_0x6d4ac2,_0x2d6e2d[_0x5c713a(0x4b7)],_0x3962ca);}['dispose'](){const _0x2bbc2c=_0x985f80,_0x7ced9c={'YAPHV':_0x2bbc2c(0x3d2),'WMLWM':_0x2bbc2c(0x40b),'XksFf':'touchcancel'};this['canvas'][_0x2bbc2c(0x153)](_0x2bbc2c(0x462),this[_0x2bbc2c(0x1c0)]),this[_0x2bbc2c(0x2ea)][_0x2bbc2c(0x153)](_0x2bbc2c(0x26a),this[_0x2bbc2c(0x239)]),window[_0x2bbc2c(0x153)]('mouseup',this[_0x2bbc2c(0x4d9)]),this[_0x2bbc2c(0x2ea)][_0x2bbc2c(0x153)](_0x7ced9c[_0x2bbc2c(0x539)],this[_0x2bbc2c(0x4aa)]),this[_0x2bbc2c(0x2ea)][_0x2bbc2c(0x153)](_0x7ced9c['WMLWM'],this[_0x2bbc2c(0x1a6)]),this[_0x2bbc2c(0x2ea)][_0x2bbc2c(0x153)]('touchmove',this[_0x2bbc2c(0x38d)]),this[_0x2bbc2c(0x2ea)][_0x2bbc2c(0x153)](_0x2bbc2c(0x336),this[_0x2bbc2c(0x2a4)]),this[_0x2bbc2c(0x2ea)][_0x2bbc2c(0x153)](_0x7ced9c['XksFf'],this['onTouchEnd']);}}const FLOATS_PER_HANDLE=0x8,HANDLE_RADIUS_PX=0x7,CIRCLE_VERT='#version\x20300\x20es\x0aprecision\x20highp\x20float;\x0a\x0ain\x20vec2\x20\x20a_quad;\x20\x20\x20\x20\x20\x20\x20//\x20[-1,\x201]\x20unit\x20square\x0ain\x20vec2\x20\x20a_center;\x0ain\x20float\x20a_radius;\x0ain\x20vec4\x20\x20a_color;\x0ain\x20float\x20a_hovered;\x0a\x0auniform\x20mat4\x20u_matrix;\x0a\x0aout\x20vec2\x20\x20v_uv;\x0aout\x20vec4\x20\x20v_color;\x0aout\x20float\x20v_hovered;\x0a\x0avoid\x20main()\x20{\x0a\x20\x20v_uv\x20\x20\x20\x20\x20=\x20a_quad;\x0a\x20\x20v_color\x20\x20=\x20a_color;\x0a\x20\x20v_hovered\x20=\x20a_hovered;\x0a\x20\x20vec2\x20world\x20\x20=\x20a_center\x20+\x20a_quad\x20*\x20a_radius;\x0a\x20\x20gl_Position\x20=\x20u_matrix\x20*\x20vec4(world,\x200.0,\x201.0);\x0a}\x0a',CIRCLE_FRAG=_0x985f80(0x3c7),EDGE_VERT=_0x985f80(0x229),EDGE_FRAG=_0x985f80(0x276);class HandleProgram{constructor(_0x12a898){const _0xc1149e=_0x985f80,_0x5f55cb={'Ibabc':function(_0x57e9e5,_0x3534a4,_0x1652b3,_0x8d3bb8){return _0x57e9e5(_0x3534a4,_0x1652b3,_0x8d3bb8);},'tsfGM':'a_center','iTAJC':function(_0x74cff2,_0x273d3d,_0x1ff37e,_0x5dcdc6){return _0x74cff2(_0x273d3d,_0x1ff37e,_0x5dcdc6);},'cRLNz':_0xc1149e(0x355),'cNwAU':function(_0x2ac720,_0x58bb99,_0x1eaa5c,_0x1ebf68){return _0x2ac720(_0x58bb99,_0x1eaa5c,_0x1ebf68);},'vPVjZ':'u_gapLen'};this['gl']=_0x12a898,this['circleProgram']=_0x5f55cb[_0xc1149e(0x18b)](createProgram,_0x12a898,CIRCLE_VERT,CIRCLE_FRAG),this[_0xc1149e(0x413)]=new DynamicBuffer(_0x12a898);const _0x19237b=_0x12a898[_0xc1149e(0x3ca)]();if(!_0x19237b)throw new Error('HandleProgram:\x20createBuffer\x20failed');this[_0xc1149e(0x292)]=_0x19237b,_0x12a898['bindBuffer'](_0x12a898[_0xc1149e(0x17d)],_0x19237b),_0x12a898[_0xc1149e(0x39a)](_0x12a898[_0xc1149e(0x17d)],new Float32Array([-0x1,-0x1,0x1,-0x1,0x1,0x1,-0x1,-0x1,0x1,0x1,-0x1,0x1]),_0x12a898[_0xc1149e(0x544)]);const _0x154ed3=_0x12a898[_0xc1149e(0x2f9)]();if(!_0x154ed3)throw new Error(_0xc1149e(0x26c));this['circleVao']=_0x154ed3,_0x12a898[_0xc1149e(0x47f)](this[_0xc1149e(0x516)]);const _0x332762=_0x12a898[_0xc1149e(0x204)](this[_0xc1149e(0x32c)],_0xc1149e(0x29c));_0x12a898[_0xc1149e(0x48b)](_0x12a898[_0xc1149e(0x17d)],_0x19237b),_0x12a898[_0xc1149e(0x1e3)](_0x332762),_0x12a898[_0xc1149e(0x43b)](_0x332762,0x2,_0x12a898[_0xc1149e(0x4e6)],![],0x0,0x0);const _0x58020e=FLOATS_PER_HANDLE*0x4;_0x12a898[_0xc1149e(0x48b)](_0x12a898[_0xc1149e(0x17d)],this[_0xc1149e(0x413)][_0xc1149e(0x223)]);const _0x2e5d03=(_0x2c283c,_0x14373b,_0x1b62f5)=>{const _0x3b7124=_0xc1149e,_0x4c4b3c=_0x12a898[_0x3b7124(0x204)](this['circleProgram'],_0x2c283c);if(_0x4c4b3c<0x0)return;_0x12a898[_0x3b7124(0x1e3)](_0x4c4b3c),_0x12a898[_0x3b7124(0x43b)](_0x4c4b3c,_0x14373b,_0x12a898[_0x3b7124(0x4e6)],![],_0x58020e,_0x1b62f5*0x4),_0x12a898['vertexAttribDivisor'](_0x4c4b3c,0x1);};_0x2e5d03(_0x5f55cb[_0xc1149e(0x26d)],0x2,0x0),_0x2e5d03(_0xc1149e(0x552),0x1,0x2),_0x5f55cb[_0xc1149e(0x4b0)](_0x2e5d03,_0xc1149e(0x4b6),0x4,0x3),_0x2e5d03(_0x5f55cb[_0xc1149e(0x139)],0x1,0x7),_0x12a898[_0xc1149e(0x47f)](null);const _0x16eba5=_0x12a898['getUniformLocation'](this[_0xc1149e(0x32c)],_0xc1149e(0x245));if(!_0x16eba5)throw new Error(_0xc1149e(0x306));this[_0xc1149e(0x163)]=_0x16eba5,this[_0xc1149e(0x23a)]=createProgram(_0x12a898,EDGE_VERT,EDGE_FRAG),this[_0xc1149e(0x1e4)]=new DynamicBuffer(_0x12a898);const _0xda86b0=_0x12a898[_0xc1149e(0x2f9)]();if(!_0xda86b0)throw new Error('HandleProgram:\x20createVertexArray\x20failed\x20(edge)');this[_0xc1149e(0x2c6)]=_0xda86b0,_0x12a898[_0xc1149e(0x47f)](this[_0xc1149e(0x2c6)]),_0x12a898['bindBuffer'](_0x12a898[_0xc1149e(0x17d)],this[_0xc1149e(0x1e4)][_0xc1149e(0x223)]);const _0x2d0582=EDGE_FLOATS_PER_VERT*0x4,_0x492e8b=(_0x2afdf8,_0x469d26,_0x4ac597)=>{const _0x4c8fe5=_0xc1149e,_0x4b675d=_0x12a898[_0x4c8fe5(0x204)](this['edgeProgram'],_0x2afdf8);if(_0x4b675d<0x0)return;_0x12a898[_0x4c8fe5(0x1e3)](_0x4b675d),_0x12a898[_0x4c8fe5(0x43b)](_0x4b675d,_0x469d26,_0x12a898[_0x4c8fe5(0x4e6)],![],_0x2d0582,_0x4ac597*0x4);};_0x5f55cb[_0xc1149e(0x3fe)](_0x492e8b,_0xc1149e(0x361),0x2,0x0),_0x492e8b('a_arcLen',0x1,0x2),_0x492e8b(_0xc1149e(0x4b6),0x4,0x3),_0x12a898[_0xc1149e(0x47f)](null);const _0x2a8611=_0x12a898[_0xc1149e(0x295)](this[_0xc1149e(0x23a)],'u_matrix'),_0x26f15f=_0x12a898['getUniformLocation'](this['edgeProgram'],'u_dashLen'),_0x1ef5df=_0x12a898[_0xc1149e(0x295)](this[_0xc1149e(0x23a)],_0x5f55cb[_0xc1149e(0x35d)]);if(!_0x2a8611||!_0x26f15f||!_0x1ef5df)throw new Error(_0xc1149e(0x2e6));this[_0xc1149e(0x46d)]=_0x2a8611,this[_0xc1149e(0x140)]=_0x26f15f,this[_0xc1149e(0x4c5)]=_0x1ef5df;}[_0x985f80(0x1a5)](_0xc9c4e0,_0x27ccc0,_0x2c869e,_0x4dcfc6,_0x3db794=null,_0x2660e5=[]){const _0x4c6ff1=_0x985f80;_0xc9c4e0&&(this[_0x4c6ff1(0x287)](_0xc9c4e0,_0x27ccc0,_0x2c869e,_0x4dcfc6),this[_0x4c6ff1(0x250)](_0xc9c4e0,_0x27ccc0,_0x2c869e,_0x4dcfc6));this[_0x4c6ff1(0x3d1)](_0x2660e5,_0x2c869e,_0x4dcfc6);if(_0x3db794)this[_0x4c6ff1(0x1e2)](_0x3db794,_0x2c869e,_0x4dcfc6);}['renderHandles'](_0x3a6842,_0x3a7cc7,_0x4157a4,_0x3ee721){const _0x13ac08=_0x985f80,_0x530089={'WvAKI':function(_0x1f6264,_0x312e5d){return _0x1f6264/_0x312e5d;},'LZGoj':function(_0x42c9a4,_0x4b2a11){return _0x42c9a4===_0x4b2a11;},'bMCJx':function(_0x23f600,_0x30b712){return _0x23f600(_0x30b712);},'whvKv':function(_0x3a6c6b,_0x4c4c43){return _0x3a6c6b===_0x4c4c43;}},_0x34e7b3=this['gl'],_0x18b82c=_0x530089['WvAKI'](HANDLE_RADIUS_PX,_0x3ee721),_0x2fc678=new Set();if(_0x3a6842[_0x13ac08(0x497)])_0x2fc678[_0x13ac08(0x3a5)](_0x3a6842['hoveredNodeId']);if(_0x3a6842[_0x13ac08(0x159)]?.[_0x13ac08(0x54d)])_0x2fc678[_0x13ac08(0x3a5)](_0x3a6842[_0x13ac08(0x159)][_0x13ac08(0x54d)]);if(_0x3a6842[_0x13ac08(0x3c3)])_0x2fc678[_0x13ac08(0x3a5)](_0x3a6842[_0x13ac08(0x3c3)]);if(_0x530089[_0x13ac08(0x1b7)](_0x2fc678[_0x13ac08(0x456)],0x0))return;const _0x26465f=[];for(const _0x28d673 of _0x2fc678){const _0xb12e37=_0x3a7cc7[_0x13ac08(0x53a)](_0x28d673);if(!_0xb12e37)continue;const _0x1ee96e={...DEFAULT_NODE_STYLE,..._0xb12e37[_0x13ac08(0x2e7)]},[_0x4d61d1,_0x1e997a,_0x8f9343,_0x54bec5]=_0x530089[_0x13ac08(0x505)](parseColor$1,_0x1ee96e[_0x13ac08(0x55d)]);for(const _0x30240e of getHandlePositions(_0xb12e37)){const _0x1fe79e=_0x3a6842[_0x13ac08(0x273)]?.[_0x13ac08(0x54d)]===_0x30240e[_0x13ac08(0x54d)]&&_0x530089[_0x13ac08(0x1b7)](_0x3a6842[_0x13ac08(0x273)]?.[_0x13ac08(0x4b7)],_0x30240e[_0x13ac08(0x4b7)])?0x1:0x0;_0x26465f[_0x13ac08(0x2f5)](_0x30240e['wx'],_0x30240e['wy'],_0x18b82c,_0x4d61d1,_0x1e997a,_0x8f9343,_0x54bec5,_0x1fe79e);}}if(_0x530089[_0x13ac08(0x1d9)](_0x26465f[_0x13ac08(0x193)],0x0))return;const _0x466eb8=new Float32Array(_0x26465f);this[_0x13ac08(0x413)][_0x13ac08(0x12a)](_0x466eb8),_0x34e7b3[_0x13ac08(0x428)](this[_0x13ac08(0x32c)]),_0x34e7b3['uniformMatrix4fv'](this[_0x13ac08(0x163)],![],_0x4157a4),_0x34e7b3[_0x13ac08(0x47f)](this[_0x13ac08(0x516)]),_0x34e7b3[_0x13ac08(0x42a)](_0x34e7b3[_0x13ac08(0x143)],0x0,0x6,_0x26465f[_0x13ac08(0x193)]/FLOATS_PER_HANDLE),_0x34e7b3[_0x13ac08(0x47f)](null);}['renderPendingEdge'](_0x32e12e,_0x3a9139,_0x48befb,_0x5239c9){const _0x160862=_0x985f80,_0x134e81={'JashG':function(_0x40309a,_0x34b4a8,_0xcd31d4,_0x4dd393,_0x4e08bd,_0xe85ca5,_0x108515,_0x361bbc,_0xf521ff,_0x421404,_0x4871d9,_0x5eb2b7,_0x4c4a9f,_0x2a6cd5){return _0x40309a(_0x34b4a8,_0xcd31d4,_0x4dd393,_0x4e08bd,_0xe85ca5,_0x108515,_0x361bbc,_0xf521ff,_0x421404,_0x4871d9,_0x5eb2b7,_0x4c4a9f,_0x2a6cd5);},'dODKV':function(_0x45c5eb,_0x14d332){return _0x45c5eb+_0x14d332;}};if(!_0x32e12e[_0x160862(0x159)])return;const _0x3b1dc5=_0x3a9139[_0x160862(0x53a)](_0x32e12e[_0x160862(0x159)]['nodeId']);if(!_0x3b1dc5)return;const _0x3e76ff={...DEFAULT_NODE_STYLE,..._0x3b1dc5[_0x160862(0x2e7)]},[_0x33e6d9,_0x550720,_0x271167]=parseColor$1(_0x3e76ff[_0x160862(0x55d)]),_0x4a3b19=_0x32e12e[_0x160862(0x159)]['wx'],_0x3c98e5=_0x32e12e[_0x160862(0x159)]['wy'],_0x1dae86=_0x32e12e[_0x160862(0x1a8)],_0x1bbe18=_0x32e12e[_0x160862(0x170)],[_0xfcab5d,_0xd7c9ef,_0x1c5f8b,_0x4dfbb9]=edgeControlPoints(_0x4a3b19,_0x3c98e5,_0x32e12e[_0x160862(0x159)]['side'],_0x1dae86,_0x1bbe18,_0x32e12e[_0x160862(0x320)]??undefined),_0x192b2b=0x2/_0x5239c9/0x2,_0x9f6df7=_0x134e81[_0x160862(0x461)](buildBezierStrip,_0x4a3b19,_0x3c98e5,_0xfcab5d,_0xd7c9ef,_0x1c5f8b,_0x4dfbb9,_0x1dae86,_0x1bbe18,_0x33e6d9,_0x550720,_0x271167,0.85,_0x192b2b),_0x239b56=this['gl'];this[_0x160862(0x1e4)][_0x160862(0x12a)](_0x9f6df7),_0x239b56[_0x160862(0x428)](this[_0x160862(0x23a)]),_0x239b56[_0x160862(0x495)](this[_0x160862(0x46d)],![],_0x48befb),_0x239b56[_0x160862(0x41b)](this[_0x160862(0x140)],0xa/_0x5239c9),_0x239b56[_0x160862(0x41b)](this[_0x160862(0x4c5)],0x5/_0x5239c9),_0x239b56[_0x160862(0x47f)](this[_0x160862(0x2c6)]),_0x239b56[_0x160862(0x45e)](_0x239b56[_0x160862(0x2bf)],0x0,_0x134e81[_0x160862(0x283)](BEZIER_SEGMENTS,0x1)*0x2),_0x239b56[_0x160862(0x47f)](null);}[_0x985f80(0x3d1)](_0x3b207f,_0x48a2c4,_0x2a8d79){const _0x1dc7e7=_0x985f80,_0x2fb3b3={'VAooE':function(_0x4b3977,_0x463d7a){return _0x4b3977*_0x463d7a;}};if(_0x3b207f[_0x1dc7e7(0x193)]===0x0)return;const _0x155218=this['gl'],_0x5e0e2c=_0x2fb3b3[_0x1dc7e7(0x396)](HANDLE_RADIUS_PX,1.4)/_0x2a8d79,[_0x3aa9f6,_0xa809d0,_0x5ce31f,_0x588999]=[0.984,0.573,0.235,0x1],_0x27f231=[];for(const _0x1390b0 of _0x3b207f){_0x27f231[_0x1dc7e7(0x2f5)](_0x1390b0['wx'],_0x1390b0['wy'],_0x5e0e2c,_0x3aa9f6,_0xa809d0,_0x5ce31f,_0x588999,0x0);}const _0x3fdb4c=new Float32Array(_0x27f231);this[_0x1dc7e7(0x413)][_0x1dc7e7(0x12a)](_0x3fdb4c),_0x155218['useProgram'](this[_0x1dc7e7(0x32c)]),_0x155218[_0x1dc7e7(0x495)](this[_0x1dc7e7(0x163)],![],_0x48a2c4),_0x155218[_0x1dc7e7(0x47f)](this[_0x1dc7e7(0x516)]),_0x155218['drawArraysInstanced'](_0x155218[_0x1dc7e7(0x143)],0x0,0x6,_0x3b207f[_0x1dc7e7(0x193)]),_0x155218[_0x1dc7e7(0x47f)](null);}[_0x985f80(0x1e2)](_0x2ab5cb,_0x438058,_0x241102){const _0x41cb3a=_0x985f80,_0x1ec0f8={'NmWAp':function(_0xdd4893,_0x2ec18b,_0xd909c3,_0x511d1d,_0x5b0859,_0x468187,_0x288ed9){return _0xdd4893(_0x2ec18b,_0xd909c3,_0x511d1d,_0x5b0859,_0x468187,_0x288ed9);}};let _0x484017,_0x516d3e,_0x2d3766,_0x226396,_0x516d9d,_0x5b3b94;if(_0x2ab5cb[_0x41cb3a(0x25f)]===_0x41cb3a(0x390))_0x484017=_0x2ab5cb[_0x41cb3a(0x305)]['wx'],_0x516d3e=_0x2ab5cb[_0x41cb3a(0x305)]['wy'],_0x2d3766=_0x2ab5cb[_0x41cb3a(0x305)][_0x41cb3a(0x4b7)],_0x226396=_0x2ab5cb[_0x41cb3a(0x1a8)],_0x516d9d=_0x2ab5cb[_0x41cb3a(0x170)],_0x5b3b94=_0x2ab5cb[_0x41cb3a(0x320)]??undefined;else{const _0x42008b=_0x41cb3a(0x445)[_0x41cb3a(0x392)]('|');let _0x4c9ba8=0x0;while(!![]){switch(_0x42008b[_0x4c9ba8++]){case'0':_0x516d3e=_0x2ab5cb['pendingEndWy'];continue;case'1':_0x484017=_0x2ab5cb[_0x41cb3a(0x1a8)];continue;case'2':_0x2d3766=_0x2ab5cb['targetHandle']??undefined;continue;case'3':_0x516d9d=_0x2ab5cb['fixedHandle']['wy'];continue;case'4':_0x5b3b94=_0x2ab5cb[_0x41cb3a(0x305)][_0x41cb3a(0x4b7)];continue;case'5':_0x226396=_0x2ab5cb[_0x41cb3a(0x305)]['wx'];continue;}break;}}const [_0x13c7cb,_0x548eca,_0x1d663c,_0x249332]=_0x1ec0f8[_0x41cb3a(0x2ff)](edgeControlPoints,_0x484017,_0x516d3e,_0x2d3766,_0x226396,_0x516d9d,_0x5b3b94),[_0x26159a,_0x16d0f8,_0x589ca2]=[0.984,0.573,0.235],_0x4a675f=0x2/_0x241102/0x2,_0xd40a78=buildBezierStrip(_0x484017,_0x516d3e,_0x13c7cb,_0x548eca,_0x1d663c,_0x249332,_0x226396,_0x516d9d,_0x26159a,_0x16d0f8,_0x589ca2,0.85,_0x4a675f),_0x18b460=this['gl'];this[_0x41cb3a(0x1e4)][_0x41cb3a(0x12a)](_0xd40a78),_0x18b460[_0x41cb3a(0x428)](this[_0x41cb3a(0x23a)]),_0x18b460['uniformMatrix4fv'](this[_0x41cb3a(0x46d)],![],_0x438058),_0x18b460[_0x41cb3a(0x41b)](this[_0x41cb3a(0x140)],0xa/_0x241102),_0x18b460['uniform1f'](this[_0x41cb3a(0x4c5)],0x5/_0x241102),_0x18b460[_0x41cb3a(0x47f)](this[_0x41cb3a(0x2c6)]),_0x18b460[_0x41cb3a(0x45e)](_0x18b460[_0x41cb3a(0x2bf)],0x0,(BEZIER_SEGMENTS+0x1)*0x2),_0x18b460[_0x41cb3a(0x47f)](null);}[_0x985f80(0x40e)](){const _0x4777f2=_0x985f80,_0x18f8f5=this['gl'];_0x18f8f5[_0x4777f2(0x2c3)](this[_0x4777f2(0x32c)]),_0x18f8f5[_0x4777f2(0x2c3)](this[_0x4777f2(0x23a)]),_0x18f8f5[_0x4777f2(0x27b)](this[_0x4777f2(0x516)]),_0x18f8f5[_0x4777f2(0x27b)](this[_0x4777f2(0x2c6)]),_0x18f8f5[_0x4777f2(0x4ac)](this[_0x4777f2(0x292)]),this[_0x4777f2(0x413)][_0x4777f2(0x40e)](),this[_0x4777f2(0x1e4)]['dispose']();}}const VERT=_0x985f80(0x1ac),FRAG=_0x985f80(0x40f);class GridProgram{constructor(_0x3347d2){const _0x2f163e=_0x985f80,_0x11d305={'tHmeQ':_0x2f163e(0x4af),'ikEij':_0x2f163e(0x361),'ToCqt':function(_0x5ce8d5,_0x281897){return _0x5ce8d5(_0x281897);},'BYDbl':_0x2f163e(0x490),'xMuUO':function(_0x580447,_0x12a99d){return _0x580447(_0x12a99d);},'axYCz':'u_color','qgbPD':_0x2f163e(0x49d)};this['gl']=_0x3347d2,this[_0x2f163e(0x4f7)]=createProgram(_0x3347d2,VERT,FRAG);const _0x37ada5=_0x3347d2[_0x2f163e(0x3ca)]();if(!_0x37ada5)throw new Error(_0x11d305[_0x2f163e(0x528)]);this[_0x2f163e(0x4cc)]=_0x37ada5,_0x3347d2[_0x2f163e(0x48b)](_0x3347d2[_0x2f163e(0x17d)],_0x37ada5),_0x3347d2[_0x2f163e(0x39a)](_0x3347d2[_0x2f163e(0x17d)],new Float32Array([-0x1,-0x1,0x1,-0x1,0x1,0x1,-0x1,-0x1,0x1,0x1,-0x1,0x1]),_0x3347d2[_0x2f163e(0x544)]);const _0x470bf0=_0x3347d2[_0x2f163e(0x2f9)]();if(!_0x470bf0)throw new Error(_0x2f163e(0x15a));this[_0x2f163e(0x3f6)]=_0x470bf0,_0x3347d2[_0x2f163e(0x47f)](_0x470bf0),_0x3347d2[_0x2f163e(0x48b)](_0x3347d2[_0x2f163e(0x17d)],_0x37ada5);const _0x322760=_0x3347d2['getAttribLocation'](this[_0x2f163e(0x4f7)],_0x11d305['ikEij']);_0x3347d2[_0x2f163e(0x1e3)](_0x322760),_0x3347d2['vertexAttribPointer'](_0x322760,0x2,_0x3347d2[_0x2f163e(0x4e6)],![],0x0,0x0),_0x3347d2[_0x2f163e(0x47f)](null);const _0x1dc758=_0x107a9c=>{const _0x1c2ca7=_0x2f163e,_0x2f6570=_0x3347d2['getUniformLocation'](this[_0x1c2ca7(0x4f7)],_0x107a9c);if(!_0x2f6570)throw new Error(_0x1c2ca7(0x2fd)+_0x107a9c+_0x1c2ca7(0x52f));return _0x2f6570;};this[_0x2f163e(0x123)]=_0x11d305['ToCqt'](_0x1dc758,_0x11d305[_0x2f163e(0x252)]),this[_0x2f163e(0x160)]=_0x11d305[_0x2f163e(0x24a)](_0x1dc758,_0x2f163e(0x40d)),this[_0x2f163e(0x2cd)]=_0x1dc758(_0x2f163e(0x45b)),this['uViewY']=_0x11d305[_0x2f163e(0x4c0)](_0x1dc758,_0x2f163e(0x517)),this[_0x2f163e(0x463)]=_0x1dc758(_0x2f163e(0x13b)),this[_0x2f163e(0x1d3)]=_0x1dc758(_0x11d305[_0x2f163e(0x235)]),this[_0x2f163e(0x2bd)]=_0x1dc758(_0x11d305[_0x2f163e(0x3c0)]);}[_0x985f80(0x1a5)](_0x1c69e7,_0x36c8a9,_0x18d9b1,_0x4d5250){const _0x4e4e16=_0x985f80,_0x2d976c={'zewmi':function(_0x9c4bee,_0x55b878){return _0x9c4bee(_0x55b878);},'YNtTs':_0x4e4e16(0x4f1)};let _0x46ca22=_0x36c8a9;while(_0x46ca22*_0x1c69e7[_0x4e4e16(0x330)]<0x10)_0x46ca22*=0x2;const [_0x55e14a,_0x2aa537,_0x5aa4d2,_0xdeddf2]=_0x2d976c[_0x4e4e16(0x1bc)](parseColor$1,_0x4d5250),_0x150b51=this['gl'];_0x150b51[_0x4e4e16(0x428)](this[_0x4e4e16(0x4f7)]),_0x150b51[_0x4e4e16(0x2d4)](this['uSize'],_0x1c69e7[_0x4e4e16(0x3f8)],_0x1c69e7[_0x4e4e16(0x4fd)]),_0x150b51[_0x4e4e16(0x41b)](this[_0x4e4e16(0x160)],_0x1c69e7['zoom']),_0x150b51['uniform1f'](this[_0x4e4e16(0x2cd)],_0x1c69e7['x']),_0x150b51[_0x4e4e16(0x41b)](this[_0x4e4e16(0x4e8)],_0x1c69e7['y']),_0x150b51[_0x4e4e16(0x41b)](this[_0x4e4e16(0x463)],_0x46ca22),_0x150b51['uniform4f'](this['uColor'],_0x55e14a,_0x2aa537,_0x5aa4d2,_0xdeddf2),_0x150b51[_0x4e4e16(0x33c)](this[_0x4e4e16(0x2bd)],_0x18d9b1===_0x2d976c[_0x4e4e16(0x4f3)]?0x1:0x0),_0x150b51[_0x4e4e16(0x47f)](this[_0x4e4e16(0x3f6)]),_0x150b51[_0x4e4e16(0x45e)](_0x150b51[_0x4e4e16(0x143)],0x0,0x6),_0x150b51[_0x4e4e16(0x47f)](null);}[_0x985f80(0x40e)](){const _0x432f29=_0x985f80;this['gl'][_0x432f29(0x2c3)](this['program']),this['gl'][_0x432f29(0x27b)](this['vao']),this['gl'][_0x432f29(0x4ac)](this[_0x432f29(0x4cc)]);}}const ATLAS_SIZE=0x800,PADDING=0x4;function isRTL(_0x14c80f){return/[֑-߿יִ-﷽ﹰ-ﻼ]/['test'](_0x14c80f);}function wrapLines(_0x370de5,_0x40a89,_0x160511){const _0x1cc9e7=_0x985f80,_0x5ad4d4={'dzxDR':function(_0x4cd6ae,_0x5e6192){return _0x4cd6ae===_0x5e6192;},'qNACa':function(_0x2e7b62,_0x5615fa){return _0x2e7b62>_0x5615fa;}};if(_0x40a89<=0x0)return[_0x370de5];const _0x239da4=_0x370de5['split']('\x0a'),_0x5457b4=[];for(const _0x150f72 of _0x239da4){const _0xef6d2=_0x150f72[_0x1cc9e7(0x392)]('\x20');let _0x3f258f='';for(const _0x5c298c of _0xef6d2){const _0x6874bd=_0x5ad4d4[_0x1cc9e7(0x52a)](_0x3f258f[_0x1cc9e7(0x193)],0x0)?_0x5c298c:_0x3f258f+'\x20'+_0x5c298c;if(_0x160511[_0x1cc9e7(0x31e)](_0x6874bd)[_0x1cc9e7(0x31c)]<=_0x40a89)_0x3f258f=_0x6874bd;else{if(_0x3f258f[_0x1cc9e7(0x193)]>0x0)_0x5457b4[_0x1cc9e7(0x2f5)](_0x3f258f);_0x3f258f=_0x5c298c;}}_0x5457b4[_0x1cc9e7(0x2f5)](_0x3f258f);}return _0x5ad4d4['qNACa'](_0x5457b4[_0x1cc9e7(0x193)],0x0)?_0x5457b4:[''];}class TextAtlas{constructor(){const _0x139664=_0x985f80,_0x44900e={'MSiVm':_0x139664(0x50d)};this[_0x139664(0x3aa)]=new Map(),this[_0x139664(0x431)]=null,this['shelfX']=0x0,this[_0x139664(0x49c)]=0x0,this[_0x139664(0x4ca)]=0x0,this[_0x139664(0x30e)]=![],this['generation']=0x0,this[_0x139664(0x425)]=new OffscreenCanvas(ATLAS_SIZE,ATLAS_SIZE);const _0x4524d0=this[_0x139664(0x425)][_0x139664(0x506)]('2d');if(!_0x4524d0)throw new Error('TextAtlas:\x20OffscreenCanvas\x202D\x20context\x20unavailable');this[_0x139664(0x317)]=_0x4524d0,this[_0x139664(0x317)][_0x139664(0x212)]=_0x44900e[_0x139664(0x36f)];}['key'](_0x56b3d7,_0x572612,_0xb624a7,_0x3fd4df,_0x3f1000){return _0x572612+'|'+_0xb624a7+'|'+_0x3fd4df+'|'+_0x3f1000+'|'+_0x56b3d7;}[_0x985f80(0x299)](_0x5308ca,_0x2d67a1,_0x1da068,_0x43b904,_0x628467,_0x3b530c=''){const _0x531e50=_0x985f80,_0x1d45e1={'IqIVh':function(_0x13acc8,_0x257565,_0x46aabb,_0x31b1db){return _0x13acc8(_0x257565,_0x46aabb,_0x31b1db);},'ucLAh':function(_0x1c50e8,_0x101ac4){return _0x1c50e8>_0x101ac4;},'fzHXI':function(_0x3dc9c8,_0x76109f){return _0x3dc9c8+_0x76109f;},'nwLws':function(_0x23e970,_0x181438){return _0x23e970*_0x181438;},'gEbTP':function(_0xdf3a9a,_0x5d93ae){return _0xdf3a9a>_0x5d93ae;},'hzDin':function(_0x1ad42a,_0x1f1461){return _0x1ad42a(_0x1f1461);},'yAxvY':_0x531e50(0x2b9),'PDfNr':function(_0xe65ad4,_0x3f6606){return _0xe65ad4<_0x3f6606;},'BDVwT':function(_0x4e33f3,_0x37b6f3){return _0x4e33f3/_0x37b6f3;},'obzZG':function(_0x2c15f4,_0x31e887){return _0x2c15f4/_0x31e887;}},_0xa38d43=this[_0x531e50(0x4a0)](_0x5308ca,_0x2d67a1,_0x43b904,_0x628467,_0x3b530c),_0x38df0f=this[_0x531e50(0x3aa)][_0x531e50(0x53a)](_0xa38d43);if(_0x38df0f)return _0x38df0f;this['ctx'][_0x531e50(0x262)]=_0x2d67a1;const _0x34a3ca=_0x1d45e1[_0x531e50(0x3e1)](wrapLines,_0x5308ca,_0x43b904,this[_0x531e50(0x317)]),_0x11daf7=this[_0x531e50(0x317)][_0x531e50(0x31e)](_0x34a3ca[0x0]??''),_0x503fd8=Math[_0x531e50(0x1cf)]((_0x11daf7['actualBoundingBoxAscent']??0x0)+(_0x11daf7[_0x531e50(0x400)]??0x0)),_0x2235b4=Math[_0x531e50(0x4cd)](_0x503fd8,Math['ceil'](_0x503fd8*_0x628467));let _0x3d3fb4=0x0;for(const _0x15ffed of _0x34a3ca){const _0x1267b0=Math[_0x531e50(0x1cf)](this[_0x531e50(0x317)][_0x531e50(0x31e)](_0x15ffed)[_0x531e50(0x31c)]);if(_0x1d45e1[_0x531e50(0x136)](_0x1267b0,_0x3d3fb4))_0x3d3fb4=_0x1267b0;}const _0x1dadff=_0x1d45e1[_0x531e50(0x454)](_0x3d3fb4,_0x1d45e1[_0x531e50(0x2df)](PADDING,0x2)),_0x389de7=_0x34a3ca[_0x531e50(0x193)]*_0x2235b4+PADDING*0x2;if(_0x1d45e1[_0x531e50(0x136)](_0x1dadff,ATLAS_SIZE)||_0x389de7>ATLAS_SIZE)return null;_0x1d45e1[_0x531e50(0x51b)](this[_0x531e50(0x263)]+_0x1dadff,ATLAS_SIZE)&&(this[_0x531e50(0x49c)]+=this['shelfH'],this[_0x531e50(0x263)]=0x0,this[_0x531e50(0x4ca)]=0x0);this[_0x531e50(0x49c)]+_0x389de7>ATLAS_SIZE&&(this['ctx'][_0x531e50(0x124)](0x0,0x0,ATLAS_SIZE,ATLAS_SIZE),this[_0x531e50(0x3aa)][_0x531e50(0x3ab)](),this[_0x531e50(0x263)]=0x0,this[_0x531e50(0x49c)]=0x0,this[_0x531e50(0x4ca)]=0x0,this[_0x531e50(0x2c4)]++);_0x3b530c&&(this['ctx'][_0x531e50(0x348)]=_0x3b530c,this[_0x531e50(0x317)][_0x531e50(0x385)](this[_0x531e50(0x263)],this[_0x531e50(0x49c)],_0x1dadff,_0x389de7));this[_0x531e50(0x317)][_0x531e50(0x348)]=_0x1da068,this['ctx'][_0x531e50(0x52b)]=_0x1d45e1[_0x531e50(0x130)](isRTL,_0x5308ca)?_0x1d45e1[_0x531e50(0x211)]:'ltr';for(let _0x42832b=0x0;_0x1d45e1[_0x531e50(0x441)](_0x42832b,_0x34a3ca[_0x531e50(0x193)]);_0x42832b++){this[_0x531e50(0x317)][_0x531e50(0x4dc)](_0x34a3ca[_0x42832b],this[_0x531e50(0x263)]+PADDING,this[_0x531e50(0x49c)]+PADDING+_0x42832b*_0x2235b4);}const _0x591873={'u0':this[_0x531e50(0x263)]/ATLAS_SIZE,'v0':_0x1d45e1[_0x531e50(0x4ad)](this[_0x531e50(0x49c)],ATLAS_SIZE),'u1':_0x1d45e1[_0x531e50(0x477)](this[_0x531e50(0x263)]+_0x1dadff,ATLAS_SIZE),'v1':(this[_0x531e50(0x49c)]+_0x389de7)/ATLAS_SIZE,'w':_0x1dadff,'h':_0x389de7};this[_0x531e50(0x3aa)][_0x531e50(0x14a)](_0xa38d43,_0x591873),this[_0x531e50(0x263)]+=_0x1dadff;if(_0x389de7>this[_0x531e50(0x4ca)])this[_0x531e50(0x4ca)]=_0x389de7;return this[_0x531e50(0x30e)]=!![],_0x591873;}[_0x985f80(0x2f8)](_0x38c266){const _0x3c59a6=_0x985f80,_0x2a0dd1={'KybhL':_0x3c59a6(0x264)};if(!this[_0x3c59a6(0x30e)])return;if(!this[_0x3c59a6(0x431)]){const _0x21d579=_0x38c266[_0x3c59a6(0x540)]();if(!_0x21d579)throw new Error(_0x2a0dd1[_0x3c59a6(0x3f3)]);this[_0x3c59a6(0x431)]=_0x21d579;}_0x38c266[_0x3c59a6(0x225)](_0x38c266[_0x3c59a6(0x271)],this[_0x3c59a6(0x431)]),_0x38c266[_0x3c59a6(0x307)](_0x38c266[_0x3c59a6(0x271)],0x0,_0x38c266[_0x3c59a6(0x3e8)],_0x38c266[_0x3c59a6(0x3e8)],_0x38c266[_0x3c59a6(0x38c)],this['offscreen']),_0x38c266['texParameteri'](_0x38c266[_0x3c59a6(0x271)],_0x38c266[_0x3c59a6(0x2f4)],_0x38c266[_0x3c59a6(0x28e)]),_0x38c266[_0x3c59a6(0x513)](_0x38c266[_0x3c59a6(0x271)],_0x38c266[_0x3c59a6(0x55a)],_0x38c266[_0x3c59a6(0x28e)]),_0x38c266[_0x3c59a6(0x513)](_0x38c266[_0x3c59a6(0x271)],_0x38c266[_0x3c59a6(0x439)],_0x38c266[_0x3c59a6(0x3c6)]),_0x38c266[_0x3c59a6(0x513)](_0x38c266[_0x3c59a6(0x271)],_0x38c266[_0x3c59a6(0x523)],_0x38c266[_0x3c59a6(0x3c6)]),this[_0x3c59a6(0x30e)]=![];}[_0x985f80(0x1b0)](_0x565efa,_0x382b7f){const _0x44b737=_0x985f80;_0x565efa[_0x44b737(0x44a)](_0x565efa[_0x44b737(0x366)]+_0x382b7f),_0x565efa['bindTexture'](_0x565efa[_0x44b737(0x271)],this[_0x44b737(0x431)]);}[_0x985f80(0x40e)](_0x3f8662){const _0x6c8a2=_0x985f80;if(this[_0x6c8a2(0x431)])_0x3f8662['deleteTexture'](this[_0x6c8a2(0x431)]);}}const EDGE_CULL_PADDING=0xc8;function cullNodes(_0x3a56b7,_0x1c2bd6){const _0x332976=_0x985f80;return _0x3a56b7['filter'](_0x40ed1a=>_0x40ed1a['x']+_0x40ed1a[_0x332976(0x31c)]>=_0x1c2bd6['minX']&&_0x40ed1a['x']<=_0x1c2bd6[_0x332976(0x132)]&&_0x40ed1a['y']+_0x40ed1a[_0x332976(0x2e0)]>=_0x1c2bd6[_0x332976(0x1c4)]&&_0x40ed1a['y']<=_0x1c2bd6[_0x332976(0x42f)]);}function cullEdges(_0x1d4975,_0x793b53,_0x2edabf){const _0x19a8d3=_0x985f80,_0x5099e0={'UXflb':function(_0x4b83be,_0x36ba62){return _0x4b83be+_0x36ba62;},'zeQJd':function(_0xd70bd0,_0x40d6d5){return _0xd70bd0<=_0x40d6d5;},'TOwkU':function(_0x33473e,_0x2b7132){return _0x33473e>=_0x2b7132;}},_0x14d67e={'minX':_0x2edabf['minX']-EDGE_CULL_PADDING,'minY':_0x2edabf[_0x19a8d3(0x1c4)]-EDGE_CULL_PADDING,'maxX':_0x5099e0['UXflb'](_0x2edabf[_0x19a8d3(0x132)],EDGE_CULL_PADDING),'maxY':_0x5099e0[_0x19a8d3(0x194)](_0x2edabf[_0x19a8d3(0x42f)],EDGE_CULL_PADDING)};return _0x1d4975[_0x19a8d3(0x3da)](_0xef9c3a=>{const _0x92a2ad=_0x19a8d3,_0x33b91b=_0x793b53[_0x92a2ad(0x53a)](_0xef9c3a[_0x92a2ad(0x532)]),_0x184cac=_0x793b53[_0x92a2ad(0x53a)](_0xef9c3a[_0x92a2ad(0x390)]);if(!_0x33b91b||!_0x184cac)return![];const _0x170756=Math['min'](_0x33b91b['x'],_0x184cac['x']),_0x5050dc=Math['min'](_0x33b91b['y'],_0x184cac['y']),_0x37e0f6=Math['max'](_0x33b91b['x']+_0x33b91b['width'],_0x184cac['x']+_0x184cac[_0x92a2ad(0x31c)]),_0xf12e2c=Math[_0x92a2ad(0x4cd)](_0x33b91b['y']+_0x33b91b['height'],_0x5099e0[_0x92a2ad(0x194)](_0x184cac['y'],_0x184cac[_0x92a2ad(0x2e0)]));return _0x37e0f6>=_0x14d67e[_0x92a2ad(0x1ad)]&&_0x5099e0[_0x92a2ad(0x345)](_0x170756,_0x14d67e['maxX'])&&_0x5099e0['TOwkU'](_0xf12e2c,_0x14d67e[_0x92a2ad(0x1c4)])&&_0x5050dc<=_0x14d67e[_0x92a2ad(0x42f)];});}function computeNodeBounds(_0xd70d6e){const _0x2266b3=_0x985f80,_0x40d82a={'UzDqh':function(_0x337e37,_0x156bba){return _0x337e37<_0x156bba;},'luiLL':function(_0x256859,_0x416972){return _0x256859+_0x416972;},'dwZSp':function(_0x64695a,_0x2204a3){return _0x64695a+_0x2204a3;}};if(_0xd70d6e[_0x2266b3(0x193)]===0x0)return{'minX':0x0,'minY':0x0,'maxX':0x0,'maxY':0x0};let _0x15e3fb=Infinity,_0x4efb5f=Infinity,_0x5d8a6c=-Infinity,_0x1e6a40=-Infinity;for(const _0x13d9e4 of _0xd70d6e){if(_0x13d9e4['x']<_0x15e3fb)_0x15e3fb=_0x13d9e4['x'];if(_0x40d82a['UzDqh'](_0x13d9e4['y'],_0x4efb5f))_0x4efb5f=_0x13d9e4['y'];if(_0x40d82a['luiLL'](_0x13d9e4['x'],_0x13d9e4[_0x2266b3(0x31c)])>_0x5d8a6c)_0x5d8a6c=_0x13d9e4['x']+_0x13d9e4[_0x2266b3(0x31c)];if(_0x13d9e4['y']+_0x13d9e4[_0x2266b3(0x2e0)]>_0x1e6a40)_0x1e6a40=_0x40d82a[_0x2266b3(0x44d)](_0x13d9e4['y'],_0x13d9e4['height']);}return{'minX':_0x15e3fb,'minY':_0x4efb5f,'maxX':_0x5d8a6c,'maxY':_0x1e6a40};}class WebGL2Renderer{constructor(){const _0x1451ef=_0x985f80,_0x112467={'FsJGG':'2|4|8|10|9|7|5|6|3|11|0|1'},_0x57f8c6=_0x112467['FsJGG']['split']('|');let _0x3abffe=0x0;while(!![]){switch(_0x57f8c6[_0x3abffe++]){case'0':this[_0x1451ef(0x272)]=[];continue;case'1':this[_0x1451ef(0x227)]=[];continue;case'2':this[_0x1451ef(0x3cd)]=0x1;continue;case'3':this[_0x1451ef(0x358)]=new Map();continue;case'4':this[_0x1451ef(0x434)]=-0x1;continue;case'5':this[_0x1451ef(0x1ff)]=NaN;continue;case'6':this[_0x1451ef(0x2e2)]=[];continue;case'7':this[_0x1451ef(0x14e)]=NaN;continue;case'8':this[_0x1451ef(0x53b)]=NaN;continue;case'9':this[_0x1451ef(0x232)]=NaN;continue;case'10':this[_0x1451ef(0x27e)]=NaN;continue;case'11':this[_0x1451ef(0x2dd)]=[];continue;}break;}}[_0x985f80(0x48c)](_0x58af52,_0x3439ec={}){const _0x134039=_0x985f80;this[_0x134039(0x3cd)]=_0x3439ec[_0x134039(0x543)]??window[_0x134039(0x1f9)]??0x1;const _0x4e417c=createWebGL2Context(_0x58af52,_0x3439ec['antialias']??!![]);if(!_0x4e417c)return![];return this['gl']=_0x4e417c,this['atlas']=new TextAtlas(),this[_0x134039(0x4dd)]=new NodeProgram(_0x4e417c),this[_0x134039(0x23a)]=new EdgeProgram(_0x4e417c),this[_0x134039(0x499)]=new TextProgram(_0x4e417c,this['atlas']),this[_0x134039(0x18d)]=new HandleProgram(_0x4e417c),this[_0x134039(0x4c1)]=new GridProgram(_0x4e417c),!![];}[_0x985f80(0x1a2)](_0x404bd7,_0x50013c){const _0x4adc94=_0x985f80,_0x2e6dc6={'wERuL':function(_0x4598eb,_0x5e1058){return _0x4598eb*_0x5e1058;}},_0x29f3cd=this['gl'],_0x3ac689=_0x29f3cd['canvas'];_0x3ac689[_0x4adc94(0x31c)]=Math[_0x4adc94(0x34a)](_0x2e6dc6[_0x4adc94(0x549)](_0x404bd7,this[_0x4adc94(0x3cd)])),_0x3ac689[_0x4adc94(0x2e0)]=Math[_0x4adc94(0x34a)](_0x50013c*this[_0x4adc94(0x3cd)]),_0x3ac689[_0x4adc94(0x2e7)]['width']=_0x404bd7+'px',_0x3ac689['style'][_0x4adc94(0x2e0)]=_0x50013c+'px',_0x29f3cd['viewport'](0x0,0x0,_0x3ac689['width'],_0x3ac689[_0x4adc94(0x2e0)]);}[_0x985f80(0x1a5)](_0x3c03f8,_0x1c8969,_0x24e450=new Set(),_0x24a429=null,_0x51442b=new Set(),_0x1057c2=_0x985f80(0x39e),_0x2fa0b5=null,_0x4f43bf=null,_0x52a633=[]){const _0x41a9fb=_0x985f80,_0x23f605={'ySZRu':function(_0x237c62,_0x551920){return _0x237c62!==_0x551920;},'rTfxr':function(_0x43f93c,_0x4b6e34){return _0x43f93c!==_0x4b6e34;},'Pzope':function(_0x25a0c6,_0x53dbae){return _0x25a0c6!==_0x53dbae;},'tkvcc':function(_0x5eb70b,_0x346f9e){return _0x5eb70b!==_0x346f9e;}},_0x33bd0d=this['gl'],[_0x477a0b,_0x2706d3,_0x47e421]=parseColor$1(_0x1057c2);_0x33bd0d[_0x41a9fb(0x304)](_0x477a0b,_0x2706d3,_0x47e421,0x1),_0x33bd0d[_0x41a9fb(0x3ab)](_0x33bd0d[_0x41a9fb(0x542)]);_0x2fa0b5?.[_0x41a9fb(0x388)]&&this['gridProgram'][_0x41a9fb(0x1a5)](_0x1c8969,_0x2fa0b5[_0x41a9fb(0x456)],_0x2fa0b5[_0x41a9fb(0x548)],_0x2fa0b5['color']);const _0x1f50e9=_0x1c8969[_0x41a9fb(0x131)](),_0x2cc74b=_0x3c03f8[_0x41a9fb(0x356)]!==this['cachedGraphVersion'],_0x43b059=_0x1c8969['canvasWidth'],_0x233899=_0x1c8969[_0x41a9fb(0x4fd)],_0x598ea7=_0x23f605[_0x41a9fb(0x149)](_0x1c8969['x'],this[_0x41a9fb(0x53b)])||_0x23f605[_0x41a9fb(0x4c7)](_0x1c8969['y'],this[_0x41a9fb(0x27e)])||_0x23f605[_0x41a9fb(0x4d4)](_0x1c8969[_0x41a9fb(0x330)],this[_0x41a9fb(0x232)])||_0x43b059!==this[_0x41a9fb(0x14e)]||_0x23f605['tkvcc'](_0x233899,this[_0x41a9fb(0x1ff)]);_0x2cc74b&&(this[_0x41a9fb(0x2e2)]=_0x3c03f8[_0x41a9fb(0x352)](),this[_0x41a9fb(0x358)]=new Map(this[_0x41a9fb(0x2e2)][_0x41a9fb(0x2ba)](_0xe3470b=>[_0xe3470b['id'],_0xe3470b])),this[_0x41a9fb(0x2dd)]=_0x3c03f8['getEdges'](),this[_0x41a9fb(0x434)]=_0x3c03f8[_0x41a9fb(0x356)]);if(_0x2cc74b||_0x598ea7){const _0x24a08d=_0x1c8969[_0x41a9fb(0x17c)]();this['cachedVisNodes']=cullNodes(this[_0x41a9fb(0x2e2)],_0x24a08d),this[_0x41a9fb(0x227)]=cullEdges(this[_0x41a9fb(0x2dd)],this['cachedNodeMap'],_0x24a08d),this[_0x41a9fb(0x53b)]=_0x1c8969['x'],this[_0x41a9fb(0x27e)]=_0x1c8969['y'],this[_0x41a9fb(0x232)]=_0x1c8969[_0x41a9fb(0x330)],this['cachedVpWidth']=_0x43b059,this[_0x41a9fb(0x1ff)]=_0x233899;}const _0x45865c=this['cachedVisNodes'],_0x374d2e=this[_0x41a9fb(0x227)],_0x44dd8e=this[_0x41a9fb(0x358)],_0x4f5869=_0x24a429?.[_0x41a9fb(0x3c3)]??null,_0x27f7c5=_0x4f43bf?.[_0x41a9fb(0x3c3)]??null,_0x263bef=_0x4f5869??_0x27f7c5;this[_0x41a9fb(0x23a)][_0x41a9fb(0x1a5)](_0x374d2e,_0x44dd8e,_0x1f50e9,_0x51442b),(_0x24a429||_0x52a633[_0x41a9fb(0x193)]>0x0||_0x4f43bf)&&this[_0x41a9fb(0x18d)]['render'](_0x24a429,_0x44dd8e,_0x1f50e9,_0x1c8969[_0x41a9fb(0x330)],_0x4f43bf,_0x52a633),this[_0x41a9fb(0x4dd)]['render'](_0x45865c,_0x1f50e9,_0x24e450,_0x263bef),this['textProgram']['render'](_0x45865c,_0x1f50e9,_0x1c8969[_0x41a9fb(0x330)]),this[_0x41a9fb(0x499)][_0x41a9fb(0x333)](_0x374d2e,_0x44dd8e,_0x1f50e9,_0x1c8969[_0x41a9fb(0x330)]);}[_0x985f80(0x40e)](){const _0x28aee0=_0x985f80,_0x482acd='3|2|4|0|5|1'['split']('|');let _0x54afe2=0x0;while(!![]){switch(_0x482acd[_0x54afe2++]){case'0':this[_0x28aee0(0x18d)][_0x28aee0(0x40e)]();continue;case'1':this['atlas'][_0x28aee0(0x40e)](this['gl']);continue;case'2':this[_0x28aee0(0x23a)]['dispose']();continue;case'3':this['nodeProgram'][_0x28aee0(0x40e)]();continue;case'4':this[_0x28aee0(0x499)][_0x28aee0(0x40e)]();continue;case'5':this[_0x28aee0(0x4c1)][_0x28aee0(0x40e)]();continue;}break;}}}function _0x3ee5(){const _0x1ec9c3=['AgX3A3i','AgLKzu9Ut3v0C2LKzq','EMvXyKy','yv9JB2XVCG','C2LKzq','wLjLzwm','CMvXDwvZDfjLBMrLCG','BM9KzvvWzgf0zq','BeDwALi','z2v0u3rHDgu','B0HQt00','sKXVveu','zM9JDxm','Ee11vu8','z3jPzfbYB2DYyw0','su5qvvq','v2HPDgu','DMLNthm','DuDHCeXLBG','CKjOwwS','CLrMEhi','zgf0yq','ywn0AxzL','C2HLBgzi','yNv0Dg9U','CxvHzej1zG','Bwf4','ChG7cIaGicaGigzVBNqTzMfTAwX5oIa','C2HPzNrlzxK','yNL0zuXLBMD0Aa','CMvUzgvYzxi','uLfnCNu','qM94u2vSzwn0','uhPVCgu','B1b2Du8','B2zM','vgHPBG','qMPnr0S','B25nB3vZzvvW','twrXvvO','cIaGicaGicaGzMXLEdOGmtSGCgfKzgLUzZOGohb4idrWEdSGyM9YzgvYlxjHzgL1CZOGnNb4oYbJDxjZB3i6ihbVAw50zxi7cIaGicaGicaGyM9YzgvYoIaXChGGC29SAwqG','zMLSBfrLEhq','BM9KzvbYB2DYyw0','BM9KzvjLzKnHy2HL','CMDIysGYntuSmJu1ldi1nsWWlJKYkq','C3rHCNrdBgLLBNry','yM9ltLm','y3jLyxrLu2HHzgvY','CxvHza','qgzSB3DJAgfYDc9JB3jLoIbICM93C2vYigvUDMLYB25Tzw50ihjLCxvPCMvK','ChGSihrYyw5ZCgfYzw50ia','rKXpqvq','qxjYyw5NzsbUB2rLCYbPBIbHihvUAwzVCM0Gz3jPza','DvzPzxDz','C3bMA08','B2jZzxj2zq','DMfSDwu','rLLMAK0','v2XYEhG','y2rNyvi','y0D5B1C','z0X1qLa','zg90CW','Duf0BgfZ','wu50vhm','DxbKyxrLt3zLCMXHEq','yw5UB3vUy2voB2rL','EuzAtgG','ChjVz3jHBq','C29YDa','B25uywjqCMv2','ChjLDKnVBwjPBMvKrMXVyxrZ','r1P1r0q','yxjYB3DnB3zLvgLTzxi','y2fUDMfZsgvPz2H0','rMXVD0nOyxj0','CujeDey','y2fWywnPDhLcExrLCW','B25vCgrHDgu','uvzHwMi','r3jHCgG','DgzmBKW','yK1dsNG','z2v0q29UDgv4Da','sgLZDg9YEq','y2vUDgvY','y2fUy2vSsgLKzvn1yG','C2XPy2u','sMLyCha','v2LKDgG','Dg9W','BgLTAxq','z2v0uhjVz3jHBuLUzM9mB2C','CwvICKK','zMXVB3i','twvKAxvT','Dgv4ugfYyw1LDgvYAq','vgzfwKC','Dg9xB3jSza','y2LYy2XLvMfV','Dv92Awv3wq','zufMBxq','ALf3Awm','BgfIzwXfzgL0B3i','z0vIvfa','Dg9ku09o','z2v0uhjVz3jHBvbHCMfTzxrLCG','tgLNAhqGr3jHEq','DMfSDwvZ','rwrNzuHPDfrLC3rLCG','AgLKzvn1yLbHBMvS','wffxueW','vevyvfvsrv9xuKfqx1q','t3vHCNK','BgfZDfbPBMnOrgLZDa','AgfUzgXLtw91C2vmzwf2zq','q0HwB2m','DeHTzve','rwHjDfC','zhP4rfi','zgLYzwn0Aw9U','C2v0tM9Kzxm','y3vYC29Y','nZGXzw1twg1H','jYbUB3qGzM91BMq','yv9ZDhjVA2u','BuPOtg8','C291CMnL','BM9KzunSAwnR','yMX1CG','AgfUzgXLvg91y2HnB3zL','C2vSzwn0zwrfzgDLswrZ','zgfZAgvK','AK5jwvO','wufqsfy','z2v0','y2fJAgvKvNby','AgLKzq','ChjLDMvUDerLzMf1Bhq','v0flBMG','y2XLyxjtzwXLy3rPB24','y3jLyxrLvgv4DhvYzq','wMzkCLG','q09mt1jFqLvgrKvsx0jjva','CgL4zwXsyxrPBW','u1rbveLdx0rsqvC','Bwv0yuTLEq','D1DeChm','r1HpAMG','DhLWzq','D0vsDuW','B0DIv0K','CMvTB3zL','Au5vAhC','BM9KzuLK','tuv4y24','suzbD3K','qMfJA3nWywnL','BM9KzvjLBw92zq','yv9YywrPDxm','A2v5yM9HCMriyw5KBgvY','vwPfC2S','rMP4thK','AgfUzgXLtw91C2veB3DU','zwrNzuXHyMvSq2fJAgu','qxHhyLi','t2nICLy','vevyvfvsrv9nquDFrKLmvevs','ue9IqKi','D0LPDxu','yM9YzgvYq29SB3i','B25tzwXLy3q','mty0mJC0m1HrvfDqvW','u3HVr2m','y2HHCKf0','zKrSuu0','qxnYrwi','AgvMyLq','EePvu24','zML0','vhfutgy','y29UBMvJDerYywC','B3b0CW','qNf0D08','vwfevLG','A25rr0i','CgfUwM9VBq','oWOGicaGicaGignVBg9YoIaJzdfKnwrIoYbMB250lxnPEMu6ideXChG7igzVBNqTzMfTAwX5oIbPBMHLCML0oWOGicaGicaGigrPC3bSyxK6igzSzxG7igzSzxGTzgLYzwn0Aw9UoIbJB2X1Bw47igfSAwDUlwL0zw1ZoIbJzw50zxi7igDHCdOGnxb4oWOGicaGicaGihrYyw5ZAxrPB246igjHy2TNCM91BMqGlJfZlcbIB3jKzxiTy29SB3iGlJfZoWOGicaGica','DMPituW','w2rHDgeTy29SB3jD','DvnPEMu','y2XLyxjszwn0','y29UBMvJDfn0yxrL','yM91BMrcBhvY','DMvYDgv4qxr0CMLIrgL2AxnVCG','qxjYB3DeB3DU','wujeqvm','DxbSB2fK','w0zSB3DdAgfYDf0','sw9Xs0i','BefQt2q','Aw5ZDgfUy2vcDwzMzxi','zMLUza','AhPeAw4','z2v0twf0CML4','Bwf4wa','qMfJA2DYB3vUza','y29UDgfPBMvY','y1rst2S','DwnmqwG','CfPLAMW','C2v0u2vSzwn0zwrjzhm','y1jmtNO','BM9KzuvKz2vjBMrLEa','Dv9NCMLKu2L6zq','zgf0yxnLDa','Axndyxb0DxjPBMC','yv9ZAxPL','qMX1zsbhCMf5','DurHC2Hmzw4','ELnlBe0','yxr0ywnOu2HHzgvY','vfjjqu5htevt','oWOGicaGicaGig91DgXPBMuTB2zMC2v0oIaXChG7ihrYyw5ZAxrPB246igjHy2TNCM91BMqGlJfZoWOGicaGica','vLn4yu4','A1nWCNq','AgfUzgXLv2HLzwW','zML0vMLLDW','EvnAuNu','C2v0','C3LrsgG','BfzvyvK','BNrnEuu','y2fJAgvKvNbxAwr0Aa','z3jHyG','yxjPys1SAxzL','BwLUlxDPzhrOoIaYmJbWEdS','shnptha','CMvTB3zLrxzLBNrmAxn0zw5LCG','B3zLCMXHEq','C2vSzwn0zwrjzhm','C3PrwNa','w2rHDgeTyMDD','Aw5WDxq','y29UBMvJDgLUz0zYB20','r3jPzfbYB2DYyw06ignYzwf0zvzLCNrLEefYCMf5igzHAwXLza','yxbWBhLtBMfWC2HVDa','CMDIysGYntuSmJu1ldi1nsWWlJa1kq','ntq1mJH6D21xzuu','CLnRu1C','q1nZq1O','DvPVB20','tuLox1Ppt00','ENPUEKi','DunPCMnSzu1HDhjPEa','yMnos1e','zgzJC3G','ChGScIaGicaGicaGicaGihrYyw5ZCgfYzw50ia','BwLUlxDPzhrOoIaXodbWEdS','rwrNzvbYB2DYyw06ihvUAwzVCM0GjW','B25ezwXLDgu','iZm3nde1mq','uMvmEee','B1rtsNq','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUihzLyZiGyv9WB3nPDgLVBJSkAw4GDMvJmIbHx3v2oWOkDw5PzM9YBsbTyxq0ihvFBwf0CML4oWOkB3v0ihzLyZiGDL91DJSkcNzVAwqGBwfPBIGPihSkicb2x3v2icaGicaGica9igfFDxy7cIaGz2XFug9ZAxrPB24Gpsb1x21HDhjPEcaQihzLyZqOyv9WB3nPDgLVBIWGmc4WlcaXlJaPoWP9cG','zM9UDc1ZAxPLoIaXmxb4oYbJB2XVCJOGiZLJytnHzJSGBwfYz2LUlwjVDhrVBtOGohb4oYbSzxr0zxiTC3bHy2LUzZOGlJaZzw07','r3jPza','CgvUzgLUz0vUzfD5','qxjYB3DsAwDODa','teLos19tvefuvvm','D0z0Du4','C3vIyxjYyxK','AxnpBKvUzhbVAw50','cIaGzgLZCgXHEtOGzMXLEdSGywXPz24TAxrLBxm6ignLBNrLCJSGANvZDgLMEs1JB250zw50oIbZCgfJzs1Izxr3zwvUoWOGihDPzhrOoIaXmdaLoYbWywrKAw5NoIa4ChGGmtrWEdSGyM9YzgvYoIbUB25LoWOGigjHy2TNCM91BMq6ihrYyw5ZCgfYzw50oYb0zxH0lwfSAwDUoIbSzwz0oWOGigzVBNqTC2L6ztOGmtnWEdSGyM9YzgvYlxjHzgL1CZOGnxb4oWOGign1CNnVCJOGCg9PBNrLCJSGDhjHBNnPDgLVBJOGyMfJA2DYB3vUzcaUmxm7cIaGyM94lxnPEMLUzZOGyM9YzgvYlwjVEdSGzM9UDc1Myw1PBhK6igLUAgvYAxq7cG','Ce9sA2u','wfrKwxq','Bwv5BwG','B25uywjozxH0','zgLZCgXHEtOGzMXLEdSGz2fWoIa0ChG7','z2v0vMLZAwjSzujVDw5KCW','qvjsqvLFqLvgrKvs','reDSu3O','tgf5zxiTyMfZzwqSig1PBMLTAxPLCYbLzgDLignYB3nZAw5NCW','yuHfwe4','D2LKDgG6idmYChG7igHLAwDODdOGmtjWEdSGzgLZCgXHEtOGzMXLEdSGywXPz24TAxrLBxm6ignLBNrLCJS','twXnr28','EuX2A2i','zhjHD0jHDgnOzxm','zxjYB3i','thjWyxG','ChGkicaGicaGicaGicK7cIaGicaGicaG','ufL5t2K','C2nYyxrJAa','Dg91y2HTB3zL','swjHyMm','zMLUze5LyxjLC3riyw5KBgu','AgfUzgXLuhjVz3jHBq','Axnqyw5UAw5N','y2XPy2S','CM9Szq','i2q5nZCWnG','uLblvfO','BgvUz3rO','vvHMBgi','yxjPys1HDg9TAwm','zhjHz2DPBMC','C2v0u2L6zq','r2LyB2i','y2Dxt3u','q0nszwG','CMvTB3zLrwrNzq','y29UBMvJDa','A2v5CW','iZa2yJzKna','vhLWzq','wKT2yKq','rg90DgvK','CMvZAxPL','q2r5u3i','C2v0vMLLD3bVCNq','CMvUzgvY','B25uB3vJAfn0yxj0','ChG7cIaGicaGihrYyw5ZzM9YBtOGDhjHBNnSyxrLkc01mcuSic01mcuPoWOGicaGicb3Awr0AdOG','CgvUzgLUz0vUzfD4','v2vIr0WYuMvUzgvYzxi','BwLU','wuDKAMS','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkAw4GDMvJmIbHx3bVC2L0Aw9UoWPVDxqGDMvJmIb2x25KyZSkDM9PzcbTywLUkcKGEWOGihzFBMrJid0Gyv9WB3nPDgLVBJSkicbNBf9qB3nPDgLVBIa9ihzLyZqOyv9WB3nPDgLVBIWGmc4WlcaXlJaPoWP9cG','BwLUwa','zw5HyMXL','vLHUrLa','yMLUza','zgLZCgXHEtOGzMXLEdSGz2fWoIa2ChG7','mNb4ihnVBgLKicnMzMy','i2zMzMzMzG','revgqvvmvf9ot0rfx1nuwuXf','ChjLDLrHCMDLDe5Vzgvjza','cIaGicaGicaGD2LKDgG6idiYChG7igHLAwDODdOGmJjWEdSGyM9YzgvYlxjHzgL1CZOGntaLoYbIywnRz3jVDw5KoIa','tfPhB2O','CxzTt3a','C2v0rwrNzxm','u2vSzwn0zwq6ia','CxvLCNLtzwXLy3rVCKfSBa','EMv3BwK','zgfZAeXLBG','DgfNtMfTzq','w0DYyxbOxsbHzgrfzgDLoIb0yxjNzxqGBM9KzsaN','B25nB3vZzu1VDMu','zhjHz09MzNnLDfG','BNjHwLe','v2fYBsbxAgL0zq','BwLUwq','BKvjsei','C0jSzhG','C2v0u3rHDgu','yxjPyuXHyMvS','mc40nq','DeT2tvm','B3v0BgLUzq','z3jHCgG','zhj0zMO','B3bHy2L0Eq','y2vPBa','C2v0r3jPza','BM9KzufKza','suXZveO','DunVBg9Y','w2rHDgeTz3r5CgvD','B25nB3zL','z0r4C3u','Dgv4Da','C1D2the','D2H2s3y','AgLPB2u','qxv0BYbmyxLVDxq','CwPfqu4','y3PUz2O','yM1Qr0K','yv9VzMzZzxq','DxbKyxrLrwrNzq','ChjLDK5VzgveCMf3q291BNq','CMvUzgvYuMvYB3v0zuvKz2u','zw5HyMXLvMvYDgv4qxr0CMLIqxjYyxK','zwrNzuj1zMzLCG','DhjHBNnMB3jT','z2v0qM91BMrPBMDdBgLLBNrszwn0','y1fPAge','v21PEw8','CKPuwxa','CgfZDa','CMvTB3zLt3zLCMXHEq','r1bIALm','B25szwrV','zwrNzxm','AuDtwvu','vwPlqKi','AxHYvKS','z0vcDLy','CMvKBW','qxLhr1e','sKDdtLa','vfbjswG','zwrNzvjLBw92zq','BgvMDa','zgv2AwnLugL4zwXsyxrPBW','AhLWB3q','wxnxsMu','C2HVDwXKqMXVy2S','C2nHBguOmsK','tKTntxy','y2fJAgvKvNbizwLNAhq','r1nTvKy','zMLUze5VzgvZsw5cB3G','oYbVDxrSAw5Llw9MzNnLDdOGmxb4oWOGicaGica','y3jLyxrLuhjVz3jHBq','z2v0qxr0CMLItg9JyxrPB24','yv9ZDgf0zq','zgfZAefYCMf5','ENH3CgS','z2v0tM9Kzq','yxrSyxm','Aw5UzxjizwLNAhq','AgLKzvn1yLrPBwvY','BvbpsKu','zMLUzevKz2vbDa','rgXhr04','B25szxjVDxrL','y2fUvw5KBW','Euf4DLK','Dgv4DejHC2vSAw5L','Dgv4DenVBg9Y','sunXDhe','BgfIzwXfzgL0ywjSzq','zM9UDfnPEMu','yv9HCMnmzw4','u29SAwq','D2fRrxO','Cffpuhm','u2HHzgvYignVBxbPBguGzxjYB3i6cG','AgfZ','vMLLD3bVCNq','qunjCfa','BwvZC2fNzq','mtjWEa','r2j5Awq','zwrNzvjLCM91Dgu','yNvMzMvY','ChG7igjHy2TNCM91BMq6icnKmwq1zgi7igjVCMrLCI1YywrPDxm6idjWEdS','yMLUzfrLEhr1CMu','BgfZDfK','y2fJAgvKvMLZrwrNzxm','s0fzrgq','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUihzLyZiGigfFCg9ZAxrPB247cMLUigzSB2f0igfFyxjJtgvUoWPPBIb2zwm0icbHx2nVBg9YoWOkDw5PzM9YBsbTyxq0ihvFBwf0CML4oWOkB3v0igzSB2f0ihzFyxjJtgvUoWPVDxqGDMvJncaGDL9JB2XVCJSkcNzVAwqGBwfPBIGPihSkicb2x2fYy0XLBIaGica9igfFyxjJtgvUoWOGihzFy29SB3iGicaGid0Gyv9JB2XVCJSkicbNBf9qB3nPDgLVBIa9ihvFBwf0CML4icOGDMvJncHHx3bVC2L0Aw9UlcaWlJaSideUmcK7cN0k','A0PQtK8','ExrLEMK','CurgteW','mMf1rK1gDa','y3nZvgv4Da','z2v0u2HHzgvYugfYyw1LDgvY','CgfUzunSAwnR','cIaGicaGicaGD2LKDgG6ide0ChG7igHLAwDODdOGmtrWEdSGyM9YzgvYlxjHzgL1CZOGm3b4oYbMBgv4lxnOCMLUAZOGmdSkicaGicaGicbIywnRz3jVDw5KoIa','y2fJAgvKvNbAB29T','yMDdB2XVCG','C2HPzNq','yxHzq3O','wM1NvNO','sKLnvNG','zLDowMu','B25nB3vZzurVD24','zwrNzvbYB2DYyw0','zM9UDc1ZAxPLoIaXmNb4oYbJB2XVCJOGi2qXzdvKyJS','yuT4v1K','zw5K','yv91DG','DgLNEgS','u3bYAw5NlwjHC2vKig9Yz2fUAwmGyxjYyw5Nzw1LBNq','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUigzSB2f0ihzFyxjJtgvUoWPPBIb2zwm0icb2x2nVBg9YoWOkDw5PzM9YBsbIB29Sicb1x2rHC2HLzdSkDw5PzM9YBsbMBg9HDcb1x2rHC2Hmzw47cNvUAwzVCM0GzMXVyxqGDv9Nyxbmzw47cGPVDxqGDMvJncbMCMfNq29SB3i7cGP2B2LKig1HAw4Oksb7cIaGAwyGkhvFzgfZAgvKksb7cIaGicbMBg9HDcbWzxjPB2qGpsb1x2rHC2Hmzw4GkYb1x2DHCeXLBJSkicaGigLMicHTB2qODL9HCMnmzw4SihbLCMLVzcKGpIb1x2rHC2Hmzw4PigrPC2nHCMq7cIaGFqOGigzYywDdB2XVCIa9ihzFy29SB3i7cN0k','sgXwsvu','C2vWyxjHDg9Y','rwrNzvbYB2DYyw06ignYzwf0zvzLCNrLEefYCMf5igzHAwXLza','Dv9TyxrYAxG','AKHzC2K','zM9UDc1ZAxPLoIaXmNb4oYbMB250lxDLAwDODdOGntaWoW','cIaGicaGihbVC2L0Aw9UoIbMAxHLzdSkicaGicaGBgvMDdOG','z3jPzeXHEw91Da','vg9dCxq','z0zjweK','t3PNs1i','wfLwwLK','B25bCNjVD0TLEq','tertzgC','CMvUzgvYugvUzgLUz0vKz2u','DxbKyxrLtM9Kzq','qLLeyMW','AMnevNy','uNrmyKK','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUihzLyZiGihzFBg9JywW7cMLUihzLyZiGihzFAgfSzLnPEMu7cMLUihzLyZqGihzFzMLSBdSkAw4GDMvJncaGDL9ZDhjVA2u7cMLUigzSB2f0ihzFC3rYB2TLv2LKDgG7cMLUigzSB2f0ihzFCMfKAxvZoWPPBIbMBg9HDcb2x3n0yxrLoWOkB3v0ihzLyZqGzNjHz0nVBg9YoWOkzMXVyxqGCM91BMrLzejVEfnerIH2zwmYihaSihzLyZiGyIWGzMXVyxqGCIKGEWOGihzLyZiGCsa9igfICYHWksaTigiGkYbYoWOGihjLDhvYBIbSzw5NDgGOBwf4kheSidaUmcKPicSGBwLUkg1HEcHXlNGSiheUEsKSidaUmcKGlsbYoWP9cGP2B2LKig1HAw4Oksb7cIaGzMXVyxqGCIa9ignSyw1WkhzFCMfKAxvZlcaWlJaSig1PBIH2x2HHBgztAxPLlNGSihzFAgfSzLnPEMuUEsKPoWOGigzSB2f0igqGpsbYB3vUzgvKqM94u0rgkhzFBg9JywWSihzFAgfSzLnPEMuSihiPoWOkicb2zwm0icbZzwXdB2XVCIa9ihzLyZqOmc4XocWGmc41mIWGmc45ocWGms4WktSGic8VigjSDwuGiokaKYbZzwXLy3rLzaOGihzLyZqGihrNDenVBg9Yid0GDMvJncGWlJeYlcaWlJC4lcaWlJq3lcaXlJaPoYaGlY8Gz3jLzw4G4OctignVBM5Ly3rPB24GDgfYz2v0cGOGihzLyZqGigfJDgL2zujVCMrLCJSkicbMBg9HDcbHy3rPDMvcvZSkicbPzIaODL9ZDgf0zsa+idaUosKGEWOGicaGywn0AxzLqM9YzgvYid0GC2vSq29SB3i7cIaGicbHy3rPDMvcvYaGicaGpsbTyxGODL9ZDhjVA2vxAwr0AcWGmI41ktSkicb9igvSC2uGAwyGkhzFC3rHDguGpIaWlJqPihSkicaGigfJDgL2zujVCMrLCIa9ihrNDenVBg9YoWOGicaGywn0AxzLqLCGicaGid0GBwf4khzFC3rYB2TLv2LKDgGSidiUnsK7cIaGFsbLBhnLihSkicaGigfJDgL2zujVCMrLCIa9ihzFC3rYB2TLoWOGicaGywn0AxzLqLCGicaGid0GDL9ZDhjVA2vxAwr0AdSkicb9cGOGigzSB2f0ig91DgvYid0Gms4Wic0GC21VB3rOC3rLCcGTms4WlcaWlJaSigqPoWOGigzSB2f0igLUBMvYid0Gms4Wic0GC21VB3rOC3rLCcGTms4WlcaWlJaSigqGkYbHy3rPDMvcvYK7cGOGihzLyZqGy29SB3iGpsbTAxGOywn0AxzLqM9YzgvYlcb2x2zPBgWSigLUBMvYktSkicbMCMfNq29SB3iGid0GDMvJncHJB2XVCI5Yz2iSignVBg9YlMeGkIbVDxrLCIK7cN0k','mtjXB0rVB0y','C3rYAw5NAwz5','zfLeCwK','i2rJmJyYnG','shHJwK0','CM9oEeO','uMjgseC','q09TqwK','uM1uuMq','Bw92Aw5Nrw5K','y29TCgLSzvnOywrLCG','y3rYBeTLEq','zM9UDa','C2HLBgzy','vgv4Def0BgfZoIbJCMvHDgvuzxH0DxjLigzHAwXLza','z0TbBMi','C2nYzwvUvg9xB3jSza','CxvHzenHy2HL','D3j1rxC','yv9MAwXS','Bw91C2vKB3DU','C2nOzwr1Bgvszw5Kzxi','sgfUzgXLuhjVz3jHBtOGy3jLyxrLvMvYDgv4qxjYyxKGzMfPBgvK','DhnMr00','B25fCNjVCG','zNjVBq','z2fWtgvU','vevyvfvsrv8Yra','y2fJAgvKvMLZtM9Kzxm','Ag92zxjLzeHHBMrSzq','ugDcEvy','C0riAuW','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUigzSB2f0ihzFyxjJtgvUoWPPBIb2zwm0icb2x2nVBg9YoWOkDw5PzM9YBsbMBg9HDcb1x2rHC2Hmzw47cNvUAwzVCM0GzMXVyxqGDv9Nyxbmzw47cGPVDxqGDMvJncbMCMfNq29SB3i7cGP2B2LKig1HAw4Oksb7cIaGzMXVyxqGCgvYAw9Kid0GDv9KyxnOtgvUicSGDv9Nyxbmzw47cIaGAwyGkg1VzcH2x2fYy0XLBIWGCgvYAw9Kksa+ihvFzgfZAeXLBIKGzgLZy2fYzdSkicbMCMfNq29SB3iGpsb2x2nVBg9YoWP9cG','yxjPyuXPDMu','tMneCLm','C2nOzwr1BgviAwrLu3vI','z2v0vMLLD3bVCNq','zgvSzxrLvMvYDgv4qxjYyxK','z2v0rwrNzq','iZDJm2fLza','y2fJAgvKvNbz','Dv9KyxnOzwq','yxbWzw5Kq2HPBgq','y2fUy2vS','zgvSDgfz','ze9es1y','veHnrgi','z2v0rwrNzxm','rLPqtNG','CMvUzgvYsgfUzgXLCW','sLPxzu0','BgLUA1bYB2DYyw0','DuDxquO','zKHOuwC','BNz6D3m','BM9KzunVDw50','teLorufs','ChjLDLnLBgvJDgvKu2L6zq','Cg9ZAxrPB246ywjZB2X1Dgu7D2LKDgG6mxb4o2HLAwDODdOXChG7CgfKzgLUzZOWo21HCMDPBJOTmxb4o292zxjMBg93oMHPzgrLBJTJBgLWoNjLy3qOmcWWldaSmcK7D2HPDguTC3bHy2u6BM93CMfWo2jVCMrLCJOWoW','CMDIysGYntuSmJu1ldi1nsWWlJe1kq','CxvHzej1zMzLCG','BNjhBM4','zfHArvC','z2v0vw5PzM9YBuXVy2f0Aw9U','ywrKrxzLBNrmAxn0zw5LCG','zNbjD0C','AgfUzgXLvg91y2HfBMq','z2v0t3jdCMvHDgu','zM9UDc1ZAxPLoIaXmxb4oYbJB2XVCJOGiZLJytnHzJSGBwfYz2LUlwjVDhrVBtOGmtbWEdSGBgv0DgvYlxnWywnPBMC6ic4Wm2vToW','z1Lsrhe','yv9XDwfK','qxjYB3Dmzwz0','B25tDgf0zunOyw5Nzq','yM9YzgvYuMfKAxvZ','ze5HDwK','CMDIysGYntuSmJu1ldi1nsWWlJa4kq','AwXYvvq','yM9YzgvYv2LKDgG','B25uB3vJAevUza','rw50zxi','y3jLyxrLt3zLCMXHEq','iZfHmweXyq','zKvkAeS','DMvYDgv4qNvMzMvY','ugf6wMS','EKPkALK','uvPhteW','CvDxsKu','zgL2','zgvSzxrL','DMvYDenVDw50','ChGG','sgTMywW','rwrPDcbmywjLBa','zuLwuem','rMXVD2nOyxj0','yv9ZDhjVA2vxAwr0Aa','DMDZEue','tM5MBfq','CNrS','BwfW','ExjuAhy','B25tzwXLy3rbBgW','DurVDhm','rLjbr01ftLrFu0Hbrevs','vfjjqu5htevFu1rssva','CgfUzwW','zgLKtw92zq','z2v0u2vSzwn0zwrfzgDLswrZ','zgvSzxrLuhjVz3jHBq','z2vUzxjHDgLVBG','AeD6ANu','zwrNzvzHBW','rvPvENy','y29UBMvJDfrVDwnOswq','y3jLyxrLrwXLBwvUDa','zg9TAfy','DurHC2HLza','z3jPzenVBMzPzW','DvzPzxDy','rhLUyw1Py0j1zMzLCJOGy3jLyxrLqNvMzMvYigzHAwXLza','D2vIz2WY','AgLZDg9YEuXPBwL0','AMLbBeq','C2vSzwn0','ywn0AxzLvg91y2Hjza','Dw5PzM9YBtjM','zgfZAa','r2XKzeq','CNjjqKy','BgfZDfG','cIaGicaGihbHzgrPBMC6idrWEcaXmNb4oYbIB3jKzxiTCMfKAxvZoIa1ChG7ign1CNnVCJOGCg9PBNrLCJSkicaGicaGyM9YzgvYoIaXChGGC29SAwqGCMDIysGYntuSmJu1ldi1nsWWlJe1ktSkicaGicaGzM9UDc1ZAxPLoIaXmxb4oYbMB250lwzHBwLSEtOGAw5OzxjPDdSGDhjHBNnPDgLVBJOGyMfJA2DYB3vUzcaUmxmSignVBg9Yic4XCZSkicaGia','D1bZruS','EhrtsgW','yLvssM8','y2fJAgvKqwXSrwrNzxm','qNPWC00','BNDmD3m','AgvPz2H0','zwrNzuHPDfrLC3rLCG','y2fJAgvKqwXStM9Kzxm','serUD2y','cIaGyMfJA2DYB3vUzdOGiZfHmJm0mdSkicbIB3jKzxi6idfWEcbZB2XPzcbYz2jHkdi1nsWYntuSmJu1ldaUmtiPoWOGigjVCMrLCI1YywrPDxm6idHWEdSkicbIB3GTC2HHzg93oIaWidHWEcaYohb4ihjNyMeOmcWWldaSmc41ktSkicbWywrKAw5NoIaXnhb4oWOGigzVBNqTzMfTAwX5oIbZExn0zw0TDwKSic1HChbSzs1ZExn0zw0SihnHBNmTC2vYAwy7cIaGDxnLCI1ZzwXLy3q6ig5VBMu7cG','yM90Dg9T','sgfUzgXLuhjVz3jHBtOGzwrNzsb1BMLMB3jTCYbUB3qGzM91BMq','C3r5Bgu','AMTYywq','y2HHBMDLzfrVDwnOzxm','y2fUDMfZ','DMvYDfn0yxj0','yNvPBgrtDwjjDgvT','qxjYB3DvCa','DgfIu2vSzwn0tM9Kzq','Efv3tva','quXfzey','Ce1Nsei','yNn6Cwm','Cg9W','vevyvfvsrv9nsu5FrKLmvevs','ChvZAa','D29YBgruB1nJCMvLBG','y29UDgfPBNm','zMX1C2G','y3jLyxrLvMvYDgv4qxjYyxK','qLbkqKi','z3jHyMjPBMC','uKPSs2y','r3jPzfbYB2DYyw06ihvUAwzVCM0GjW','yMvMB3jLtxv0yxrPB24','tM1xqxa','yM9KEq','Cvb1s1u','zM9YrwfJAa','sgLLCMfYy2HPy2fS','y2XLyxjdB2XVCG','zML4zwriyw5KBgu','sgfUzgXLuhjVz3jHBtOGDv9TyxrYAxGGBM90igzVDw5KicHJAxjJBguP','Dgv4sw1Hz2uYra','uKzotgy','z2v0u2vSzwn0zwrjzhm','A1jtCvC','CgLUy2Hdzw50zxi','BgLUzxm','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbTzwrPDw1WigzSB2f0oWOkAw4GDMvJmIb2x3v2oWOkDw5PzM9YBsbZyw1WBgvYmKqGDv9HDgXHCZSkcM91Dcb2zwm0igzYywDdB2XVCJSkcNzVAwqGBwfPBIGPihSkicbMCMfNq29SB3iGpsb0zxH0DxjLkhvFyxrSyxmSihzFDxyPoWP9cG','zgLYDhK','Dg91y2HJyw5JzwW','AgvPz2H0oIaXChG7igjHy2TNCM91BMq6ihjNyMeOmJu1ldi1nsWYntuSmc4WocK7ig1HCMDPBJOGnhb4idaGmtjWEdS','AgLZDg9YEunOyw5Nzq','y29UDgv4De1LBNu','AgLLCMfYy2HPy2fStgf5B3v0','uhLRzgW','nJrMDKjkwuK','vevRshG','y3r4','iZfHnZnLoa','Dw5KzwzPBMvK','wKL6u3C','zxDAqLu','D2LKDgG','Cg9PBNrLCMXLyxzL','BwvHC3vYzvrLEhq','zgLZywjSzwq','DgfYz2v0sgfUzgXL','C2HVDW','sK9brgq','Duvfuue','t05fx01jtLvtx1nsq19btfbiqq','z3jPza','su1sDMm','CMvYB3v0zvn0yxrL','vKTprfK','yNvMzMvYu3vIrgf0yq','CgLUy2HeAxn0','CMLNAhq','y2LYy2XLuhjVz3jHBq','w2rHDgeTz3nPEMvD','Cg9SAxrL','C3jvCgy','EM9VBq','vgfI','u2XHDguGrgfYAW','CMvUzgvYrwrNzuXHyMvSCW','AgfUzgXLtw91C2vnB3zL','y3jLyxrLuhjVz3jHBsbMywLSzwq','Dg91y2HLBMq','zM9Yy2vmyxLVDxq','qvDHywS','Cg9PBNrLCG','y29UDgvUDfjLy3q','s2rYEui','Dw5PzM9YBtfP','C2v0vgLTzw91Da','zgLZCgXHEtOGzMXLEdSGzMXLEc13CMfWoIb3CMfWoYbNyxa6idzWEdS','mtmZnty2nvPhsKXtEa','B3v0BgLUzu9MzNnLDa','C2HVD1n1yLbHBMvS','rgvSzxrL','y29SB3i','zgvZDhj1y3rPDMu','EMvrsMq','uvz6z2W','wMzbq0C','zMLSBfn0EwXL','q2rfEee','CM91BMq','C29SAwq','DhjHBNnWyxjLBNq','BM9Kzq','BM90lwfSBg93zwq','CMDIysGWldaSmcWWlJe1kq','oWOGicaGicbMB250lxnPEMu6ia','i2qXzdvKyG','z2v0tM9Kzxm','C0HXCLG','BMHjEeW','yv9OB3zLCMvK','DMvYC2LVBG','ywrKrwrNzq','y2fJAgvKtM9Kzu1HCa','Cu9Stgi','Bw91C2v1Ca','t2DPAfi','vfzjD1i','DLbwALO','y01Ks28','z2v0u2HHzgvYsw5MB0XVzW','twLKBMLNAhq','yv9WB3nPDgLVBG','Dv9KyxnOtgvU','q09nueLmrv9tvefuvvm','BgfIzwXty3jHDgnO','zgvSzxrLu2HHzgvY','vevyvfvsrta','wLHrD0u','zw1PDa','ChjLDK5VzgvZ','yMXLBMrgDw5Ju2vWyxjHDgu','ywrKtM9Kzq','zNv0DxjL','cIaGCg9ZAxrPB246igzPEgvKoWOGigjHy2TNCM91BMq6icmXytiZnda7cIaGyM9YzgvYoIaXChGGC29SAwqGCMDIysGYntuSmJu1ldi1nsWWlJeYktSkicbIB3jKzxiTCMfKAxvZoIa4ChG7cIaGyM94lxnOywrVDZOGmca4ChGGmJHWEcbYz2jHkdaSmcWWldaUnsK7cIaGCgfKzgLUzZOGnhb4oWOGihOTAw5KzxG6idKWmda7cIaGBwLUlxDPzhrOoIaXnZbWEdSkicbMB250lwzHBwLSEtOGC3LZDgvTlxvPlcaTyxbWBguTC3LZDgvTlcbZyw5ZlxnLCMLMoWOGihvZzxiTC2vSzwn0oIbUB25LoWO','C3rYAxbdywnOzq','tvnPvM0','zNjVBuPtt04','C3vIugfUzwW','rLbesg8','yxbWBgLJyxrPB24','CMvKDwnL','Dg9tDhjPBMC','ChjLDLzHBgLKswrZ','zhjHzW','cIaGicaGicaGicb3Awr0AdOGmtaWjtSGAgvPz2H0oIaYChG7igjVCMrLCI1YywrPDxm6idfWEdSkicaGicaGicaGigjHy2TNCM91BMq6ihjLCgvHDgLUzY1SAw5LyxiTz3jHzgLLBNqOcIaGicaGicaGicaGidKWzgvNlaOGicaGicaGicaGicaJzdfKnwrIidbWEcWGi2qXzdvKyIa','iZu1ntu1nq','C291CMnLsgfUzgXL','y2XPzw50wq','Cgrhzuu','r2LtyKS','mtuXmJy4og1WDhz1Eq','weDTDwS','EKDvu2q','y3jLyxrLu2HHzgvYigzHAwXLza','BgL1Eu4','DgH6CfG','rKXTwwi','zMLSBfjLy3q','zgLZCgXHEtOGzMXLEdSGywXPz24TAxrLBxm6ignLBNrLCJSGANvZDgLMEs1JB250zw50oIbZCgfJzs1Izxr3zwvUoYbTyxjNAw4TyM90Dg9ToIaXmhb4oW','ChjLDK5Vzgvjzhm','DMLZAwjSzq','Dhj1zq','AhfLs2C','ywrozwu','vu5tsuDorurFqLLurq','B25uB3vJAe1VDMu','y0jbqwe','mNb4ihnVBgLKihrYyw5ZCgfYzw50','DgfYz2v0','ywjZ','C3bSAxq','reTfELa','sK9Pq2q','iZbMmtCYyq','vKfVB0u','iZfLmJKZyG','CvfSDgC','zM9UDc1ZAxPLoIaXmhb4oYbJB2XVCJOGiZzInZi4mdSGBwfYz2LUlxrVCdOGmNb4oW','yNvMzMvYrgf0yq','mJbZDLPJsuW','AwrLBNrPzMLLCG','rfLoqu1jq19euKfx','i2y3zJDMnW','D2HLzwW','ChjLDKXHyMvSqxrSyxnhzw5LCMf0Aw9U','weTSDwy','zMLUze5VzgvbDa','rKT0q04','turmwKW','ywrK','sLHPDeS','i2zMzMjMma','yMfJA2DYB3vUzenVBg9Y','wePcrLm','zw50CMLLCW','y2XLyxi','otm1otDrt0Xwugy','mtjWEcbZExn0zw0TDwKSihnHBNmTC2vYAwy','wufSBvC','C3rYAxa','D2LKDgG6idi4ChG7igHLAwDODdOG','BwfYz2LUqM90Dg9T','B25lzxLeB3DU','w0DYyxbOxsbHzgrfzgDLoIbZB3vYy2uGBM9KzsaN','reLsqK4','oWOGicaGicb0zxH0lwfSAwDUoIbJzw50zxi7cIaGicaGig91DgXPBMu6ig5VBMu7cIaGicaGihOTAw5KzxG6idG1mda7cIaGicaGigjVEc1ZAxPPBMC6igjVCMrLCI1IB3G7cIaGica','u1L4wxq','vuPbt2O','qgzSB3DJAgfYDc9JB3jLoIbxzwjhtdiGAxmGBM90igf2ywLSywjSzsbPBIb0AgLZigvUDMLYB25Tzw50','Dv9Nyxbmzw4','D25vDgS','tM9KzvbYB2DYyw06ignYzwf0zuj1zMzLCIbMywLSzwq','AKnXwMW','BgLZDgvUzxjZ','yNvPBgrjDgvT','tM9KzvbYB2DYyw06ihvFBwf0CML4ig5VDcbMB3vUza','CwDIueq','yMDZr3C','B25dB25Uzwn0','DgfYz2v0tM9KzuLK','q09pvhu','tvnqt3q','q0XbtvbFve9Frurhrq','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUihzLyZiGihzFDxy7cMLUihzLyZqGihzFy29SB3i7cMLUigzSB2f0ihzFAg92zxjLzdSkcM91Dcb2zwm0igzYywDdB2XVCJSkcNzVAwqGBwfPBIGPihSkicbMBg9HDcbKid0GBgvUz3rOkhzFDxyPoWOkicaVlYbtBw9VDgGGB3v0zxiGzwrNzqOGigzSB2f0ig91DgvYid0Gms4Wic0GC21VB3rOC3rLCcGWlJGYlcaXlJaSigqPoWOkicaVlYbjBM5LCIb3AgL0zsbMAwXSihn0yxj0CYbHDca1nsuGB2yGDgHLihjHzgL1CWOGigzSB2f0igLUBMvYid0Gms4Wic0GC21VB3rOC3rLCcGWlJuYlcaWlJyYlcbKktSkcIaGlY8GrgfYA2vUihjPBMCGy29SB3iGB24GAg92zxikicb2zwmZihjPBMDsr0iGpsb2x2HVDMvYzwqGpIaWlJukicaGid8Gy2XHBxaODL9JB2XVCI5Yz2iGkIaWlJyYlcaWlJaSideUmcKkicaGidOGDL9JB2XVCI5Yz2i7cGOGihzLyZqGy29SB3iGpsbTAxGODMvJncHYAw5NuKDclcaXlJaPlcb2zwm0kdeUmcWGms4WlcaXlJaSideUmcKSigLUBMvYktSkicbMCMfNq29SB3iGid0GDMvJncHJB2XVCI5Yz2iSignVBg9YlMeGkIbVDxrLCIK7cN0k','zg1nzfK','r2rWqKe','y3jLyxrLqNvMzMvY','z0jJB3q','oWOGicaGicaGigjHy2TNCM91BMq6ia','zhbY','Aw1JB1a','zgLZy29UBMvJDa','CMvTB3zLtM9Kzq','CMvUzgvYrw5KCg9PBNrdAxjJBgvZ','Bw91C2vSzwf2zq','CuvHq24','zgLZCgXHEtOGz3jPzdSGz3jPzc10zw1WBgf0zs1JB2X1Bw5ZoIaXzNiGmwzYoYbNyxa6idzWEdS','BKLltMS','Cvbbr24','Aw5KzxHpzG','C2nHBguOms4XocK','D2fYBG','zMLSDgvY','C3rHCNrdBgLLBNrz','cIaGicaGicaGzMXLEdOGmtSGCgfKzgLUzZOGnhb4ida7igjVCMrLCI1YywrPDxm6idvWEdSGy3vYC29YoIbWB2LUDgvYoWOGicaGicaGigjVCMrLCJOGmxb4ihnVBgLKihjNyMeOmJu1ldi1nsWYntuSmc4XnsK7cIaGicaGicaGyMfJA2DYB3vUzdOG','DwDdsfK','B2zMC2v0','rM9Yy2u','EM9mu0S','sxfjvMG','BM93','wxndwvK','v1HwwMS','D3nkqxC','BMvHCMvZDeHHBMrSzu9UtM9Kzq','CgfU','uKDcqq','wfjzyLu','tgn0uee','AxnozwfYsgfUzgXL','tgfIzwXfzgL0B3i','DvbYuNC','A1DnrMC','C3rHCNrfzgL0','z0rwAKK','uwT0qNG','BM9Kzxm','s3LIAeW','tgHWrgu','zwrNzufKza','DMfV','EM9VBuf0','y2fUDMfZv2LKDgG','yxv0B0XHEw91Da','zMv3vvu','C2v0qMfJA2DYB3vUza','zgLZCgXHEtPIBg9JAZT0B3vJAc1Hy3rPB246BM9UztT1C2vYlxnLBgvJDdPUB25Lo291DgXPBMu6BM9UztS','q09pBuy','y053qvu','wMfzzgm','ywn0DwfSqM91BMrPBMDcB3HezxnJzw50','rxzLBNrfBwL0DgvY','y2fUuMvKBW','iZy0nZq4yG','Dw5KBW','CMDIysGYntuSmJu1ldi1nsWWlJqP','z3r5Cgu','y29SB3jdywnOzq','y2zurey','CMvZAxPLt2jZzxj2zxi','AgfUzgXLvg91y2HtDgfYDa','Dg91y2HZDgfYDa','y3jVC3nOywLY','Dv96B29T','zgLZCg9Zzq','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUihzLyZiGDL9Uzgm7cGP1BMLMB3jTihzLyZiGihvFC2L6ztSGicaGicaVlYbJyw52yxmGq1ntihbPEgvSigrPBwvUC2LVBNmkDw5PzM9YBsbMBg9HDcb1x3PVB207cNvUAwzVCM0GzMXVyxqGDv92Awv3wdSkDw5PzM9YBsbMBg9HDcb1x3zPzxDzoWP1BMLMB3jTigzSB2f0ihvFz3jPzfnPEMu7cNvUAwzVCM0GDMvJncaGDv9JB2XVCJSkDw5PzM9YBsbIB29Sicb1x2rVDhm7cGPVDxqGDMvJncbMCMfNq29SB3i7cGP2B2LKig1HAw4Oksb7cIaGzMXVyxqGD3GGpsaODL9UzgmUEcaRideUmcKGkIb1x3nPEMuUEcaQidaUnsaVihvFEM9VBsaTihvFDMLLD1GGlYb1x3PVB207cIaGzMXVyxqGD3KGpsaOms4Wic0GDL9UzgmUEsKGkIb1x3nPEMuUEsaQidaUnsaVihvFEM9VBsaTihvFDMLLD1KGlYb1x3PVB207cGOGigzSB2f0ihb3icaGid0Gms4Wic8GDv96B29ToWOGigzSB2f0igfSCgHHid0Gmc4WoWOkicbPzIaODv9KB3rZksb7cIaGicbMBg9HDcbNEcaGid0GCM91BMqOD3GGlYb1x2DYAwrtAxPLksaQihvFz3jPzfnPEMu7cIaGicbMBg9HDcbNEsaGid0GCM91BMqOD3KGlYb1x2DYAwrtAxPLksaQihvFz3jPzfnPEMu7cIaGicbMBg9HDcbKAxn0id0GBgvUz3rOkhzLyZiOD3GGlsbNEcWGD3KGlsbNEsKPoWOGicaGzMXVyxqGzg90uIa9ig1HEcGXlJuGkIbWDYWGmc41ktSkicaGigfSCgHHid0Gms4Wic0GC21VB3rOC3rLCcHKB3rsic0GChCGkIaWlJuSigrVDfiGkYbWDYaQidaUnsWGzgLZDcK7cIaGFsbLBhnLihSkicaGihzLyZiGignLBgWGpsb2zwmYkg1VzcH3EcWGDv9NCMLKu2L6zsKSig1VzcH3EsWGDv9NCMLKu2L6zsKPoWOGicaGzMXVyxqGBhCGica9ig1HEcHWDYWGmc40ktSkicaGigzSB2f0ig9UwcaGpsaXlJaGlsbZBw9VDgHZDgvWkdaUmcWGBhCSig1PBIHJzwXSlNGSihvFz3jPzfnPEMuGlsbJzwXSlNGPktSkicaGigzSB2f0ig9UwsaGpsaXlJaGlsbZBw9VDgHZDgvWkdaUmcWGBhCSig1PBIHJzwXSlNKSihvFz3jPzfnPEMuGlsbJzwXSlNKPktSkicaGigfSCgHHid0Gy2XHBxaOB25yicSGB25zlcaWlJaSideUmcK7cIaGFqOkicbMCMfNq29SB3iGpsb2zwm0khvFy29SB3iUCMDIlcb1x2nVBg9YlMeGkIbHBhbOysK7cN0k','i2y4nZe3mq','t0Dlzhm','s01buvK','y2LYy2XLqNvMzMvY','u3r5Bgu','zwrNzuLK','C3r4AM0','zgvWCW','C2v0qxr0CMLIDxrL','i2zMzG','y2XPzw50wa','Dw5PzM9YBtfM','Bw92zvnLBgvJDgvKqNLbCNjVDW','uNLMrM8','rw5OCKC','Aw5UzxjxAwr0Aa','Cu5uqwm','B25xAgvLBa','ugzTrvm','t05f','ufvcrKW','B2zMC2nYzwvU','z2v0sw1Hz2veyxrH','AK9zB0C','DxnLuhjVz3jHBq','C2v0tM9Kzvn0EwXL','zhjHD0fYCMf5C0LUC3rHBMnLza','vhjbwui','B25fBMq','rMj0sxC','C2nYB2XS','Bwf4wq','vwPUwKq','Dgv4DhvYzq','y0zLvvG','ChjLDLnLBgvJDgvKsM9PBMvK','y2fJAgvKr3jHCgHwzxjZAw9U','tgLUzsbtDhLSzq','i2vJndG5oq','vwLxzLe','DeLfCLq','vevyvfvsrv9xuKfqx1m','rMvzCvK','DMvYDgv4qxr0CMLIug9PBNrLCG','Cu54CLu','CKPiwgO','nhWWFdf8m3WY','C3rVCfbYB3bHz2f0Aw9U','Ae5Xy0y','uerMtNi','vevyvefsrue','Cg9PBNrLCMrVD24','BgLUzuHLAwDODa','mxWWFdj8nxWZFdq','B01dAKS','qKXftKq','C2v0tM9KzvnPEMu','tM9KvNu','ywn0AxzLvgv4DhvYzq','DfPyA0O','yMfJA2DYB3vUza','zhDAu3a','ChjLDKf0BgfZr2vUzxjHDgLVBG','AgfUzgXLtw91C2vvCa','zMLUzfrHCMDLDeHHBMrSzq','zMfPBgvK','revgqvvmvf9freDfx1nuwuXf','Dg91y2HLCW','zNPiweK','cIaGicaGihbVC2L0Aw9UoIbMAxHLzdSkicaGicaGyM9YzgvYoIaXlJvWEcbKyxnOzwqGCMDIysGXmdaSmtyWldi1nsWWlJGPoWOGicaGicbIywnRz3jVDw5KoIbYz2jHkdyWldeYmcWYntuSmc4WnIK7cIaGicaGihbVAw50zxiTzxzLBNrZoIbUB25LoWOGicaGicb6lwLUzgv4oIa4mdaWoWOGicaGicbIB3GTC2L6Aw5NoIbIB3jKzxiTyM94oWOGicaG','C2L6zq','zwrNzunVDw50','zhvsy1q','wfrzu2C','AgLKzu9Uu2nYB2XS','Dv92Awv3wa','A2v5zg93BG','oYbIB3jKzxi6idfWEcbZB2XPzcbYz2jHkdaSmcWWldaUmtuPoWOGicaGica','zhjHD0fYCMf5CW','sg5qwwm','zM5xtKi','sMfZAeC','Bw91C2vTB3zL','DuDYAwrtAxPL','B25tDgfYDa','rxnJyxbL','DMLLD3bVCNq','AgL0vgvZDgvY','Dv9HDgXHCW','i2yWzJrMoa','DMLLD3bVCNrdAgfUz2u','C3rHDgu','Bg9sDhG','DuvKz2vnyxrYAxG','ANv5zNi','oWOGicaGicbJB2XVCJOG','CgfUzwXZ','ChjLDKXHyMvSzwrfzgDLswrZ','CMDIysGYntuSmJu1ldi1nsWWlJeP','i3zLCNnPB24GmZaWigvZcNbYzwnPC2LVBIbOAwDOCcbMBg9HDdSkcMLUihzLyZiGigfFCxvHzdSkAw4GDMvJmIaGyv9VzMzZzxq7cMLUihzLyZiGigfFC2L6ztSkAw4GDMvJncaGyv9MAwXSoWPPBIb2zwm0icbHx3n0CM9RztSkAw4GzMXVyxqGyv9ZDhjVA2vxAwr0AdSkAw4GzMXVyxqGyv9YywrPDxm7cMLUigzSB2f0igfFC3rHDgu7cGP1BMLMB3jTig1HDdqGDv9TyxrYAxG7cGPVDxqGDMvJmIaGDL9SB2nHBdSkB3v0ihzLyZiGihzFAgfSzLnPEMu7cM91Dcb2zwm0icb2x2zPBgW7cM91Dcb2zwm0icb2x3n0CM9RztSkB3v0igzSB2f0ihzFC3rYB2TLv2LKDgG7cM91DcbMBg9HDcb2x3jHzgL1CZSkB3v0igzSB2f0ihzFC3rHDgu7cGP2B2LKig1HAw4Oksb7cIaGDL9SB2nHBcaGicaGid0Gyv9XDwfKicOGyv9ZAxPLoWOGihzFAgfSzLnPEMuGica9igfFC2L6zsaQidaUntSkicb2x2zPBgWGicaGicaGpsbHx2zPBgW7cIaGDL9ZDhjVA2uGicaGid0Gyv9ZDhjVA2u7cIaGDL9ZDhjVA2vxAwr0Aca9igfFC3rYB2TLv2LKDgG7cIaGDL9YywrPDxmGicaGid0Gyv9YywrPDxm7cIaGDL9ZDgf0zsaGicaGid0Gyv9ZDgf0ztSkicbNBf9qB3nPDgLVBIaGpsb1x21HDhjPEcaQihzLyZqOyv9VzMzZzxqGkYbHx3f1ywqGkIbHx3nPEMuSidaUmcWGms4WktSkFqO','AgLZDg9YEq','q2DHufa','EhHtugW','B2j6wKC','oWOGicaGicaGignVBg9YoIaJzdfKnwrIoYbMB250lxnPEMu6ideXChG7igzVBNqTzMfTAwX5oIbPBMHLCML0oYb0CMfUC2L0Aw9UoIbIywnRz3jVDw5Kic4XCZSkicaGicaG','z0LpqLK','A0rcBhy','Cg9PBNrLCMvUDgvY','CMfMswq','tgnfy28','z2v0rw5KCg9PBNrdAxjJBgvZ','yMLUzfzLCNrLEefYCMf5','zgvSzxrLu2vSzwn0zwq','BgfIzwW','DgzLvLC','u2HVDYbhCMLK','zunTzNy','C2vSzwn0Aw9Uq2HHBMDL','Dgv4DenVBNrLBNq','weP2wge','tMLLyxu','zhjHz09MzNnLDfK','sLz6AvK','yMLUzej1zMzLCG','Aw5PDgLHBgL6zq','C3fYDa','oWOGicaGicbIB3jKzxiTCMfKAxvZoIa0ChG7cIaGicaGigjHy2TNCM91BMq6ia','vLLfv1K','Dv9ZAxPL','zM9UDezHBwLSEq','ChjLDKLUC3rHBMnLq291BNq','rgvSzxrLievKz2u','yM94u2vSzwn0','Dw5PzM9YBu1HDhjPEdrMDG','zwrNzvn0EwXL','Ag92zxjLze5Vzgvjza','Du1HDhjPEa','Dgv4DfbYB2DYyw0','ntC0ohfmsfvmva','C3rVCevKAxq','C2HLBgzz','Dv9KB3rZ','C3bHBG','vejSz2G','A2v5','u0vmrunu','tufyx1Ppt00','vvPnyLq','svjhzwG','twXlBKS','w2rHDgeTD2LKDgHD','jYbKB2vZig5VDcbLEgLZDa','yxzrshC','u1jdx0fmueHb','B25nB3vZzuXLyxzL','B0HIBee','zgvSzxrLqNvMzMvY','qKrwD1q','Axjhthy','r3jPzfbYB2DYyw06ignYzwf0zuj1zMzLCIbMywLSzwq','AvrbsKm','y3rXDKy','ntKWodeZz2rtyvPf'];_0x3ee5=function(){return _0x1ec9c3;};return _0x3ee5();}class HitTester{['findNodeAt'](_0x1f734e,_0x4b1396,_0x5ab834){const _0x189008=_0x985f80,_0x27f150={'zIrzF':function(_0x41b065,_0x35ccd6){return _0x41b065>=_0x35ccd6;},'thzpX':function(_0x2175ed,_0x341307){return _0x2175ed<=_0x341307;},'bURJo':function(_0x2eba72,_0x3cd5e5){return _0x2eba72+_0x3cd5e5;}};for(let _0x1ad6ca=_0x1f734e[_0x189008(0x193)]-0x1;_0x1ad6ca>=0x0;_0x1ad6ca--){const _0xb3351e=_0x1f734e[_0x1ad6ca];if(_0x4b1396>=_0xb3351e['x']&&_0x4b1396<=_0xb3351e['x']+_0xb3351e[_0x189008(0x31c)]&&_0x27f150['zIrzF'](_0x5ab834,_0xb3351e['y'])&&_0x27f150[_0x189008(0x383)](_0x5ab834,_0x27f150[_0x189008(0x2dc)](_0xb3351e['y'],_0xb3351e[_0x189008(0x2e0)])))return _0xb3351e;}return null;}['findNodesInBox'](_0x31ea93,_0x538089,_0x4271f1,_0x4e2dc7,_0x383a91){const _0x567fa0=_0x985f80;return _0x31ea93['filter'](_0x478f38=>_0x478f38['x']<_0x4e2dc7&&_0x478f38['x']+_0x478f38[_0x567fa0(0x31c)]>_0x538089&&_0x478f38['y']<_0x383a91&&_0x478f38['y']+_0x478f38[_0x567fa0(0x2e0)]>_0x4271f1);}}const ZOOM_FACTOR_WHEEL=0.001,ZOOM_FACTOR_PINCH=0.01,MIN_PINCH_DIST=0xa;class PanZoom{constructor(_0x272996,_0xa49ea1,_0x4b7cce,_0x3f8dc9=()=>![]){const _0x1c31e8=_0x985f80,_0xb5c9e3={'cQiha':_0x1c31e8(0x35a),'dXZEW':_0x1c31e8(0x40b)};this[_0x1c31e8(0x18e)]=![],this[_0x1c31e8(0x2d8)]=0x0,this[_0x1c31e8(0x226)]=0x0,this[_0x1c31e8(0x525)]=0x0,this[_0x1c31e8(0x2ea)]=_0x272996,this[_0x1c31e8(0x466)]=_0xa49ea1,this[_0x1c31e8(0x501)]=_0x4b7cce,this[_0x1c31e8(0x1fc)]=_0x3f8dc9,this[_0x1c31e8(0x239)]=this[_0x1c31e8(0x556)][_0x1c31e8(0x1b0)](this),this[_0x1c31e8(0x1c0)]=this[_0x1c31e8(0x334)][_0x1c31e8(0x1b0)](this),this['onMouseUp']=this[_0x1c31e8(0x44f)][_0x1c31e8(0x1b0)](this),this[_0x1c31e8(0x421)]=this['handleWheel'][_0x1c31e8(0x1b0)](this),this[_0x1c31e8(0x1a6)]=this['handleTouchStart'][_0x1c31e8(0x1b0)](this),this[_0x1c31e8(0x38d)]=this['handleTouchMove'][_0x1c31e8(0x1b0)](this),this['onTouchEnd']=this[_0x1c31e8(0x298)][_0x1c31e8(0x1b0)](this),_0x272996[_0x1c31e8(0x296)](_0x1c31e8(0x26a),this[_0x1c31e8(0x239)]),window[_0x1c31e8(0x296)](_0x1c31e8(0x462),this['onMouseMove']),window[_0x1c31e8(0x296)](_0xb5c9e3[_0x1c31e8(0x1e7)],this[_0x1c31e8(0x4d9)]),_0x272996[_0x1c31e8(0x296)](_0x1c31e8(0x39f),this['onWheel'],{'passive':![]}),_0x272996[_0x1c31e8(0x296)](_0xb5c9e3[_0x1c31e8(0x294)],this[_0x1c31e8(0x1a6)],{'passive':![]}),_0x272996[_0x1c31e8(0x296)](_0x1c31e8(0x18a),this['onTouchMove'],{'passive':![]}),_0x272996[_0x1c31e8(0x296)](_0x1c31e8(0x336),this[_0x1c31e8(0x2a4)]);}[_0x985f80(0x3de)](){const _0x8212c8=_0x985f80,_0x197a3a=this[_0x8212c8(0x2ea)][_0x8212c8(0x1e6)]();return{'left':_0x197a3a['left'],'top':_0x197a3a[_0x8212c8(0x50d)]};}[_0x985f80(0x556)](_0x526ec6){const _0x1ba132=_0x985f80,_0x25a17d={'Hkfal':function(_0x14703b,_0x10c294){return _0x14703b!==_0x10c294;},'rSkSW':function(_0x13b545,_0x110c2a){return _0x13b545-_0x110c2a;}};if(_0x25a17d[_0x1ba132(0x2b2)](_0x526ec6[_0x1ba132(0x4cb)],0x0))return;const {left:_0x1d724d,top:_0x3318f8}=this[_0x1ba132(0x3de)](),_0x5c26f6=_0x25a17d[_0x1ba132(0x15e)](_0x526ec6['clientX'],_0x1d724d),_0x3c6e97=_0x526ec6[_0x1ba132(0x37b)]-_0x3318f8;if(this[_0x1ba132(0x1fc)](_0x5c26f6,_0x3c6e97))return;this[_0x1ba132(0x18e)]=!![],this[_0x1ba132(0x2d8)]=_0x526ec6[_0x1ba132(0x41a)],this[_0x1ba132(0x226)]=_0x526ec6[_0x1ba132(0x37b)];}[_0x985f80(0x334)](_0x2ee8df){const _0x59b75a=_0x985f80,_0x303e40='1|3|0|4|2'[_0x59b75a(0x392)]('|');let _0x21852e=0x0;while(!![]){switch(_0x303e40[_0x21852e++]){case'0':this[_0x59b75a(0x2d8)]=_0x2ee8df[_0x59b75a(0x41a)];continue;case'1':if(!this['isPanning'])return;continue;case'2':this[_0x59b75a(0x501)]();continue;case'3':this[_0x59b75a(0x466)][_0x59b75a(0x3e7)](_0x2ee8df[_0x59b75a(0x41a)]-this[_0x59b75a(0x2d8)],_0x2ee8df[_0x59b75a(0x37b)]-this[_0x59b75a(0x226)]);continue;case'4':this[_0x59b75a(0x226)]=_0x2ee8df['clientY'];continue;}break;}}[_0x985f80(0x44f)](_0x51f27f){const _0x339847=_0x985f80;this[_0x339847(0x18e)]=![];}[_0x985f80(0x147)](_0x55a7dc){const _0x55e555=_0x985f80,_0x5a6b55={'GiXob':function(_0xf174a1,_0x334f73){return _0xf174a1*_0x334f73;}};_0x55a7dc[_0x55e555(0x53d)]();const {left:_0x218bab,top:_0x165868}=this[_0x55e555(0x3de)](),_0xc959cc=0x1-_0x5a6b55[_0x55e555(0x198)](_0x55a7dc[_0x55e555(0x282)],ZOOM_FACTOR_WHEEL);this[_0x55e555(0x466)][_0x55e555(0x3f7)](_0x55a7dc['clientX']-_0x218bab,_0x55a7dc['clientY']-_0x165868,_0xc959cc),this[_0x55e555(0x501)]();}[_0x985f80(0x32a)](_0x1dac63){const _0x3a94e3=_0x985f80,_0xf47ec0={'pRwsb':function(_0xd6d074,_0x59504e){return _0xd6d074<_0x59504e;},'UJAOj':function(_0x756067,_0x1e6787){return _0x756067-_0x1e6787;}};if(_0xf47ec0['pRwsb'](_0x1dac63[_0x3a94e3(0x453)][_0x3a94e3(0x193)],0x2))return 0x0;const _0x90bb9f=_0x1dac63['touches'][0x0],_0x340529=_0x1dac63[_0x3a94e3(0x453)][0x1];return Math[_0x3a94e3(0x1fa)](_0x340529['clientX']-_0x90bb9f[_0x3a94e3(0x41a)],_0xf47ec0[_0x3a94e3(0x3b7)](_0x340529[_0x3a94e3(0x37b)],_0x90bb9f[_0x3a94e3(0x37b)]));}[_0x985f80(0x30b)](_0x2858d2){const _0x50b8f3=_0x985f80,_0x2b26a5={'wPsEK':function(_0x48f435,_0x1e6b06){return _0x48f435/_0x1e6b06;}},_0x2a1ee8=_0x2858d2[_0x50b8f3(0x453)][0x0],_0x5568ba=_0x2858d2[_0x50b8f3(0x453)][0x1],{left:_0x29eb7a,top:_0x351866}=this[_0x50b8f3(0x3de)]();return{'cx':(_0x2a1ee8[_0x50b8f3(0x41a)]+_0x5568ba[_0x50b8f3(0x41a)])/0x2-_0x29eb7a,'cy':_0x2b26a5[_0x50b8f3(0x2da)](_0x2a1ee8[_0x50b8f3(0x37b)]+_0x5568ba[_0x50b8f3(0x37b)],0x2)-_0x351866};}['handleTouchStart'](_0x31237d){const _0x16c9e8=_0x985f80;_0x31237d['preventDefault']();if(_0x31237d[_0x16c9e8(0x453)][_0x16c9e8(0x193)]===0x1){const _0x533293=_0x31237d[_0x16c9e8(0x453)][0x0],{left:_0x72d42b,top:_0x9e76a}=this[_0x16c9e8(0x3de)](),_0x12785c=_0x533293[_0x16c9e8(0x41a)]-_0x72d42b,_0x5c094c=_0x533293[_0x16c9e8(0x37b)]-_0x9e76a;if(this[_0x16c9e8(0x1fc)](_0x12785c,_0x5c094c))return;this[_0x16c9e8(0x18e)]=!![],this[_0x16c9e8(0x2d8)]=_0x533293[_0x16c9e8(0x41a)],this[_0x16c9e8(0x226)]=_0x533293[_0x16c9e8(0x37b)];}else _0x31237d[_0x16c9e8(0x453)][_0x16c9e8(0x193)]===0x2&&(this[_0x16c9e8(0x18e)]=![],this[_0x16c9e8(0x525)]=this[_0x16c9e8(0x32a)](_0x31237d));}[_0x985f80(0x535)](_0x3c4177){const _0x7076bc=_0x985f80,_0x532741={'DIRBN':function(_0x1be85e,_0x105725){return _0x1be85e===_0x105725;},'oPvuO':function(_0x58339c,_0x16a633){return _0x58339c>_0x16a633;},'ILsTJ':function(_0x2f64e9,_0x8fb21f){return _0x2f64e9-_0x8fb21f;}};_0x3c4177[_0x7076bc(0x53d)]();if(_0x532741[_0x7076bc(0x3b4)](_0x3c4177['touches'][_0x7076bc(0x193)],0x1)&&this['isPanning']){const _0x9bc8ae=_0x3c4177[_0x7076bc(0x453)][0x0];this[_0x7076bc(0x466)][_0x7076bc(0x3e7)](_0x9bc8ae[_0x7076bc(0x41a)]-this[_0x7076bc(0x2d8)],_0x9bc8ae[_0x7076bc(0x37b)]-this[_0x7076bc(0x226)]),this[_0x7076bc(0x2d8)]=_0x9bc8ae[_0x7076bc(0x41a)],this[_0x7076bc(0x226)]=_0x9bc8ae[_0x7076bc(0x37b)],this['onUpdate']();}else{if(_0x3c4177[_0x7076bc(0x453)][_0x7076bc(0x193)]===0x2){const _0x71f45=this[_0x7076bc(0x32a)](_0x3c4177);if(_0x532741[_0x7076bc(0x4d5)](this[_0x7076bc(0x525)],MIN_PINCH_DIST)){const {cx:_0x54021d,cy:_0x28da30}=this[_0x7076bc(0x30b)](_0x3c4177);this[_0x7076bc(0x466)][_0x7076bc(0x3f7)](_0x54021d,_0x28da30,0x1+_0x532741[_0x7076bc(0x1d2)](_0x71f45,this[_0x7076bc(0x525)])*ZOOM_FACTOR_PINCH),this['onUpdate']();}this[_0x7076bc(0x525)]=_0x71f45;}}}[_0x985f80(0x298)](_0x14cb11){const _0x190e9c=_0x985f80;this['isPanning']=![],this[_0x190e9c(0x525)]=0x0;}[_0x985f80(0x40e)](){const _0x1262f3=_0x985f80,_0x5be382={'gBcot':_0x1262f3(0x26a),'vMcwJ':_0x1262f3(0x39f),'NxhBg':_0x1262f3(0x18a)};this[_0x1262f3(0x2ea)][_0x1262f3(0x153)](_0x5be382[_0x1262f3(0x3cb)],this[_0x1262f3(0x239)]),window[_0x1262f3(0x153)]('mousemove',this[_0x1262f3(0x1c0)]),window[_0x1262f3(0x153)](_0x1262f3(0x35a),this[_0x1262f3(0x4d9)]),this[_0x1262f3(0x2ea)][_0x1262f3(0x153)](_0x5be382['vMcwJ'],this[_0x1262f3(0x421)]),this[_0x1262f3(0x2ea)]['removeEventListener'](_0x1262f3(0x40b),this[_0x1262f3(0x1a6)]),this['canvas'][_0x1262f3(0x153)](_0x5be382['NxhBg'],this[_0x1262f3(0x38d)]),this[_0x1262f3(0x2ea)][_0x1262f3(0x153)]('touchend',this[_0x1262f3(0x2a4)]);}}class NodeDrag{constructor(_0x3bb334,_0x380e58,_0x2b0863,_0x42affc,_0x46a742,_0x1ce0f7,_0x2f7214,_0x54b880=()=>![]){const _0x3602f2=_0x985f80,_0x2849c5={'gIOBY':_0x3602f2(0x40b),'fPvdV':_0x3602f2(0x26a)},_0x57f797='19|12|15|9|25|11|24|7|13|17|1|22|16|8|20|14|4|6|23|3|10|21|2|0|18|5'[_0x3602f2(0x392)]('|');let _0x544b39=0x0;while(!![]){switch(_0x57f797[_0x544b39++]){case'0':_0x3bb334[_0x3602f2(0x296)]('touchmove',this[_0x3602f2(0x38d)],{'passive':![]});continue;case'1':this[_0x3602f2(0x1d5)]=_0x1ce0f7;continue;case'2':_0x3bb334['addEventListener'](_0x2849c5[_0x3602f2(0x479)],this[_0x3602f2(0x1a6)],{'passive':![]});continue;case'3':_0x3bb334['addEventListener'](_0x2849c5['fPvdV'],this[_0x3602f2(0x239)]);continue;case'4':this[_0x3602f2(0x1a6)]=this[_0x3602f2(0x40a)]['bind'](this);continue;case'5':_0x3bb334[_0x3602f2(0x296)](_0x3602f2(0x30f),this[_0x3602f2(0x2a4)]);continue;case'6':this['onTouchMove']=this[_0x3602f2(0x535)]['bind'](this);continue;case'7':this[_0x3602f2(0x1cc)]=_0x2b0863;continue;case'8':this[_0x3602f2(0x239)]=this[_0x3602f2(0x556)][_0x3602f2(0x1b0)](this);continue;case'9':this['didMove']=![];continue;case'10':window['addEventListener'](_0x3602f2(0x462),this[_0x3602f2(0x1c0)]);continue;case'11':this[_0x3602f2(0x2ea)]=_0x3bb334;continue;case'12':this[_0x3602f2(0x1c1)]=0x0;continue;case'13':this[_0x3602f2(0x467)]=_0x42affc;continue;case'14':this[_0x3602f2(0x4d9)]=this[_0x3602f2(0x44f)][_0x3602f2(0x1b0)](this);continue;case'15':this[_0x3602f2(0x489)]=0x0;continue;case'16':this[_0x3602f2(0x1fc)]=_0x54b880;continue;case'17':this['onStart']=_0x46a742;continue;case'18':_0x3bb334[_0x3602f2(0x296)](_0x3602f2(0x336),this[_0x3602f2(0x2a4)]);continue;case'19':this['dragging']=null;continue;case'20':this[_0x3602f2(0x1c0)]=this[_0x3602f2(0x334)][_0x3602f2(0x1b0)](this);continue;case'21':window[_0x3602f2(0x296)](_0x3602f2(0x35a),this[_0x3602f2(0x4d9)]);continue;case'22':this[_0x3602f2(0x42c)]=_0x2f7214;continue;case'23':this[_0x3602f2(0x2a4)]=this[_0x3602f2(0x298)][_0x3602f2(0x1b0)](this);continue;case'24':this[_0x3602f2(0x466)]=_0x380e58;continue;case'25':this[_0x3602f2(0x2d3)]=null;continue;}break;}}['toWorld'](_0x438d32,_0x296055){const _0x48ff4a=_0x985f80,_0x1f0b7d={'gFIXI':function(_0x4582b7,_0x4aebc2){return _0x4582b7-_0x4aebc2;}},_0x18da01=this[_0x48ff4a(0x2ea)]['getBoundingClientRect']();return this['viewport'][_0x48ff4a(0x266)](_0x438d32-_0x18da01[_0x48ff4a(0x1f8)],_0x1f0b7d[_0x48ff4a(0x24b)](_0x296055,_0x18da01[_0x48ff4a(0x50d)]));}[_0x985f80(0x556)](_0x383b50){const _0x1d2fc9=_0x985f80,_0x315c40={'lGVjR':function(_0x3f7b54,_0x4cb422){return _0x3f7b54!==_0x4cb422;},'JOiCd':_0x1d2fc9(0x14f)};if(_0x315c40[_0x1d2fc9(0x4bb)](_0x383b50[_0x1d2fc9(0x4cb)],0x0))return;if(this[_0x1d2fc9(0x1fc)](_0x383b50[_0x1d2fc9(0x41a)],_0x383b50[_0x1d2fc9(0x37b)]))return;const [_0x2ae086,_0x15f119]=this[_0x1d2fc9(0x515)](_0x383b50[_0x1d2fc9(0x41a)],_0x383b50[_0x1d2fc9(0x37b)]),_0x3881cc=this[_0x1d2fc9(0x467)]['findNodeAt'](this[_0x1d2fc9(0x1cc)]['getNodes'](),_0x2ae086,_0x15f119);if(!_0x3881cc)return;_0x383b50[_0x1d2fc9(0x43f)](),this[_0x1d2fc9(0x196)]=_0x3881cc,this[_0x1d2fc9(0x1c1)]=_0x2ae086-_0x3881cc['x'],this[_0x1d2fc9(0x489)]=_0x15f119-_0x3881cc['y'],this[_0x1d2fc9(0x2c1)]=![],this[_0x1d2fc9(0x2ea)][_0x1d2fc9(0x2e7)]['cursor']=_0x315c40[_0x1d2fc9(0x394)];}[_0x985f80(0x334)](_0x5fc07a){const _0x570264=_0x985f80,_0x4681f0={'GZuGD':function(_0x3af0f9,_0x505678){return _0x3af0f9-_0x505678;}};if(!this['dragging'])return;const [_0x13591e,_0x2589ce]=this[_0x570264(0x515)](_0x5fc07a[_0x570264(0x41a)],_0x5fc07a[_0x570264(0x37b)]),_0x317b15=_0x4681f0[_0x570264(0x4fb)](_0x13591e,this[_0x570264(0x1c1)]),_0xb54aee=_0x4681f0[_0x570264(0x4fb)](_0x2589ce,this['dragOffsetY']);!this['didMove']&&(this['onStart'](),this[_0x570264(0x2c1)]=!![]),this[_0x570264(0x1cc)][_0x570264(0x251)](this[_0x570264(0x196)]['id'],{'x':_0x317b15,'y':_0xb54aee}),this[_0x570264(0x2ea)][_0x570264(0x2e7)][_0x570264(0x52d)]=_0x570264(0x2fb),this[_0x570264(0x1d5)](this[_0x570264(0x196)]['id'],_0x317b15,_0xb54aee);}[_0x985f80(0x44f)](_0xfd596){const _0x3bd045=_0x985f80;if(!this[_0x3bd045(0x196)])return;const _0x144351=this[_0x3bd045(0x1cc)][_0x3bd045(0x208)](this[_0x3bd045(0x196)]['id']);if(_0x144351&&this['didMove'])this[_0x3bd045(0x42c)](_0x144351['id'],_0x144351['x'],_0x144351['y']);this[_0x3bd045(0x196)]=null,this[_0x3bd045(0x2ea)][_0x3bd045(0x2e7)][_0x3bd045(0x52d)]='';}[_0x985f80(0x40a)](_0xd57432){const _0x42c2a5=_0x985f80;if(this[_0x42c2a5(0x2d3)]!==null||_0xd57432[_0x42c2a5(0x453)]['length']!==0x1)return;const _0x3ac80d=_0xd57432[_0x42c2a5(0x453)][0x0];if(this[_0x42c2a5(0x1fc)](_0x3ac80d[_0x42c2a5(0x41a)],_0x3ac80d[_0x42c2a5(0x37b)]))return;const [_0x2d3fb3,_0x5820f5]=this['toWorld'](_0x3ac80d['clientX'],_0x3ac80d[_0x42c2a5(0x37b)]),_0x20fc07=this[_0x42c2a5(0x467)][_0x42c2a5(0x3a2)](this[_0x42c2a5(0x1cc)][_0x42c2a5(0x352)](),_0x2d3fb3,_0x5820f5);if(!_0x20fc07)return;_0xd57432[_0x42c2a5(0x53d)](),_0xd57432[_0x42c2a5(0x43f)](),this[_0x42c2a5(0x2d3)]=_0x3ac80d['identifier'],this[_0x42c2a5(0x196)]=_0x20fc07,this[_0x42c2a5(0x1c1)]=_0x2d3fb3-_0x20fc07['x'],this[_0x42c2a5(0x489)]=_0x5820f5-_0x20fc07['y'],this['didMove']=![],this[_0x42c2a5(0x2ea)][_0x42c2a5(0x2e7)][_0x42c2a5(0x52d)]=_0x42c2a5(0x14f);}['handleTouchMove'](_0x5cbd77){const _0x4e9063=_0x985f80,_0x5be8ee={'xxSPl':function(_0x118384,_0x1988c3){return _0x118384-_0x1988c3;}};if(this[_0x4e9063(0x2d3)]===null||!this[_0x4e9063(0x196)])return;const _0x53b4fa=Array['from'](_0x5cbd77[_0x4e9063(0x2e9)])[_0x4e9063(0x12f)](_0x14cf4e=>_0x14cf4e[_0x4e9063(0x39c)]===this['activeTouchId']);if(!_0x53b4fa)return;_0x5cbd77[_0x4e9063(0x53d)]();const [_0x2f1a71,_0x366c75]=this['toWorld'](_0x53b4fa[_0x4e9063(0x41a)],_0x53b4fa[_0x4e9063(0x37b)]),_0x1955c5=_0x2f1a71-this[_0x4e9063(0x1c1)],_0x4cff07=_0x5be8ee[_0x4e9063(0x476)](_0x366c75,this[_0x4e9063(0x489)]);!this[_0x4e9063(0x2c1)]&&(this[_0x4e9063(0x464)](),this[_0x4e9063(0x2c1)]=!![]),this[_0x4e9063(0x1cc)]['updateNode'](this[_0x4e9063(0x196)]['id'],{'x':_0x1955c5,'y':_0x4cff07}),this[_0x4e9063(0x2ea)]['style'][_0x4e9063(0x52d)]=_0x4e9063(0x2fb),this[_0x4e9063(0x1d5)](this[_0x4e9063(0x196)]['id'],_0x1955c5,_0x4cff07);}[_0x985f80(0x298)](_0x548682){const _0xd04277=_0x985f80,_0x5701cd={'pOuXi':function(_0x54deb1,_0x245d0a){return _0x54deb1===_0x245d0a;}};if(_0x5701cd['pOuXi'](this[_0xd04277(0x2d3)],null)||!this[_0xd04277(0x196)])return;const _0x49f6b5=Array[_0xd04277(0x26f)](_0x548682[_0xd04277(0x2e9)])[_0xd04277(0x12f)](_0xaa84bd=>_0xaa84bd[_0xd04277(0x39c)]===this[_0xd04277(0x2d3)]);if(!_0x49f6b5)return;const _0x5b308e=this[_0xd04277(0x1cc)]['getNode'](this[_0xd04277(0x196)]['id']);if(_0x5b308e&&this[_0xd04277(0x2c1)])this['onEnd'](_0x5b308e['id'],_0x5b308e['x'],_0x5b308e['y']);this[_0xd04277(0x196)]=null,this[_0xd04277(0x2d3)]=null,this[_0xd04277(0x2ea)]['style']['cursor']='';}[_0x985f80(0x40e)](){const _0x3eb31e=_0x985f80,_0x658f6f={'qQltg':_0x3eb31e(0x462),'UjEsk':_0x3eb31e(0x35a)};this[_0x3eb31e(0x2ea)][_0x3eb31e(0x153)](_0x3eb31e(0x26a),this[_0x3eb31e(0x239)]),window[_0x3eb31e(0x153)](_0x658f6f[_0x3eb31e(0x398)],this[_0x3eb31e(0x1c0)]),window[_0x3eb31e(0x153)](_0x658f6f[_0x3eb31e(0x554)],this[_0x3eb31e(0x4d9)]),this[_0x3eb31e(0x2ea)]['removeEventListener'](_0x3eb31e(0x40b),this[_0x3eb31e(0x1a6)]),this['canvas'][_0x3eb31e(0x153)](_0x3eb31e(0x18a),this[_0x3eb31e(0x38d)]),this[_0x3eb31e(0x2ea)][_0x3eb31e(0x153)](_0x3eb31e(0x336),this[_0x3eb31e(0x2a4)]),this[_0x3eb31e(0x2ea)][_0x3eb31e(0x153)](_0x3eb31e(0x30f),this[_0x3eb31e(0x2a4)]);}}const SAMPLES=0x28,HIT_PX=0x8;function handleXY(_0x2b4a9c,_0x1c9d03){const _0x2469eb=_0x985f80,_0x479528={'qOlLb':function(_0x4cd3bb,_0x4300fe){return _0x4cd3bb/_0x4300fe;},'HlVIU':_0x2469eb(0x50d),'qBDtF':function(_0x326e16,_0x1f3f06){return _0x326e16+_0x1f3f06;},'oGbWI':_0x2469eb(0x32b)},_0x4b9f6f=_0x2b4a9c['x']+_0x2b4a9c[_0x2469eb(0x31c)]/0x2,_0xb2aa60=_0x2b4a9c['y']+_0x479528[_0x2469eb(0x359)](_0x2b4a9c[_0x2469eb(0x2e0)],0x2);switch(_0x1c9d03){case _0x479528[_0x2469eb(0x242)]:return[_0x4b9f6f,_0x2b4a9c['y']];case _0x2469eb(0x2e5):return[_0x4b9f6f,_0x479528[_0x2469eb(0x4ff)](_0x2b4a9c['y'],_0x2b4a9c[_0x2469eb(0x2e0)])];case _0x2469eb(0x1f8):return[_0x2b4a9c['x'],_0xb2aa60];case _0x479528[_0x2469eb(0x54a)]:return[_0x479528[_0x2469eb(0x4ff)](_0x2b4a9c['x'],_0x2b4a9c['width']),_0xb2aa60];default:return[_0x2b4a9c['x']+_0x2b4a9c[_0x2469eb(0x31c)],_0xb2aa60];}}class EdgeHitTester{[_0x985f80(0x20d)](_0x36db99,_0x53c4d0,_0x12fa04,_0x540563,_0xe73bb0){const _0x1222a6=_0x985f80,_0x118c83={'Nieau':function(_0x6bfbda,_0x1f5ae0){return _0x6bfbda>=_0x1f5ae0;},'hNqcF':function(_0x32d255,_0x5bb391){return _0x32d255||_0x5bb391;},'GXOjh':function(_0x48cb19,_0x5f1045,_0x13c294){return _0x48cb19(_0x5f1045,_0x13c294);},'fDlQM':'left','ZaYdc':function(_0x53f2cc,_0x3d15e6,_0x3fab7f,_0x5a2408,_0x66f5a0,_0x3ff856,_0x36e389,_0x4086aa,_0x1a0b22,_0xdb58bb){return _0x53f2cc(_0x3d15e6,_0x3fab7f,_0x5a2408,_0x66f5a0,_0x3ff856,_0x36e389,_0x4086aa,_0x1a0b22,_0xdb58bb);},'XTYSg':function(_0x451c4a,_0x52defb){return _0x451c4a-_0x52defb;}},_0x5b4e8a=HIT_PX/_0xe73bb0;for(let _0x5a6eaa=_0x36db99['length']-0x1;_0x118c83[_0x1222a6(0x488)](_0x5a6eaa,0x0);_0x5a6eaa--){const _0x42b9f1=_0x36db99[_0x5a6eaa],_0x35d291=_0x53c4d0[_0x1222a6(0x53a)](_0x42b9f1[_0x1222a6(0x532)]),_0x3553dd=_0x53c4d0[_0x1222a6(0x53a)](_0x42b9f1[_0x1222a6(0x390)]);if(_0x118c83[_0x1222a6(0x440)](!_0x35d291,!_0x3553dd))continue;const [_0x4fd0a8,_0xc8aaea]=_0x118c83[_0x1222a6(0x547)](handleXY,_0x35d291,_0x42b9f1['sourceHandle']??_0x1222a6(0x32b)),[_0x80420e,_0x2e88c0]=_0x118c83['GXOjh'](handleXY,_0x3553dd,_0x42b9f1[_0x1222a6(0x320)]??_0x118c83[_0x1222a6(0x114)]),[_0x8e4354,_0x328507,_0x38ea91,_0x157a6c]=edgeControlPoints(_0x4fd0a8,_0xc8aaea,_0x42b9f1[_0x1222a6(0x37a)],_0x80420e,_0x2e88c0,_0x42b9f1[_0x1222a6(0x320)]);for(let _0x1da97b=0x0;_0x1da97b<=SAMPLES;_0x1da97b++){const [_0x4df0f4,_0x1af864]=_0x118c83[_0x1222a6(0x3ff)](cubicBezierPoint,_0x1da97b/SAMPLES,_0x4fd0a8,_0xc8aaea,_0x8e4354,_0x328507,_0x38ea91,_0x157a6c,_0x80420e,_0x2e88c0);if(Math[_0x1222a6(0x1fa)](_0x118c83[_0x1222a6(0x459)](_0x12fa04,_0x4df0f4),_0x540563-_0x1af864)<=_0x5b4e8a)return _0x42b9f1;}}return null;}}const ENDPOINT_HIT_PX=0xc,HANDLE_HIT_PX=0xe;class EdgeReroute{constructor(_0x2291af,_0x3d6cab,_0x46cee5,_0x156a7e,_0x51a96e,_0x9aabe9,_0x2e735d){const _0x104e63=_0x985f80;this['state']=null,this[_0x104e63(0x2ea)]=_0x2291af,this[_0x104e63(0x466)]=_0x3d6cab,this[_0x104e63(0x1cc)]=_0x46cee5,this[_0x104e63(0x467)]=_0x156a7e,this[_0x104e63(0x2c2)]=_0x51a96e,this['onStateChange']=_0x9aabe9,this[_0x104e63(0x20f)]=_0x2e735d,this[_0x104e63(0x239)]=this['handleMouseDown'][_0x104e63(0x1b0)](this),this[_0x104e63(0x1c0)]=this[_0x104e63(0x334)][_0x104e63(0x1b0)](this),this[_0x104e63(0x4d9)]=this['handleMouseUp'][_0x104e63(0x1b0)](this),_0x2291af['addEventListener'](_0x104e63(0x26a),this[_0x104e63(0x239)],!![]),window['addEventListener'](_0x104e63(0x462),this[_0x104e63(0x1c0)]),window[_0x104e63(0x296)](_0x104e63(0x35a),this[_0x104e63(0x4d9)]);}[_0x985f80(0x13d)](){const _0xb32787=_0x985f80,_0x5d34c1={'rBhYk':function(_0x160258,_0xaa433f){return _0x160258!==_0xaa433f;}};return _0x5d34c1[_0xb32787(0x4c6)](this[_0xb32787(0x46b)],null);}[_0x985f80(0x175)](_0x55735c,_0x4a2731){const _0x3cea52=_0x985f80,[_0x589f39,_0x18d522]=this[_0x3cea52(0x515)](_0x55735c,_0x4a2731),_0x592600=ENDPOINT_HIT_PX/this[_0x3cea52(0x466)]['zoom'];return this['getEndpointCircles']()['some'](_0x10a9f7=>Math['hypot'](_0x589f39-_0x10a9f7['wx'],_0x18d522-_0x10a9f7['wy'])<=_0x592600);}[_0x985f80(0x47e)](){const _0x564bbf=_0x985f80,_0x481666={'CdySr':_0x564bbf(0x1f8),'MlKnK':function(_0x53642e,_0x508868){return _0x53642e(_0x508868);}},_0x2a000a=this[_0x564bbf(0x2c2)]();if(_0x2a000a[_0x564bbf(0x456)]===0x0)return[];const _0x5c20ed=new Map(this['graph'][_0x564bbf(0x352)]()[_0x564bbf(0x2ba)](_0xf29285=>[_0xf29285['id'],_0xf29285])),_0x567c65=[];for(const _0x253f25 of _0x2a000a){const _0x43a2=this[_0x564bbf(0x1cc)][_0x564bbf(0x27c)](_0x253f25);if(!_0x43a2)continue;const _0x4314db=_0x5c20ed[_0x564bbf(0x53a)](_0x43a2['source']),_0x5d8825=_0x5c20ed[_0x564bbf(0x53a)](_0x43a2['target']);if(!_0x4314db||!_0x5d8825)continue;const _0x58ece1=_0x43a2[_0x564bbf(0x37a)]??_0x564bbf(0x32b),_0x17cc47=_0x43a2[_0x564bbf(0x320)]??_0x481666[_0x564bbf(0x1a3)],_0x1aaf4a=_0x481666[_0x564bbf(0x4a5)](getHandlePositions,_0x4314db)[_0x564bbf(0x12f)](_0x3516a5=>_0x3516a5['side']===_0x58ece1)??getHandlePositions(_0x4314db)[0x0],_0x3ba59e=_0x481666[_0x564bbf(0x4a5)](getHandlePositions,_0x5d8825)[_0x564bbf(0x12f)](_0x401c17=>_0x401c17['side']===_0x17cc47)??_0x481666[_0x564bbf(0x4a5)](getHandlePositions,_0x5d8825)[0x0];_0x567c65[_0x564bbf(0x2f5)]({'wx':_0x1aaf4a['wx'],'wy':_0x1aaf4a['wy'],'edgeId':_0x253f25,'end':'source'}),_0x567c65[_0x564bbf(0x2f5)]({'wx':_0x3ba59e['wx'],'wy':_0x3ba59e['wy'],'edgeId':_0x253f25,'end':'target'});}return _0x567c65;}[_0x985f80(0x515)](_0x4bf93e,_0x10c942){const _0x3c39ce=_0x985f80,_0x2dcc1c={'QBThk':function(_0x51ae12,_0x58a9d2){return _0x51ae12-_0x58a9d2;}},_0x3fe643=this['canvas'][_0x3c39ce(0x1e6)]();return this['viewport'][_0x3c39ce(0x266)](_0x2dcc1c['QBThk'](_0x4bf93e,_0x3fe643[_0x3c39ce(0x1f8)]),_0x10c942-_0x3fe643[_0x3c39ce(0x50d)]);}['findTargetHandle'](_0x5dacf1,_0xd2c425,_0x13aed9){const _0x29621b=_0x985f80,_0x27ba16={'mPOJE':function(_0x46ff21,_0x3a5fc2){return _0x46ff21===_0x3a5fc2;},'rrIBF':function(_0x3f6e8a,_0x4f007a){return _0x3f6e8a(_0x4f007a);},'IoqKB':function(_0x4b2559,_0x5eca24){return _0x4b2559-_0x5eca24;},'zznzB':function(_0x2dbbd5,_0x4230f5){return _0x2dbbd5<_0x4230f5;}},_0x7ab65f=HANDLE_HIT_PX/this['viewport'][_0x29621b(0x330)];for(const _0x435506 of this['graph'][_0x29621b(0x352)]()){if(_0x27ba16[_0x29621b(0x20c)](_0x435506['id'],_0x13aed9))continue;for(const _0x47d813 of getHandlePositions(_0x435506)){if(Math[_0x29621b(0x1fa)](_0x5dacf1-_0x47d813['wx'],_0xd2c425-_0x47d813['wy'])<=_0x7ab65f)return _0x47d813;}}const _0x2600e4=this[_0x29621b(0x467)][_0x29621b(0x3a2)](this[_0x29621b(0x1cc)]['getNodes'](),_0x5dacf1,_0xd2c425);if(!_0x2600e4||_0x2600e4['id']===_0x13aed9)return null;let _0x2c8af5=null,_0x29f31d=Infinity;for(const _0x1ab46d of _0x27ba16[_0x29621b(0x2d7)](getHandlePositions,_0x2600e4)){const _0x4216ac=Math[_0x29621b(0x1fa)](_0x27ba16[_0x29621b(0x12c)](_0x5dacf1,_0x1ab46d['wx']),_0xd2c425-_0x1ab46d['wy']);_0x27ba16[_0x29621b(0x162)](_0x4216ac,_0x29f31d)&&(_0x29f31d=_0x4216ac,_0x2c8af5=_0x1ab46d);}return _0x2c8af5;}[_0x985f80(0x556)](_0x51c745){const _0x4f5839=_0x985f80,_0xfbf7fa={'jDGld':function(_0x3c053c,_0x4b746a){return _0x3c053c!==_0x4b746a;},'spfkO':function(_0x146303,_0x13b80c){return _0x146303-_0x13b80c;},'UZMbT':function(_0x4731dc,_0x2a900f){return _0x4731dc===_0x2a900f;},'czngj':_0x4f5839(0x1f8),'DlGGN':_0x4f5839(0x32b),'rJHXj':function(_0x4d2ae1,_0x10c413){return _0x4d2ae1(_0x10c413);},'WAKnh':_0x4f5839(0x40c)};if(_0xfbf7fa['jDGld'](_0x51c745[_0x4f5839(0x4cb)],0x0))return;const _0x33b4c6=this[_0x4f5839(0x47e)]();if(_0x33b4c6[_0x4f5839(0x193)]===0x0)return;const [_0xf7cbbe,_0x2a2715]=this['toWorld'](_0x51c745[_0x4f5839(0x41a)],_0x51c745['clientY']),_0x3c83bc=ENDPOINT_HIT_PX/this[_0x4f5839(0x466)][_0x4f5839(0x330)];for(const _0x589153 of _0x33b4c6){if(Math[_0x4f5839(0x1fa)](_0xfbf7fa[_0x4f5839(0x4e9)](_0xf7cbbe,_0x589153['wx']),_0x2a2715-_0x589153['wy'])>_0x3c83bc)continue;const _0x3a5f87=this[_0x4f5839(0x1cc)][_0x4f5839(0x27c)](_0x589153['edgeId']);if(!_0x3a5f87)continue;const _0x962e45=new Map(this['graph'][_0x4f5839(0x352)]()[_0x4f5839(0x2ba)](_0x406ddd=>[_0x406ddd['id'],_0x406ddd]));let _0x303b03;if(_0xfbf7fa[_0x4f5839(0x4a3)](_0x589153[_0x4f5839(0x23d)],_0x4f5839(0x532))){const _0x5c8b01=_0x962e45[_0x4f5839(0x53a)](_0x3a5f87[_0x4f5839(0x390)]),_0x2047b5=_0x3a5f87[_0x4f5839(0x320)]??_0xfbf7fa[_0x4f5839(0x1dd)];_0x303b03=getHandlePositions(_0x5c8b01)[_0x4f5839(0x12f)](_0x13d9d0=>_0x13d9d0[_0x4f5839(0x4b7)]===_0x2047b5)??getHandlePositions(_0x5c8b01)[0x0];}else{const _0x3b0c6a=_0x962e45[_0x4f5839(0x53a)](_0x3a5f87[_0x4f5839(0x532)]),_0x19ce4b=_0x3a5f87[_0x4f5839(0x37a)]??_0xfbf7fa[_0x4f5839(0x20e)];_0x303b03=_0xfbf7fa[_0x4f5839(0x43d)](getHandlePositions,_0x3b0c6a)[_0x4f5839(0x12f)](_0x1e1eef=>_0x1e1eef[_0x4f5839(0x4b7)]===_0x19ce4b)??_0xfbf7fa[_0x4f5839(0x43d)](getHandlePositions,_0x3b0c6a)[0x0];}_0x51c745[_0x4f5839(0x43f)](),_0x51c745['stopImmediatePropagation'](),this['state']={'edgeId':_0x589153[_0x4f5839(0x415)],'movingEnd':_0x589153[_0x4f5839(0x23d)],'fixedHandle':_0x303b03,'pendingEndWx':_0xf7cbbe,'pendingEndWy':_0x2a2715,'targetNodeId':null,'targetHandle':null},this[_0x4f5839(0x29e)](this[_0x4f5839(0x46b)]),this['canvas'][_0x4f5839(0x2e7)][_0x4f5839(0x52d)]=_0xfbf7fa[_0x4f5839(0x53e)];return;}}[_0x985f80(0x334)](_0x421e7b){const _0x4b33e2=_0x985f80;if(!this[_0x4b33e2(0x46b)])return;const [_0x15475f,_0x135298]=this[_0x4b33e2(0x515)](_0x421e7b['clientX'],_0x421e7b[_0x4b33e2(0x37b)]),_0x998838=this['graph']['getEdge'](this[_0x4b33e2(0x46b)]['edgeId']);if(!_0x998838)return;const _0x48b1ce=this[_0x4b33e2(0x46b)][_0x4b33e2(0x25f)]===_0x4b33e2(0x532)?_0x998838['source']:_0x998838[_0x4b33e2(0x390)],_0x5e0584=this[_0x4b33e2(0x450)](_0x15475f,_0x135298,_0x48b1ce);this[_0x4b33e2(0x46b)]={...this[_0x4b33e2(0x46b)],'pendingEndWx':_0x5e0584?_0x5e0584['wx']:_0x15475f,'pendingEndWy':_0x5e0584?_0x5e0584['wy']:_0x135298,'targetNodeId':_0x5e0584?_0x5e0584[_0x4b33e2(0x54d)]:null,'targetHandle':_0x5e0584?_0x5e0584['side']:null},this[_0x4b33e2(0x29e)](this[_0x4b33e2(0x46b)]);}[_0x985f80(0x44f)](_0x5a368f){const _0x14a5f9=_0x985f80,_0x4eb3ea={'ICqtq':function(_0x81be38,_0x566629){return _0x81be38&&_0x566629;}};if(!this[_0x14a5f9(0x46b)])return;const {edgeId:_0x1a699a,movingEnd:_0x29814e,targetNodeId:_0x4a5910,targetHandle:_0x1e5b85}=this[_0x14a5f9(0x46b)];this[_0x14a5f9(0x46b)]=null,this[_0x14a5f9(0x29e)](null),this['canvas'][_0x14a5f9(0x2e7)][_0x14a5f9(0x52d)]='',_0x4eb3ea[_0x14a5f9(0x214)](_0x4a5910,_0x1e5b85)&&this[_0x14a5f9(0x20f)](_0x1a699a,_0x29814e,_0x4a5910,_0x1e5b85);}[_0x985f80(0x40e)](){const _0x7326d1=_0x985f80,_0x39dc43={'ZfACG':_0x7326d1(0x462),'aHEXN':'mouseup'};this[_0x7326d1(0x2ea)][_0x7326d1(0x153)](_0x7326d1(0x26a),this[_0x7326d1(0x239)],!![]),window[_0x7326d1(0x153)](_0x39dc43[_0x7326d1(0x347)],this[_0x7326d1(0x1c0)]),window[_0x7326d1(0x153)](_0x39dc43[_0x7326d1(0x180)],this[_0x7326d1(0x4d9)]);}}const MENU_STYLE=_0x985f80(0x36d),ITEM_BASE=_0x985f80(0x176),SEP_STYLE='\x0a\x20\x20height:\x201px;\x20margin:\x204px\x208px;\x0a\x20\x20background:\x20rgba(255,255,255,0.1);\x0a';class ContextMenu{constructor(){const _0x173cb7=_0x985f80;this['el']=null,this['subPanel']=null,this[_0x173cb7(0x20b)]=null,this[_0x173cb7(0x4b4)]=_0x449fb0=>{const _0x3741a8=_0x173cb7,_0x3d8768=_0x449fb0[_0x3741a8(0x390)],_0x465aee=this['el']?this['el'][_0x3741a8(0x2f7)](_0x3d8768):![],_0x2435f6=this[_0x3741a8(0x371)]?this['subPanel'][_0x3741a8(0x2f7)](_0x3d8768):![];if(!_0x465aee&&!_0x2435f6)this['hide']();},this['hideOnScroll']=()=>this['hide']();}[_0x985f80(0x321)](_0x551c2c,_0x241a4d,_0x41bb21){const _0x293dfd=_0x985f80,_0x4f96be={'QVzgl':_0x293dfd(0x443),'EhItW':function(_0x382162,_0x5b2e20){return _0x382162 in _0x5b2e20;},'hefbT':'separator','vdMPe':_0x293dfd(0x2c0),'FZPNx':function(_0x1a6558,_0x4f31d6){return _0x1a6558>_0x4f31d6;},'syQHh':function(_0x1c7164,_0x4812e6){return _0x1c7164>_0x4812e6;},'VYEWY':function(_0x2f93e5,_0x32894a){return _0x2f93e5(_0x32894a);}};this[_0x293dfd(0x53c)]();const _0x4750fb=document['createElement']('div');_0x4750fb[_0x293dfd(0x2e7)]['cssText']=MENU_STYLE,_0x4750fb[_0x293dfd(0x2e7)][_0x293dfd(0x1f8)]=_0x551c2c+'px',_0x4750fb[_0x293dfd(0x2e7)][_0x293dfd(0x50d)]=_0x241a4d+'px';for(const _0x313aac of _0x41bb21){if(_0x4f96be[_0x293dfd(0x529)](_0x4f96be[_0x293dfd(0x116)],_0x313aac)&&_0x313aac[_0x293dfd(0x243)]){const _0x5afdb9=document[_0x293dfd(0x2c9)](_0x293dfd(0x2ae));_0x5afdb9[_0x293dfd(0x2e7)][_0x293dfd(0x22e)]=SEP_STYLE,_0x4750fb['appendChild'](_0x5afdb9);continue;}if(_0x4f96be['vdMPe']in _0x313aac){_0x4750fb[_0x293dfd(0x280)](this[_0x293dfd(0x2ec)](_0x313aac));continue;}_0x4750fb[_0x293dfd(0x280)](this[_0x293dfd(0x3be)](_0x313aac));}document[_0x293dfd(0x300)][_0x293dfd(0x280)](_0x4750fb);const _0x2c3b4e=_0x4750fb[_0x293dfd(0x1e6)]();if(_0x4f96be[_0x293dfd(0x286)](_0x2c3b4e[_0x293dfd(0x32b)],window[_0x293dfd(0x41f)]))_0x4750fb['style'][_0x293dfd(0x1f8)]=_0x551c2c-_0x2c3b4e['width']+'px';if(_0x4f96be[_0x293dfd(0x14b)](_0x2c3b4e['bottom'],window[_0x293dfd(0x20a)]))_0x4750fb[_0x293dfd(0x2e7)][_0x293dfd(0x50d)]=_0x241a4d-_0x2c3b4e[_0x293dfd(0x2e0)]+'px';this['el']=_0x4750fb,_0x4f96be[_0x293dfd(0x48f)](requestAnimationFrame,()=>{const _0x2bfc4b=_0x293dfd;document[_0x2bfc4b(0x296)](_0x4f96be[_0x2bfc4b(0x346)],this[_0x2bfc4b(0x4b4)]),window[_0x2bfc4b(0x296)](_0x2bfc4b(0x42e),this[_0x2bfc4b(0x45a)],!![]);});}[_0x985f80(0x3be)](_0x10bc85){const _0x5bc365=_0x985f80,_0x3ecdd7={'JiXpp':_0x5bc365(0x1c9),'yLvkb':_0x5bc365(0x34e),'VQRiy':_0x5bc365(0x339),'FKtCN':'pointerleave'},_0x1f6cac=document[_0x5bc365(0x2c9)](_0x5bc365(0x4cb));_0x1f6cac[_0x5bc365(0x2e7)][_0x5bc365(0x22e)]=ITEM_BASE,_0x1f6cac[_0x5bc365(0x2e7)][_0x5bc365(0x343)]=_0x10bc85[_0x5bc365(0x344)]?_0x5bc365(0x410):_0x5bc365(0x351),_0x1f6cac[_0x5bc365(0x2e7)][_0x5bc365(0x1ce)]=_0x10bc85[_0x5bc365(0x31f)]?_0x3ecdd7[_0x5bc365(0x50b)]:'1',_0x1f6cac['style'][_0x5bc365(0x52d)]=_0x10bc85['disabled']?_0x3ecdd7[_0x5bc365(0x183)]:_0x3ecdd7['VQRiy'];const _0x425b95=document[_0x5bc365(0x2c9)](_0x5bc365(0x49e));return _0x425b95['textContent']=_0x10bc85[_0x5bc365(0x481)],_0x1f6cac['appendChild'](_0x425b95),!_0x10bc85[_0x5bc365(0x31f)]&&(_0x1f6cac['addEventListener']('pointerenter',()=>{const _0x28f5f7=_0x5bc365;_0x1f6cac[_0x28f5f7(0x2e7)][_0x28f5f7(0x44c)]=_0x28f5f7(0x2a1),this['scheduleHideSub']();}),_0x1f6cac[_0x5bc365(0x296)](_0x3ecdd7[_0x5bc365(0x3a3)],()=>{const _0x41d44c=_0x5bc365;_0x1f6cac[_0x41d44c(0x2e7)][_0x41d44c(0x44c)]=_0x41d44c(0x34c);}),_0x1f6cac[_0x5bc365(0x296)](_0x5bc365(0x443),_0x53e212=>{const _0x416730=_0x5bc365;_0x53e212[_0x416730(0x43f)](),_0x10bc85['action'](),this[_0x416730(0x53c)]();})),_0x1f6cac;}[_0x985f80(0x2ec)](_0x3c23a1){const _0x1ef790=_0x985f80,_0x3bafc3={'GlddD':_0x1ef790(0x4cb),'qNTAc':'span','lnXaq':'font-size:\x209px;\x20opacity:\x200.55;\x20margin-left:\x208px;\x20flex-shrink:\x200;'},_0x22aef1=document[_0x1ef790(0x2c9)](_0x3bafc3[_0x1ef790(0x2d6)]);_0x22aef1[_0x1ef790(0x2e7)][_0x1ef790(0x22e)]=ITEM_BASE,_0x22aef1[_0x1ef790(0x2e7)]['color']=_0x1ef790(0x351),_0x22aef1[_0x1ef790(0x2e7)][_0x1ef790(0x1ce)]=_0x3c23a1[_0x1ef790(0x31f)]?_0x1ef790(0x1c9):'1',_0x22aef1['style'][_0x1ef790(0x52d)]=_0x3c23a1[_0x1ef790(0x31f)]?_0x1ef790(0x34e):'pointer';const _0x499545=document[_0x1ef790(0x2c9)](_0x1ef790(0x49e));_0x499545[_0x1ef790(0x486)]=_0x3c23a1[_0x1ef790(0x481)],_0x22aef1[_0x1ef790(0x280)](_0x499545);const _0x16db9b=document['createElement'](_0x3bafc3[_0x1ef790(0x420)]);return _0x16db9b[_0x1ef790(0x486)]='▶',_0x16db9b[_0x1ef790(0x2e7)][_0x1ef790(0x22e)]=_0x3bafc3['lnXaq'],_0x22aef1[_0x1ef790(0x280)](_0x16db9b),!_0x3c23a1[_0x1ef790(0x31f)]&&(_0x22aef1[_0x1ef790(0x296)](_0x1ef790(0x47b),()=>{const _0x510241=_0x1ef790;_0x22aef1[_0x510241(0x2e7)][_0x510241(0x44c)]='rgba(255,255,255,0.08)',this[_0x510241(0x509)](),this[_0x510241(0x341)](_0x22aef1,_0x3c23a1[_0x510241(0x2c0)]());}),_0x22aef1[_0x1ef790(0x296)](_0x1ef790(0x31d),()=>{const _0x441655=_0x1ef790;_0x22aef1[_0x441655(0x2e7)]['background']=_0x441655(0x34c),this['scheduleHideSub']();})),_0x22aef1;}[_0x985f80(0x341)](_0x1763fb,_0x1d36c8){const _0x32b30f=_0x985f80,_0x524e63={'oTSJt':';\x20position:\x20fixed;\x20left:\x20-9999px;\x20top:\x20-9999px;','SYxYt':function(_0x4d62c3,_0xcb8417){return _0x4d62c3+_0xcb8417;}};this['subPanel']?.['remove'](),_0x1d36c8['style'][_0x32b30f(0x22e)]+=_0x524e63[_0x32b30f(0x16c)],document[_0x32b30f(0x300)][_0x32b30f(0x280)](_0x1d36c8);const _0xe3e7e8=_0x1d36c8['getBoundingClientRect'](),_0x63b3e5=_0x1763fb[_0x32b30f(0x1e6)](),_0x21ef9b=this['el'][_0x32b30f(0x1e6)](),_0x32c675=window[_0x32b30f(0x41f)]-_0x21ef9b[_0x32b30f(0x32b)],_0x1163c8=_0x21ef9b[_0x32b30f(0x1f8)];let _0x437132;_0x32c675>=_0x524e63[_0x32b30f(0x3b6)](_0xe3e7e8[_0x32b30f(0x31c)],0x8)||_0x32c675>=_0x1163c8?_0x437132=_0x21ef9b[_0x32b30f(0x32b)]+0x4:_0x437132=_0x21ef9b['left']-_0xe3e7e8[_0x32b30f(0x31c)]-0x4;let _0x5280cd=_0x63b3e5[_0x32b30f(0x50d)];_0x5280cd=Math[_0x32b30f(0x1aa)](_0x5280cd,window['innerHeight']-_0xe3e7e8[_0x32b30f(0x2e0)]-0x8),_0x5280cd=Math['max'](_0x5280cd,0x8),_0x1d36c8[_0x32b30f(0x2e7)][_0x32b30f(0x1f8)]=_0x437132+'px',_0x1d36c8[_0x32b30f(0x2e7)][_0x32b30f(0x50d)]=_0x5280cd+'px',this['subPanel']=_0x1d36c8,_0x1d36c8[_0x32b30f(0x296)](_0x32b30f(0x47b),()=>this['cancelHideSub']()),_0x1d36c8['addEventListener'](_0x32b30f(0x31d),()=>this[_0x32b30f(0x279)]());}[_0x985f80(0x521)](){const _0x5b38c2=_0x985f80;this[_0x5b38c2(0x371)]?.[_0x5b38c2(0x54b)](),this[_0x5b38c2(0x371)]=null;}[_0x985f80(0x279)](){const _0x1c3ec3=_0x985f80,_0x20ce19={'nrGnn':function(_0x1fcc8d,_0x38e086){return _0x1fcc8d!==_0x38e086;}};if(_0x20ce19[_0x1c3ec3(0x293)](this['hideSubTimer'],null))return;this[_0x1c3ec3(0x20b)]=window[_0x1c3ec3(0x33d)](()=>{const _0x292998=_0x1c3ec3;this[_0x292998(0x20b)]=null,this[_0x292998(0x521)]();},0xb4);}['cancelHideSub'](){const _0x17572b=_0x985f80,_0x471d4d={'OGKds':function(_0x235a94,_0x4a03ab){return _0x235a94===_0x4a03ab;}};if(_0x471d4d[_0x17572b(0x411)](this[_0x17572b(0x20b)],null))return;clearTimeout(this[_0x17572b(0x20b)]),this[_0x17572b(0x20b)]=null;}[_0x985f80(0x53c)](){const _0x3ff332=_0x985f80,_0x5531fc={'AxGbR':_0x3ff332(0x443)};this['cancelHideSub'](),this[_0x3ff332(0x521)]();if(!this['el'])return;this['el'][_0x3ff332(0x54b)](),this['el']=null,document[_0x3ff332(0x153)](_0x5531fc[_0x3ff332(0x558)],this['hideOnOutside']),window[_0x3ff332(0x153)](_0x3ff332(0x42e),this[_0x3ff332(0x45a)],!![]);}['dispose'](){const _0x3a2c36=_0x985f80;this[_0x3a2c36(0x53c)]();}}const EDITING_TAGS=new Set([_0x985f80(0x4c2),_0x985f80(0x442),_0x985f80(0x4a1)]);class KeyboardHandler{constructor(_0x3907e4,_0x46e475){const _0x188482=_0x985f80,_0x408d12={'XYVZY':_0x188482(0x550),'tigxk':_0x188482(0x331),'uOLSG':'ArrowDown','wakEz':_0x188482(0x171),'xvMpO':_0x188482(0x45c)};this[_0x188482(0x2ea)]=_0x3907e4,this[_0x188482(0x3b2)]=_0x2a1964=>{const _0x4df782=_0x188482,_0x560e6b=_0x2a1964[_0x4df782(0x390)]?.[_0x4df782(0x1be)]??'';if(EDITING_TAGS['has'](_0x560e6b))return;switch(_0x2a1964['key']){case _0x4df782(0x342):case _0x408d12[_0x4df782(0x24d)]:_0x2a1964[_0x4df782(0x53d)](),_0x46e475[_0x4df782(0x169)]();break;case _0x4df782(0x465):_0x46e475['onEscape']();break;case _0x408d12[_0x4df782(0x23f)]:_0x2a1964['preventDefault']();if(_0x2a1964['shiftKey'])_0x46e475[_0x4df782(0x4f9)]();else _0x46e475[_0x4df782(0x17a)]();break;case _0x4df782(0x2ed):case _0x408d12['uOLSG']:case'ArrowLeft':case _0x408d12[_0x4df782(0x219)]:_0x2a1964[_0x4df782(0x53d)](),_0x46e475[_0x4df782(0x24e)](_0x2a1964[_0x4df782(0x4a0)]);break;case'z':if(_0x2a1964[_0x4df782(0x545)]||_0x2a1964[_0x4df782(0x261)]){_0x2a1964[_0x4df782(0x53d)]();if(_0x2a1964['shiftKey'])_0x46e475[_0x4df782(0x1ed)]();else _0x46e475['onUndo']();}break;case'y':(_0x2a1964['metaKey']||_0x2a1964[_0x4df782(0x261)])&&(_0x2a1964['preventDefault'](),_0x46e475[_0x4df782(0x1ed)]());break;case'a':(_0x2a1964[_0x4df782(0x545)]||_0x2a1964[_0x4df782(0x261)])&&(_0x2a1964[_0x4df782(0x53d)](),_0x46e475[_0x4df782(0x2bc)]());break;}},_0x3907e4[_0x188482(0x296)](_0x408d12['xvMpO'],this['onKeyDown']);}[_0x985f80(0x40e)](){const _0x29cd54=_0x985f80,_0x519911={'nIKNk':_0x29cd54(0x45c)};this[_0x29cd54(0x2ea)][_0x29cd54(0x153)](_0x519911[_0x29cd54(0x3d5)],this[_0x29cd54(0x3b2)]);}}const MIN_DRAG_PX=0x4;class BoxSelect{constructor(_0x483b44,_0x3cf84a,_0x339d05){const _0x184cc9=_0x985f80,_0x538fb3={'CCReh':_0x184cc9(0x35a)};this[_0x184cc9(0x4c9)]=![],this['startClientX']=0x0,this[_0x184cc9(0x3db)]=0x0,this[_0x184cc9(0x154)]=null,this[_0x184cc9(0x2ea)]=_0x483b44,this[_0x184cc9(0x466)]=_0x3cf84a,this[_0x184cc9(0x11b)]=_0x339d05,this[_0x184cc9(0x239)]=this['handleMouseDown'][_0x184cc9(0x1b0)](this),this[_0x184cc9(0x1c0)]=this[_0x184cc9(0x334)]['bind'](this),this[_0x184cc9(0x4d9)]=this[_0x184cc9(0x44f)][_0x184cc9(0x1b0)](this),_0x483b44['addEventListener']('mousedown',this[_0x184cc9(0x239)]),window['addEventListener'](_0x184cc9(0x462),this[_0x184cc9(0x1c0)]),window[_0x184cc9(0x296)](_0x538fb3[_0x184cc9(0x19a)],this[_0x184cc9(0x4d9)]);}['isSelecting'](){const _0x1f425d=_0x985f80;return this[_0x1f425d(0x4c9)];}[_0x985f80(0x3de)](){const _0x4dc904=_0x985f80,_0x1883f0=this[_0x4dc904(0x2ea)][_0x4dc904(0x1e6)]();return{'left':_0x1883f0[_0x4dc904(0x1f8)],'top':_0x1883f0[_0x4dc904(0x50d)]};}[_0x985f80(0x556)](_0x332eb3){const _0x37a81e=_0x985f80,_0x43762c={'cTROk':'1|6|2|4|3|0|5'},_0x1e5f17=_0x43762c[_0x37a81e(0x135)][_0x37a81e(0x392)]('|');let _0x343e14=0x0;while(!![]){switch(_0x1e5f17[_0x343e14++]){case'0':this['startClientY']=_0x332eb3[_0x37a81e(0x37b)];continue;case'1':if(_0x332eb3[_0x37a81e(0x4cb)]!==0x0||!_0x332eb3[_0x37a81e(0x4cf)])return;continue;case'2':_0x332eb3[_0x37a81e(0x53d)]();continue;case'3':this['startClientX']=_0x332eb3[_0x37a81e(0x41a)];continue;case'4':this[_0x37a81e(0x4c9)]=!![];continue;case'5':this[_0x37a81e(0x2a6)]();continue;case'6':if(this[_0x37a81e(0x11b)][_0x37a81e(0x1fc)](_0x332eb3[_0x37a81e(0x41a)],_0x332eb3['clientY']))return;continue;}break;}}[_0x985f80(0x334)](_0x1c2ee2){const _0x3653df=_0x985f80;if(!this[_0x3653df(0x4c9)]||!this[_0x3653df(0x154)])return;this['updateOverlay'](_0x1c2ee2[_0x3653df(0x41a)],_0x1c2ee2[_0x3653df(0x37b)]);}[_0x985f80(0x44f)](_0x521a7f){const _0x225661=_0x985f80,_0x3906ab={'ixrVK':function(_0x27edbb,_0x4e66c3){return _0x27edbb-_0x4e66c3;}};if(!this['active'])return;this[_0x225661(0x4c9)]=![],this[_0x225661(0x1eb)]();const _0x239a58=Math[_0x225661(0x391)](_0x3906ab['ixrVK'](_0x521a7f[_0x225661(0x41a)],this[_0x225661(0x4e0)])),_0x207a3e=Math[_0x225661(0x391)](_0x521a7f[_0x225661(0x37b)]-this['startClientY']);if(_0x239a58<MIN_DRAG_PX&&_0x207a3e<MIN_DRAG_PX)return;const {left:_0x16c5c4,top:_0x4b225}=this['offset'](),[_0x42cd95,_0xba9a2]=this[_0x225661(0x466)][_0x225661(0x266)](Math[_0x225661(0x1aa)](this[_0x225661(0x4e0)],_0x521a7f[_0x225661(0x41a)])-_0x16c5c4,_0x3906ab[_0x225661(0x1f1)](Math[_0x225661(0x1aa)](this[_0x225661(0x3db)],_0x521a7f[_0x225661(0x37b)]),_0x4b225)),[_0x5bc9a5,_0x439123]=this[_0x225661(0x466)][_0x225661(0x266)](Math['max'](this[_0x225661(0x4e0)],_0x521a7f['clientX'])-_0x16c5c4,Math['max'](this[_0x225661(0x3db)],_0x521a7f[_0x225661(0x37b)])-_0x4b225);this[_0x225661(0x11b)][_0x225661(0x110)](_0x42cd95,_0xba9a2,_0x5bc9a5,_0x439123);}[_0x985f80(0x2a6)](){const _0x4f1c29=_0x985f80,_0x94a736=document[_0x4f1c29(0x2c9)](_0x4f1c29(0x2ae));_0x94a736[_0x4f1c29(0x2e7)][_0x4f1c29(0x22e)]=_0x4f1c29(0x455),document[_0x4f1c29(0x300)][_0x4f1c29(0x280)](_0x94a736),this['overlay']=_0x94a736,this[_0x4f1c29(0x4f4)](this[_0x4f1c29(0x4e0)],this['startClientY']);}[_0x985f80(0x4f4)](_0x20a6d0,_0x50f8ef){const _0x1061e5=_0x985f80,_0x253b98={'BzpsM':function(_0x511539,_0x42411a){return _0x511539-_0x42411a;}};if(!this['overlay'])return;const _0x5612a0=Math[_0x1061e5(0x1aa)](this[_0x1061e5(0x4e0)],_0x20a6d0),_0x1dae06=Math[_0x1061e5(0x1aa)](this[_0x1061e5(0x3db)],_0x50f8ef),_0x4d1a60=Math['abs'](_0x20a6d0-this[_0x1061e5(0x4e0)]),_0x9730fb=Math[_0x1061e5(0x391)](_0x253b98[_0x1061e5(0x2de)](_0x50f8ef,this['startClientY']));this[_0x1061e5(0x154)][_0x1061e5(0x2e7)]['left']=_0x5612a0+'px',this[_0x1061e5(0x154)][_0x1061e5(0x2e7)][_0x1061e5(0x50d)]=_0x1dae06+'px',this['overlay']['style'][_0x1061e5(0x31c)]=_0x4d1a60+'px',this[_0x1061e5(0x154)][_0x1061e5(0x2e7)][_0x1061e5(0x2e0)]=_0x9730fb+'px';}[_0x985f80(0x1eb)](){const _0x31f2f8=_0x985f80;this['overlay']?.[_0x31f2f8(0x54b)](),this['overlay']=null;}[_0x985f80(0x40e)](){const _0xc58169=_0x985f80,_0x365924={'ewZBU':_0xc58169(0x462),'qWWJE':'mouseup'};this[_0xc58169(0x1eb)](),this[_0xc58169(0x2ea)][_0xc58169(0x153)](_0xc58169(0x26a),this[_0xc58169(0x239)]),window['removeEventListener'](_0x365924[_0xc58169(0x31b)],this['onMouseMove']),window['removeEventListener'](_0x365924[_0xc58169(0x2ad)],this['onMouseUp']);}}class LabelEditor{constructor(){const _0x4279a1=_0x985f80;this[_0x4279a1(0x158)]=null,this['boundBlur']=null;}[_0x985f80(0x3ef)](_0x46cf12,_0x1b9bba,_0x258955,_0x257f6b){const _0x487185=_0x985f80,_0x50d24c={'COmAi':function(_0x5ddbbf,_0x237e97){return _0x5ddbbf+_0x237e97;},'lAjOd':function(_0xf641e,_0x3d1781){return _0xf641e/_0x3d1781;},'iNUhw':function(_0x1d74c0,_0x1b67cb){return _0x1d74c0-_0x1b67cb;},'fewUU':function(_0x2837d0,_0x26fd5d){return _0x2837d0(_0x26fd5d);}};this[_0x487185(0x49b)]();const _0x5cc7b1={...DEFAULT_NODE_STYLE,..._0x46cf12['style']},[_0x4de28d,_0x1d4ad6]=_0x258955[_0x487185(0x2f6)](_0x46cf12['x']+_0x46cf12[_0x487185(0x31c)]/0x2,_0x50d24c[_0x487185(0x25d)](_0x46cf12['y'],_0x50d24c[_0x487185(0x12d)](_0x46cf12[_0x487185(0x2e0)],0x2))),_0x3e8215=_0x1b9bba[_0x487185(0x1e6)](),_0x2d9069=document['createElement'](_0x487185(0x158));_0x2d9069['type']=_0x487185(0x1d7),_0x2d9069['value']=_0x46cf12[_0x487185(0x481)],_0x2d9069['style'][_0x487185(0x22e)]=_0x487185(0x248)+(_0x3e8215[_0x487185(0x1f8)]+_0x4de28d)+'px;\x0a\x20\x20\x20\x20\x20\x20top:\x20\x20'+(_0x3e8215[_0x487185(0x50d)]+_0x1d4ad6)+_0x487185(0x1a7)+Math[_0x487185(0x4cd)](0x50,_0x50d24c[_0x487185(0x54c)](_0x46cf12[_0x487185(0x31c)]*_0x258955[_0x487185(0x330)],0x14))+'px;\x0a\x20\x20\x20\x20\x20\x20padding:\x204px\x208px;\x0a\x20\x20\x20\x20\x20\x20border:\x202px\x20solid\x20'+_0x5cc7b1[_0x487185(0x55d)]+_0x487185(0x48e)+_0x5cc7b1['backgroundColor']+_0x487185(0x46f)+_0x5cc7b1['textColor']+_0x487185(0x350)+_0x5cc7b1[_0x487185(0x216)]*_0x258955[_0x487185(0x330)]+_0x487185(0x4ce)+_0x5cc7b1[_0x487185(0x491)]+_0x487185(0x3b5);let _0x19135f=![];const _0xb4de7d=()=>{const _0x3a5819=_0x487185;if(_0x19135f)return;_0x19135f=!![],_0x257f6b(_0x2d9069[_0x3a5819(0x4eb)]['trim']()||_0x46cf12[_0x3a5819(0x481)]),this['stopEdit'](),_0x1b9bba[_0x3a5819(0x4bf)]();};this[_0x487185(0x126)]=_0xb4de7d,_0x2d9069['addEventListener']('keydown',_0x3bdf28=>{const _0x6eaf89=_0x487185;_0x3bdf28[_0x6eaf89(0x43f)]();if(_0x3bdf28[_0x6eaf89(0x4a0)]===_0x6eaf89(0x2a5))_0xb4de7d();_0x3bdf28[_0x6eaf89(0x4a0)]===_0x6eaf89(0x465)&&(_0x19135f=!![],this['stopEdit'](),_0x1b9bba[_0x6eaf89(0x4bf)]());}),_0x2d9069[_0x487185(0x296)](_0x487185(0x534),_0xb4de7d),document[_0x487185(0x300)][_0x487185(0x280)](_0x2d9069),this[_0x487185(0x158)]=_0x2d9069,_0x50d24c[_0x487185(0x3fa)](requestAnimationFrame,()=>{const _0x25a136=_0x487185;_0x2d9069[_0x25a136(0x2d2)]();});}['stopEdit'](){const _0x45626e=_0x985f80;if(!this[_0x45626e(0x158)])return;this[_0x45626e(0x126)]&&(this[_0x45626e(0x158)][_0x45626e(0x153)](_0x45626e(0x534),this[_0x45626e(0x126)]),this['boundBlur']=null),this[_0x45626e(0x158)]['remove'](),this[_0x45626e(0x158)]=null;}[_0x985f80(0x40e)](){this['stopEdit']();}}class History{constructor(_0x28830e=0x64){const _0x405378=_0x985f80;this['limit']=_0x28830e,this[_0x405378(0x1ea)]=[],this[_0x405378(0x36c)]=[];}['save'](_0x26954e){const _0x3c3524=_0x985f80,_0x39abca={'zxwpk':function(_0xa2d5f4,_0x548520){return _0xa2d5f4>_0x548520;}};this[_0x3c3524(0x1ea)][_0x3c3524(0x2f5)](_0x26954e),this['future']=[];if(_0x39abca[_0x3c3524(0x207)](this[_0x3c3524(0x1ea)][_0x3c3524(0x193)],this[_0x3c3524(0x50e)]))this['past'][_0x3c3524(0x234)]();}[_0x985f80(0x404)](_0x5f249b){const _0x35161d=_0x985f80;if(!this[_0x35161d(0x1ea)][_0x35161d(0x193)])return null;this[_0x35161d(0x36c)][_0x35161d(0x2f5)](_0x5f249b);if(this[_0x35161d(0x36c)][_0x35161d(0x193)]>this[_0x35161d(0x50e)])this['future'][_0x35161d(0x234)]();return this[_0x35161d(0x1ea)][_0x35161d(0x2f3)]();}[_0x985f80(0x1f3)](_0x2926ff){const _0x2a2777=_0x985f80;if(!this[_0x2a2777(0x36c)][_0x2a2777(0x193)])return null;return this[_0x2a2777(0x1ea)][_0x2a2777(0x2f5)](_0x2926ff),this[_0x2a2777(0x36c)]['pop']();}['canUndo'](){const _0x11ad8c=_0x985f80;return this[_0x11ad8c(0x1ea)][_0x11ad8c(0x193)]>0x0;}[_0x985f80(0x402)](){const _0x5d395d=_0x985f80;return this[_0x5d395d(0x36c)][_0x5d395d(0x193)]>0x0;}[_0x985f80(0x3ab)](){this['past']=[],this['future']=[];}}function hierarchicalLayout(_0x97e5b7,_0x4d26f0,_0x410562=0x64,_0x44c76e=0x3c){const _0x35b822=_0x985f80,_0x321990={'fpIwG':function(_0x1eca99,_0x525c8c){return _0x1eca99>=_0x525c8c;},'cbQuJ':function(_0x3ea47b,_0x4daae8){return _0x3ea47b/_0x4daae8;},'tfLnL':function(_0x54fa7c,_0xb4390a){return _0x54fa7c-_0xb4390a;},'NuXNK':function(_0x5a0caf,_0x3732c5){return _0x5a0caf/_0x3732c5;},'YGdjk':function(_0x19c412,_0xc9ad49){return _0x19c412===_0xc9ad49;},'imcoP':function(_0x272202,_0x3a2685){return _0x272202<_0x3a2685;},'aKxWY':function(_0x4facdf,_0x13b39d){return _0x4facdf<=_0x13b39d;},'boKNS':function(_0x4f64b,_0x2c6a05){return _0x4f64b>=_0x2c6a05;},'jHYsi':function(_0x435619,_0x52a7cf){return _0x435619-_0x52a7cf;},'XcBmI':function(_0x44ba80,_0x4ae039){return _0x44ba80+_0x4ae039;}};if(_0x97e5b7[_0x35b822(0x193)]===0x0)return new Map();const _0x2dd87d=new Map(_0x97e5b7['map'](_0x30966f=>[_0x30966f['id'],_0x30966f])),_0x3d33b9=new Map(),_0x5a1f0e=new Map();for(const _0x233f1c of _0x97e5b7){_0x3d33b9[_0x35b822(0x14a)](_0x233f1c['id'],new Set()),_0x5a1f0e[_0x35b822(0x14a)](_0x233f1c['id'],new Set());}for(const _0x310e9b of _0x4d26f0){_0x2dd87d[_0x35b822(0x21c)](_0x310e9b[_0x35b822(0x532)])&&_0x2dd87d[_0x35b822(0x21c)](_0x310e9b[_0x35b822(0x390)])&&_0x310e9b[_0x35b822(0x532)]!==_0x310e9b[_0x35b822(0x390)]&&(_0x3d33b9[_0x35b822(0x53a)](_0x310e9b[_0x35b822(0x532)])[_0x35b822(0x3a5)](_0x310e9b[_0x35b822(0x390)]),_0x5a1f0e[_0x35b822(0x53a)](_0x310e9b[_0x35b822(0x390)])[_0x35b822(0x3a5)](_0x310e9b[_0x35b822(0x532)]));}const _0x283387=new Map();for(const _0x45a0da of _0x97e5b7)_0x283387['set'](_0x45a0da['id'],_0x5a1f0e[_0x35b822(0x53a)](_0x45a0da['id'])['size']);const _0x293508=new Map(),_0x10a733=[];for(const _0x1d4dcd of _0x97e5b7){_0x283387[_0x35b822(0x53a)](_0x1d4dcd['id'])===0x0&&(_0x293508[_0x35b822(0x14a)](_0x1d4dcd['id'],0x0),_0x10a733['push'](_0x1d4dcd['id']));}if(_0x321990[_0x35b822(0x1ab)](_0x10a733['length'],0x0)){let _0x442cf3=Infinity,_0x34aa33=_0x97e5b7[0x0]['id'];for(const _0x27659d of _0x97e5b7){const _0x19f244=_0x283387[_0x35b822(0x53a)](_0x27659d['id']);_0x321990[_0x35b822(0x3ce)](_0x19f244,_0x442cf3)&&(_0x442cf3=_0x19f244,_0x34aa33=_0x27659d['id']);}_0x293508[_0x35b822(0x14a)](_0x34aa33,0x0),_0x10a733[_0x35b822(0x2f5)](_0x34aa33);}const _0x756a14=new Map(_0x283387);let _0x28cd5f=0x0;while(_0x28cd5f<_0x10a733[_0x35b822(0x193)]){const _0x5f5264=_0x10a733[_0x28cd5f++],_0x25464e=_0x293508[_0x35b822(0x53a)](_0x5f5264);for(const _0x18122e of _0x3d33b9[_0x35b822(0x53a)](_0x5f5264)){if(_0x321990[_0x35b822(0x3ce)](_0x293508['get'](_0x18122e)??-0x1,_0x25464e+0x1))_0x293508['set'](_0x18122e,_0x25464e+0x1);const _0x119f8c=_0x756a14[_0x35b822(0x53a)](_0x18122e)-0x1;_0x756a14[_0x35b822(0x14a)](_0x18122e,_0x119f8c);if(_0x119f8c===0x0)_0x10a733[_0x35b822(0x2f5)](_0x18122e);}}for(const _0x592eca of _0x97e5b7){if(!_0x293508['has'](_0x592eca['id']))_0x293508[_0x35b822(0x14a)](_0x592eca['id'],0x0);}const _0x498896=Math[_0x35b822(0x4cd)](..._0x293508[_0x35b822(0x51f)]()),_0xcd9d2d=Array[_0x35b822(0x26f)]({'length':_0x498896+0x1},()=>[]);for(const [_0x385919,_0x5cd12d]of _0x293508)_0xcd9d2d[_0x5cd12d][_0x35b822(0x2f5)](_0x385919);const _0x268ff9=(_0x475a59,_0x6045ff)=>{const _0x3d4eb7=_0x35b822,_0x421301=_0x475a59[_0x3d4eb7(0x3d7)](_0x6045ff);return _0x321990[_0x3d4eb7(0x297)](_0x421301,0x0)?_0x421301:_0x475a59[_0x3d4eb7(0x193)]/0x2;};for(let _0x59b8fc=0x0;_0x59b8fc<0x2;_0x59b8fc++){for(let _0x193767=0x1;_0x321990[_0x35b822(0x23c)](_0x193767,_0x498896);_0x193767++){const _0x52fd3f=_0xcd9d2d[_0x193767-0x1];_0xcd9d2d[_0x193767][_0x35b822(0x4f8)]((_0x2b059d,_0x437c47)=>{const _0x443cff=_0x35b822,_0x244065=[..._0x5a1f0e[_0x443cff(0x53a)](_0x2b059d)]['filter'](_0x3a19dd=>_0x293508[_0x443cff(0x53a)](_0x3a19dd)===_0x193767-0x1),_0x2b3481=[..._0x5a1f0e[_0x443cff(0x53a)](_0x437c47)][_0x443cff(0x3da)](_0x42d1e8=>_0x293508[_0x443cff(0x53a)](_0x42d1e8)===_0x193767-0x1),_0x951424=_0x244065[_0x443cff(0x193)]?_0x321990['cbQuJ'](_0x244065[_0x443cff(0x374)]((_0x43310d,_0x5d0ce7)=>_0x43310d+_0x268ff9(_0x52fd3f,_0x5d0ce7),0x0),_0x244065[_0x443cff(0x193)]):0x0,_0xa4a16c=_0x2b3481['length']?_0x2b3481[_0x443cff(0x374)]((_0x271605,_0x143d6e)=>_0x271605+_0x268ff9(_0x52fd3f,_0x143d6e),0x0)/_0x2b3481[_0x443cff(0x193)]:0x0;return _0x321990[_0x443cff(0x504)](_0x951424,_0xa4a16c);});}for(let _0x1b826e=_0x321990[_0x35b822(0x504)](_0x498896,0x1);_0x321990[_0x35b822(0x4e1)](_0x1b826e,0x0);_0x1b826e--){const _0x532b39=_0xcd9d2d[_0x1b826e+0x1];_0xcd9d2d[_0x1b826e][_0x35b822(0x4f8)]((_0x2a9ac1,_0x591143)=>{const _0x391f13=_0x35b822,_0x330c0d=[..._0x3d33b9[_0x391f13(0x53a)](_0x2a9ac1)]['filter'](_0x55fa23=>_0x293508['get'](_0x55fa23)===_0x1b826e+0x1),_0x3b7f55=[..._0x3d33b9[_0x391f13(0x53a)](_0x591143)]['filter'](_0x45e6ec=>_0x293508[_0x391f13(0x53a)](_0x45e6ec)===_0x1b826e+0x1),_0x23958e=_0x330c0d[_0x391f13(0x193)]?_0x321990['NuXNK'](_0x330c0d[_0x391f13(0x374)]((_0x364a5d,_0x1225d7)=>_0x364a5d+_0x268ff9(_0x532b39,_0x1225d7),0x0),_0x330c0d[_0x391f13(0x193)]):0x0,_0x5f5d47=_0x3b7f55[_0x391f13(0x193)]?_0x3b7f55[_0x391f13(0x374)]((_0x5564c0,_0x20772d)=>_0x5564c0+_0x268ff9(_0x532b39,_0x20772d),0x0)/_0x3b7f55[_0x391f13(0x193)]:0x0;return _0x23958e-_0x5f5d47;});}}const _0x7c4875=_0xcd9d2d['map'](_0x23f60f=>_0x23f60f['reduce']((_0x16b574,_0x1d406b)=>_0x16b574+(_0x2dd87d[_0x35b822(0x53a)](_0x1d406b)?.['height']??0x3c)+_0x44c76e,0x0)-_0x44c76e),_0x30acfc=Math[_0x35b822(0x4cd)](..._0x7c4875,0x0),_0x4d54f8=new Map();let _0x27a84d=0x0;for(let _0x2e2c2b=0x0;_0x2e2c2b<=_0x498896;_0x2e2c2b++){const _0x5db89e=_0xcd9d2d[_0x2e2c2b],_0x9c84ba=Math[_0x35b822(0x4cd)](..._0x5db89e['map'](_0x9e732e=>_0x2dd87d[_0x35b822(0x53a)](_0x9e732e)?.[_0x35b822(0x31c)]??0x78)),_0x590160=Math[_0x35b822(0x34a)](_0x321990[_0x35b822(0x246)](_0x30acfc,_0x7c4875[_0x2e2c2b])/0x2);let _0x16ff6a=_0x590160;for(const _0x368eff of _0x5db89e){const _0x3ae06e=_0x2dd87d['get'](_0x368eff);_0x4d54f8[_0x35b822(0x14a)](_0x368eff,{'x':_0x27a84d,'y':_0x16ff6a}),_0x16ff6a+=_0x321990['XcBmI'](_0x3ae06e[_0x35b822(0x2e0)],_0x44c76e);}_0x27a84d+=_0x9c84ba+_0x410562;}return _0x4d54f8;}function forceLayout(_0x4877cb,_0x143b7c,_0x350bde=0x96){const _0x280ba8=_0x985f80,_0x17f9e1={'qPuKU':function(_0x589b11,_0x4426ee){return _0x589b11===_0x4426ee;},'avQHw':function(_0x5cfacb,_0x3d672a){return _0x5cfacb/_0x3d672a;},'YsCYY':function(_0x3c5171,_0x1dc3bb){return _0x3c5171+_0x1dc3bb;},'zGUSd':function(_0x310364,_0x1048be){return _0x310364*_0x1048be;},'ugCHY':function(_0x2c867e,_0xf96710){return _0x2c867e<_0xf96710;},'yBUCT':function(_0x37df8f,_0x289f38){return _0x37df8f+_0x289f38;},'zJJjY':function(_0x17f69a,_0x108a2b){return _0x17f69a-_0x108a2b;},'EnhrG':function(_0x4f4c90,_0xb749a6){return _0x4f4c90*_0xb749a6;},'PfmES':function(_0x5777bd,_0x26cf09){return _0x5777bd*_0x26cf09;},'XKluf':function(_0x4d0567,_0x498acb){return _0x4d0567*_0x498acb;},'RIYmb':function(_0x8ed4d5,_0x3758f1){return _0x8ed4d5/_0x3758f1;},'ehzZb':function(_0x334d94,_0x375923){return _0x334d94||_0x375923;},'qvmOp':function(_0x2fc3a2,_0x2dc58b){return _0x2fc3a2*_0x2dc58b;},'ybjgi':function(_0x519e67,_0x29a7a3){return _0x519e67/_0x29a7a3;},'XQWPL':function(_0x12f96a,_0x5683b9){return _0x12f96a*_0x5683b9;},'RtLbI':function(_0x2214f9,_0x26ec3c){return _0x2214f9/_0x26ec3c;}};if(_0x17f9e1[_0x280ba8(0x301)](_0x4877cb[_0x280ba8(0x193)],0x0))return new Map();const _0x228f31=new Map();for(const _0xe0936b of _0x4877cb){_0x228f31[_0x280ba8(0x14a)](_0xe0936b['id'],{'x':_0xe0936b['x']+_0x17f9e1['avQHw'](_0xe0936b[_0x280ba8(0x31c)],0x2),'y':_0x17f9e1[_0x280ba8(0x3e3)](_0xe0936b['y'],_0xe0936b[_0x280ba8(0x2e0)]/0x2)});}const _0x318c5e=_0x17f9e1[_0x280ba8(0x380)](_0x17f9e1[_0x280ba8(0x4a8)](Math[_0x280ba8(0x48d)](0xc8*0xc8*_0x4877cb[_0x280ba8(0x193)]),_0x4877cb['length']),0x5);let _0x15a14e=_0x318c5e*0x2;for(let _0x4a50d9=0x0;_0x17f9e1[_0x280ba8(0x3dd)](_0x4a50d9,_0x350bde);_0x4a50d9++){const _0x443778=new Map();for(const _0x487474 of _0x4877cb)_0x443778[_0x280ba8(0x14a)](_0x487474['id'],{'x':0x0,'y':0x0});for(let _0x481bc0=0x0;_0x481bc0<_0x4877cb[_0x280ba8(0x193)];_0x481bc0++){for(let _0x31ab09=_0x17f9e1['yBUCT'](_0x481bc0,0x1);_0x31ab09<_0x4877cb[_0x280ba8(0x193)];_0x31ab09++){const _0x4a2737=_0x4877cb[_0x481bc0],_0x201d52=_0x4877cb[_0x31ab09],_0x57a901=_0x228f31['get'](_0x4a2737['id']),_0x3de05a=_0x228f31[_0x280ba8(0x53a)](_0x201d52['id']),_0x3ea368=_0x57a901['x']-_0x3de05a['x'],_0x43a37a=_0x17f9e1[_0x280ba8(0x2ab)](_0x57a901['y'],_0x3de05a['y']),_0x5e902c=Math[_0x280ba8(0x4cd)](Math[_0x280ba8(0x1fa)](_0x3ea368,_0x43a37a),0x1),_0x30b4cf=_0x17f9e1[_0x280ba8(0x4a8)](_0x17f9e1[_0x280ba8(0x41e)](_0x318c5e,_0x318c5e),_0x5e902c),_0x1304fb=_0x443778[_0x280ba8(0x53a)](_0x4a2737['id']),_0x312516=_0x443778[_0x280ba8(0x53a)](_0x201d52['id']);_0x1304fb['x']+=_0x17f9e1[_0x280ba8(0x422)](_0x3ea368/_0x5e902c,_0x30b4cf),_0x1304fb['y']+=_0x17f9e1['avQHw'](_0x43a37a,_0x5e902c)*_0x30b4cf,_0x312516['x']-=_0x17f9e1[_0x280ba8(0x3a1)](_0x17f9e1['RIYmb'](_0x3ea368,_0x5e902c),_0x30b4cf),_0x312516['y']-=_0x43a37a/_0x5e902c*_0x30b4cf;}}for(const _0x4eeb10 of _0x143b7c){const _0x408d5d=_0x228f31['get'](_0x4eeb10[_0x280ba8(0x532)]),_0x277239=_0x228f31[_0x280ba8(0x53a)](_0x4eeb10[_0x280ba8(0x390)]);if(_0x17f9e1['ehzZb'](!_0x408d5d,!_0x277239))continue;const _0x328408=_0x277239['x']-_0x408d5d['x'],_0x4152ec=_0x277239['y']-_0x408d5d['y'],_0x13d3ec=Math[_0x280ba8(0x4cd)](Math['hypot'](_0x328408,_0x4152ec),0x1),_0x4521ae=_0x13d3ec*_0x13d3ec/_0x318c5e,_0x4abe84=_0x443778[_0x280ba8(0x53a)](_0x4eeb10[_0x280ba8(0x532)]),_0x13e41d=_0x443778[_0x280ba8(0x53a)](_0x4eeb10['target']);_0x4abe84['x']+=_0x17f9e1[_0x280ba8(0x3a1)](_0x328408/_0x13d3ec,_0x4521ae),_0x4abe84['y']+=_0x17f9e1[_0x280ba8(0x41e)](_0x4152ec/_0x13d3ec,_0x4521ae),_0x13e41d['x']-=_0x17f9e1[_0x280ba8(0x3a1)](_0x328408/_0x13d3ec,_0x4521ae),_0x13e41d['y']-=_0x17f9e1[_0x280ba8(0x4a8)](_0x4152ec,_0x13d3ec)*_0x4521ae;}for(const _0x34f4b8 of _0x4877cb){const _0x386b01=_0x228f31[_0x280ba8(0x53a)](_0x34f4b8['id']),_0x39a682=_0x443778[_0x280ba8(0x53a)](_0x34f4b8['id']),_0x3c9f5a=Math[_0x280ba8(0x4cd)](Math[_0x280ba8(0x1fa)](_0x39a682['x'],_0x39a682['y']),0x1);_0x386b01['x']+=_0x17f9e1[_0x280ba8(0x1b8)](_0x17f9e1['ybjgi'](_0x39a682['x'],_0x3c9f5a),Math[_0x280ba8(0x1aa)](_0x3c9f5a,_0x15a14e)),_0x386b01['y']+=_0x17f9e1[_0x280ba8(0x522)](_0x39a682['y']/_0x3c9f5a,Math[_0x280ba8(0x1aa)](_0x3c9f5a,_0x15a14e));}_0x15a14e*=0.95;}const _0x568b39=new Map();for(const _0x2aa368 of _0x4877cb){const _0x186d02=_0x228f31[_0x280ba8(0x53a)](_0x2aa368['id']);_0x568b39[_0x280ba8(0x14a)](_0x2aa368['id'],{'x':_0x186d02['x']-_0x2aa368[_0x280ba8(0x31c)]/0x2,'y':_0x186d02['y']-_0x17f9e1[_0x280ba8(0x254)](_0x2aa368[_0x280ba8(0x2e0)],0x2)});}return _0x568b39;}function gridLayout(_0x532b1b,_0x2447e4=0x28){const _0xe7d484=_0x985f80,_0x100308={'fkwSh':function(_0x16af9a,_0x57bf6b){return _0x16af9a*_0x57bf6b;},'zoLSK':function(_0x4d6221,_0xc46290){return _0x4d6221+_0xc46290;},'ENBjd':function(_0x2f1b86,_0x1d47b1){return _0x2f1b86+_0x1d47b1;}};if(_0x532b1b[_0xe7d484(0x193)]===0x0)return new Map();const _0x448927=Math[_0xe7d484(0x1cf)](Math[_0xe7d484(0x48d)](_0x532b1b[_0xe7d484(0x193)])),_0x4485e8=[..._0x532b1b][_0xe7d484(0x4f8)]((_0x2a751d,_0x21f894)=>_0x2a751d['x']-_0x21f894['x']||_0x2a751d['y']-_0x21f894['y']),_0x1ce2bc=_0x100308[_0xe7d484(0x3e0)](Math['max'](..._0x532b1b[_0xe7d484(0x2ba)](_0x5da743=>_0x5da743[_0xe7d484(0x31c)]),0x78),_0x2447e4),_0x32fd3a=_0x100308['ENBjd'](Math['max'](..._0x532b1b[_0xe7d484(0x2ba)](_0x3fb8a3=>_0x3fb8a3['height']),0x3c),_0x2447e4),_0x25129b=new Map();return _0x4485e8[_0xe7d484(0x302)]((_0x40366f,_0x1ac714)=>{const _0x28e6db=_0xe7d484;_0x25129b[_0x28e6db(0x14a)](_0x40366f['id'],{'x':_0x1ac714%_0x448927*_0x1ce2bc,'y':_0x100308['fkwSh'](Math[_0x28e6db(0x511)](_0x1ac714/_0x448927),_0x32fd3a)});}),_0x25129b;}const PANEL_BASE=_0x985f80(0x2e4);function section(_0x5b3bc3,_0x56a9c5=_0x985f80(0x220)){const _0x1c9d68=_0x985f80,_0x432e4c={'RFNLf':'div'},_0x1d79bb=document[_0x1c9d68(0x2c9)](_0x432e4c[_0x1c9d68(0x308)]);_0x1d79bb[_0x1c9d68(0x2e7)][_0x1c9d68(0x3b1)]=_0x56a9c5;const _0x457966=document[_0x1c9d68(0x2c9)](_0x432e4c[_0x1c9d68(0x308)]);return _0x457966[_0x1c9d68(0x486)]=_0x5b3bc3,_0x457966[_0x1c9d68(0x2e7)][_0x1c9d68(0x22e)]=_0x1c9d68(0x16e),_0x1d79bb[_0x1c9d68(0x280)](_0x457966),_0x1d79bb;}function hr(){const _0x1b281c=_0x985f80,_0x205f33={'THMDb':_0x1b281c(0x310)},_0x283792=document['createElement'](_0x1b281c(0x2ae));return _0x283792[_0x1b281c(0x2e7)][_0x1b281c(0x22e)]=_0x205f33[_0x1b281c(0x284)],_0x283792;}class ContextPanels{constructor(_0x1737b8){const _0x33beae=_0x985f80;this[_0x33beae(0x417)]=_0x1737b8;}[_0x985f80(0x496)](_0x5431e2){const _0x179169=_0x985f80,_0x30c6f9={'AsrEb':_0x179169(0x3d8),'zeqbF':_0x179169(0x43e),'COOTu':function(_0x55d519){return _0x55d519();},'FYfjM':'width','MzDoZ':function(_0x3e4846,_0x3493ec){return _0x3e4846!==_0x3493ec;},'pZejl':_0x179169(0x2a1),'wruEw':'[data-dash]','RPKTZ':function(_0x30e8e0,_0x36df79){return _0x30e8e0+_0x36df79;},'PUBFL':'Color','LcEco':_0x179169(0x318),'sWvLq':_0x179169(0x191),'oMCjK':_0x179169(0x19e),'jOYoG':'div','qjEAN':_0x179169(0x34c),'OgihR':_0x179169(0x47b),'dNaui':_0x179169(0x512),'BqtwO':_0x179169(0x4cb),'hiioe':function(_0x456721,_0x287f49){return _0x456721(_0x287f49);},'wLAEl':function(_0x39ac1f){return _0x39ac1f();},'eAfmt':_0x179169(0x218),'Gbyid':'Dashed','jCqZl':function(_0x42d216,_0x4e366b){return _0x42d216===_0x4e366b;},'qNxrU':_0x179169(0x405),'gYRDq':_0x179169(0x291),'Pykdl':'width:\x20100%;\x20height:\x202px;\x20background:\x20#d1d5db;\x20border-radius:\x201px;'},{graph:_0x435aa5,scheduleRender:_0xea60d4,beforeMutation:_0x1e6cb8}=this[_0x179169(0x417)],_0x455622={...DEFAULT_EDGE_STYLE,..._0x5431e2['style']},_0x560108=document[_0x179169(0x2c9)](_0x179169(0x2ae));_0x560108[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x30c6f9[_0x179169(0x192)](PANEL_BASE,_0x179169(0x151));const _0x142f43=section(_0x30c6f9[_0x179169(0x424)]),_0x1c248f=[_0x179169(0x403),_0x30c6f9[_0x179169(0x47d)],'#16a34a',_0x30c6f9[_0x179169(0x1d8)],_0x179169(0x259),_0x179169(0x27d),_0x179169(0x436),_0x30c6f9[_0x179169(0x446)]],_0x66d250=document[_0x179169(0x2c9)](_0x30c6f9[_0x179169(0x427)]);_0x66d250[_0x179169(0x2e7)]['cssText']=_0x179169(0x33e);const _0x1da202=()=>{const _0x19830e=_0x179169,_0x1cf4b1={...DEFAULT_EDGE_STYLE,..._0x435aa5['getEdge'](_0x5431e2['id'])?.[_0x19830e(0x2e7)]}[_0x19830e(0x343)];_0x66d250[_0x19830e(0x1bb)](_0x19830e(0x122))[_0x19830e(0x302)](_0x413850=>{const _0x549855=_0x19830e,_0x21edb7=_0x413850[_0x549855(0x13c)][_0x549855(0x343)];_0x413850[_0x549855(0x2e7)][_0x549855(0x1cb)]=_0x21edb7===_0x1cf4b1?_0x549855(0x1b2):_0x549855(0x38f),_0x413850[_0x549855(0x2e7)][_0x549855(0x340)]='1px';});};for(const _0x5a9241 of _0x1c248f){const _0x843c49=document['createElement'](_0x179169(0x2ae));_0x843c49['dataset'][_0x179169(0x343)]=_0x5a9241,_0x843c49[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x179169(0x1b6)+_0x5a9241+';\x20cursor:\x20pointer;\x0a\x20\x20\x20\x20\x20\x20\x20\x20transition:\x20transform\x20.1s,\x20outline\x20.1s;\x0a\x20\x20\x20\x20\x20\x20\x20\x20outline:\x202px\x20solid\x20'+(_0x5a9241===_0x455622['color']?'#fff':_0x30c6f9[_0x179169(0x1dc)])+_0x179169(0x202),_0x843c49[_0x179169(0x296)](_0x30c6f9[_0x179169(0x35b)],()=>{const _0x230ed6=_0x179169;_0x843c49[_0x230ed6(0x2e7)]['transform']=_0x30c6f9[_0x230ed6(0x115)];}),_0x843c49[_0x179169(0x296)](_0x179169(0x31d),()=>{const _0x57c441=_0x179169;_0x843c49[_0x57c441(0x2e7)][_0x57c441(0x1e5)]=_0x57c441(0x1fd);}),_0x843c49[_0x179169(0x296)](_0x179169(0x443),_0x235fe1=>{const _0x5f58d9=_0x179169,_0x2585bb=_0x30c6f9[_0x5f58d9(0x4b5)][_0x5f58d9(0x392)]('|');let _0x42dec7=0x0;while(!![]){switch(_0x2585bb[_0x42dec7++]){case'0':_0x30c6f9[_0x5f58d9(0x3c4)](_0x1e6cb8);continue;case'1':_0x435aa5[_0x5f58d9(0x1e0)](_0x5431e2['id'],{'style':{..._0x435aa5[_0x5f58d9(0x27c)](_0x5431e2['id'])?.[_0x5f58d9(0x2e7)],'color':_0x5a9241}});continue;case'2':_0x1da202();continue;case'3':_0xea60d4();continue;case'4':_0x235fe1['stopPropagation']();continue;}break;}}),_0x66d250[_0x179169(0x280)](_0x843c49);}_0x142f43[_0x179169(0x280)](_0x66d250),_0x560108[_0x179169(0x280)](_0x142f43),_0x560108[_0x179169(0x280)](hr());const _0x5bc810=section(_0x179169(0x50c)),_0x26da61=[{'label':_0x179169(0x4d7),'value':0x1},{'label':_0x30c6f9[_0x179169(0x2a0)],'value':0x2},{'label':'Thick','value':0x4}],_0x17a932=document['createElement'](_0x30c6f9[_0x179169(0x427)]);_0x17a932[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x179169(0x1b1);const _0x5cac88=()=>{const _0x5d207d=_0x179169,_0x11861c={'ALEdF':_0x30c6f9[_0x5d207d(0x4ec)],'pMgHB':_0x5d207d(0x34c),'XRYbU':_0x5d207d(0x291)},_0x4b9d99={...DEFAULT_EDGE_STYLE,..._0x435aa5[_0x5d207d(0x27c)](_0x5431e2['id'])?.[_0x5d207d(0x2e7)]}[_0x5d207d(0x31c)];_0x17a932['querySelectorAll'](_0x5d207d(0x4a6))[_0x5d207d(0x302)](_0x1c6207=>{const _0xe0971=_0x5d207d,_0x373ab8=String(_0x4b9d99)===_0x1c6207[_0xe0971(0x13c)][_0x11861c[_0xe0971(0x2f0)]];_0x1c6207[_0xe0971(0x2e7)][_0xe0971(0x44c)]=_0x373ab8?_0xe0971(0x291):_0x11861c[_0xe0971(0x2f1)],_0x1c6207[_0xe0971(0x2e7)][_0xe0971(0x55d)]=_0x373ab8?_0xe0971(0x405):_0x11861c[_0xe0971(0x3e9)];});};for(const _0x28ce3f of _0x26da61){const _0x36216a=document[_0x179169(0x2c9)](_0x30c6f9[_0x179169(0x11c)]);_0x36216a[_0x179169(0x13c)]['width']=_0x30c6f9[_0x179169(0x1da)](String,_0x28ce3f[_0x179169(0x4eb)]);const _0x496797=_0x455622[_0x179169(0x31c)]===_0x28ce3f[_0x179169(0x4eb)];_0x36216a[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x179169(0x4db)+(_0x496797?_0x179169(0x405):'rgba(255,255,255,0.15)')+_0x179169(0x3cc)+(_0x496797?_0x179169(0x291):_0x30c6f9[_0x179169(0x1dc)])+';\x0a\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#d1d5db;\x20font-size:\x2011px;\x20font-family:\x20inherit;\x0a\x20\x20\x20\x20\x20\x20\x20\x20display:\x20flex;\x20flex-direction:\x20column;\x20align-items:\x20center;\x20gap:\x205px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20transition:\x20background\x20.1s,\x20border-color\x20.1s;\x0a\x20\x20\x20\x20\x20\x20';const _0x597039=document[_0x179169(0x2c9)](_0x179169(0x2ae));_0x597039['style'][_0x179169(0x22e)]=_0x179169(0x3b0)+_0x28ce3f['value']+_0x179169(0x224);const _0x49d8ef=document[_0x179169(0x2c9)]('span');_0x49d8ef[_0x179169(0x486)]=_0x28ce3f[_0x179169(0x481)],_0x36216a[_0x179169(0x280)](_0x597039),_0x36216a[_0x179169(0x280)](_0x49d8ef),_0x36216a[_0x179169(0x296)](_0x179169(0x47b),()=>{const _0x4d41a8=_0x179169;if(_0x30c6f9['MzDoZ'](_0x36216a['dataset']['width'],String({...DEFAULT_EDGE_STYLE,..._0x435aa5['getEdge'](_0x5431e2['id'])?.[_0x4d41a8(0x2e7)]}[_0x4d41a8(0x31c)])))_0x36216a[_0x4d41a8(0x2e7)][_0x4d41a8(0x44c)]=_0x30c6f9[_0x4d41a8(0x137)];}),_0x36216a[_0x179169(0x296)](_0x179169(0x31d),()=>_0x5cac88()),_0x36216a[_0x179169(0x296)]('pointerdown',_0x135f43=>{const _0xf9255e=_0x179169;_0x135f43['stopPropagation'](),_0x1e6cb8(),_0x435aa5[_0xf9255e(0x1e0)](_0x5431e2['id'],{'style':{..._0x435aa5[_0xf9255e(0x27c)](_0x5431e2['id'])?.[_0xf9255e(0x2e7)],'width':_0x28ce3f[_0xf9255e(0x4eb)]}}),_0x30c6f9[_0xf9255e(0x3c4)](_0xea60d4),_0x30c6f9[_0xf9255e(0x3c4)](_0x5cac88);}),_0x17a932['appendChild'](_0x36216a);}_0x5bc810[_0x179169(0x280)](_0x17a932),_0x560108['appendChild'](_0x5bc810),_0x560108[_0x179169(0x280)](_0x30c6f9['wLAEl'](hr));const _0xfc78aa=section(_0x179169(0x435),'0'),_0x4a4691=[{'label':_0x30c6f9[_0x179169(0x518)],'dashArray':undefined},{'label':_0x30c6f9[_0x179169(0x221)],'dashArray':[0x8,0x4]},{'label':_0x179169(0x1a1),'dashArray':[0x2,0x4]}],_0x1403a8=document[_0x179169(0x2c9)](_0x179169(0x2ae));_0x1403a8[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x179169(0x1b1);const _0x3f0b0a=()=>{const _0xc86028=_0x179169,_0x2ca53f={'kJjNO':_0xc86028(0x34b)},_0x14bc9b={...DEFAULT_EDGE_STYLE,..._0x435aa5[_0xc86028(0x27c)](_0x5431e2['id'])?.[_0xc86028(0x2e7)]}[_0xc86028(0x206)];_0x1403a8[_0xc86028(0x1bb)](_0x30c6f9[_0xc86028(0x268)])[_0xc86028(0x302)](_0x5b6807=>{const _0x863f24=_0xc86028,_0x556413=_0x5b6807[_0x863f24(0x13c)][_0x863f24(0x2d5)]===(_0x14bc9b?JSON[_0x863f24(0x257)](_0x14bc9b):_0x2ca53f[_0x863f24(0x22a)]);_0x5b6807[_0x863f24(0x2e7)][_0x863f24(0x44c)]=_0x556413?_0x863f24(0x291):_0x863f24(0x34c),_0x5b6807[_0x863f24(0x2e7)][_0x863f24(0x55d)]=_0x556413?_0x863f24(0x405):_0x863f24(0x291);});};for(const _0x59194b of _0x4a4691){const _0x591e1e=document[_0x179169(0x2c9)]('button');_0x591e1e[_0x179169(0x13c)]['dash']=_0x59194b['dashArray']?JSON[_0x179169(0x257)](_0x59194b[_0x179169(0x206)]):_0x179169(0x34b);const _0x41af52=_0x59194b['dashArray']?_0x30c6f9[_0x179169(0x3bc)](JSON[_0x179169(0x257)](_0x455622[_0x179169(0x206)]),JSON['stringify'](_0x59194b[_0x179169(0x206)])):!_0x455622['dashArray'];_0x591e1e[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x179169(0x4db)+(_0x41af52?_0x30c6f9[_0x179169(0x43c)]:'rgba(255,255,255,0.15)')+';\x0a\x20\x20\x20\x20\x20\x20\x20\x20background:\x20'+(_0x41af52?_0x30c6f9[_0x179169(0x29b)]:_0x30c6f9[_0x179169(0x1dc)])+_0x179169(0x120);const _0x4394c1=document[_0x179169(0x2c9)](_0x30c6f9[_0x179169(0x427)]);_0x4394c1[_0x179169(0x2e7)]['cssText']=_0x179169(0x181);const _0x387c62=document[_0x179169(0x2c9)](_0x30c6f9[_0x179169(0x427)]);if(!_0x59194b[_0x179169(0x206)])_0x387c62[_0x179169(0x2e7)]['cssText']=_0x30c6f9[_0x179169(0x314)];else{const [_0x325616,_0x5c3881]=_0x59194b[_0x179169(0x206)];_0x387c62[_0x179169(0x2e7)][_0x179169(0x22e)]=_0x179169(0x378)+_0x325616+_0x179169(0x166)+_0x325616+_0x179169(0x4e5)+(_0x325616+_0x5c3881)+_0x179169(0x187);}_0x4394c1['appendChild'](_0x387c62);const _0x3d6123=document['createElement'](_0x179169(0x49e));_0x3d6123['textContent']=_0x59194b[_0x179169(0x481)],_0x591e1e[_0x179169(0x280)](_0x4394c1),_0x591e1e[_0x179169(0x280)](_0x3d6123),_0x591e1e[_0x179169(0x296)](_0x179169(0x47b),()=>{const _0x3b711c=_0x179169;if(!_0x41af52)_0x591e1e[_0x3b711c(0x2e7)][_0x3b711c(0x44c)]=_0x30c6f9[_0x3b711c(0x137)];}),_0x591e1e[_0x179169(0x296)](_0x179169(0x31d),()=>_0x3f0b0a()),_0x591e1e[_0x179169(0x296)](_0x179169(0x443),_0x454e3c=>{const _0x2f8026=_0x179169;_0x454e3c['stopPropagation'](),_0x1e6cb8();const _0x5d0c31={..._0x435aa5[_0x2f8026(0x27c)](_0x5431e2['id'])?.[_0x2f8026(0x2e7)]};if(_0x59194b[_0x2f8026(0x206)])_0x435aa5[_0x2f8026(0x1e0)](_0x5431e2['id'],{'style':{..._0x5d0c31,'dashArray':_0x59194b[_0x2f8026(0x206)]}});else{const {dashArray:_0x320301,..._0x5923ec}=_0x5d0c31;_0x435aa5['updateEdge'](_0x5431e2['id'],{'style':_0x5923ec});}_0xea60d4(),_0x3f0b0a();}),_0x1403a8[_0x179169(0x280)](_0x591e1e);}return _0xfc78aa['appendChild'](_0x1403a8),_0x560108['appendChild'](_0xfc78aa),_0x560108;}[_0x985f80(0x44c)](){const _0x553378=_0x985f80,_0x1e34f1={'kHEcz':function(_0x34a80a,_0x4e1b21){return _0x34a80a===_0x4e1b21;},'AWaak':function(_0x25bd0d){return _0x25bd0d();},'PYyOi':_0x553378(0x157),'jQwic':_0x553378(0x472),'PObBB':function(_0x235f02,_0x4c4fee){return _0x235f02+_0x4c4fee;},'CgaPP':_0x553378(0x167),'qPAGn':_0x553378(0x39e),'VzoBc':_0x553378(0x4c3),'qebrI':_0x553378(0x3a7),'YAlmW':_0x553378(0x13f),'mAqLZ':_0x553378(0x360),'FbtIw':_0x553378(0x395),'Lrpax':_0x553378(0x2ae),'wlrNI':_0x553378(0x49e),'oHjOM':_0x553378(0x443)},{getBackground:_0x2e57ec,setBackground:_0x3816bb}=this[_0x553378(0x417)],_0x44ad3f=document['createElement'](_0x553378(0x2ae));_0x44ad3f[_0x553378(0x2e7)][_0x553378(0x22e)]=_0x1e34f1[_0x553378(0x55b)](PANEL_BASE,_0x1e34f1[_0x553378(0x475)]);const _0x45e5cc=document[_0x553378(0x2c9)](_0x553378(0x2ae));_0x45e5cc[_0x553378(0x486)]='Background',_0x45e5cc[_0x553378(0x2e7)][_0x553378(0x22e)]=_0x553378(0x29a),_0x44ad3f[_0x553378(0x280)](_0x45e5cc);const _0x499866=[{'label':_0x553378(0x51e),'color':_0x1e34f1[_0x553378(0x3d6)]},{'label':_0x1e34f1['VzoBc'],'color':_0x553378(0x1b3)},{'label':_0x553378(0x1c3),'color':_0x1e34f1[_0x553378(0x510)]},{'label':_0x1e34f1[_0x553378(0x3ae)],'color':_0x553378(0x469)},{'label':_0x553378(0x332),'color':_0x553378(0x397)},{'label':_0x1e34f1['mAqLZ'],'color':_0x1e34f1[_0x553378(0x42d)]}],_0xb3571=document[_0x553378(0x2c9)](_0x553378(0x2ae));_0xb3571[_0x553378(0x2e7)][_0x553378(0x22e)]=_0x553378(0x3d4);const _0x33da2f=()=>{const _0x1c3393=_0x553378;_0xb3571['querySelectorAll'](_0x1e34f1[_0x1c3393(0x188)])[_0x1c3393(0x302)](_0x56bd06=>{const _0x31da92=_0x1c3393;_0x56bd06['style'][_0x31da92(0x1cb)]=_0x1e34f1['kHEcz'](_0x56bd06['dataset']['bg'],_0x1e34f1[_0x31da92(0x338)](_0x2e57ec))?_0x31da92(0x1b2):_0x31da92(0x38f);});};for(const _0x1b239a of _0x499866){const _0x8274fe=document[_0x553378(0x2c9)](_0x553378(0x4cb));_0x8274fe[_0x553378(0x13c)]['bg']=_0x1b239a[_0x553378(0x343)],_0x8274fe[_0x553378(0x2e7)][_0x553378(0x22e)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20padding:\x207px\x2010px;\x20border-radius:\x206px;\x20cursor:\x20pointer;\x0a\x20\x20\x20\x20\x20\x20\x20\x20border:\x201px\x20solid\x20rgba(255,255,255,0.15);\x0a\x20\x20\x20\x20\x20\x20\x20\x20background:\x20rgba(255,255,255,0.05);\x0a\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#d1d5db;\x20font-size:\x2011px;\x20font-family:\x20inherit;\x0a\x20\x20\x20\x20\x20\x20\x20\x20display:\x20flex;\x20align-items:\x20center;\x20gap:\x207px;\x0a\x20\x20\x20\x20\x20\x20\x20\x20outline:\x20'+(_0x1e34f1['kHEcz'](_0x1b239a[_0x553378(0x343)],_0x2e57ec())?_0x553378(0x1b2):_0x553378(0x38f))+_0x553378(0x144);const _0x4460be=document['createElement'](_0x1e34f1[_0x553378(0x186)]);_0x4460be[_0x553378(0x2e7)]['cssText']=_0x553378(0x231)+_0x1b239a[_0x553378(0x343)]+_0x553378(0x45d);const _0x1d0e17=document[_0x553378(0x2c9)](_0x1e34f1['wlrNI']);_0x1d0e17[_0x553378(0x486)]=_0x1b239a[_0x553378(0x481)],_0x8274fe[_0x553378(0x280)](_0x4460be),_0x8274fe[_0x553378(0x280)](_0x1d0e17),_0x8274fe['addEventListener'](_0x553378(0x47b),()=>{const _0x291ced=_0x553378;_0x8274fe[_0x291ced(0x2e7)][_0x291ced(0x44c)]=_0x1e34f1[_0x291ced(0x519)];}),_0x8274fe[_0x553378(0x296)](_0x553378(0x31d),()=>{const _0x196840=_0x553378;_0x8274fe['style'][_0x196840(0x44c)]=_0x196840(0x15c);}),_0x8274fe[_0x553378(0x296)](_0x1e34f1[_0x553378(0x4bd)],_0x45904d=>{const _0x57a1b0=_0x553378;_0x45904d[_0x57a1b0(0x43f)](),_0x3816bb(_0x1b239a[_0x57a1b0(0x343)]),_0x33da2f();}),_0xb3571[_0x553378(0x280)](_0x8274fe);}return _0x44ad3f[_0x553378(0x280)](_0xb3571),_0x44ad3f;}[_0x985f80(0x325)](){const _0x5aad45=_0x985f80,_0x42fa6a={'VXnFP':_0x5aad45(0x2ae),'qEaCn':_0x5aad45(0x419),'LctPA':'#9ca3af','bszqc':function(_0x26b5ce){return _0x26b5ce();},'tfeVW':function(_0x46ef76,_0x372a6a){return _0x46ef76===_0x372a6a;},'kSprt':_0x5aad45(0x406),'Wmiyo':_0x5aad45(0x291),'CdExA':_0x5aad45(0x34c),'HDnwf':_0x5aad45(0x1d4),'OzgKR':function(_0x437d0f,_0x9c925f){return _0x437d0f(_0x9c925f);},'ntMyE':function(_0x5997aa){return _0x5997aa();},'ytezi':'gsize','BPJBB':_0x5aad45(0x32d),'fnWNB':'min-width:\x20200px;','ZReec':'Grid','UaDVX':'button','uPrRw':function(_0x51407b){return _0x51407b();},'TxrQy':_0x5aad45(0x443),'ZKvbD':function(_0x5d9dcd,_0x40e8d8,_0x40a8cd){return _0x5d9dcd(_0x40e8d8,_0x40a8cd);},'irGLv':_0x5aad45(0x30c)},{getGridConfig:_0x1fbf12,setGrid:_0x63d207}=this[_0x5aad45(0x417)],_0x33a423=document[_0x5aad45(0x2c9)](_0x42fa6a[_0x5aad45(0x1af)]);_0x33a423[_0x5aad45(0x2e7)][_0x5aad45(0x22e)]=PANEL_BASE+_0x42fa6a[_0x5aad45(0x460)];const _0x2ee329=document[_0x5aad45(0x2c9)]('div');_0x2ee329['textContent']=_0x42fa6a[_0x5aad45(0x4b8)],_0x2ee329[_0x5aad45(0x2e7)][_0x5aad45(0x22e)]=_0x5aad45(0x29a),_0x33a423[_0x5aad45(0x280)](_0x2ee329);const _0x668b0a=(_0xe06e02,_0x2b3cd3)=>{const _0x226c90=_0x5aad45,_0x43e98e=document[_0x226c90(0x2c9)](_0x42fa6a[_0x226c90(0x1af)]);_0x43e98e[_0x226c90(0x2e7)][_0x226c90(0x22e)]=_0x226c90(0x386);const _0x3990d8=document[_0x226c90(0x2c9)](_0x226c90(0x49e));return _0x3990d8[_0x226c90(0x486)]=_0xe06e02,_0x3990d8[_0x226c90(0x2e7)][_0x226c90(0x22e)]=_0x226c90(0x23b),_0x43e98e[_0x226c90(0x280)](_0x3990d8),_0x43e98e[_0x226c90(0x280)](_0x2b3cd3),_0x43e98e;},_0x53ef6c=document['createElement'](_0x42fa6a[_0x5aad45(0x11d)]),_0x5a4e8c=()=>{const _0x2b2022=_0x5aad45,_0x339022=_0x1fbf12()[_0x2b2022(0x388)];_0x53ef6c[_0x2b2022(0x486)]=_0x339022?'On':'Off',_0x53ef6c['style']['background']=_0x339022?_0x2b2022(0x318):_0x2b2022(0x2a1),_0x53ef6c[_0x2b2022(0x2e7)][_0x2b2022(0x343)]=_0x339022?_0x42fa6a[_0x2b2022(0x3d3)]:_0x42fa6a[_0x2b2022(0x3ea)];};_0x53ef6c[_0x5aad45(0x2e7)][_0x5aad45(0x22e)]=_0x5aad45(0x2d9),_0x42fa6a[_0x5aad45(0x3ed)](_0x5a4e8c),_0x53ef6c[_0x5aad45(0x296)](_0x42fa6a['TxrQy'],_0x249082=>{const _0x3530d2=_0x5aad45;_0x249082['stopPropagation'](),_0x63d207({'visible':!_0x42fa6a[_0x3530d2(0x2f2)](_0x1fbf12)['visible']}),_0x42fa6a['bszqc'](_0x5a4e8c);}),_0x33a423['appendChild'](_0x42fa6a[_0x5aad45(0x1a0)](_0x668b0a,_0x5aad45(0x483),_0x53ef6c));const _0x5afb6f=document[_0x5aad45(0x2c9)]('div');_0x5afb6f[_0x5aad45(0x2e7)][_0x5aad45(0x22e)]=_0x5aad45(0x17b);const _0x10afd7=()=>{const _0x49c426=_0x5aad45;_0x5afb6f[_0x49c426(0x1bb)](_0x42fa6a[_0x49c426(0x2e3)])[_0x49c426(0x302)](_0x42f5c9=>{const _0x252caa=_0x49c426,_0x42bb56=_0x42fa6a[_0x252caa(0x482)](_0x42f5c9['dataset'][_0x42fa6a[_0x252caa(0x146)]],_0x1fbf12()['type']);_0x42f5c9[_0x252caa(0x2e7)]['background']=_0x42bb56?_0x42fa6a[_0x252caa(0x1e8)]:_0x42fa6a['CdExA'],_0x42f5c9['style']['borderColor']=_0x42bb56?_0x252caa(0x405):_0x42fa6a[_0x252caa(0x1e8)];});};for(const _0x337e7e of[_0x5aad45(0x4f1),_0x42fa6a[_0x5aad45(0x4ae)]]){const _0x564a33=document[_0x5aad45(0x2c9)]('button');_0x564a33[_0x5aad45(0x13c)][_0x42fa6a[_0x5aad45(0x146)]]=_0x337e7e,_0x564a33[_0x5aad45(0x486)]=_0x337e7e[_0x5aad45(0x113)](0x0)['toUpperCase']()+_0x337e7e[_0x5aad45(0x50a)](0x1),_0x564a33[_0x5aad45(0x2e7)][_0x5aad45(0x22e)]=_0x5aad45(0x3dc)+(_0x42fa6a[_0x5aad45(0x482)](_0x42fa6a[_0x5aad45(0x14d)](_0x1fbf12)['type'],_0x337e7e)?_0x5aad45(0x291):'transparent')+_0x5aad45(0x478),_0x564a33[_0x5aad45(0x296)](_0x5aad45(0x443),_0x51140f=>{const _0x3af18e=_0x5aad45;_0x51140f[_0x3af18e(0x43f)](),_0x42fa6a[_0x3af18e(0x24c)](_0x63d207,{'type':_0x337e7e}),_0x42fa6a[_0x3af18e(0x14d)](_0x10afd7);}),_0x5afb6f[_0x5aad45(0x280)](_0x564a33);}_0x33a423[_0x5aad45(0x280)](_0x668b0a(_0x5aad45(0x19f),_0x5afb6f));const _0x367c33=document[_0x5aad45(0x2c9)]('div');_0x367c33[_0x5aad45(0x2e7)]['cssText']=_0x5aad45(0x17b);const _0x13e70c=[{'label':'S','value':0xa},{'label':'M','value':0x14},{'label':'L','value':0x28}],_0x5a06a0=()=>{const _0x3701df=_0x5aad45;_0x367c33[_0x3701df(0x1bb)](_0x42fa6a[_0x3701df(0x2fa)])['forEach'](_0x4d8b99=>{const _0x5129d3=_0x3701df,_0x115de3=_0x42fa6a[_0x5129d3(0x482)](_0x4d8b99['dataset'][_0x42fa6a[_0x5129d3(0x22b)]],String(_0x1fbf12()[_0x5129d3(0x456)]));_0x4d8b99['style'][_0x5129d3(0x44c)]=_0x115de3?_0x42fa6a['Wmiyo']:_0x5129d3(0x34c),_0x4d8b99[_0x5129d3(0x2e7)]['borderColor']=_0x115de3?_0x5129d3(0x405):_0x5129d3(0x291);});};for(const _0x4f50ee of _0x13e70c){const _0x3ecab3=document[_0x5aad45(0x2c9)](_0x5aad45(0x4cb));_0x3ecab3[_0x5aad45(0x13c)][_0x42fa6a['ytezi']]=String(_0x4f50ee[_0x5aad45(0x4eb)]),_0x3ecab3[_0x5aad45(0x486)]=_0x4f50ee[_0x5aad45(0x481)],_0x3ecab3[_0x5aad45(0x2e7)][_0x5aad45(0x22e)]=_0x5aad45(0x3dc)+(_0x42fa6a[_0x5aad45(0x482)](_0x1fbf12()[_0x5aad45(0x456)],_0x4f50ee[_0x5aad45(0x4eb)])?_0x42fa6a[_0x5aad45(0x1e8)]:_0x42fa6a[_0x5aad45(0x349)])+_0x5aad45(0x478),_0x3ecab3['addEventListener'](_0x5aad45(0x443),_0x5801d8=>{const _0xa9e966=_0x5aad45;_0x5801d8[_0xa9e966(0x43f)](),_0x63d207({'size':_0x4f50ee[_0xa9e966(0x4eb)]}),_0x5a06a0();}),_0x367c33[_0x5aad45(0x280)](_0x3ecab3);}return _0x33a423[_0x5aad45(0x280)](_0x668b0a('Size',_0x367c33)),_0x33a423;}['autoLayout'](){const _0x3283f9=_0x985f80,_0x3b5359={'liuyN':'rgba(255,255,255,0.1)','wIiuu':function(_0x4c9709){return _0x4c9709();},'EZUzv':_0x3283f9(0x2ae),'TrAYB':_0x3283f9(0x247),'pdGeE':_0x3283f9(0x47b),'gDxsu':_0x3283f9(0x443),'cBAAa':function(_0x21bc49){return _0x21bc49();},'adNee':function(_0x446c8d,_0x167f7b,_0x2bd49f){return _0x446c8d(_0x167f7b,_0x2bd49f);},'JIMVx':function(_0x3c9084){return _0x3c9084();},'NnflT':function(_0x5ae1e8,_0x13f600,_0x1444cd){return _0x5ae1e8(_0x13f600,_0x1444cd);},'cGyoW':function(_0x1e0426){return _0x1e0426();},'eIVPC':_0x3283f9(0x167),'QZGLL':_0x3283f9(0x1db),'WXVZk':_0x3283f9(0x3df),'Gzxds':_0x3283f9(0x240)},{graph:_0x9bc277,contextMenu:_0x569df1,scheduleRender:_0x17bb9d,beforeMutation:_0x10acd1}=this[_0x3283f9(0x417)],_0x12e2dc=document[_0x3283f9(0x2c9)](_0x3b5359[_0x3283f9(0x2c7)]);_0x12e2dc[_0x3283f9(0x2e7)][_0x3283f9(0x22e)]=PANEL_BASE+_0x3b5359[_0x3283f9(0x2b4)];const _0xda1e75=document['createElement'](_0x3b5359[_0x3283f9(0x2c7)]);_0xda1e75[_0x3283f9(0x486)]=_0x3b5359[_0x3283f9(0x2ac)],_0xda1e75[_0x3283f9(0x2e7)]['cssText']=_0x3283f9(0x29a),_0x12e2dc[_0x3283f9(0x280)](_0xda1e75);const _0x1d4858=(_0x250e7d,_0x2288a6,_0x18ecc5)=>{const _0x3ea55e=_0x3283f9,_0x130fa3=document['createElement'](_0x3ea55e(0x4cb));_0x130fa3[_0x3ea55e(0x2e7)][_0x3ea55e(0x22e)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20width:\x20100%;\x20padding:\x2010px\x2012px;\x20border-radius:\x206px;\x20cursor:\x20pointer;\x0a\x20\x20\x20\x20\x20\x20\x20\x20border:\x201px\x20solid\x20rgba(255,255,255,0.15);\x0a\x20\x20\x20\x20\x20\x20\x20\x20background:\x20rgba(255,255,255,0.05);\x0a\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#d1d5db;\x20font-family:\x20inherit;\x0a\x20\x20\x20\x20\x20\x20\x20\x20text-align:\x20left;\x20margin-bottom:\x206px;\x20transition:\x20background\x20.1s;\x0a\x20\x20\x20\x20\x20\x20';const _0x36d375=document[_0x3ea55e(0x2c9)](_0x3b5359[_0x3ea55e(0x2c7)]);_0x36d375[_0x3ea55e(0x486)]=_0x250e7d,_0x36d375[_0x3ea55e(0x2e7)][_0x3ea55e(0x22e)]=_0x3b5359[_0x3ea55e(0x42b)];const _0x3950e1=document['createElement'](_0x3b5359[_0x3ea55e(0x2c7)]);return _0x3950e1[_0x3ea55e(0x486)]=_0x2288a6,_0x3950e1[_0x3ea55e(0x2e7)][_0x3ea55e(0x22e)]=_0x3ea55e(0x399),_0x130fa3[_0x3ea55e(0x280)](_0x36d375),_0x130fa3[_0x3ea55e(0x280)](_0x3950e1),_0x130fa3[_0x3ea55e(0x296)](_0x3b5359[_0x3ea55e(0x37c)],()=>{const _0x44111a=_0x3ea55e;_0x130fa3[_0x44111a(0x2e7)][_0x44111a(0x44c)]=_0x3b5359[_0x44111a(0x382)];}),_0x130fa3[_0x3ea55e(0x296)](_0x3ea55e(0x31d),()=>{const _0x846eaf=_0x3ea55e;_0x130fa3['style']['background']=_0x846eaf(0x15c);}),_0x130fa3[_0x3ea55e(0x296)](_0x3b5359[_0x3ea55e(0x1d6)],_0x21c0c4=>{const _0x46cb67=_0x3ea55e;_0x21c0c4[_0x46cb67(0x43f)](),_0x3b5359[_0x46cb67(0x55c)](_0x18ecc5),_0x569df1['hide']();}),_0x130fa3;};return _0x12e2dc[_0x3283f9(0x280)](_0x1d4858(_0x3283f9(0x303),_0x3283f9(0x17f),()=>{const _0x33b3f0=_0x3283f9;_0x3b5359[_0x33b3f0(0x38e)](_0x10acd1);const _0x1ae722=_0x3b5359[_0x33b3f0(0x38b)](hierarchicalLayout,_0x9bc277[_0x33b3f0(0x352)](),_0x9bc277[_0x33b3f0(0x285)]());for(const [_0xd8813e,_0xabfb3]of _0x1ae722)_0x9bc277[_0x33b3f0(0x251)](_0xd8813e,_0xabfb3);_0x17bb9d();})),_0x12e2dc[_0x3283f9(0x280)](_0x1d4858(_0x3b5359[_0x3283f9(0x3e4)],_0x3b5359['Gzxds'],()=>{const _0x2c3b0a=_0x3283f9;_0x3b5359[_0x2c3b0a(0x237)](_0x10acd1);const _0x27ff60=_0x3b5359[_0x2c3b0a(0x2b8)](forceLayout,_0x9bc277[_0x2c3b0a(0x352)](),_0x9bc277[_0x2c3b0a(0x285)]());for(const [_0x5ef8eb,_0x21a220]of _0x27ff60)_0x9bc277[_0x2c3b0a(0x251)](_0x5ef8eb,_0x21a220);_0x3b5359[_0x2c3b0a(0x4ef)](_0x17bb9d);})),_0x12e2dc['appendChild'](_0x1d4858(_0x3283f9(0x16f),_0x3283f9(0x4e7),()=>{const _0x564fb5=_0x3283f9;_0x10acd1();const _0xcb49a9=gridLayout(_0x9bc277[_0x564fb5(0x352)]());for(const [_0x22f9b4,_0x21cded]of _0xcb49a9)_0x9bc277[_0x564fb5(0x251)](_0x22f9b4,_0x21cded);_0x3b5359[_0x564fb5(0x4ef)](_0x17bb9d);})),_0x12e2dc;}}const DEFAULT_GRID_CONFIG={'visible':![],'size':0x14,'type':_0x985f80(0x4f1),'color':_0x985f80(0x34f)};class FlowChart extends EventEmitter{constructor(_0x4c7720){const _0x7da58c=_0x985f80,_0x5f2d5a={'RmTRd':_0x7da58c(0x19c),'NOEav':_0x7da58c(0x46a),'MlMGo':function(_0x83b00f,_0x242477){return _0x83b00f-_0x242477;},'fEJhK':_0x7da58c(0x414),'loRtx':_0x7da58c(0x485),'UjKBB':function(_0x156ec3,_0x195ebb){return _0x156ec3-_0x195ebb;},'NKMMv':function(_0x43edd2,_0x1fa92d){return _0x43edd2>_0x1fa92d;},'ZfJrX':_0x7da58c(0x230),'vjHML':_0x7da58c(0x319),'fHhQg':function(_0x1f294a,_0x1e20a0){return _0x1f294a===_0x1e20a0;},'JZWeM':_0x7da58c(0x4e4),'ilrUT':_0x7da58c(0x190),'XGmuk':'aria-label','dYDqi':_0x7da58c(0x2ae),'WxZhB':_0x7da58c(0x389),'KdryB':_0x7da58c(0x39e),'yrThv':_0x7da58c(0x3b8),'KMAQY':_0x7da58c(0x12b),'JVziY':'contextmenu','XJBFS':_0x7da58c(0x26a)};super(),this[_0x7da58c(0x4fc)]=null,this[_0x7da58c(0x47c)]=null,this[_0x7da58c(0x451)]=![],this[_0x7da58c(0x155)]=new Set(),this[_0x7da58c(0x536)]=new Set(),this[_0x7da58c(0x125)]=null,this[_0x7da58c(0x327)]=null;if(typeof window===_0x5f2d5a[_0x7da58c(0x121)]||_0x5f2d5a[_0x7da58c(0x28b)](typeof document,_0x5f2d5a[_0x7da58c(0x121)])){this[_0x7da58c(0x451)]=!![];const _0x5a13bc=new Error(_0x5f2d5a[_0x7da58c(0x288)]);if(_0x4c7720[_0x7da58c(0x26e)])_0x4c7720['onError'](_0x5a13bc);else console[_0x7da58c(0x185)]('[FlowChart]',_0x5a13bc[_0x7da58c(0x21f)]);return;}this[_0x7da58c(0x2ea)]=document['createElement'](_0x7da58c(0x2ea)),this[_0x7da58c(0x2ea)]['style']['cssText']=_0x7da58c(0x3fc),this[_0x7da58c(0x2ea)][_0x7da58c(0x418)](_0x5f2d5a[_0x7da58c(0x2a2)],_0x7da58c(0x373)),this[_0x7da58c(0x2ea)][_0x7da58c(0x418)](_0x5f2d5a[_0x7da58c(0x37f)],_0x4c7720[_0x7da58c(0x1c8)]??_0x7da58c(0x2b5)),this[_0x7da58c(0x2ea)][_0x7da58c(0x418)]('tabindex','0'),_0x4c7720[_0x7da58c(0x134)][_0x7da58c(0x280)](this['canvas']),this[_0x7da58c(0x277)]=document[_0x7da58c(0x2c9)](_0x5f2d5a[_0x7da58c(0x258)]),this[_0x7da58c(0x277)][_0x7da58c(0x418)](_0x7da58c(0x150),_0x7da58c(0x32e)),this[_0x7da58c(0x277)][_0x7da58c(0x418)](_0x7da58c(0x195),_0x5f2d5a['WxZhB']),this[_0x7da58c(0x277)][_0x7da58c(0x2e7)][_0x7da58c(0x22e)]=_0x7da58c(0x290),_0x4c7720[_0x7da58c(0x134)][_0x7da58c(0x280)](this[_0x7da58c(0x277)]),this[_0x7da58c(0x215)]=_0x4c7720[_0x7da58c(0x215)]??!![],this[_0x7da58c(0x233)]=_0x4c7720[_0x7da58c(0x44c)]??_0x5f2d5a[_0x7da58c(0x33b)],this['gridConfig']={...DEFAULT_GRID_CONFIG,..._0x4c7720[_0x7da58c(0x325)]},this[_0x7da58c(0x1cc)]=new Graph(),this[_0x7da58c(0x466)]=new Viewport(),this[_0x7da58c(0x4d1)]=new WebGL2Renderer(),this[_0x7da58c(0x467)]=new HitTester(),this['edgeHitTester']=new EdgeHitTester(),this[_0x7da58c(0x474)]=new History(_0x4c7720[_0x7da58c(0x2d0)]??0x64),this['contextMenu']=new ContextMenu(),this[_0x7da58c(0x51a)]=new LabelEditor();const {width:_0x4d9e93,height:_0x418976}=_0x4c7720[_0x7da58c(0x134)][_0x7da58c(0x1e6)]();this[_0x7da58c(0x466)][_0x7da58c(0x197)](_0x4d9e93,_0x418976);if(_0x4c7720[_0x7da58c(0x3f2)]){for(const _0x1a8a9d of _0x4c7720[_0x7da58c(0x3f2)])this[_0x7da58c(0x1cc)][_0x7da58c(0x36b)](_0x1a8a9d);}if(_0x4c7720[_0x7da58c(0x1ee)]){for(const _0x1c2962 of _0x4c7720[_0x7da58c(0x1ee)])this['graph'][_0x7da58c(0x357)](_0x1c2962);}const _0x3b692a=this[_0x7da58c(0x4d1)][_0x7da58c(0x48c)](this[_0x7da58c(0x2ea)],_0x4c7720[_0x7da58c(0x4d1)]);if(!_0x3b692a){this[_0x7da58c(0x451)]=!![];const _0x464255=new Error(_0x5f2d5a[_0x7da58c(0x2bb)]);if(_0x4c7720[_0x7da58c(0x26e)])_0x4c7720[_0x7da58c(0x26e)](_0x464255);else console[_0x7da58c(0x185)](_0x5f2d5a[_0x7da58c(0x412)],_0x464255['message']);return;}this[_0x7da58c(0x4d1)][_0x7da58c(0x1a2)](_0x4d9e93,_0x418976),this[_0x7da58c(0x470)]=new ContextPanels({'graph':this[_0x7da58c(0x1cc)],'contextMenu':this[_0x7da58c(0x312)],'scheduleRender':()=>this[_0x7da58c(0x26b)](),'beforeMutation':()=>this[_0x7da58c(0x2fe)](),'getBackground':()=>this[_0x7da58c(0x233)],'setBackground':_0x28f2ce=>this['setBackground'](_0x28f2ce),'getGridConfig':()=>this[_0x7da58c(0x2cc)],'setGrid':_0x3bccb0=>this['setGrid'](_0x3bccb0)}),this[_0x7da58c(0x222)]=new EdgeReroute(this[_0x7da58c(0x2ea)],this[_0x7da58c(0x466)],this[_0x7da58c(0x1cc)],this['hitTester'],()=>this[_0x7da58c(0x536)],_0x9a7979=>{const _0x1d9b78=_0x7da58c;this[_0x1d9b78(0x327)]=_0x9a7979,this['scheduleRender']();},(_0xefc5e1,_0x1320c6,_0x25f8c0,_0x3b6e54)=>{const _0x316fd7=_0x7da58c;this['beforeMutation'](),_0x1320c6===_0x316fd7(0x532)?this['graph'][_0x316fd7(0x1e0)](_0xefc5e1,{'source':_0x25f8c0,'sourceHandle':_0x3b6e54}):this[_0x316fd7(0x1cc)][_0x316fd7(0x1e0)](_0xefc5e1,{'target':_0x25f8c0,'targetHandle':_0x3b6e54}),this[_0x316fd7(0x327)]=null,this[_0x316fd7(0x26b)]();}),this[_0x7da58c(0x11a)]=new ConnectDrag(this[_0x7da58c(0x2ea)],this[_0x7da58c(0x466)],this[_0x7da58c(0x1cc)],this[_0x7da58c(0x467)],_0x2b8332=>{const _0x6d04a0=_0x7da58c;this[_0x6d04a0(0x125)]=_0x2b8332,this[_0x6d04a0(0x26b)]();},(_0x500518,_0x3415a4,_0x403f99,_0x5eac57)=>{const _0x475d7a=_0x7da58c;this[_0x475d7a(0x368)](_0x5f2d5a[_0x475d7a(0x25e)],{'sourceId':_0x500518,'targetId':_0x3415a4,'sourceHandle':_0x403f99,'targetHandle':_0x5eac57});}),this[_0x7da58c(0x377)]=new NodeDrag(this[_0x7da58c(0x2ea)],this[_0x7da58c(0x466)],this[_0x7da58c(0x1cc)],this[_0x7da58c(0x467)],()=>this[_0x7da58c(0x2fe)](),(_0x1252bd,_0x384c76,_0x5b96a1)=>this[_0x7da58c(0x26b)](),(_0x48de96,_0x3d4ce2,_0x1b4f1c)=>this[_0x7da58c(0x368)]('nodeDragEnd',{'id':_0x48de96,'x':_0x3d4ce2,'y':_0x1b4f1c}),(_0x10a0ea,_0x4d6b95)=>this[_0x7da58c(0x222)]['isCapturing']()||this[_0x7da58c(0x11a)][_0x7da58c(0x13d)]()||this[_0x7da58c(0x11a)][_0x7da58c(0x3eb)](_0x10a0ea,_0x4d6b95)),this[_0x7da58c(0x11f)]=new PanZoom(this[_0x7da58c(0x2ea)],this[_0x7da58c(0x466)],()=>{const _0x3baebf=_0x7da58c;this['scheduleRender'](),this[_0x3baebf(0x368)](_0x5f2d5a['NOEav'],this[_0x3baebf(0x466)][_0x3baebf(0x4bc)]());},(_0x5169e7,_0x5b0134)=>{const _0x2099b2=_0x7da58c;if(this[_0x2099b2(0x222)][_0x2099b2(0x13d)]())return!![];if(this[_0x2099b2(0x11a)]['isCapturing']())return!![];const [_0xdee1e8,_0x31f954]=this[_0x2099b2(0x466)][_0x2099b2(0x266)](_0x5169e7,_0x5b0134);return this[_0x2099b2(0x467)][_0x2099b2(0x3a2)](this['graph'][_0x2099b2(0x352)](),_0xdee1e8,_0x31f954)!==null;}),this[_0x7da58c(0x494)]=new BoxSelect(this['canvas'],this[_0x7da58c(0x466)],{'shouldBlock':(_0x51bcb9,_0x588af0)=>{const _0x2373b6=_0x7da58c;if(this[_0x2373b6(0x222)]['isCapturing']())return!![];const _0x567273=this[_0x2373b6(0x2ea)][_0x2373b6(0x1e6)](),[_0x3e9915,_0x1a7c12]=this[_0x2373b6(0x466)][_0x2373b6(0x266)](_0x51bcb9-_0x567273[_0x2373b6(0x1f8)],_0x588af0-_0x567273['top']),_0x2c3abb=this['graph'][_0x2373b6(0x352)]();if(this[_0x2373b6(0x467)][_0x2373b6(0x3a2)](_0x2c3abb,_0x3e9915,_0x1a7c12))return!![];const _0x473c6e=new Map(_0x2c3abb['map'](_0x1769c4=>[_0x1769c4['id'],_0x1769c4]));return this[_0x2373b6(0x2e1)][_0x2373b6(0x20d)](this[_0x2373b6(0x1cc)][_0x2373b6(0x285)](),_0x473c6e,_0x3e9915,_0x1a7c12,this[_0x2373b6(0x466)][_0x2373b6(0x330)])!==null;},'onSelect':(_0x3030dd,_0x38e725,_0x57bc7b,_0x434dee)=>{const _0x537c48=_0x7da58c,_0x43921d=this[_0x537c48(0x467)][_0x537c48(0x201)](this[_0x537c48(0x1cc)][_0x537c48(0x352)](),_0x3030dd,_0x38e725,_0x57bc7b,_0x434dee);this[_0x537c48(0x155)]=new Set(_0x43921d[_0x537c48(0x2ba)](_0x21ff94=>_0x21ff94['id'])),this[_0x537c48(0x536)][_0x537c48(0x3ab)](),this[_0x537c48(0x368)](_0x537c48(0x485),{'selectedIds':[...this[_0x537c48(0x155)]],'edgeIds':[]}),this[_0x537c48(0x26b)]();}}),this[_0x7da58c(0x2ea)][_0x7da58c(0x296)]('dblclick',_0x3d3c4e=>{const _0x1dbd7f=_0x7da58c;if(!this[_0x1dbd7f(0x215)])return;const _0x233d60=this[_0x1dbd7f(0x2ea)][_0x1dbd7f(0x1e6)](),[_0x35ecd8,_0x455792]=this[_0x1dbd7f(0x466)][_0x1dbd7f(0x266)](_0x3d3c4e['clientX']-_0x233d60[_0x1dbd7f(0x1f8)],_0x5f2d5a[_0x1dbd7f(0x182)](_0x3d3c4e[_0x1dbd7f(0x37b)],_0x233d60[_0x1dbd7f(0x50d)])),_0x380f27=this[_0x1dbd7f(0x467)][_0x1dbd7f(0x3a2)](this[_0x1dbd7f(0x1cc)][_0x1dbd7f(0x352)](),_0x35ecd8,_0x455792);if(!_0x380f27)return;this[_0x1dbd7f(0x51a)]['startEdit'](_0x380f27,this[_0x1dbd7f(0x2ea)],this['viewport'],_0x1135fd=>{const _0x50001c=_0x1dbd7f;this[_0x50001c(0x2fe)](),this[_0x50001c(0x1cc)][_0x50001c(0x251)](_0x380f27['id'],{'label':_0x1135fd}),this[_0x50001c(0x26b)]();});}),this[_0x7da58c(0x2ea)][_0x7da58c(0x296)](_0x5f2d5a[_0x7da58c(0x48a)],_0x9c295e=>{const _0x32f17a=_0x7da58c;_0x9c295e[_0x32f17a(0x53d)]();const _0x17d8c1=this[_0x32f17a(0x2ea)][_0x32f17a(0x1e6)](),[_0x9502f5,_0x86ef62]=this['viewport'][_0x32f17a(0x266)](_0x9c295e[_0x32f17a(0x41a)]-_0x17d8c1[_0x32f17a(0x1f8)],_0x9c295e[_0x32f17a(0x37b)]-_0x17d8c1[_0x32f17a(0x50d)]),_0x3ccaf1=this['graph'][_0x32f17a(0x352)](),_0x11c467=this[_0x32f17a(0x467)][_0x32f17a(0x3a2)](_0x3ccaf1,_0x9502f5,_0x86ef62);if(_0x11c467){!this[_0x32f17a(0x155)][_0x32f17a(0x21c)](_0x11c467['id'])&&(this[_0x32f17a(0x155)]['clear'](),this[_0x32f17a(0x155)][_0x32f17a(0x3a5)](_0x11c467['id']),this[_0x32f17a(0x536)]['clear'](),this[_0x32f17a(0x368)]('selectionChange',{'selectedIds':[_0x11c467['id']],'edgeIds':[]}),this[_0x32f17a(0x26b)]());this[_0x32f17a(0x312)][_0x32f17a(0x321)](_0x9c295e['clientX'],_0x9c295e[_0x32f17a(0x37b)],[{'label':_0x32f17a(0x2b3),'action':()=>{const _0x4be0e8=_0x32f17a;this['labelEditor'][_0x4be0e8(0x3ef)](_0x11c467,this[_0x4be0e8(0x2ea)],this[_0x4be0e8(0x466)],_0x3c2fa1=>{const _0x135639=_0x4be0e8;this['beforeMutation'](),this[_0x135639(0x1cc)][_0x135639(0x251)](_0x11c467['id'],{'label':_0x3c2fa1}),this[_0x135639(0x26b)]();});}},{'separator':!![]},{'label':'Delete\x20Node','destructive':!![],'action':()=>this[_0x32f17a(0x480)]()}]);return;}const _0x58e47a=new Map(_0x3ccaf1[_0x32f17a(0x2ba)](_0x3fe681=>[_0x3fe681['id'],_0x3fe681])),_0x2d3568=this[_0x32f17a(0x2e1)][_0x32f17a(0x20d)](this['graph'][_0x32f17a(0x285)](),_0x58e47a,_0x9502f5,_0x86ef62,this['viewport']['zoom']);if(_0x2d3568){!this[_0x32f17a(0x536)][_0x32f17a(0x21c)](_0x2d3568['id'])&&(this[_0x32f17a(0x155)][_0x32f17a(0x3ab)](),this['selectedEdgeIds'][_0x32f17a(0x3ab)](),this[_0x32f17a(0x536)][_0x32f17a(0x3a5)](_0x2d3568['id']),this[_0x32f17a(0x368)](_0x32f17a(0x485),{'selectedIds':[],'edgeIds':[_0x2d3568['id']]}),this['scheduleRender']());this[_0x32f17a(0x312)]['show'](_0x9c295e['clientX'],_0x9c295e['clientY'],[{'label':_0x5f2d5a[_0x32f17a(0x2a8)],'panel':()=>this['panels'][_0x32f17a(0x496)](_0x2d3568)},{'separator':!![]},{'label':_0x32f17a(0x493),'destructive':!![],'action':()=>this['deleteSelected']()}]);return;}this[_0x32f17a(0x312)]['show'](_0x9c295e['clientX'],_0x9c295e[_0x32f17a(0x37b)],[{'label':_0x32f17a(0x133),'panel':()=>this[_0x32f17a(0x470)][_0x32f17a(0x44c)]()},{'label':_0x32f17a(0x16f),'panel':()=>this[_0x32f17a(0x470)][_0x32f17a(0x325)]()},{'separator':!![]},{'label':_0x32f17a(0x1db),'panel':()=>this[_0x32f17a(0x470)][_0x32f17a(0x3f9)]()}]);}),this[_0x7da58c(0x553)]=new KeyboardHandler(this[_0x7da58c(0x2ea)],{'onDelete':()=>this[_0x7da58c(0x480)](),'onEscape':()=>{const _0x5c5b6b=_0x7da58c;this[_0x5c5b6b(0x11a)][_0x5c5b6b(0x281)](),this[_0x5c5b6b(0x125)]=null,(this[_0x5c5b6b(0x155)][_0x5c5b6b(0x456)]>0x0||this['selectedEdgeIds'][_0x5c5b6b(0x456)]>0x0)&&(this['selectedIds'][_0x5c5b6b(0x3ab)](),this[_0x5c5b6b(0x536)][_0x5c5b6b(0x3ab)](),this['emit'](_0x5f2d5a[_0x5c5b6b(0x46c)],{'selectedIds':[],'edgeIds':[]})),this['scheduleRender']();},'onSelectAll':()=>{const _0x51b053=_0x7da58c;this[_0x51b053(0x155)]=new Set(this[_0x51b053(0x1cc)][_0x51b053(0x352)]()[_0x51b053(0x2ba)](_0x3d08c2=>_0x3d08c2['id'])),this[_0x51b053(0x536)]=new Set(this[_0x51b053(0x1cc)][_0x51b053(0x285)]()['map'](_0x374702=>_0x374702['id'])),this[_0x51b053(0x368)](_0x51b053(0x485),{'selectedIds':[...this[_0x51b053(0x155)]],'edgeIds':[...this[_0x51b053(0x536)]]}),this['scheduleRender']();},'onUndo':()=>this[_0x7da58c(0x404)](),'onRedo':()=>this[_0x7da58c(0x1f3)](),'onTabNext':()=>this[_0x7da58c(0x2ee)](0x1),'onTabPrev':()=>this[_0x7da58c(0x2ee)](-0x1),'onArrowKey':_0x5aa2b1=>this['moveSelectedByArrow'](_0x5aa2b1)}),this['canvas'][_0x7da58c(0x296)](_0x5f2d5a[_0x7da58c(0x3a9)],()=>{const _0x1a33af=_0x7da58c;this['canvas'][_0x1a33af(0x4bf)]();}),this[_0x7da58c(0x2ea)]['addEventListener'](_0x7da58c(0x18f),_0x390323=>{const _0x2a2a19=_0x7da58c;if(_0x390323['shiftKey'])return;if(this[_0x2a2a19(0x222)]['isOnEndpoint'](_0x390323[_0x2a2a19(0x41a)],_0x390323[_0x2a2a19(0x37b)]))return;const _0x2dcb0d=this['canvas'][_0x2a2a19(0x1e6)](),[_0x42686b,_0x413b20]=this['viewport'][_0x2a2a19(0x266)](_0x390323[_0x2a2a19(0x41a)]-_0x2dcb0d['left'],_0x5f2d5a[_0x2a2a19(0x1f0)](_0x390323[_0x2a2a19(0x37b)],_0x2dcb0d[_0x2a2a19(0x50d)])),_0x2c759b=this[_0x2a2a19(0x467)][_0x2a2a19(0x3a2)](this[_0x2a2a19(0x1cc)][_0x2a2a19(0x352)](),_0x42686b,_0x413b20);if(_0x2c759b){if(_0x390323[_0x2a2a19(0x545)]||_0x390323[_0x2a2a19(0x261)]){if(this[_0x2a2a19(0x155)][_0x2a2a19(0x21c)](_0x2c759b['id']))this[_0x2a2a19(0x155)][_0x2a2a19(0x2af)](_0x2c759b['id']);else this[_0x2a2a19(0x155)][_0x2a2a19(0x3a5)](_0x2c759b['id']);}else this[_0x2a2a19(0x155)][_0x2a2a19(0x3ab)](),this[_0x2a2a19(0x155)][_0x2a2a19(0x3a5)](_0x2c759b['id']),this[_0x2a2a19(0x536)]['clear']();this['emit'](_0x2a2a19(0x533),{'node':_0x2c759b}),this[_0x2a2a19(0x368)](_0x5f2d5a[_0x2a2a19(0x46c)],{'selectedIds':[...this[_0x2a2a19(0x155)]],'edgeIds':[...this[_0x2a2a19(0x536)]]}),this[_0x2a2a19(0x26b)]();return;}const _0x4bb831=this[_0x2a2a19(0x1cc)][_0x2a2a19(0x352)](),_0x3c03a3=new Map(_0x4bb831[_0x2a2a19(0x2ba)](_0x2b39c5=>[_0x2b39c5['id'],_0x2b39c5])),_0x3f779c=this['edgeHitTester'][_0x2a2a19(0x20d)](this[_0x2a2a19(0x1cc)][_0x2a2a19(0x285)](),_0x3c03a3,_0x42686b,_0x413b20,this[_0x2a2a19(0x466)]['zoom']);if(_0x3f779c){if(_0x390323['metaKey']||_0x390323[_0x2a2a19(0x261)]){if(this[_0x2a2a19(0x536)][_0x2a2a19(0x21c)](_0x3f779c['id']))this[_0x2a2a19(0x536)][_0x2a2a19(0x2af)](_0x3f779c['id']);else this['selectedEdgeIds'][_0x2a2a19(0x3a5)](_0x3f779c['id']);}else this[_0x2a2a19(0x155)][_0x2a2a19(0x3ab)](),this[_0x2a2a19(0x536)]['clear'](),this[_0x2a2a19(0x536)][_0x2a2a19(0x3a5)](_0x3f779c['id']);this['emit'](_0x2a2a19(0x485),{'selectedIds':[...this[_0x2a2a19(0x155)]],'edgeIds':[...this['selectedEdgeIds']]}),this[_0x2a2a19(0x26b)]();return;}(this[_0x2a2a19(0x155)]['size']>0x0||_0x5f2d5a[_0x2a2a19(0x1fe)](this[_0x2a2a19(0x536)][_0x2a2a19(0x456)],0x0))&&(this[_0x2a2a19(0x155)][_0x2a2a19(0x3ab)](),this[_0x2a2a19(0x536)][_0x2a2a19(0x3ab)](),this[_0x2a2a19(0x368)](_0x2a2a19(0x485),{'selectedIds':[],'edgeIds':[]}),this['scheduleRender']()),this[_0x2a2a19(0x368)](_0x5f2d5a[_0x2a2a19(0x541)],{'x':_0x42686b,'y':_0x413b20});}),this[_0x7da58c(0x409)]=new ResizeObserver(_0x5c83bf=>{const _0x29a0ca=_0x7da58c,_0x40ea33=_0x5c83bf[0x0]?.[_0x29a0ca(0x33a)];if(!_0x40ea33)return;this[_0x29a0ca(0x466)][_0x29a0ca(0x197)](_0x40ea33[_0x29a0ca(0x31c)],_0x40ea33[_0x29a0ca(0x2e0)]),this[_0x29a0ca(0x4d1)][_0x29a0ca(0x1a2)](_0x40ea33[_0x29a0ca(0x31c)],_0x40ea33[_0x29a0ca(0x2e0)]),this['scheduleRender']();}),this[_0x7da58c(0x409)][_0x7da58c(0x4ea)](_0x4c7720[_0x7da58c(0x134)]),this['scheduleRender']();}[_0x985f80(0x2fe)](){const _0x208234=_0x985f80;this[_0x208234(0x474)]['save']({'nodes':this[_0x208234(0x1cc)][_0x208234(0x352)]()[_0x208234(0x2ba)](_0x45c9d5=>{const {style:_0x4c4a34,..._0x4599bb}=_0x45c9d5;return _0x4c4a34?{..._0x4599bb,'style':{..._0x4c4a34}}:_0x4599bb;}),'edges':this['graph'][_0x208234(0x285)]()[_0x208234(0x2ba)](_0x2fac5c=>{const {style:_0x7d7fc7,..._0x4aadcd}=_0x2fac5c;return _0x7d7fc7?{..._0x4aadcd,'style':{..._0x7d7fc7}}:_0x4aadcd;})}),this[_0x208234(0x368)](_0x208234(0x311),{'canUndo':this[_0x208234(0x474)][_0x208234(0x210)](),'canRedo':this[_0x208234(0x474)][_0x208234(0x402)]()});}[_0x985f80(0x15b)](_0x25b71e){const _0x5863ba=_0x985f80,_0x4d26ad={'lVUaY':_0x5863ba(0x485)};this[_0x5863ba(0x1cc)]['clear'](),this[_0x5863ba(0x155)][_0x5863ba(0x3ab)](),this[_0x5863ba(0x536)]['clear']();for(const _0x2beeaa of _0x25b71e[_0x5863ba(0x3f2)])this['graph'][_0x5863ba(0x36b)](_0x2beeaa);for(const _0x332609 of _0x25b71e[_0x5863ba(0x1ee)])this[_0x5863ba(0x1cc)][_0x5863ba(0x357)](_0x332609);this[_0x5863ba(0x368)](_0x4d26ad[_0x5863ba(0x14c)],{'selectedIds':[],'edgeIds':[]}),this['scheduleRender']();}['undo'](){const _0x43799d=_0x985f80;if(this[_0x43799d(0x451)])return![];const _0xba8920={'nodes':this[_0x43799d(0x1cc)]['getNodes']()[_0x43799d(0x2ba)](_0x5f4462=>{const {style:_0x58f706,..._0x5901e5}=_0x5f4462;return _0x58f706?{..._0x5901e5,'style':{..._0x58f706}}:_0x5901e5;}),'edges':this['graph'][_0x43799d(0x285)]()[_0x43799d(0x2ba)](_0x43da1a=>{const {style:_0x414c53,..._0x283183}=_0x43da1a;return _0x414c53?{..._0x283183,'style':{..._0x414c53}}:_0x283183;})},_0x30635a=this[_0x43799d(0x474)][_0x43799d(0x404)](_0xba8920);if(!_0x30635a)return![];return this[_0x43799d(0x15b)](_0x30635a),this[_0x43799d(0x368)](_0x43799d(0x311),{'canUndo':this[_0x43799d(0x474)][_0x43799d(0x210)](),'canRedo':this['history'][_0x43799d(0x402)]()}),!![];}[_0x985f80(0x1f3)](){const _0x555913=_0x985f80;if(this[_0x555913(0x451)])return![];const _0x1bfd26={'nodes':this[_0x555913(0x1cc)][_0x555913(0x352)]()[_0x555913(0x2ba)](_0xe1a450=>{const {style:_0x15aa7d,..._0xd750b5}=_0xe1a450;return _0x15aa7d?{..._0xd750b5,'style':{..._0x15aa7d}}:_0xd750b5;}),'edges':this[_0x555913(0x1cc)]['getEdges']()[_0x555913(0x2ba)](_0x1d2ec2=>{const {style:_0x8319c7,..._0x481097}=_0x1d2ec2;return _0x8319c7?{..._0x481097,'style':{..._0x8319c7}}:_0x481097;})},_0x24b9f3=this[_0x555913(0x474)][_0x555913(0x1f3)](_0x1bfd26);if(!_0x24b9f3)return![];return this[_0x555913(0x15b)](_0x24b9f3),this[_0x555913(0x368)](_0x555913(0x311),{'canUndo':this['history'][_0x555913(0x210)](),'canRedo':this[_0x555913(0x474)][_0x555913(0x402)]()}),!![];}[_0x985f80(0x210)](){const _0x22f68f=_0x985f80;return this[_0x22f68f(0x474)][_0x22f68f(0x210)]();}[_0x985f80(0x402)](){const _0x10138c=_0x985f80;return this[_0x10138c(0x474)]['canRedo']();}[_0x985f80(0x51c)](){const _0x37e257=_0x985f80;return{'version':0x1,'nodes':this[_0x37e257(0x1cc)][_0x37e257(0x352)]()[_0x37e257(0x2ba)](_0x2506ca=>({..._0x2506ca})),'edges':this[_0x37e257(0x1cc)][_0x37e257(0x285)]()[_0x37e257(0x2ba)](_0x1a27f4=>({..._0x1a27f4})),'viewport':this['viewport'][_0x37e257(0x4bc)]()};}[_0x985f80(0x370)](_0x59108c){const _0x5e96e1=_0x985f80,_0x4a5a5d={'wWDps':_0x5e96e1(0x485)};if(this[_0x5e96e1(0x451)])return;this[_0x5e96e1(0x474)]['clear'](),this[_0x5e96e1(0x1cc)][_0x5e96e1(0x3ab)](),this[_0x5e96e1(0x155)][_0x5e96e1(0x3ab)](),this[_0x5e96e1(0x536)][_0x5e96e1(0x3ab)]();for(const _0x5dedae of _0x59108c['nodes'])this['graph'][_0x5e96e1(0x36b)](_0x5dedae);for(const _0x498c76 of _0x59108c['edges'])this[_0x5e96e1(0x1cc)][_0x5e96e1(0x357)](_0x498c76);if(_0x59108c['viewport'])this[_0x5e96e1(0x466)][_0x5e96e1(0x1c7)](_0x59108c[_0x5e96e1(0x466)]);this['emit'](_0x4a5a5d[_0x5e96e1(0x546)],{'selectedIds':[],'edgeIds':[]}),this[_0x5e96e1(0x26b)]();}['scheduleRender'](){const _0x31c026=_0x985f80,_0x203852={'dfcsx':function(_0x575123,_0x328be6){return _0x575123!==_0x328be6;}};if(this[_0x31c026(0x451)]||_0x203852[_0x31c026(0x165)](this[_0x31c026(0x47c)],null))return;this[_0x31c026(0x47c)]=requestAnimationFrame(()=>{const _0x108138=_0x31c026;this[_0x108138(0x47c)]=null,this[_0x108138(0x4d1)][_0x108138(0x1a5)](this[_0x108138(0x1cc)],this['viewport'],this[_0x108138(0x155)],this[_0x108138(0x125)],this[_0x108138(0x536)],this[_0x108138(0x233)],this[_0x108138(0x2cc)][_0x108138(0x388)]?this[_0x108138(0x2cc)]:null,this[_0x108138(0x327)],this['edgeReroute'][_0x108138(0x47e)]());});}[_0x985f80(0x4f5)](_0x417f14){const _0x422cfb=_0x985f80;this['ariaLive'][_0x422cfb(0x486)]=_0x422cfb(0x1ba)+_0x417f14;}[_0x985f80(0x2ee)](_0x5f57ef){const _0x3850df=_0x985f80,_0xb2b17=this[_0x3850df(0x1cc)][_0x3850df(0x352)]();if(_0xb2b17[_0x3850df(0x193)]===0x0)return;const _0x2f8fbc=this[_0x3850df(0x155)][_0x3850df(0x456)]===0x1?[...this['selectedIds']][0x0]:null,_0x1857da=_0x2f8fbc?_0xb2b17['findIndex'](_0x4b7b3b=>_0x4b7b3b['id']===_0x2f8fbc):-0x1,_0x4913be=(_0x1857da+_0x5f57ef+_0xb2b17[_0x3850df(0x193)])%_0xb2b17['length'],_0x250156=_0xb2b17[_0x4913be];if(!_0x250156)return;this[_0x3850df(0x155)][_0x3850df(0x3ab)](),this[_0x3850df(0x155)][_0x3850df(0x3a5)](_0x250156['id']),this[_0x3850df(0x536)][_0x3850df(0x3ab)](),this['emit'](_0x3850df(0x485),{'selectedIds':[_0x250156['id']],'edgeIds':[]}),this[_0x3850df(0x4f5)](_0x250156[_0x3850df(0x481)]),this[_0x3850df(0x26b)]();}[_0x985f80(0x41c)](_0x646149){const _0x1d8943=_0x985f80,_0x3d3ded={'gDVjI':function(_0xb6fd58,_0x5924bf){return _0xb6fd58===_0x5924bf;},'domhV':_0x1d8943(0x29d),'rBpZB':'ArrowRight','FjxLy':function(_0x124e5d,_0x5b702e){return _0x124e5d+_0x5b702e;}};if(_0x3d3ded[_0x1d8943(0x3f0)](this[_0x1d8943(0x155)][_0x1d8943(0x456)],0x0))return;const _0x5125e8=0xa,_0x133fe2=_0x3d3ded[_0x1d8943(0x3f0)](_0x646149,_0x3d3ded[_0x1d8943(0x2ca)])?-_0x5125e8:_0x646149===_0x3d3ded['rBpZB']?_0x5125e8:0x0,_0x4a1af1=_0x646149==='ArrowUp'?-_0x5125e8:_0x646149===_0x1d8943(0x128)?_0x5125e8:0x0;this[_0x1d8943(0x4fc)]===null?this[_0x1d8943(0x2fe)]():clearTimeout(this['arrowMoveTimer']);this[_0x1d8943(0x4fc)]=setTimeout(()=>{this['arrowMoveTimer']=null;},0x190);for(const _0x4ab84b of this[_0x1d8943(0x155)]){const _0x388950=this[_0x1d8943(0x1cc)][_0x1d8943(0x208)](_0x4ab84b);if(_0x388950)this[_0x1d8943(0x1cc)][_0x1d8943(0x251)](_0x4ab84b,{'x':_0x388950['x']+_0x133fe2,'y':_0x3d3ded[_0x1d8943(0x555)](_0x388950['y'],_0x4a1af1)});}this[_0x1d8943(0x26b)]();}[_0x985f80(0x480)](){const _0x531b96=_0x985f80,_0x388ff5={'VjaJu':'selectionChange'};this[_0x531b96(0x2fe)]();for(const _0x1143ef of this[_0x531b96(0x536)])this[_0x531b96(0x1cc)]['removeEdge'](_0x1143ef);this[_0x531b96(0x536)][_0x531b96(0x3ab)]();for(const _0x3645b7 of this[_0x531b96(0x155)])this[_0x531b96(0x1cc)][_0x531b96(0x3d0)](_0x3645b7);this[_0x531b96(0x155)][_0x531b96(0x3ab)](),this[_0x531b96(0x368)](_0x388ff5['VjaJu'],{'selectedIds':[],'edgeIds':[]}),this[_0x531b96(0x26b)]();}[_0x985f80(0x429)](_0x5695da,_0x28ae83){const _0x5a9812=_0x985f80,_0x360745=this[_0x5a9812(0x1cc)]['getNode'](_0x5695da);if(!_0x360745)return;this[_0x5a9812(0x1cc)][_0x5a9812(0x251)](_0x5695da,{'style':{..._0x360745['style'],..._0x28ae83}}),this[_0x5a9812(0x26b)]();}['setNodeBorderColor'](_0x102447,_0x22c4dd){this['setNodeStyle'](_0x102447,{'borderColor':_0x22c4dd});}['setNodeBackgroundColor'](_0x5e951d,_0x2c41ca){const _0x435287=_0x985f80;this[_0x435287(0x429)](_0x5e951d,{'backgroundColor':_0x2c41ca});}[_0x985f80(0x448)](_0x264b1b,_0x4fbd1b,_0xcdafee){const _0x3f8489=_0x985f80;this[_0x3f8489(0x1cc)][_0x3f8489(0x251)](_0x264b1b,{'width':_0x4fbd1b,'height':_0xcdafee}),this[_0x3f8489(0x26b)]();}[_0x985f80(0x3fb)](_0x1da2c4){const _0x63a416=_0x985f80;this[_0x63a416(0x233)]=_0x1da2c4,this['scheduleRender']();}[_0x985f80(0x1d0)](_0x476450){const _0x16cab6=_0x985f80;this[_0x16cab6(0x2cc)]={...this[_0x16cab6(0x2cc)],..._0x476450},this[_0x16cab6(0x26b)]();}['setLabelEditable'](_0x230a82){this['labelEditable']=_0x230a82;}[_0x985f80(0x309)](){return[...this['selectedIds']];}[_0x985f80(0x2c2)](){const _0x467860=_0x985f80;return[...this[_0x467860(0x536)]];}[_0x985f80(0x138)](_0x59607a){const _0x1e6783=_0x985f80;this[_0x1e6783(0x155)]=new Set(_0x59607a),this[_0x1e6783(0x26b)]();}[_0x985f80(0x53f)](){const _0x10d5dc=_0x985f80;this[_0x10d5dc(0x155)][_0x10d5dc(0x3ab)](),this[_0x10d5dc(0x536)][_0x10d5dc(0x3ab)](),this['scheduleRender']();}[_0x985f80(0x36b)](_0x321a3f){const _0x27b876=_0x985f80,_0xe32394={'srUpf':_0x27b876(0x1d1)};this[_0x27b876(0x2fe)](),this[_0x27b876(0x1cc)][_0x27b876(0x36b)](_0x321a3f),this[_0x27b876(0x368)](_0xe32394[_0x27b876(0x32f)],{'node':_0x321a3f}),this[_0x27b876(0x26b)]();}[_0x985f80(0x3d0)](_0x37273e){const _0x315890=_0x985f80;this[_0x315890(0x2fe)](),this[_0x315890(0x1cc)][_0x315890(0x3d0)](_0x37273e),this[_0x315890(0x155)]['delete'](_0x37273e);const _0x3e310a=new Set(this[_0x315890(0x1cc)][_0x315890(0x285)]()[_0x315890(0x2ba)](_0x8c62d3=>_0x8c62d3['id']));for(const _0x45f3ca of this[_0x315890(0x536)]){if(!_0x3e310a['has'](_0x45f3ca))this[_0x315890(0x536)]['delete'](_0x45f3ca);}this['emit'](_0x315890(0x551),{'id':_0x37273e}),this['scheduleRender']();}[_0x985f80(0x251)](_0x3ed3f9,_0x351f52){const _0x481383=_0x985f80;this['graph'][_0x481383(0x251)](_0x3ed3f9,_0x351f52),this[_0x481383(0x368)](_0x481383(0x4ba),{'id':_0x3ed3f9,'updates':_0x351f52}),this[_0x481383(0x26b)]();}['addEdge'](_0x47e407){const _0x46b4c4=_0x985f80,_0x4548c4={'HsOLp':_0x46b4c4(0x3f5)};this[_0x46b4c4(0x2fe)](),this[_0x46b4c4(0x1cc)][_0x46b4c4(0x357)](_0x47e407),this[_0x46b4c4(0x368)](_0x4548c4[_0x46b4c4(0x152)],{'edge':_0x47e407}),this[_0x46b4c4(0x26b)]();}[_0x985f80(0x19b)](_0x31860e){const _0x3e7063=_0x985f80,_0x2de83b={'ctqvF':_0x3e7063(0x1f7)};this['beforeMutation'](),this[_0x3e7063(0x1cc)][_0x3e7063(0x19b)](_0x31860e),this[_0x3e7063(0x536)][_0x3e7063(0x2af)](_0x31860e),this[_0x3e7063(0x368)](_0x2de83b[_0x3e7063(0x4b1)],{'id':_0x31860e}),this[_0x3e7063(0x26b)]();}[_0x985f80(0x52c)](_0x3872a2){const _0x189dbd=_0x985f80;this[_0x189dbd(0x1cc)]['clear'](),this[_0x189dbd(0x155)][_0x189dbd(0x3ab)](),this[_0x189dbd(0x536)][_0x189dbd(0x3ab)](),this[_0x189dbd(0x474)][_0x189dbd(0x3ab)]();for(const _0x2346ba of _0x3872a2)this[_0x189dbd(0x1cc)][_0x189dbd(0x36b)](_0x2346ba);this[_0x189dbd(0x26b)]();}[_0x985f80(0x1b9)](_0x517c5c){const _0x49e2ef=_0x985f80;for(const _0x137bbe of this[_0x49e2ef(0x1cc)][_0x49e2ef(0x285)]())this[_0x49e2ef(0x1cc)][_0x49e2ef(0x19b)](_0x137bbe['id']);this['selectedEdgeIds'][_0x49e2ef(0x3ab)]();for(const _0x5816ca of _0x517c5c)this['graph'][_0x49e2ef(0x357)](_0x5816ca);this['scheduleRender']();}[_0x985f80(0x27a)](){const _0x5b7687=_0x985f80;return this[_0x5b7687(0x466)][_0x5b7687(0x4bc)]();}[_0x985f80(0x1a4)](_0x2e9585){const _0x5b3ffa=_0x985f80;this[_0x5b3ffa(0x466)]['setState'](_0x2e9585),this[_0x5b3ffa(0x26b)]();}[_0x985f80(0x148)](_0x1c4aee=0x28){const _0x2d5c04=_0x985f80,_0x43b36f={'jNIYZ':function(_0x1d2459,_0x22deab){return _0x1d2459(_0x22deab);}},_0x661c1e=this[_0x2d5c04(0x1cc)][_0x2d5c04(0x352)]();if(_0x661c1e[_0x2d5c04(0x193)]===0x0)return;this[_0x2d5c04(0x466)][_0x2d5c04(0x118)](_0x43b36f[_0x2d5c04(0x538)](computeNodeBounds,_0x661c1e),_0x1c4aee),this[_0x2d5c04(0x26b)]();}[_0x985f80(0x4b9)](){const _0x3adadb=_0x985f80;this[_0x3adadb(0x26b)]();}[_0x985f80(0x40e)](){const _0x1eac5e=_0x985f80,_0x3a9e47={'CHVoc':function(_0x1987c9,_0x23cecf){return _0x1987c9!==_0x23cecf;},'ZXQwE':function(_0x375c2e,_0x4b4b33){return _0x375c2e(_0x4b4b33);},'uGWAJ':function(_0x4c8045,_0x443bef){return _0x4c8045(_0x443bef);}};if(_0x3a9e47[_0x1eac5e(0x527)](this[_0x1eac5e(0x47c)],null))_0x3a9e47[_0x1eac5e(0x367)](cancelAnimationFrame,this['rafId']);if(_0x3a9e47['CHVoc'](this[_0x1eac5e(0x4fc)],null))_0x3a9e47[_0x1eac5e(0x28a)](clearTimeout,this[_0x1eac5e(0x4fc)]);!this['failed']&&(this[_0x1eac5e(0x11f)][_0x1eac5e(0x40e)](),this[_0x1eac5e(0x377)][_0x1eac5e(0x40e)](),this[_0x1eac5e(0x11a)][_0x1eac5e(0x40e)](),this[_0x1eac5e(0x222)][_0x1eac5e(0x40e)](),this[_0x1eac5e(0x494)][_0x1eac5e(0x40e)](),this[_0x1eac5e(0x553)]['dispose'](),this[_0x1eac5e(0x4d1)][_0x1eac5e(0x40e)]()),this[_0x1eac5e(0x409)]?.[_0x1eac5e(0x3cf)](),this['labelEditor']?.[_0x1eac5e(0x40e)](),this[_0x1eac5e(0x312)]?.[_0x1eac5e(0x40e)](),this[_0x1eac5e(0x277)]?.[_0x1eac5e(0x54b)](),this[_0x1eac5e(0x2ea)]?.[_0x1eac5e(0x54b)](),super[_0x1eac5e(0x40e)]();}}let seq=0x0;function generateId(_0x431eda=_0x985f80(0x34d)){const _0x5ab8f9=_0x985f80;return _0x431eda+'_'+Date[_0x5ab8f9(0x3e2)]()[_0x5ab8f9(0x375)](0x24)+'_'+(++seq)[_0x5ab8f9(0x375)](0x24);}exports[_0x985f80(0x4d3)]=BoxSelect,exports['ContextMenu']=ContextMenu,exports[_0x985f80(0x452)]=DEFAULT_EDGE_STYLE,exports['DEFAULT_GRID_CONFIG']=DEFAULT_GRID_CONFIG,exports[_0x985f80(0x1b4)]=DEFAULT_NODE_STYLE,exports[_0x985f80(0x520)]=EdgeHitTester,exports['EdgeReroute']=EdgeReroute,exports[_0x985f80(0x401)]=EventEmitter,exports[_0x985f80(0x4fe)]=FlowChart,exports[_0x985f80(0x503)]=Graph,exports[_0x985f80(0x507)]=History,exports['KeyboardHandler']=KeyboardHandler,exports[_0x985f80(0x3ec)]=LabelEditor,exports[_0x985f80(0x4a2)]=MAX_ZOOM,exports[_0x985f80(0x161)]=MIN_ZOOM,exports[_0x985f80(0x21d)]=Viewport,exports[_0x985f80(0x1a9)]=WebGL2Renderer,exports[_0x985f80(0x337)]=forceLayout,exports['generateId']=generateId,exports[_0x985f80(0x249)]=gridLayout,exports[_0x985f80(0x313)]=hierarchicalLayout;
+'use strict';
+
+class EventEmitter {
+    constructor() {
+        this.listeners = {};
+    }
+    on(type, listener) {
+        let set = this.listeners[type];
+        if (!set) {
+            set = new Set();
+            this.listeners[type] = set;
+        }
+        set.add(listener);
+        return () => this.off(type, listener);
+    }
+    off(type, listener) {
+        this.listeners[type]?.delete(listener);
+    }
+    emit(type, data) {
+        this.listeners[type]?.forEach(l => l(data));
+    }
+    dispose() {
+        for (const key in this.listeners) {
+            delete this.listeners[key];
+        }
+    }
+}
+
+class Graph {
+    constructor() {
+        this.nodes = new Map();
+        this.edges = new Map();
+        this.nodeEdgeIndex = new Map();
+        // Increments on every mutation; renderers use this to skip work on static frames.
+        this.version = 0;
+    }
+    addNode(node) {
+        this.nodes.set(node.id, { ...node });
+        if (!this.nodeEdgeIndex.has(node.id)) {
+            this.nodeEdgeIndex.set(node.id, new Set());
+        }
+        this.version++;
+    }
+    removeNode(id) {
+        const connected = this.nodeEdgeIndex.get(id);
+        if (connected) {
+            for (const edgeId of connected) {
+                const edge = this.edges.get(edgeId);
+                if (edge) {
+                    const other = edge.source === id ? edge.target : edge.source;
+                    this.nodeEdgeIndex.get(other)?.delete(edgeId);
+                }
+                this.edges.delete(edgeId);
+            }
+        }
+        this.nodes.delete(id);
+        this.nodeEdgeIndex.delete(id);
+        this.version++;
+    }
+    updateNode(id, updates) {
+        const node = this.nodes.get(id);
+        if (node) {
+            this.nodes.set(id, { ...node, ...updates });
+            this.version++;
+        }
+    }
+    addEdge(edge) {
+        if (!this.nodes.has(edge.source)) {
+            console.warn(`[Graph] addEdge: source node '${edge.source}' does not exist`);
+            return;
+        }
+        if (!this.nodes.has(edge.target)) {
+            console.warn(`[Graph] addEdge: target node '${edge.target}' does not exist`);
+            return;
+        }
+        this.edges.set(edge.id, { ...edge });
+        this.nodeEdgeIndex.get(edge.source).add(edge.id);
+        this.nodeEdgeIndex.get(edge.target).add(edge.id);
+        this.version++;
+    }
+    removeEdge(id) {
+        const edge = this.edges.get(id);
+        if (edge) {
+            this.nodeEdgeIndex.get(edge.source)?.delete(id);
+            this.nodeEdgeIndex.get(edge.target)?.delete(id);
+        }
+        this.edges.delete(id);
+        this.version++;
+    }
+    updateEdge(id, updates) {
+        const edge = this.edges.get(id);
+        if (!edge)
+            return;
+        if (updates.source !== undefined && updates.source !== edge.source) {
+            this.nodeEdgeIndex.get(edge.source)?.delete(id);
+            this.nodeEdgeIndex.get(updates.source)?.add(id);
+        }
+        if (updates.target !== undefined && updates.target !== edge.target) {
+            this.nodeEdgeIndex.get(edge.target)?.delete(id);
+            this.nodeEdgeIndex.get(updates.target)?.add(id);
+        }
+        this.edges.set(id, { ...edge, ...updates });
+        this.version++;
+    }
+    getNode(id) {
+        return this.nodes.get(id);
+    }
+    getEdge(id) {
+        return this.edges.get(id);
+    }
+    getNodes() {
+        return Array.from(this.nodes.values());
+    }
+    getEdges() {
+        return Array.from(this.edges.values());
+    }
+    get nodeCount() {
+        return this.nodes.size;
+    }
+    get edgeCount() {
+        return this.edges.size;
+    }
+    clear() {
+        this.nodes.clear();
+        this.edges.clear();
+        this.nodeEdgeIndex.clear();
+        this.version++;
+    }
+}
+
+const MIN_ZOOM = 0.05;
+const MAX_ZOOM = 4;
+class Viewport {
+    constructor() {
+        this.x = 0;
+        this.y = 0;
+        this.zoom = 1;
+        this.width = 1;
+        this.height = 1;
+    }
+    setSize(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+    get canvasWidth() { return this.width; }
+    get canvasHeight() { return this.height; }
+    worldToScreen(wx, wy) {
+        return [wx * this.zoom + this.x, wy * this.zoom + this.y];
+    }
+    screenToWorld(sx, sy) {
+        return [(sx - this.x) / this.zoom, (sy - this.y) / this.zoom];
+    }
+    pan(dx, dy) {
+        this.x += dx;
+        this.y += dy;
+    }
+    zoomAt(cx, cy, factor) {
+        const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, this.zoom * factor));
+        const ratio = next / this.zoom;
+        this.x = cx - (cx - this.x) * ratio;
+        this.y = cy - (cy - this.y) * ratio;
+        this.zoom = next;
+    }
+    // Column-major 4×4 orthographic matrix: world → clip space
+    getMatrix() {
+        const sx = (2 * this.zoom) / this.width;
+        const sy = (-2 * this.zoom) / this.height;
+        const tx = (2 * this.x) / this.width - 1;
+        const ty = (-2 * this.y) / this.height + 1;
+        // prettier-ignore
+        return new Float32Array([
+            sx, 0, 0, 0,
+            0, sy, 0, 0,
+            0, 0, 1, 0,
+            tx, ty, 0, 1,
+        ]);
+    }
+    getVisibleBounds() {
+        const [minX, minY] = this.screenToWorld(0, 0);
+        const [maxX, maxY] = this.screenToWorld(this.width, this.height);
+        return { minX, minY, maxX, maxY };
+    }
+    fit(bounds, padding = 40) {
+        const w = bounds.maxX - bounds.minX;
+        const h = bounds.maxY - bounds.minY;
+        if (w === 0 && h === 0)
+            return;
+        const zoom = Math.min((this.width - padding * 2) / Math.max(w, 1), (this.height - padding * 2) / Math.max(h, 1));
+        this.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
+        this.x = this.width / 2 - (bounds.minX + w / 2) * this.zoom;
+        this.y = this.height / 2 - (bounds.minY + h / 2) * this.zoom;
+    }
+    getState() {
+        return { x: this.x, y: this.y, zoom: this.zoom };
+    }
+    setState(state) {
+        this.x = state.x;
+        this.y = state.y;
+        this.zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, state.zoom));
+    }
+}
+
+function createWebGL2Context(canvas, antialias) {
+    const gl = canvas.getContext('webgl2', { antialias, premultipliedAlpha: false, alpha: true });
+    if (!gl)
+        return null;
+    gl.enable(gl.BLEND);
+    gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    return gl;
+}
+function createShader(gl, type, source) {
+    const shader = gl.createShader(type);
+    if (!shader)
+        throw new Error('createShader failed');
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        const log = gl.getShaderInfoLog(shader) ?? '';
+        gl.deleteShader(shader);
+        throw new Error(`Shader compile error:\n${log}`);
+    }
+    return shader;
+}
+function createProgram(gl, vertSrc, fragSrc) {
+    const vert = createShader(gl, gl.VERTEX_SHADER, vertSrc);
+    const frag = createShader(gl, gl.FRAGMENT_SHADER, fragSrc);
+    const prog = gl.createProgram();
+    if (!prog)
+        throw new Error('createProgram failed');
+    gl.attachShader(prog, vert);
+    gl.attachShader(prog, frag);
+    gl.linkProgram(prog);
+    gl.deleteShader(vert);
+    gl.deleteShader(frag);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        const log = gl.getProgramInfoLog(prog) ?? '';
+        gl.deleteProgram(prog);
+        throw new Error(`Program link error:\n${log}`);
+    }
+    return prog;
+}
+
+class DynamicBuffer {
+    constructor(gl, initialBytes = 65536) {
+        this.gl = gl;
+        this.capacityBytes = initialBytes;
+        const buf = gl.createBuffer();
+        if (!buf)
+            throw new Error('DynamicBuffer: createBuffer failed');
+        this.buffer = buf;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, initialBytes, gl.DYNAMIC_DRAW);
+    }
+    upload(data) {
+        const gl = this.gl;
+        const bytes = data.byteLength;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+        if (bytes > this.capacityBytes) {
+            this.capacityBytes = bytes * 2;
+            gl.bufferData(gl.ARRAY_BUFFER, this.capacityBytes, gl.DYNAMIC_DRAW);
+        }
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
+    }
+    dispose() {
+        this.gl.deleteBuffer(this.buffer);
+    }
+}
+
+const cache = new Map();
+/** Parse any CSS color string into normalized [r, g, b, a] via a 1×1 canvas. */
+function parseColor$1(css) {
+    const hit = cache.get(css);
+    if (hit)
+        return hit;
+    const c = document.createElement('canvas');
+    c.width = c.height = 1;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = css;
+    ctx.fillRect(0, 0, 1, 1);
+    const d = ctx.getImageData(0, 0, 1, 1).data;
+    const result = [
+        d[0] / 255, d[1] / 255, d[2] / 255, d[3] / 255,
+    ];
+    cache.set(css, result);
+    return result;
+}
+
+const DEFAULT_NODE_STYLE = {
+    backgroundColor: '#ffffff',
+    borderColor: '#1a73e8',
+    borderWidth: 2,
+    borderRadius: 8,
+    textColor: '#1a1a1a',
+    fontSize: 14,
+    fontFamily: 'system-ui, sans-serif',
+    textAlign: 'center',
+    lineHeight: 1.4,
+    shape: 'rectangle',
+};
+const SHAPE_INDEX = {
+    rectangle: 0,
+    circle: 1,
+    diamond: 2,
+    hexagon: 3,
+};
+function shapeToFloat(shape) {
+    return SHAPE_INDEX[shape ?? 'rectangle'] ?? 0;
+}
+
+// Per-instance (16 floats):
+// [0-1]  center (cx, cy)
+// [2-3]  size (w, h)
+// [4-7]  fill (r,g,b,a)
+// [8-11] border (r,g,b,a)
+// [12]   border width
+// [13]   border radius
+// [14]   state  0=normal  0.5=connection-target  1=selected
+// [15]   shape  0=rect  1=circle  2=diamond  3=hexagon
+const FLOATS_PER_INSTANCE = 16;
+const VERT$3 = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2  a_quad;
+in vec2  a_offset;
+in vec2  a_size;
+in vec4  a_fill;
+in vec4  a_stroke;
+in float a_strokeWidth;
+in float a_radius;
+in float a_state;
+in float a_shape;
+
+uniform mat4 u_matrix;
+
+out vec2  v_local;
+out vec2  v_halfSize;
+out vec4  v_fill;
+out vec4  v_stroke;
+out float v_strokeWidth;
+out float v_radius;
+out float v_state;
+out float v_shape;
+
+void main() {
+  v_local       = a_quad * a_size;
+  v_halfSize    = a_size * 0.5;
+  v_fill        = a_fill;
+  v_stroke      = a_stroke;
+  v_strokeWidth = a_strokeWidth;
+  v_radius      = a_radius;
+  v_state       = a_state;
+  v_shape       = a_shape;
+  gl_Position   = u_matrix * vec4(a_offset + a_quad * a_size, 0.0, 1.0);
+}
+`;
+const FRAG$3 = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2  v_local;
+in vec2  v_halfSize;
+in vec4  v_fill;
+in vec4  v_stroke;
+in float v_strokeWidth;
+in float v_radius;
+in float v_state;
+in float v_shape;
+
+out vec4 fragColor;
+
+// ── Shape SDFs ──────────────────────────────────────────────────────────────
+
+float sdfRect(vec2 p, vec2 b, float r) {
+  vec2 q = abs(p) - b + r;
+  return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+}
+
+// Ellipse (fits bounding box)
+float sdfCircle(vec2 p, vec2 b) {
+  float k1 = length(p / b);
+  return (k1 - 1.0) * min(b.x, b.y);
+}
+
+// Diamond (rhombus touching midpoints of bounding box edges)
+float sdfDiamond(vec2 p, vec2 b) {
+  vec2 q = abs(p) / b;
+  return (q.x + q.y - 1.0) * min(b.x, b.y);
+}
+
+// Flat-top hexagon scaled to fit bounding box
+float sdfHexagon(vec2 p, vec2 b) {
+  const float k = 0.8660254; // sqrt(3)/2
+  // Scale y so the hex's inradius matches b.y
+  float sy = k * b.x / max(b.y, 0.001);
+  vec2  q  = abs(vec2(p.x, p.y * sy));
+  float d  = max(q.y - k * b.x, q.x * k + q.y * 0.5 - k * b.x);
+  return d;
+}
+
+float shapeSDF(vec2 p, vec2 b, float r, float shape) {
+  if (shape < 0.5) return sdfRect(p, b, r);
+  if (shape < 1.5) return sdfCircle(p, b);
+  if (shape < 2.5) return sdfDiamond(p, b);
+  return sdfHexagon(p, b);
+}
+
+// ── Main ────────────────────────────────────────────────────────────────────
+
+void main() {
+  float r = (v_shape < 0.5)
+    ? clamp(v_radius, 0.0, min(v_halfSize.x, v_halfSize.y))
+    : 0.0;
+  float d = shapeSDF(v_local, v_halfSize, r, v_shape);
+
+  vec4  selColor = vec4(0.18, 0.52, 0.98, 1.0);
+  vec4  tgtColor = vec4(0.12, 0.78, 0.47, 1.0);
+
+  vec4  activeBorder;
+  float activeBW;
+  if (v_state > 0.9) {
+    activeBorder = selColor;
+    activeBW     = max(v_strokeWidth, 2.5);
+  } else if (v_state > 0.4) {
+    activeBorder = tgtColor;
+    activeBW     = max(v_strokeWidth, 2.5);
+  } else {
+    activeBorder = v_stroke;
+    activeBW     = v_strokeWidth;
+  }
+
+  float outer = 1.0 - smoothstep(-1.0, 0.0, d);
+  float inner = 1.0 - smoothstep(-1.0, 0.0, d + activeBW);
+
+  vec4 color = mix(activeBorder, v_fill, inner);
+  fragColor  = vec4(color.rgb, color.a * outer);
+}
+`;
+class NodeProgram {
+    constructor(gl) {
+        this.scratch = new Float32Array(0);
+        // Instance-buffer cache: skip rebuild when nodes/selection/target are unchanged
+        this.prevNodes = null;
+        this.prevSelectedSize = -1;
+        this.prevSelectedJoined = '';
+        this.prevTargetNodeId = null;
+        this.prevInstanceCount = 0;
+        this.gl = gl;
+        this.program = createProgram(gl, VERT$3, FRAG$3);
+        this.instanceBuffer = new DynamicBuffer(gl);
+        const vao = gl.createVertexArray();
+        if (!vao)
+            throw new Error('NodeProgram: createVertexArray failed');
+        this.vao = vao;
+        const quadBuf = gl.createBuffer();
+        if (!quadBuf)
+            throw new Error('NodeProgram: createBuffer failed');
+        this.quadBuffer = quadBuf;
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -0.5, -0.5, 0.5, -0.5, 0.5, 0.5,
+            -0.5, -0.5, 0.5, 0.5, -0.5, 0.5,
+        ]), gl.STATIC_DRAW);
+        gl.bindVertexArray(this.vao);
+        const quadLoc = gl.getAttribLocation(this.program, 'a_quad');
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        gl.enableVertexAttribArray(quadLoc);
+        gl.vertexAttribPointer(quadLoc, 2, gl.FLOAT, false, 0, 0);
+        const stride = FLOATS_PER_INSTANCE * 4;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.instanceBuffer.buffer);
+        const def = (name, size, offset) => {
+            const loc = gl.getAttribLocation(this.program, name);
+            if (loc < 0)
+                return;
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, stride, offset * 4);
+            gl.vertexAttribDivisor(loc, 1);
+        };
+        def('a_offset', 2, 0);
+        def('a_size', 2, 2);
+        def('a_fill', 4, 4);
+        def('a_stroke', 4, 8);
+        def('a_strokeWidth', 1, 12);
+        def('a_radius', 1, 13);
+        def('a_state', 1, 14);
+        def('a_shape', 1, 15);
+        gl.bindVertexArray(null);
+        const matLoc = gl.getUniformLocation(this.program, 'u_matrix');
+        if (!matLoc)
+            throw new Error('NodeProgram: u_matrix not found');
+        this.uMatrix = matLoc;
+    }
+    render(nodes, matrix, selectedIds, targetNodeId) {
+        if (nodes.length === 0)
+            return;
+        const gl = this.gl;
+        const selSize = selectedIds.size;
+        const selJoined = selSize === 0 ? '' : [...selectedIds].sort().join(',');
+        const dataChanged = (nodes !== this.prevNodes ||
+            nodes.length !== this.prevInstanceCount ||
+            selSize !== this.prevSelectedSize ||
+            selJoined !== this.prevSelectedJoined ||
+            targetNodeId !== this.prevTargetNodeId);
+        if (dataChanged) {
+            const needed = nodes.length * FLOATS_PER_INSTANCE;
+            if (this.scratch.length < needed)
+                this.scratch = new Float32Array(needed * 2);
+            const data = this.scratch;
+            let i = 0;
+            for (const node of nodes) {
+                const style = { ...DEFAULT_NODE_STYLE, ...node.style };
+                const [fr, fg, fb, fa] = parseColor$1(style.backgroundColor);
+                const [sr, sg, sb, sa] = parseColor$1(style.borderColor);
+                let state = 0;
+                if (selectedIds.has(node.id))
+                    state = 1;
+                else if (node.id === targetNodeId)
+                    state = 0.5;
+                data[i++] = node.x + node.width / 2;
+                data[i++] = node.y + node.height / 2;
+                data[i++] = node.width;
+                data[i++] = node.height;
+                data[i++] = fr;
+                data[i++] = fg;
+                data[i++] = fb;
+                data[i++] = fa;
+                data[i++] = sr;
+                data[i++] = sg;
+                data[i++] = sb;
+                data[i++] = sa;
+                data[i++] = style.borderWidth;
+                data[i++] = style.borderRadius;
+                data[i++] = state;
+                data[i++] = shapeToFloat(style.shape);
+            }
+            this.instanceBuffer.upload(data.subarray(0, needed));
+            this.prevNodes = nodes;
+            this.prevInstanceCount = nodes.length;
+            this.prevSelectedSize = selSize;
+            this.prevSelectedJoined = selJoined;
+            this.prevTargetNodeId = targetNodeId;
+        }
+        gl.useProgram(this.program);
+        gl.uniformMatrix4fv(this.uMatrix, false, matrix);
+        gl.bindVertexArray(this.vao);
+        gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, nodes.length);
+        gl.bindVertexArray(null);
+    }
+    dispose() {
+        const gl = this.gl;
+        gl.deleteProgram(this.program);
+        gl.deleteVertexArray(this.vao);
+        gl.deleteBuffer(this.quadBuffer);
+        this.instanceBuffer.dispose();
+    }
+}
+
+// Floats per vertex for edge triangle-strip geometry
+const EDGE_FLOATS_PER_VERT = 7; // pos(2) + arcLen(1) + color(4)
+const BEZIER_SEGMENTS = 16;
+/**
+ * Compute cubic bezier control points that respect handle exit/entry directions.
+ *
+ * Each handle side defines the direction the curve leaves (source) or enters (target):
+ *   right  → exits/enters rightward  (+x)
+ *   left   → exits/enters leftward   (-x)
+ *   bottom → exits/enters downward   (+y)
+ *   top    → exits/enters upward     (-y)
+ *
+ * Magnitude is clamped to [50, 150] world units so short connections always
+ * produce a visible arc even when the two endpoints are very close.
+ */
+function edgeControlPoints(sx, sy, sourceHandle, ex, ey, targetHandle) {
+    const dist = Math.hypot(ex - sx, ey - sy);
+    const mag = Math.max(Math.min(dist * 0.5, 150), 50);
+    let c1x, c1y;
+    switch (sourceHandle) {
+        case 'left':
+            c1x = sx - mag;
+            c1y = sy;
+            break;
+        case 'top':
+            c1x = sx;
+            c1y = sy - mag;
+            break;
+        case 'bottom':
+            c1x = sx;
+            c1y = sy + mag;
+            break;
+        default:
+            c1x = sx + mag;
+            c1y = sy;
+            break; // 'right' or undefined
+    }
+    let c2x, c2y;
+    switch (targetHandle) {
+        case 'right':
+            c2x = ex + mag;
+            c2y = ey;
+            break;
+        case 'top':
+            c2x = ex;
+            c2y = ey - mag;
+            break;
+        case 'bottom':
+            c2x = ex;
+            c2y = ey + mag;
+            break;
+        default:
+            c2x = ex - mag;
+            c2y = ey;
+            break; // 'left' or undefined
+    }
+    return [c1x, c1y, c2x, c2y];
+}
+function cubicBezierPoint(t, p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y) {
+    const mt = 1 - t, mt2 = mt * mt, t2 = t * t;
+    return [
+        mt2 * mt * p0x + 3 * mt2 * t * p1x + 3 * mt * t2 * p2x + t2 * t * p3x,
+        mt2 * mt * p0y + 3 * mt2 * t * p1y + 3 * mt * t2 * p2y + t2 * t * p3y,
+    ];
+}
+function buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth, segments = BEZIER_SEGMENTS) {
+    const pts = [];
+    for (let i = 0; i <= segments; i++) {
+        pts.push(cubicBezierPoint(i / segments, sx, sy, c1x, c1y, c2x, c2y, ex, ey));
+    }
+    const vertCount = (segments + 1) * 2;
+    const data = new Float32Array(vertCount * EDGE_FLOATS_PER_VERT);
+    let arcLen = 0, cursor = 0;
+    const write = (x, y, arc) => {
+        data[cursor++] = x;
+        data[cursor++] = y;
+        data[cursor++] = arc;
+        data[cursor++] = r;
+        data[cursor++] = g;
+        data[cursor++] = b;
+        data[cursor++] = a;
+    };
+    for (let i = 0; i <= segments; i++) {
+        const [px, py] = pts[i];
+        if (i > 0) {
+            const [qx, qy] = pts[i - 1];
+            arcLen += Math.hypot(px - qx, py - qy);
+        }
+        let nx, ny;
+        if (i < segments) {
+            const [qx, qy] = pts[i + 1];
+            nx = qy - py;
+            ny = px - qx;
+        }
+        else {
+            const [qx, qy] = pts[i - 1];
+            nx = py - qy;
+            ny = qx - px;
+        }
+        const len = Math.hypot(nx, ny) || 1;
+        const ux = nx / len * halfWidth, uy = ny / len * halfWidth;
+        write(px + ux, py + uy, arcLen);
+        write(px - ux, py - uy, arcLen);
+    }
+    return data;
+}
+
+const DEFAULT_EDGE_STYLE = {
+    color: '#555555',
+    width: 2,
+};
+
+const VERT$2 = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2  a_position;
+in float a_arcLen;
+in vec4  a_color;
+
+uniform mat4 u_matrix;
+
+out float v_arcLen;
+out vec4  v_color;
+
+void main() {
+  v_arcLen    = a_arcLen;
+  v_color     = a_color;
+  gl_Position = u_matrix * vec4(a_position, 0.0, 1.0);
+}
+`;
+const FRAG$2 = /* glsl */ `#version 300 es
+precision highp float;
+
+in float v_arcLen;
+in vec4  v_color;
+
+uniform bool  u_dashed;
+uniform float u_dashLen;
+uniform float u_gapLen;
+
+out vec4 fragColor;
+
+void main() {
+  if (u_dashed) {
+    float period = u_dashLen + u_gapLen;
+    if (mod(v_arcLen, period) > u_dashLen) discard;
+  }
+  fragColor = v_color;
+}
+`;
+function parseColor(css, cache) {
+    const hit = cache.get(css);
+    if (hit)
+        return hit;
+    const el = document.createElement('canvas');
+    el.width = el.height = 1;
+    const ctx = el.getContext('2d');
+    ctx.fillStyle = css;
+    ctx.fillRect(0, 0, 1, 1);
+    const d = ctx.getImageData(0, 0, 1, 1).data;
+    const result = [d[0] / 255, d[1] / 255, d[2] / 255, d[3] / 255];
+    cache.set(css, result);
+    return result;
+}
+function handleXY$2(node, side) {
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2;
+    switch (side) {
+        case 'top': return [cx, node.y];
+        case 'bottom': return [cx, node.y + node.height];
+        case 'left': return [node.x, cy];
+        case 'right': return [node.x + node.width, cy];
+        default: return [node.x + node.width, cy];
+    }
+}
+function edgeFingerprint(src, tgt, edge, styleColor, styleWidth, isSelected) {
+    return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}`;
+}
+class EdgeProgram {
+    constructor(gl) {
+        this.colorCache = new Map();
+        // Per-edge geometry cache.
+        this.stripCache = new Map();
+        // Tracks the ordered edge IDs of the last uploaded combined buffer.
+        this.prevValidIds = [];
+        this.prevCombinedFloats = 0;
+        // Batch descriptors reused every frame when buffer is not dirty.
+        this.drawBatches = [];
+        // Reusable CPU-side assembly buffer.
+        this.scratch = new Float32Array(0);
+        this.gl = gl;
+        this.program = createProgram(gl, VERT$2, FRAG$2);
+        this.vertexBuffer = new DynamicBuffer(gl);
+        const vao = gl.createVertexArray();
+        if (!vao)
+            throw new Error('EdgeProgram: createVertexArray failed');
+        this.vao = vao;
+        const stride = EDGE_FLOATS_PER_VERT * 4;
+        gl.bindVertexArray(this.vao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer.buffer);
+        const def = (name, size, offset) => {
+            const loc = gl.getAttribLocation(this.program, name);
+            if (loc < 0)
+                return;
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, stride, offset * 4);
+        };
+        def('a_position', 2, 0);
+        def('a_arcLen', 1, 2);
+        def('a_color', 4, 3);
+        gl.bindVertexArray(null);
+        const u = (name) => {
+            const loc = gl.getUniformLocation(this.program, name);
+            if (!loc)
+                throw new Error(`EdgeProgram: uniform '${name}' not found`);
+            return loc;
+        };
+        this.uMatrix = u('u_matrix');
+        this.uDashed = u('u_dashed');
+        this.uDashLen = u('u_dashLen');
+        this.uGapLen = u('u_gapLen');
+    }
+    render(edges, nodeMap, matrix, selectedEdgeIds = new Set()) {
+        if (edges.length === 0) {
+            this.prevValidIds = [];
+            this.prevCombinedFloats = 0;
+            this.drawBatches = [];
+            return;
+        }
+        const gl = this.gl;
+        const selSize = selectedEdgeIds.size;
+        // Selected edges drawn last so they appear on top.
+        // Skip sort when nothing is selected — saves O(n log n) on static frames.
+        const sorted = selSize === 0
+            ? edges
+            : [...edges].sort((a, b) => (selectedEdgeIds.has(a.id) ? 1 : 0) - (selectedEdgeIds.has(b.id) ? 1 : 0));
+        const valid = [];
+        for (const e of sorted) {
+            if (nodeMap.has(e.source) && nodeMap.has(e.target))
+                valid.push(e);
+        }
+        if (valid.length === 0)
+            return;
+        const vertsPerEdge = (BEZIER_SEGMENTS + 1) * 2;
+        const floatsPerEdge = vertsPerEdge * EDGE_FLOATS_PER_VERT;
+        // ── Step 1: fingerprint check (hot path — no style spread) ───────────
+        // Access only the two properties needed for the fingerprint directly,
+        // deferring the full style spread to cache-miss paths only.
+        let dirty = false;
+        for (const edge of valid) {
+            const src = nodeMap.get(edge.source);
+            const tgt = nodeMap.get(edge.target);
+            const isSelected = selectedEdgeIds.has(edge.id);
+            const styleColor = edge.style?.color ?? DEFAULT_EDGE_STYLE.color;
+            const styleWidth = edge.style?.width ?? DEFAULT_EDGE_STYLE.width;
+            const fp = edgeFingerprint(src, tgt, edge, styleColor, styleWidth, isSelected);
+            const cached = this.stripCache.get(edge.id);
+            if (cached?.key === fp)
+                continue;
+            const style = { ...DEFAULT_EDGE_STYLE, ...edge.style };
+            let [r, g, b, a] = parseColor(style.color, this.colorCache);
+            if (isSelected) {
+                r = 0.102;
+                g = 0.451;
+                b = 0.910;
+                a = 1.0;
+            }
+            const halfWidth = isSelected ? style.width * 0.75 : style.width / 2;
+            const [sx, sy] = handleXY$2(src, edge.sourceHandle ?? 'right');
+            const [ex, ey] = handleXY$2(tgt, edge.targetHandle ?? 'left');
+            const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle);
+            const strip = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth);
+            this.stripCache.set(edge.id, { strip, key: fp });
+            dirty = true;
+        }
+        // ── Step 2: detect whether combined buffer needs rebuilding ───────────
+        let sortChanged = valid.length !== this.prevValidIds.length;
+        if (!sortChanged) {
+            for (let i = 0; i < valid.length; i++) {
+                if (valid[i].id !== this.prevValidIds[i]) {
+                    sortChanged = true;
+                    break;
+                }
+            }
+        }
+        const needsUpload = dirty || sortChanged;
+        // ── Step 3: build groups and assemble — only when buffer is stale ─────
+        // Group building (style spread + Map ops × N) is deferred to avoid
+        // per-frame overhead on static scenes.
+        if (needsUpload) {
+            const groups = [];
+            const groupIndex = new Map();
+            for (const edge of valid) {
+                const isSelected = selectedEdgeIds.has(edge.id);
+                const style = { ...DEFAULT_EDGE_STYLE, ...edge.style };
+                const dashed = !isSelected && !!style.dashArray;
+                const dashLen = dashed ? (style.dashArray[0] ?? 8) : 8;
+                const gapLen = dashed ? (style.dashArray[1] ?? 4) : 4;
+                const dashKey = dashed ? `${dashLen},${gapLen}` : '';
+                if (!groupIndex.has(dashKey)) {
+                    groupIndex.set(dashKey, groups.length);
+                    groups.push({ edges: [], dashed, dashLen, gapLen });
+                }
+                groups[groupIndex.get(dashKey)].edges.push(edge);
+            }
+            let totalFloats = 0;
+            for (const g of groups) {
+                totalFloats += g.edges.length * floatsPerEdge;
+                if (g.edges.length > 1)
+                    totalFloats += (g.edges.length - 1) * 2 * EDGE_FLOATS_PER_VERT;
+            }
+            if (this.scratch.length < totalFloats)
+                this.scratch = new Float32Array(totalFloats * 2);
+            const newBatches = [];
+            let elemOff = 0;
+            let vertOff = 0;
+            for (const group of groups) {
+                const batchVertStart = vertOff;
+                for (let i = 0; i < group.edges.length; i++) {
+                    const strip = this.stripCache.get(group.edges[i].id).strip;
+                    this.scratch.set(strip, elemOff);
+                    elemOff += floatsPerEdge;
+                    vertOff += vertsPerEdge;
+                    if (i < group.edges.length - 1) {
+                        // Degenerate stitch: repeat last vertex of this strip,
+                        // then first vertex of the next strip. The GPU produces
+                        // zero-area triangles and culls them, seamlessly joining
+                        // the two strips into one draw call.
+                        this.scratch.set(strip.subarray(strip.length - EDGE_FLOATS_PER_VERT), elemOff);
+                        elemOff += EDGE_FLOATS_PER_VERT;
+                        const nextStrip = this.stripCache.get(group.edges[i + 1].id).strip;
+                        this.scratch.set(nextStrip.subarray(0, EDGE_FLOATS_PER_VERT), elemOff);
+                        elemOff += EDGE_FLOATS_PER_VERT;
+                        vertOff += 2;
+                    }
+                }
+                newBatches.push({
+                    vertStart: batchVertStart,
+                    vertCount: vertOff - batchVertStart,
+                    dashed: group.dashed,
+                    dashLen: group.dashLen,
+                    gapLen: group.gapLen,
+                });
+            }
+            this.vertexBuffer.upload(this.scratch.subarray(0, totalFloats));
+            this.prevValidIds = valid.map(e => e.id);
+            this.prevCombinedFloats = totalFloats;
+            this.drawBatches = newBatches;
+        }
+        // When !needsUpload the GPU buffer is current; only the view matrix changes.
+        // ── Step 5: evict stale cache entries ─────────────────────────────────
+        if (this.stripCache.size > valid.length) {
+            const currentIds = new Set(valid.map(e => e.id));
+            for (const id of this.stripCache.keys()) {
+                if (!currentIds.has(id))
+                    this.stripCache.delete(id);
+            }
+        }
+        // ── Step 6: draw — one call per dash-config group ─────────────────────
+        gl.useProgram(this.program);
+        gl.uniformMatrix4fv(this.uMatrix, false, matrix);
+        gl.bindVertexArray(this.vao);
+        for (const batch of this.drawBatches) {
+            gl.uniform1i(this.uDashed, batch.dashed ? 1 : 0);
+            if (batch.dashed) {
+                gl.uniform1f(this.uDashLen, batch.dashLen);
+                gl.uniform1f(this.uGapLen, batch.gapLen);
+            }
+            gl.drawArrays(gl.TRIANGLE_STRIP, batch.vertStart, batch.vertCount);
+        }
+        gl.bindVertexArray(null);
+    }
+    dispose() {
+        this.stripCache.clear();
+        this.gl.deleteProgram(this.program);
+        this.gl.deleteVertexArray(this.vao);
+        this.vertexBuffer.dispose();
+    }
+}
+
+// Per-vertex: position(2) + uv(2) = 4 floats
+const FLOATS_PER_VERT = 4;
+const FLOATS_PER_QUAD = 6 * FLOATS_PER_VERT;
+const TEXT_PADDING = 8;
+const EDGE_LABEL_FONT = '12px system-ui, sans-serif';
+const EDGE_LABEL_COLOR = '#374151';
+const EDGE_LABEL_BG = 'rgba(255,255,255,0.92)';
+const VERT$1 = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2 a_position;
+in vec2 a_uv;
+
+uniform mat4 u_matrix;
+
+out vec2 v_uv;
+
+void main() {
+  v_uv        = a_uv;
+  gl_Position = u_matrix * vec4(a_position, 0.0, 1.0);
+}
+`;
+const FRAG$1 = /* glsl */ `#version 300 es
+precision mediump float;
+
+in vec2 v_uv;
+
+uniform sampler2D u_atlas;
+
+out vec4 fragColor;
+
+void main() {
+  fragColor = texture(u_atlas, v_uv);
+}
+`;
+function handleXY$1(node, side) {
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2;
+    switch (side) {
+        case 'top': return [cx, node.y];
+        case 'bottom': return [cx, node.y + node.height];
+        case 'left': return [node.x, cy];
+        case 'right': return [node.x + node.width, cy];
+        default: return [node.x + node.width, cy];
+    }
+}
+function writeQuad(data, cursor, x0, y0, x1, y1, u0, v0, u1, v1) {
+    data[cursor++] = x0;
+    data[cursor++] = y0;
+    data[cursor++] = u0;
+    data[cursor++] = v0;
+    data[cursor++] = x1;
+    data[cursor++] = y0;
+    data[cursor++] = u1;
+    data[cursor++] = v0;
+    data[cursor++] = x1;
+    data[cursor++] = y1;
+    data[cursor++] = u1;
+    data[cursor++] = v1;
+    data[cursor++] = x0;
+    data[cursor++] = y0;
+    data[cursor++] = u0;
+    data[cursor++] = v0;
+    data[cursor++] = x1;
+    data[cursor++] = y1;
+    data[cursor++] = u1;
+    data[cursor++] = v1;
+    data[cursor++] = x0;
+    data[cursor++] = y1;
+    data[cursor++] = u0;
+    data[cursor++] = v1;
+    return cursor;
+}
+class TextProgram {
+    constructor(gl, atlas) {
+        // Per-node quad cache
+        this.quadCache = new Map();
+        this.prevNodeIds = [];
+        this.prevAtlasGeneration = -1;
+        this.scratch = new Float32Array(0);
+        this.prevNodeDrawCount = 0;
+        // Reference-equality fast path: if nodeRef === stored ref, data hasn't changed
+        this.nodeRefCache = new Map();
+        // Per-edge-label quad cache
+        this.edgeLabelCache = new Map();
+        this.prevLabeledEdgeIds = [];
+        this.prevLabelAtlasGeneration = -1;
+        this.labelScratch = new Float32Array(0);
+        this.gl = gl;
+        this.atlas = atlas;
+        this.program = createProgram(gl, VERT$1, FRAG$1);
+        this.vertexBuffer = new DynamicBuffer(gl);
+        const vao = gl.createVertexArray();
+        if (!vao)
+            throw new Error('TextProgram: createVertexArray failed');
+        this.vao = vao;
+        const stride = FLOATS_PER_VERT * 4;
+        gl.bindVertexArray(this.vao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer.buffer);
+        const def = (name, size, offset) => {
+            const loc = gl.getAttribLocation(this.program, name);
+            if (loc < 0)
+                return;
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, stride, offset * 4);
+        };
+        def('a_position', 2, 0);
+        def('a_uv', 2, 2);
+        gl.bindVertexArray(null);
+        const u = (name) => {
+            const loc = gl.getUniformLocation(this.program, name);
+            if (!loc)
+                throw new Error(`TextProgram: uniform '${name}' not found`);
+            return loc;
+        };
+        this.uMatrix = u('u_matrix');
+        this.uAtlas = u('u_atlas');
+    }
+    render(nodes, matrix, zoom) {
+        if (nodes.length === 0 || zoom < 0.12)
+            return;
+        const gl = this.gl;
+        const gen = this.atlas.generation;
+        // On atlas eviction all cached UVs are stale — discard.
+        if (gen !== this.prevAtlasGeneration) {
+            this.quadCache.clear();
+            this.nodeRefCache.clear();
+            this.prevAtlasGeneration = gen;
+        }
+        // Step 1: find nodes whose quads need rebuilding.
+        // Uses NodeData reference equality first (O(1), no string alloc) before
+        // falling back to full fingerprint comparison.
+        const dirtyNodes = [];
+        for (const node of nodes) {
+            if (!node.label)
+                continue;
+            if (this.nodeRefCache.get(node.id) === node && this.quadCache.has(node.id))
+                continue;
+            // Ref changed or first time — check fingerprint before rebuilding
+            const fontSize = node.style?.fontSize ?? DEFAULT_NODE_STYLE.fontSize;
+            const fontFamily = node.style?.fontFamily ?? DEFAULT_NODE_STYLE.fontFamily;
+            const textColor = node.style?.textColor ?? DEFAULT_NODE_STYLE.textColor;
+            const lineHeight = node.style?.lineHeight ?? DEFAULT_NODE_STYLE.lineHeight;
+            const font = `${fontSize}px ${fontFamily}`;
+            const fp = `${node.x}|${node.y}|${node.width}|${node.height}|${node.label}|${font}|${textColor}|${lineHeight}`;
+            if (this.quadCache.get(node.id)?.key === fp) {
+                this.nodeRefCache.set(node.id, node);
+                continue;
+            }
+            dirtyNodes.push(node);
+        }
+        const labeled = nodes.filter(n => n.label);
+        let sortChanged = labeled.length !== this.prevNodeIds.length;
+        if (!sortChanged) {
+            for (let i = 0; i < labeled.length; i++) {
+                if (labeled[i].id !== this.prevNodeIds[i]) {
+                    sortChanged = true;
+                    break;
+                }
+            }
+        }
+        const needsUpload = dirtyNodes.length > 0 || sortChanged;
+        if (needsUpload) {
+            // Pass 1: pre-warm atlas for ALL labeled nodes before computing any quads —
+            // prevents mid-loop atlas eviction from invalidating earlier entries.
+            for (const node of labeled) {
+                const fontSize = node.style?.fontSize ?? DEFAULT_NODE_STYLE.fontSize;
+                const fontFamily = node.style?.fontFamily ?? DEFAULT_NODE_STYLE.fontFamily;
+                const textColor = node.style?.textColor ?? DEFAULT_NODE_STYLE.textColor;
+                const lineHeight = node.style?.lineHeight ?? DEFAULT_NODE_STYLE.lineHeight;
+                const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2);
+                const font = `${fontSize}px ${fontFamily}`;
+                this.atlas.getOrCreate(node.label, font, textColor, maxWidth, lineHeight);
+            }
+            // Pass 2: build quads only for dirty nodes
+            for (const node of dirtyNodes) {
+                const fontSize = node.style?.fontSize ?? DEFAULT_NODE_STYLE.fontSize;
+                const fontFamily = node.style?.fontFamily ?? DEFAULT_NODE_STYLE.fontFamily;
+                const textColor = node.style?.textColor ?? DEFAULT_NODE_STYLE.textColor;
+                const lineHeight = node.style?.lineHeight ?? DEFAULT_NODE_STYLE.lineHeight;
+                const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2);
+                const font = `${fontSize}px ${fontFamily}`;
+                const fp = `${node.x}|${node.y}|${node.width}|${node.height}|${node.label}|${font}|${textColor}|${lineHeight}`;
+                const entry = this.atlas.getOrCreate(node.label, font, textColor, maxWidth, lineHeight);
+                if (!entry)
+                    continue;
+                const cx = node.x + node.width / 2;
+                const cy = node.y + node.height / 2;
+                const quad = new Float32Array(FLOATS_PER_QUAD);
+                writeQuad(quad, 0, cx - entry.w / 2, cy - entry.h / 2, cx + entry.w / 2, cy + entry.h / 2, entry.u0, entry.v0, entry.u1, entry.v1);
+                this.quadCache.set(node.id, { quad, key: fp });
+                this.nodeRefCache.set(node.id, node);
+            }
+            // Assemble combined buffer from cache
+            let drawCount = 0;
+            const totalFloats = labeled.length * FLOATS_PER_QUAD;
+            if (this.scratch.length < totalFloats)
+                this.scratch = new Float32Array(totalFloats * 2);
+            let offset = 0;
+            for (const node of labeled) {
+                const cached = this.quadCache.get(node.id);
+                if (!cached)
+                    continue;
+                this.scratch.set(cached.quad, offset);
+                offset += FLOATS_PER_QUAD;
+                drawCount += 6;
+            }
+            this.vertexBuffer.upload(this.scratch.subarray(0, offset));
+            this.prevNodeIds = labeled.map(n => n.id);
+            this.prevNodeDrawCount = drawCount;
+            // Evict stale cache entries
+            if (this.quadCache.size > labeled.length) {
+                const currentIds = new Set(labeled.map(n => n.id));
+                for (const id of this.quadCache.keys()) {
+                    if (!currentIds.has(id)) {
+                        this.quadCache.delete(id);
+                        this.nodeRefCache.delete(id);
+                    }
+                }
+            }
+            if (drawCount === 0)
+                return;
+        }
+        else if (labeled.length === 0) {
+            return;
+        }
+        if (this.prevNodeDrawCount === 0)
+            return;
+        this.atlas.flush(gl);
+        gl.useProgram(this.program);
+        gl.uniformMatrix4fv(this.uMatrix, false, matrix);
+        gl.uniform1i(this.uAtlas, 0);
+        this.atlas.bind(gl, 0);
+        gl.bindVertexArray(this.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, this.prevNodeDrawCount);
+        gl.bindVertexArray(null);
+    }
+    renderEdgeLabels(edges, nodeMap, matrix, zoom) {
+        const labeled = edges.filter(e => e.label);
+        if (labeled.length === 0 || zoom < 0.12)
+            return;
+        const gl = this.gl;
+        // Pass 1: pre-warm atlas
+        for (const edge of labeled) {
+            this.atlas.getOrCreate(edge.label, EDGE_LABEL_FONT, EDGE_LABEL_COLOR, 0, 1.0, EDGE_LABEL_BG);
+        }
+        const gen = this.atlas.generation;
+        if (gen !== this.prevLabelAtlasGeneration) {
+            this.edgeLabelCache.clear();
+            this.prevLabelAtlasGeneration = gen;
+        }
+        // Pass 2: fingerprint check; recompute only on cache miss
+        let dirty = false;
+        for (const edge of labeled) {
+            if (!edge.label)
+                continue;
+            const src = nodeMap.get(edge.source);
+            const tgt = nodeMap.get(edge.target);
+            if (!src || !tgt)
+                continue;
+            const fp = `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${edge.label}`;
+            const cached = this.edgeLabelCache.get(edge.id);
+            if (cached?.key === fp)
+                continue;
+            const [sx, sy] = handleXY$1(src, edge.sourceHandle);
+            const [ex, ey] = handleXY$1(tgt, edge.targetHandle);
+            const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle);
+            const [mx, my] = cubicBezierPoint(0.5, sx, sy, c1x, c1y, c2x, c2y, ex, ey);
+            const entry = this.atlas.getOrCreate(edge.label, EDGE_LABEL_FONT, EDGE_LABEL_COLOR, 0, 1.0, EDGE_LABEL_BG);
+            if (!entry)
+                continue;
+            const hw = entry.w / 2;
+            const hh = entry.h / 2;
+            const quad = new Float32Array(FLOATS_PER_QUAD);
+            writeQuad(quad, 0, mx - hw, my - hh, mx + hw, my + hh, entry.u0, entry.v0, entry.u1, entry.v1);
+            this.edgeLabelCache.set(edge.id, { quad, key: fp });
+            dirty = true;
+        }
+        let sortChanged = labeled.length !== this.prevLabeledEdgeIds.length;
+        if (!sortChanged) {
+            for (let i = 0; i < labeled.length; i++) {
+                if (labeled[i].id !== this.prevLabeledEdgeIds[i]) {
+                    sortChanged = true;
+                    break;
+                }
+            }
+        }
+        const needsUpload = dirty || sortChanged;
+        let drawCount = labeled.length * 6;
+        if (needsUpload) {
+            const totalFloats = labeled.length * FLOATS_PER_QUAD;
+            if (this.labelScratch.length < totalFloats)
+                this.labelScratch = new Float32Array(totalFloats * 2);
+            let offset = 0;
+            for (const edge of labeled) {
+                const cached = this.edgeLabelCache.get(edge.id);
+                if (!cached) {
+                    drawCount -= 6;
+                    continue;
+                }
+                this.labelScratch.set(cached.quad, offset);
+                offset += FLOATS_PER_QUAD;
+            }
+            this.vertexBuffer.upload(this.labelScratch.subarray(0, offset));
+            this.prevLabeledEdgeIds = labeled.map(e => e.id);
+        }
+        if (this.edgeLabelCache.size > labeled.length) {
+            const currentIds = new Set(labeled.map(e => e.id));
+            for (const id of this.edgeLabelCache.keys()) {
+                if (!currentIds.has(id))
+                    this.edgeLabelCache.delete(id);
+            }
+        }
+        if (drawCount === 0)
+            return;
+        this.atlas.flush(gl);
+        gl.useProgram(this.program);
+        gl.uniformMatrix4fv(this.uMatrix, false, matrix);
+        gl.uniform1i(this.uAtlas, 0);
+        this.atlas.bind(gl, 0);
+        gl.bindVertexArray(this.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, drawCount);
+        gl.bindVertexArray(null);
+    }
+    dispose() {
+        this.gl.deleteProgram(this.program);
+        this.gl.deleteVertexArray(this.vao);
+        this.vertexBuffer.dispose();
+    }
+}
+
+// Radius (screen px) within which a handle is "hit"
+const HANDLE_HIT_PX$1 = 14;
+function getHandlePositions(node) {
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2;
+    return [
+        { nodeId: node.id, side: 'right', wx: node.x + node.width, wy: cy },
+        { nodeId: node.id, side: 'left', wx: node.x, wy: cy },
+        { nodeId: node.id, side: 'bottom', wx: cx, wy: node.y + node.height },
+        { nodeId: node.id, side: 'top', wx: cx, wy: node.y },
+    ];
+}
+class ConnectDrag {
+    constructor(canvas, viewport, graph, hitTester, onStateChange, onConnect) {
+        this.state = {
+            hoveredNodeId: null,
+            hoveredHandle: null,
+            connectingFrom: null,
+            pendingEndWx: 0,
+            pendingEndWy: 0,
+            targetNodeId: null,
+            targetHandle: null,
+        };
+        this.connectTouchId = null;
+        this.canvas = canvas;
+        this.viewport = viewport;
+        this.graph = graph;
+        this.hitTester = hitTester;
+        this.onStateChange = onStateChange;
+        this.onConnect = onConnect;
+        this.onMouseMove = this.handleMouseMove.bind(this);
+        this.onMouseDown = this.handleMouseDown.bind(this);
+        this.onMouseUp = this.handleMouseUp.bind(this);
+        this.onMouseLeave = this.handleMouseLeave.bind(this);
+        this.onTouchStart = this.handleTouchStart.bind(this);
+        this.onTouchMove = this.handleTouchMove.bind(this);
+        this.onTouchEnd = this.handleTouchEnd.bind(this);
+        canvas.addEventListener('mousemove', this.onMouseMove);
+        canvas.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mouseup', this.onMouseUp);
+        canvas.addEventListener('mouseleave', this.onMouseLeave);
+        canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', this.onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', this.onTouchEnd);
+        canvas.addEventListener('touchcancel', this.onTouchEnd);
+    }
+    isCapturing() {
+        return this.state.connectingFrom !== null;
+    }
+    /** True if the pointer is currently within click range of any handle. */
+    isNearHandle(clientX, clientY) {
+        const [wx, wy] = this.toWorld(clientX, clientY);
+        return this.findNearestHandle(wx, wy) !== null;
+    }
+    cancel() {
+        if (!this.state.connectingFrom)
+            return;
+        this.setState({
+            connectingFrom: null,
+            pendingEndWx: 0,
+            pendingEndWy: 0,
+            targetNodeId: null,
+            targetHandle: null,
+        });
+        this.canvas.style.cursor = '';
+    }
+    toWorld(clientX, clientY) {
+        const r = this.canvas.getBoundingClientRect();
+        return this.viewport.screenToWorld(clientX - r.left, clientY - r.top);
+    }
+    /**
+     * Find the closest handle across ALL nodes — not just hoveredNode.
+     * This is critical: handle circles extend beyond the node AABB, so
+     * `findNodeAt` returns null when the cursor is over the protruding half.
+     * Searching all handles avoids losing the hovered state in that zone.
+     */
+    findNearestHandle(wx, wy) {
+        const hitR = HANDLE_HIT_PX$1 / this.viewport.zoom;
+        const nodes = this.graph.getNodes();
+        // Check hoveredNodeId first so it wins when multiple nodes overlap
+        const ordered = this.state.hoveredNodeId
+            ? [
+                ...nodes.filter(n => n.id === this.state.hoveredNodeId),
+                ...nodes.filter(n => n.id !== this.state.hoveredNodeId),
+            ]
+            : nodes;
+        for (const node of ordered) {
+            for (const h of getHandlePositions(node)) {
+                if (Math.hypot(wx - h.wx, wy - h.wy) <= hitR)
+                    return h;
+            }
+        }
+        return null;
+    }
+    /**
+     * During connection drag: find the target handle to snap to.
+     * Priority: handle hit radius on any non-source node → nearest handle on node body.
+     * Returns the snap point so `pendingEndWx/Wy` can be updated.
+     */
+    findTargetHandle(wx, wy, sourceNodeId) {
+        const hitR = HANDLE_HIT_PX$1 / this.viewport.zoom;
+        // 1. Cursor within handle hit radius on any non-source node
+        for (const node of this.graph.getNodes()) {
+            if (node.id === sourceNodeId)
+                continue;
+            for (const h of getHandlePositions(node)) {
+                if (Math.hypot(wx - h.wx, wy - h.wy) <= hitR)
+                    return h;
+            }
+        }
+        // 2. Cursor inside node body → snap to geometrically nearest handle
+        const targetNode = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+        if (!targetNode || targetNode.id === sourceNodeId)
+            return null;
+        return this.nearestHandleOnNode(targetNode, wx, wy);
+    }
+    /** Returns the handle on `node` whose world position is closest to (wx, wy). */
+    nearestHandleOnNode(node, wx, wy) {
+        let best = null;
+        let bestDist = Infinity;
+        for (const h of getHandlePositions(node)) {
+            const d = Math.hypot(wx - h.wx, wy - h.wy);
+            if (d < bestDist) {
+                bestDist = d;
+                best = h;
+            }
+        }
+        return best;
+    }
+    setState(patch) {
+        this.state = { ...this.state, ...patch };
+        this.onStateChange(this.state);
+    }
+    handleMouseMove(e) {
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        // ── While dragging a connection ─────────────────────────────────
+        if (this.state.connectingFrom) {
+            const sourceNodeId = this.state.connectingFrom.nodeId;
+            const hit = this.findTargetHandle(wx, wy, sourceNodeId);
+            this.setState({
+                pendingEndWx: hit ? hit.wx : wx,
+                pendingEndWy: hit ? hit.wy : wy,
+                targetNodeId: hit ? hit.nodeId : null,
+                targetHandle: hit ? hit.side : null,
+            });
+            return;
+        }
+        // ── Idle: compute hovered node + hovered handle ─────────────────
+        const bodyNode = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+        const nearHandle = this.findNearestHandle(wx, wy);
+        // Handle zone can be outside the node body → prefer handle's node
+        const newHoverId = nearHandle?.nodeId ?? bodyNode?.id ?? null;
+        this.canvas.style.cursor = nearHandle ? 'crosshair' : '';
+        if (newHoverId !== this.state.hoveredNodeId ||
+            nearHandle?.side !== this.state.hoveredHandle?.side ||
+            nearHandle?.nodeId !== this.state.hoveredHandle?.nodeId) {
+            this.setState({ hoveredNodeId: newHoverId, hoveredHandle: nearHandle ?? null });
+        }
+    }
+    handleMouseDown(e) {
+        if (e.button !== 0)
+            return;
+        // Use the already-tracked hoveredHandle — avoids re-computation lag
+        const handle = this.state.hoveredHandle;
+        if (!handle)
+            return;
+        e.stopPropagation();
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        this.setState({
+            connectingFrom: handle,
+            pendingEndWx: wx,
+            pendingEndWy: wy,
+            targetNodeId: null,
+            targetHandle: null,
+        });
+        this.canvas.style.cursor = 'crosshair';
+    }
+    handleMouseUp(e) {
+        if (!this.state.connectingFrom)
+            return;
+        const from = this.state.connectingFrom;
+        // targetHandle is already tracked in state (updated every mousemove)
+        const targetId = this.state.targetNodeId;
+        const targetHandle = this.state.targetHandle;
+        this.setState({
+            connectingFrom: null,
+            pendingEndWx: 0,
+            pendingEndWy: 0,
+            targetNodeId: null,
+            targetHandle: null,
+            hoveredNodeId: targetId ?? null,
+            hoveredHandle: null,
+        });
+        this.canvas.style.cursor = '';
+        if (targetId && targetHandle) {
+            this.onConnect(from.nodeId, targetId, from.side, targetHandle);
+        }
+    }
+    handleMouseLeave() {
+        if (this.state.connectingFrom)
+            return; // keep connection active
+        if (this.state.hoveredNodeId || this.state.hoveredHandle) {
+            this.setState({ hoveredNodeId: null, hoveredHandle: null });
+            this.canvas.style.cursor = '';
+        }
+    }
+    handleTouchStart(e) {
+        if (this.connectTouchId !== null || e.touches.length !== 1)
+            return;
+        const touch = e.touches[0];
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const handle = this.findNearestHandle(wx, wy);
+        if (!handle)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        this.connectTouchId = touch.identifier;
+        this.setState({
+            connectingFrom: handle,
+            pendingEndWx: wx,
+            pendingEndWy: wy,
+            targetNodeId: null,
+            targetHandle: null,
+        });
+        this.canvas.style.cursor = 'crosshair';
+    }
+    handleTouchMove(e) {
+        if (this.connectTouchId === null || !this.state.connectingFrom)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.connectTouchId);
+        if (!touch)
+            return;
+        e.preventDefault();
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const sourceNodeId = this.state.connectingFrom.nodeId;
+        const hit = this.findTargetHandle(wx, wy, sourceNodeId);
+        this.setState({
+            pendingEndWx: hit ? hit.wx : wx,
+            pendingEndWy: hit ? hit.wy : wy,
+            targetNodeId: hit ? hit.nodeId : null,
+            targetHandle: hit ? hit.side : null,
+        });
+    }
+    handleTouchEnd(e) {
+        if (this.connectTouchId === null || !this.state.connectingFrom)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.connectTouchId);
+        if (!touch)
+            return;
+        const from = this.state.connectingFrom;
+        const targetId = this.state.targetNodeId;
+        const targetHandle = this.state.targetHandle;
+        this.connectTouchId = null;
+        this.setState({
+            connectingFrom: null,
+            pendingEndWx: 0,
+            pendingEndWy: 0,
+            targetNodeId: null,
+            targetHandle: null,
+        });
+        this.canvas.style.cursor = '';
+        if (targetId && targetHandle) {
+            this.onConnect(from.nodeId, targetId, from.side, targetHandle);
+        }
+    }
+    dispose() {
+        this.canvas.removeEventListener('mousemove', this.onMouseMove);
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        window.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.removeEventListener('mouseleave', this.onMouseLeave);
+        this.canvas.removeEventListener('touchstart', this.onTouchStart);
+        this.canvas.removeEventListener('touchmove', this.onTouchMove);
+        this.canvas.removeEventListener('touchend', this.onTouchEnd);
+        this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
+    }
+}
+
+// Per-instance: center(2) + radius(1) + color(4) + hovered(1) = 8 floats
+const FLOATS_PER_HANDLE = 8;
+// Screen-space radius of a handle circle (px)
+const HANDLE_RADIUS_PX = 7;
+const CIRCLE_VERT = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2  a_quad;       // [-1, 1] unit square
+in vec2  a_center;
+in float a_radius;
+in vec4  a_color;
+in float a_hovered;
+
+uniform mat4 u_matrix;
+
+out vec2  v_uv;
+out vec4  v_color;
+out float v_hovered;
+
+void main() {
+  v_uv     = a_quad;
+  v_color  = a_color;
+  v_hovered = a_hovered;
+  vec2 world  = a_center + a_quad * a_radius;
+  gl_Position = u_matrix * vec4(world, 0.0, 1.0);
+}
+`;
+const CIRCLE_FRAG = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2  v_uv;
+in vec4  v_color;
+in float v_hovered;
+
+out vec4 fragColor;
+
+void main() {
+  float d = length(v_uv);
+
+  // Smooth outer edge
+  float outer = 1.0 - smoothstep(0.82, 1.0, d);
+
+  // Inner white fill starts at 55% of the radius
+  float inner = 1.0 - smoothstep(0.52, 0.62, d);
+
+  // Darken ring color on hover
+  vec3 ringRGB = v_hovered > 0.5
+    ? clamp(v_color.rgb * 0.62, 0.0, 1.0)
+    : v_color.rgb;
+
+  vec4 color = mix(vec4(ringRGB, 1.0), vec4(1.0, 1.0, 1.0, 1.0), inner);
+  fragColor  = vec4(color.rgb, color.a * outer);
+}
+`;
+const EDGE_VERT = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2  a_position;
+in float a_arcLen;
+in vec4  a_color;
+
+uniform mat4 u_matrix;
+
+out float v_arcLen;
+out vec4  v_color;
+
+void main() {
+  v_arcLen    = a_arcLen;
+  v_color     = a_color;
+  gl_Position = u_matrix * vec4(a_position, 0.0, 1.0);
+}
+`;
+const EDGE_FRAG = /* glsl */ `#version 300 es
+precision highp float;
+
+in float v_arcLen;
+in vec4  v_color;
+
+uniform float u_dashLen;
+uniform float u_gapLen;
+
+out vec4 fragColor;
+
+void main() {
+  float period = u_dashLen + u_gapLen;
+  if (mod(v_arcLen, period) > u_dashLen) discard;
+  fragColor = v_color;
+}
+`;
+class HandleProgram {
+    constructor(gl) {
+        this.gl = gl;
+        // ── Circle program ─────────────────────────────────────────────
+        this.circleProgram = createProgram(gl, CIRCLE_VERT, CIRCLE_FRAG);
+        this.circleBuffer = new DynamicBuffer(gl);
+        const quadBuf = gl.createBuffer();
+        if (!quadBuf)
+            throw new Error('HandleProgram: createBuffer failed');
+        this.quadBuffer = quadBuf;
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1, 1, -1, 1, 1,
+            -1, -1, 1, 1, -1, 1,
+        ]), gl.STATIC_DRAW);
+        const circleVao = gl.createVertexArray();
+        if (!circleVao)
+            throw new Error('HandleProgram: createVertexArray failed');
+        this.circleVao = circleVao;
+        gl.bindVertexArray(this.circleVao);
+        // per-vertex: a_quad
+        const aQuad = gl.getAttribLocation(this.circleProgram, 'a_quad');
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        gl.enableVertexAttribArray(aQuad);
+        gl.vertexAttribPointer(aQuad, 2, gl.FLOAT, false, 0, 0);
+        // per-instance
+        const cStride = FLOATS_PER_HANDLE * 4;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.circleBuffer.buffer);
+        const defC = (name, size, offset) => {
+            const loc = gl.getAttribLocation(this.circleProgram, name);
+            if (loc < 0)
+                return;
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, cStride, offset * 4);
+            gl.vertexAttribDivisor(loc, 1);
+        };
+        defC('a_center', 2, 0);
+        defC('a_radius', 1, 2);
+        defC('a_color', 4, 3);
+        defC('a_hovered', 1, 7);
+        gl.bindVertexArray(null);
+        const cMat = gl.getUniformLocation(this.circleProgram, 'u_matrix');
+        if (!cMat)
+            throw new Error('HandleProgram: u_matrix not found (circle)');
+        this.uCircleMatrix = cMat;
+        // ── Edge program (pending connection line) ─────────────────────
+        this.edgeProgram = createProgram(gl, EDGE_VERT, EDGE_FRAG);
+        this.edgeBuffer = new DynamicBuffer(gl);
+        const edgeVao = gl.createVertexArray();
+        if (!edgeVao)
+            throw new Error('HandleProgram: createVertexArray failed (edge)');
+        this.edgeVao = edgeVao;
+        gl.bindVertexArray(this.edgeVao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.edgeBuffer.buffer);
+        const eStride = EDGE_FLOATS_PER_VERT * 4;
+        const defE = (name, size, offset) => {
+            const loc = gl.getAttribLocation(this.edgeProgram, name);
+            if (loc < 0)
+                return;
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, size, gl.FLOAT, false, eStride, offset * 4);
+        };
+        defE('a_position', 2, 0);
+        defE('a_arcLen', 1, 2);
+        defE('a_color', 4, 3);
+        gl.bindVertexArray(null);
+        const eMat = gl.getUniformLocation(this.edgeProgram, 'u_matrix');
+        const dLen = gl.getUniformLocation(this.edgeProgram, 'u_dashLen');
+        const gLen = gl.getUniformLocation(this.edgeProgram, 'u_gapLen');
+        if (!eMat || !dLen || !gLen)
+            throw new Error('HandleProgram: edge uniforms not found');
+        this.uEdgeMatrix = eMat;
+        this.uDashLen = dLen;
+        this.uGapLen = gLen;
+    }
+    render(connectState, nodeMap, matrix, zoom, rerouteState = null, endpointCircles = []) {
+        if (connectState) {
+            this.renderHandles(connectState, nodeMap, matrix, zoom);
+            this.renderPendingEdge(connectState, nodeMap, matrix, zoom);
+        }
+        this.renderEndpointCircles(endpointCircles, matrix, zoom);
+        if (rerouteState)
+            this.renderRerouteEdge(rerouteState, matrix, zoom);
+    }
+    renderHandles(s, nodeMap, matrix, zoom) {
+        const gl = this.gl;
+        const worldR = HANDLE_RADIUS_PX / zoom;
+        // Which nodes need handles drawn?
+        // – Always show handles for hovered node
+        // – During connection, also show handles on the source node
+        const showForIds = new Set();
+        if (s.hoveredNodeId)
+            showForIds.add(s.hoveredNodeId);
+        if (s.connectingFrom?.nodeId)
+            showForIds.add(s.connectingFrom.nodeId);
+        if (s.targetNodeId)
+            showForIds.add(s.targetNodeId); // target node during drag
+        if (showForIds.size === 0)
+            return;
+        const instances = [];
+        for (const nodeId of showForIds) {
+            const node = nodeMap.get(nodeId);
+            if (!node)
+                continue;
+            const style = { ...DEFAULT_NODE_STYLE, ...node.style };
+            const [r, g, b, a] = parseColor$1(style.borderColor);
+            for (const h of getHandlePositions(node)) {
+                const isHovered = s.hoveredHandle?.nodeId === h.nodeId &&
+                    s.hoveredHandle?.side === h.side
+                    ? 1 : 0;
+                instances.push(h.wx, h.wy, worldR, r, g, b, a, isHovered);
+            }
+        }
+        if (instances.length === 0)
+            return;
+        const data = new Float32Array(instances);
+        this.circleBuffer.upload(data);
+        gl.useProgram(this.circleProgram);
+        gl.uniformMatrix4fv(this.uCircleMatrix, false, matrix);
+        gl.bindVertexArray(this.circleVao);
+        gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, instances.length / FLOATS_PER_HANDLE);
+        gl.bindVertexArray(null);
+    }
+    renderPendingEdge(s, nodeMap, matrix, zoom) {
+        if (!s.connectingFrom)
+            return;
+        const node = nodeMap.get(s.connectingFrom.nodeId);
+        if (!node)
+            return;
+        const style = { ...DEFAULT_NODE_STYLE, ...node.style };
+        const [r, g, b] = parseColor$1(style.borderColor);
+        const sx = s.connectingFrom.wx;
+        const sy = s.connectingFrom.wy;
+        const ex = s.pendingEndWx;
+        const ey = s.pendingEndWy;
+        const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, s.connectingFrom.side, ex, ey, s.targetHandle ?? undefined);
+        const hw = (2 / zoom) / 2;
+        const data = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, 0.85, hw);
+        const gl = this.gl;
+        this.edgeBuffer.upload(data);
+        gl.useProgram(this.edgeProgram);
+        gl.uniformMatrix4fv(this.uEdgeMatrix, false, matrix);
+        gl.uniform1f(this.uDashLen, 10 / zoom);
+        gl.uniform1f(this.uGapLen, 5 / zoom);
+        gl.bindVertexArray(this.edgeVao);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, (BEZIER_SEGMENTS + 1) * 2);
+        gl.bindVertexArray(null);
+    }
+    renderEndpointCircles(circles, matrix, zoom) {
+        if (circles.length === 0)
+            return;
+        const gl = this.gl;
+        const worldR = HANDLE_RADIUS_PX * 1.4 / zoom;
+        // Orange: #fb923c
+        const [r, g, b, a] = [0.984, 0.573, 0.235, 1.0];
+        const instances = [];
+        for (const c of circles) {
+            instances.push(c.wx, c.wy, worldR, r, g, b, a, 0);
+        }
+        const data = new Float32Array(instances);
+        this.circleBuffer.upload(data);
+        gl.useProgram(this.circleProgram);
+        gl.uniformMatrix4fv(this.uCircleMatrix, false, matrix);
+        gl.bindVertexArray(this.circleVao);
+        gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, circles.length);
+        gl.bindVertexArray(null);
+    }
+    renderRerouteEdge(s, matrix, zoom) {
+        let sx, sy, srcSide;
+        let ex, ey, tgtSide;
+        if (s.movingEnd === 'target') {
+            sx = s.fixedHandle.wx;
+            sy = s.fixedHandle.wy;
+            srcSide = s.fixedHandle.side;
+            ex = s.pendingEndWx;
+            ey = s.pendingEndWy;
+            tgtSide = s.targetHandle ?? undefined;
+        }
+        else {
+            sx = s.pendingEndWx;
+            sy = s.pendingEndWy;
+            srcSide = s.targetHandle ?? undefined;
+            ex = s.fixedHandle.wx;
+            ey = s.fixedHandle.wy;
+            tgtSide = s.fixedHandle.side;
+        }
+        const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, srcSide, ex, ey, tgtSide);
+        // Orange: #fb923c
+        const [r, g, b] = [0.984, 0.573, 0.235];
+        const hw = (2 / zoom) / 2;
+        const data = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, 0.85, hw);
+        const gl = this.gl;
+        this.edgeBuffer.upload(data);
+        gl.useProgram(this.edgeProgram);
+        gl.uniformMatrix4fv(this.uEdgeMatrix, false, matrix);
+        gl.uniform1f(this.uDashLen, 10 / zoom);
+        gl.uniform1f(this.uGapLen, 5 / zoom);
+        gl.bindVertexArray(this.edgeVao);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, (BEZIER_SEGMENTS + 1) * 2);
+        gl.bindVertexArray(null);
+    }
+    dispose() {
+        const gl = this.gl;
+        gl.deleteProgram(this.circleProgram);
+        gl.deleteProgram(this.edgeProgram);
+        gl.deleteVertexArray(this.circleVao);
+        gl.deleteVertexArray(this.edgeVao);
+        gl.deleteBuffer(this.quadBuffer);
+        this.circleBuffer.dispose();
+        this.edgeBuffer.dispose();
+    }
+}
+
+const VERT = /* glsl */ `#version 300 es
+precision highp float;
+in vec2 a_position;
+out vec2 v_ndc;
+void main() {
+  v_ndc = a_position;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}
+`;
+// World-position derivation from NDC using Viewport.getMatrix() inverse:
+//   wx = (ndcX + 1) * cssWidth  / (2 * zoom) - viewX / zoom
+//   wy = (1 - ndcY) * cssHeight / (2 * zoom) - viewY / zoom
+const FRAG = /* glsl */ `#version 300 es
+precision highp float;
+
+in vec2 v_ndc;
+
+uniform vec2  u_size;      // canvas CSS pixel dimensions
+uniform float u_zoom;
+uniform float u_viewX;
+uniform float u_viewY;
+uniform float u_gridSize;
+uniform vec4  u_color;
+uniform bool  u_dots;
+
+out vec4 fragColor;
+
+void main() {
+  float wx = (v_ndc.x + 1.0) * u_size.x * 0.5 / u_zoom - u_viewX / u_zoom;
+  float wy = (1.0 - v_ndc.y) * u_size.y * 0.5 / u_zoom - u_viewY / u_zoom;
+
+  float pw    = 1.0 / u_zoom;
+  float alpha = 0.0;
+
+  if (u_dots) {
+    float gx   = round(wx / u_gridSize) * u_gridSize;
+    float gy   = round(wy / u_gridSize) * u_gridSize;
+    float dist = length(vec2(wx - gx, wy - gy));
+    float dotR = max(1.5 * pw, 0.5);
+    alpha = 1.0 - smoothstep(dotR - pw * 0.5, dotR + pw * 0.5, dist);
+  } else {
+    vec2  cell = vec2(mod(wx, u_gridSize), mod(wy, u_gridSize));
+    float lw   = max(pw, 0.4);
+    float onX  = 1.0 - smoothstep(0.0, lw, min(cell.x, u_gridSize - cell.x));
+    float onY  = 1.0 - smoothstep(0.0, lw, min(cell.y, u_gridSize - cell.y));
+    alpha = clamp(onX + onY, 0.0, 1.0);
+  }
+
+  fragColor = vec4(u_color.rgb, u_color.a * alpha);
+}
+`;
+class GridProgram {
+    constructor(gl) {
+        this.gl = gl;
+        this.program = createProgram(gl, VERT, FRAG);
+        const buf = gl.createBuffer();
+        if (!buf)
+            throw new Error('GridProgram: createBuffer failed');
+        this.quadBuf = buf;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1, 1, -1, 1, 1,
+            -1, -1, 1, 1, -1, 1,
+        ]), gl.STATIC_DRAW);
+        const vao = gl.createVertexArray();
+        if (!vao)
+            throw new Error('GridProgram: createVertexArray failed');
+        this.vao = vao;
+        gl.bindVertexArray(vao);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        const aPos = gl.getAttribLocation(this.program, 'a_position');
+        gl.enableVertexAttribArray(aPos);
+        gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+        gl.bindVertexArray(null);
+        const u = (name) => {
+            const loc = gl.getUniformLocation(this.program, name);
+            if (!loc)
+                throw new Error(`GridProgram: uniform '${name}' not found`);
+            return loc;
+        };
+        this.uSize = u('u_size');
+        this.uZoom = u('u_zoom');
+        this.uViewX = u('u_viewX');
+        this.uViewY = u('u_viewY');
+        this.uGridSize = u('u_gridSize');
+        this.uColor = u('u_color');
+        this.uDots = u('u_dots');
+    }
+    render(viewport, gridSize, type, colorStr) {
+        // Scale grid size so cells stay >= 16px on screen regardless of zoom
+        let size = gridSize;
+        while (size * viewport.zoom < 16)
+            size *= 2;
+        const [r, g, b, a] = parseColor$1(colorStr);
+        const gl = this.gl;
+        gl.useProgram(this.program);
+        gl.uniform2f(this.uSize, viewport.canvasWidth, viewport.canvasHeight);
+        gl.uniform1f(this.uZoom, viewport.zoom);
+        gl.uniform1f(this.uViewX, viewport.x);
+        gl.uniform1f(this.uViewY, viewport.y);
+        gl.uniform1f(this.uGridSize, size);
+        gl.uniform4f(this.uColor, r, g, b, a);
+        gl.uniform1i(this.uDots, type === 'dots' ? 1 : 0);
+        gl.bindVertexArray(this.vao);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.bindVertexArray(null);
+    }
+    dispose() {
+        this.gl.deleteProgram(this.program);
+        this.gl.deleteVertexArray(this.vao);
+        this.gl.deleteBuffer(this.quadBuf);
+    }
+}
+
+const ATLAS_SIZE = 2048;
+const PADDING = 4;
+function isRTL(text) {
+    return /[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text);
+}
+function wrapLines(text, maxWidth, ctx) {
+    if (maxWidth <= 0)
+        return [text];
+    const segments = text.split('\n');
+    const result = [];
+    for (const segment of segments) {
+        const words = segment.split(' ');
+        let current = '';
+        for (const word of words) {
+            const candidate = current.length === 0 ? word : `${current} ${word}`;
+            if (ctx.measureText(candidate).width <= maxWidth) {
+                current = candidate;
+            }
+            else {
+                if (current.length > 0)
+                    result.push(current);
+                current = word;
+            }
+        }
+        result.push(current);
+    }
+    return result.length > 0 ? result : [''];
+}
+class TextAtlas {
+    constructor() {
+        this.entries = new Map();
+        this.texture = null;
+        this.shelfX = 0;
+        this.shelfY = 0;
+        this.shelfH = 0;
+        this.dirty = false;
+        this.generation = 0;
+        this.offscreen = new OffscreenCanvas(ATLAS_SIZE, ATLAS_SIZE);
+        const ctx = this.offscreen.getContext('2d');
+        if (!ctx)
+            throw new Error('TextAtlas: OffscreenCanvas 2D context unavailable');
+        this.ctx = ctx;
+        this.ctx.textBaseline = 'top';
+    }
+    key(text, font, maxWidth, lineHeight, bgColor) {
+        return `${font}|${maxWidth}|${lineHeight}|${bgColor}|${text}`;
+    }
+    getOrCreate(text, font, color, maxWidth, lineHeight, bgColor = '') {
+        const k = this.key(text, font, maxWidth, lineHeight, bgColor);
+        const cached = this.entries.get(k);
+        if (cached)
+            return cached;
+        this.ctx.font = font;
+        const lines = wrapLines(text, maxWidth, this.ctx);
+        const sample = this.ctx.measureText(lines[0] ?? '');
+        const lineH = Math.ceil((sample.actualBoundingBoxAscent ?? 0) + (sample.actualBoundingBoxDescent ?? 0));
+        const lineStep = Math.max(lineH, Math.ceil(lineH * lineHeight));
+        let blockW = 0;
+        for (const line of lines) {
+            const lw = Math.ceil(this.ctx.measureText(line).width);
+            if (lw > blockW)
+                blockW = lw;
+        }
+        const w = blockW + PADDING * 2;
+        const h = lines.length * lineStep + PADDING * 2;
+        if (w > ATLAS_SIZE || h > ATLAS_SIZE)
+            return null;
+        if (this.shelfX + w > ATLAS_SIZE) {
+            this.shelfY += this.shelfH;
+            this.shelfX = 0;
+            this.shelfH = 0;
+        }
+        if (this.shelfY + h > ATLAS_SIZE) {
+            this.ctx.clearRect(0, 0, ATLAS_SIZE, ATLAS_SIZE);
+            this.entries.clear();
+            this.shelfX = 0;
+            this.shelfY = 0;
+            this.shelfH = 0;
+            this.generation++;
+        }
+        if (bgColor) {
+            this.ctx.fillStyle = bgColor;
+            this.ctx.fillRect(this.shelfX, this.shelfY, w, h);
+        }
+        this.ctx.fillStyle = color;
+        this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr';
+        for (let i = 0; i < lines.length; i++) {
+            this.ctx.fillText(lines[i], this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep);
+        }
+        const entry = {
+            u0: this.shelfX / ATLAS_SIZE,
+            v0: this.shelfY / ATLAS_SIZE,
+            u1: (this.shelfX + w) / ATLAS_SIZE,
+            v1: (this.shelfY + h) / ATLAS_SIZE,
+            w,
+            h,
+        };
+        this.entries.set(k, entry);
+        this.shelfX += w;
+        if (h > this.shelfH)
+            this.shelfH = h;
+        this.dirty = true;
+        return entry;
+    }
+    flush(gl) {
+        if (!this.dirty)
+            return;
+        if (!this.texture) {
+            const tex = gl.createTexture();
+            if (!tex)
+                throw new Error('TextAtlas: createTexture failed');
+            this.texture = tex;
+        }
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.offscreen);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        this.dirty = false;
+    }
+    bind(gl, unit) {
+        gl.activeTexture(gl.TEXTURE0 + unit);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+    }
+    dispose(gl) {
+        if (this.texture)
+            gl.deleteTexture(this.texture);
+    }
+}
+
+const EDGE_CULL_PADDING = 200;
+function cullNodes(nodes, bounds) {
+    return nodes.filter(n => n.x + n.width >= bounds.minX &&
+        n.x <= bounds.maxX &&
+        n.y + n.height >= bounds.minY &&
+        n.y <= bounds.maxY);
+}
+function cullEdges(edges, nodeMap, bounds) {
+    const padded = {
+        minX: bounds.minX - EDGE_CULL_PADDING,
+        minY: bounds.minY - EDGE_CULL_PADDING,
+        maxX: bounds.maxX + EDGE_CULL_PADDING,
+        maxY: bounds.maxY + EDGE_CULL_PADDING,
+    };
+    return edges.filter(e => {
+        const src = nodeMap.get(e.source);
+        const tgt = nodeMap.get(e.target);
+        if (!src || !tgt)
+            return false;
+        const minX = Math.min(src.x, tgt.x);
+        const minY = Math.min(src.y, tgt.y);
+        const maxX = Math.max(src.x + src.width, tgt.x + tgt.width);
+        const maxY = Math.max(src.y + src.height, tgt.y + tgt.height);
+        return maxX >= padded.minX && minX <= padded.maxX &&
+            maxY >= padded.minY && minY <= padded.maxY;
+    });
+}
+function computeNodeBounds(nodes) {
+    if (nodes.length === 0)
+        return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const n of nodes) {
+        if (n.x < minX)
+            minX = n.x;
+        if (n.y < minY)
+            minY = n.y;
+        if (n.x + n.width > maxX)
+            maxX = n.x + n.width;
+        if (n.y + n.height > maxY)
+            maxY = n.y + n.height;
+    }
+    return { minX, minY, maxX, maxY };
+}
+
+class WebGL2Renderer {
+    constructor() {
+        this.dpr = 1;
+        // Per-frame data cache — invalidated by graph.version or viewport change
+        this.cachedGraphVersion = -1;
+        this.cachedVpX = NaN;
+        this.cachedVpY = NaN;
+        this.cachedVpZoom = NaN;
+        this.cachedVpWidth = NaN;
+        this.cachedVpHeight = NaN;
+        this.cachedAllNodes = [];
+        this.cachedNodeMap = new Map();
+        this.cachedAllEdges = [];
+        this.cachedVisNodes = [];
+        this.cachedVisEdges = [];
+    }
+    initialize(canvas, options = {}) {
+        this.dpr = options.pixelRatio ?? window.devicePixelRatio ?? 1;
+        const gl = createWebGL2Context(canvas, options.antialias ?? true);
+        if (!gl)
+            return false;
+        this.gl = gl;
+        this.atlas = new TextAtlas();
+        this.nodeProgram = new NodeProgram(gl);
+        this.edgeProgram = new EdgeProgram(gl);
+        this.textProgram = new TextProgram(gl, this.atlas);
+        this.handleProgram = new HandleProgram(gl);
+        this.gridProgram = new GridProgram(gl);
+        return true;
+    }
+    resize(width, height) {
+        const gl = this.gl;
+        const canvas = gl.canvas;
+        canvas.width = Math.round(width * this.dpr);
+        canvas.height = Math.round(height * this.dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    render(graph, viewport, selectedIds = new Set(), connectState = null, selectedEdgeIds = new Set(), bgColor = '#f7f7f7', grid = null, rerouteState = null, endpointCircles = []) {
+        const gl = this.gl;
+        const [br, bg, bb] = parseColor$1(bgColor);
+        gl.clearColor(br, bg, bb, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        if (grid?.visible) {
+            this.gridProgram.render(viewport, grid.size, grid.type, grid.color);
+        }
+        const matrix = viewport.getMatrix();
+        // ── Rebuild cached data only when graph or viewport changed ───────────
+        const graphChanged = graph.version !== this.cachedGraphVersion;
+        const vpW = viewport.canvasWidth;
+        const vpH = viewport.canvasHeight;
+        const viewportChanged = (viewport.x !== this.cachedVpX ||
+            viewport.y !== this.cachedVpY ||
+            viewport.zoom !== this.cachedVpZoom ||
+            vpW !== this.cachedVpWidth ||
+            vpH !== this.cachedVpHeight);
+        if (graphChanged) {
+            this.cachedAllNodes = graph.getNodes();
+            this.cachedNodeMap = new Map(this.cachedAllNodes.map(n => [n.id, n]));
+            this.cachedAllEdges = graph.getEdges();
+            this.cachedGraphVersion = graph.version;
+        }
+        if (graphChanged || viewportChanged) {
+            const bounds = viewport.getVisibleBounds();
+            this.cachedVisNodes = cullNodes(this.cachedAllNodes, bounds);
+            this.cachedVisEdges = cullEdges(this.cachedAllEdges, this.cachedNodeMap, bounds);
+            this.cachedVpX = viewport.x;
+            this.cachedVpY = viewport.y;
+            this.cachedVpZoom = viewport.zoom;
+            this.cachedVpWidth = vpW;
+            this.cachedVpHeight = vpH;
+        }
+        const visNodes = this.cachedVisNodes;
+        const visEdges = this.cachedVisEdges;
+        const nodeMap = this.cachedNodeMap;
+        // Merge connect-drag target and reroute target for node highlight
+        const connectTargetId = connectState?.targetNodeId ?? null;
+        const rerouteTargetId = rerouteState?.targetNodeId ?? null;
+        const targetNodeId = connectTargetId ?? rerouteTargetId;
+        // Draw order:
+        //   1. edges (behind everything)
+        //   2. handles (before nodes — nodes will cover the inner half of each circle)
+        //   3. nodes (their opaque fill covers the inner half of handle circles)
+        //   4. text (on top of nodes)
+        this.edgeProgram.render(visEdges, nodeMap, matrix, selectedEdgeIds);
+        if (connectState || endpointCircles.length > 0 || rerouteState) {
+            this.handleProgram.render(connectState, nodeMap, matrix, viewport.zoom, rerouteState, endpointCircles);
+        }
+        this.nodeProgram.render(visNodes, matrix, selectedIds, targetNodeId);
+        // Skip text for nodes that provide their own HTML content
+        const textNodes = visNodes.filter(n => !n.htmlContent);
+        this.textProgram.render(textNodes, matrix, viewport.zoom);
+        this.textProgram.renderEdgeLabels(visEdges, nodeMap, matrix, viewport.zoom);
+    }
+    dispose() {
+        this.nodeProgram.dispose();
+        this.edgeProgram.dispose();
+        this.textProgram.dispose();
+        this.handleProgram.dispose();
+        this.gridProgram.dispose();
+        this.atlas.dispose(this.gl);
+    }
+}
+
+class HitTester {
+    findNodeAt(nodes, wx, wy) {
+        // Iterate in reverse so topmost (last-added) node wins
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            const n = nodes[i];
+            if (wx >= n.x && wx <= n.x + n.width && wy >= n.y && wy <= n.y + n.height) {
+                return n;
+            }
+        }
+        return null;
+    }
+    findNodesInBox(nodes, minX, minY, maxX, maxY) {
+        return nodes.filter(n => n.x < maxX && n.x + n.width > minX &&
+            n.y < maxY && n.y + n.height > minY);
+    }
+}
+
+const ZOOM_FACTOR_WHEEL = 0.001;
+const ZOOM_FACTOR_PINCH = 0.01;
+const MIN_PINCH_DIST = 10;
+class PanZoom {
+    /**
+     * @param shouldBlock - Return true when another handler (drag, connect) owns the pointer.
+     *                      PanZoom will not start a pan on that mousedown.
+     */
+    constructor(canvas, viewport, onUpdate, shouldBlock = () => false) {
+        this.isPanning = false;
+        this.lastX = 0;
+        this.lastY = 0;
+        this.lastPinchDist = 0;
+        this.canvas = canvas;
+        this.viewport = viewport;
+        this.onUpdate = onUpdate;
+        this.shouldBlock = shouldBlock;
+        this.onMouseDown = this.handleMouseDown.bind(this);
+        this.onMouseMove = this.handleMouseMove.bind(this);
+        this.onMouseUp = this.handleMouseUp.bind(this);
+        this.onWheel = this.handleWheel.bind(this);
+        this.onTouchStart = this.handleTouchStart.bind(this);
+        this.onTouchMove = this.handleTouchMove.bind(this);
+        this.onTouchEnd = this.handleTouchEnd.bind(this);
+        canvas.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup', this.onMouseUp);
+        canvas.addEventListener('wheel', this.onWheel, { passive: false });
+        canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', this.onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', this.onTouchEnd);
+    }
+    offset() {
+        const r = this.canvas.getBoundingClientRect();
+        return { left: r.left, top: r.top };
+    }
+    handleMouseDown(e) {
+        if (e.button !== 0)
+            return;
+        const { left, top } = this.offset();
+        const sx = e.clientX - left;
+        const sy = e.clientY - top;
+        if (this.shouldBlock(sx, sy))
+            return;
+        this.isPanning = true;
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+    }
+    handleMouseMove(e) {
+        if (!this.isPanning)
+            return;
+        this.viewport.pan(e.clientX - this.lastX, e.clientY - this.lastY);
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+        this.onUpdate();
+    }
+    handleMouseUp(_e) {
+        this.isPanning = false;
+    }
+    handleWheel(e) {
+        e.preventDefault();
+        const { left, top } = this.offset();
+        const factor = 1 - e.deltaY * ZOOM_FACTOR_WHEEL;
+        this.viewport.zoomAt(e.clientX - left, e.clientY - top, factor);
+        this.onUpdate();
+    }
+    pinchDist(e) {
+        if (e.touches.length < 2)
+            return 0;
+        const t0 = e.touches[0], t1 = e.touches[1];
+        return Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+    }
+    pinchCenter(e) {
+        const t0 = e.touches[0], t1 = e.touches[1];
+        const { left, top } = this.offset();
+        return {
+            cx: (t0.clientX + t1.clientX) / 2 - left,
+            cy: (t0.clientY + t1.clientY) / 2 - top,
+        };
+    }
+    handleTouchStart(e) {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            const { left, top } = this.offset();
+            const sx = touch.clientX - left;
+            const sy = touch.clientY - top;
+            if (this.shouldBlock(sx, sy))
+                return;
+            this.isPanning = true;
+            this.lastX = touch.clientX;
+            this.lastY = touch.clientY;
+        }
+        else if (e.touches.length === 2) {
+            this.isPanning = false;
+            this.lastPinchDist = this.pinchDist(e);
+        }
+    }
+    handleTouchMove(e) {
+        e.preventDefault();
+        if (e.touches.length === 1 && this.isPanning) {
+            const t = e.touches[0];
+            this.viewport.pan(t.clientX - this.lastX, t.clientY - this.lastY);
+            this.lastX = t.clientX;
+            this.lastY = t.clientY;
+            this.onUpdate();
+        }
+        else if (e.touches.length === 2) {
+            const dist = this.pinchDist(e);
+            if (this.lastPinchDist > MIN_PINCH_DIST) {
+                const { cx, cy } = this.pinchCenter(e);
+                this.viewport.zoomAt(cx, cy, 1 + (dist - this.lastPinchDist) * ZOOM_FACTOR_PINCH);
+                this.onUpdate();
+            }
+            this.lastPinchDist = dist;
+        }
+    }
+    handleTouchEnd(_e) {
+        this.isPanning = false;
+        this.lastPinchDist = 0;
+    }
+    dispose() {
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        window.removeEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.removeEventListener('wheel', this.onWheel);
+        this.canvas.removeEventListener('touchstart', this.onTouchStart);
+        this.canvas.removeEventListener('touchmove', this.onTouchMove);
+        this.canvas.removeEventListener('touchend', this.onTouchEnd);
+    }
+}
+
+class NodeDrag {
+    constructor(canvas, viewport, graph, hitTester, onStart, onMove, onEnd, shouldBlock = () => false) {
+        this.dragging = null;
+        this.dragOffsetX = 0;
+        this.dragOffsetY = 0;
+        this.didMove = false;
+        this.activeTouchId = null;
+        this.canvas = canvas;
+        this.viewport = viewport;
+        this.graph = graph;
+        this.hitTester = hitTester;
+        this.onStart = onStart;
+        this.onMove = onMove;
+        this.onEnd = onEnd;
+        this.shouldBlock = shouldBlock;
+        this.onMouseDown = this.handleMouseDown.bind(this);
+        this.onMouseMove = this.handleMouseMove.bind(this);
+        this.onMouseUp = this.handleMouseUp.bind(this);
+        this.onTouchStart = this.handleTouchStart.bind(this);
+        this.onTouchMove = this.handleTouchMove.bind(this);
+        this.onTouchEnd = this.handleTouchEnd.bind(this);
+        canvas.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup', this.onMouseUp);
+        canvas.addEventListener('touchstart', this.onTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', this.onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', this.onTouchEnd);
+        canvas.addEventListener('touchcancel', this.onTouchEnd);
+    }
+    toWorld(clientX, clientY) {
+        const r = this.canvas.getBoundingClientRect();
+        return this.viewport.screenToWorld(clientX - r.left, clientY - r.top);
+    }
+    handleMouseDown(e) {
+        if (e.button !== 0)
+            return;
+        if (this.shouldBlock(e.clientX, e.clientY))
+            return;
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+        if (!node)
+            return;
+        e.stopPropagation();
+        this.dragging = node;
+        this.dragOffsetX = wx - node.x;
+        this.dragOffsetY = wy - node.y;
+        this.didMove = false;
+        this.canvas.style.cursor = 'grab';
+    }
+    handleMouseMove(e) {
+        if (!this.dragging)
+            return;
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        const nx = wx - this.dragOffsetX;
+        const ny = wy - this.dragOffsetY;
+        if (!this.didMove) {
+            this.onStart();
+            this.didMove = true;
+        }
+        this.graph.updateNode(this.dragging.id, { x: nx, y: ny });
+        this.canvas.style.cursor = 'grabbing';
+        this.onMove(this.dragging.id, nx, ny);
+    }
+    handleMouseUp(_e) {
+        if (!this.dragging)
+            return;
+        const node = this.graph.getNode(this.dragging.id);
+        if (node && this.didMove)
+            this.onEnd(node.id, node.x, node.y);
+        this.dragging = null;
+        this.canvas.style.cursor = '';
+    }
+    handleTouchStart(e) {
+        if (this.activeTouchId !== null || e.touches.length !== 1)
+            return;
+        const touch = e.touches[0];
+        if (this.shouldBlock(touch.clientX, touch.clientY))
+            return;
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+        if (!node)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        this.activeTouchId = touch.identifier;
+        this.dragging = node;
+        this.dragOffsetX = wx - node.x;
+        this.dragOffsetY = wy - node.y;
+        this.didMove = false;
+        this.canvas.style.cursor = 'grab';
+    }
+    handleTouchMove(e) {
+        if (this.activeTouchId === null || !this.dragging)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.activeTouchId);
+        if (!touch)
+            return;
+        e.preventDefault();
+        const [wx, wy] = this.toWorld(touch.clientX, touch.clientY);
+        const nx = wx - this.dragOffsetX;
+        const ny = wy - this.dragOffsetY;
+        if (!this.didMove) {
+            this.onStart();
+            this.didMove = true;
+        }
+        this.graph.updateNode(this.dragging.id, { x: nx, y: ny });
+        this.canvas.style.cursor = 'grabbing';
+        this.onMove(this.dragging.id, nx, ny);
+    }
+    handleTouchEnd(e) {
+        if (this.activeTouchId === null || !this.dragging)
+            return;
+        const touch = Array.from(e.changedTouches).find(t => t.identifier === this.activeTouchId);
+        if (!touch)
+            return;
+        const node = this.graph.getNode(this.dragging.id);
+        if (node && this.didMove)
+            this.onEnd(node.id, node.x, node.y);
+        this.dragging = null;
+        this.activeTouchId = null;
+        this.canvas.style.cursor = '';
+    }
+    dispose() {
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        window.removeEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.removeEventListener('touchstart', this.onTouchStart);
+        this.canvas.removeEventListener('touchmove', this.onTouchMove);
+        this.canvas.removeEventListener('touchend', this.onTouchEnd);
+        this.canvas.removeEventListener('touchcancel', this.onTouchEnd);
+    }
+}
+
+const SAMPLES = 40; // points sampled along the bezier for hit detection
+const HIT_PX = 8; // screen-space tolerance in pixels
+function handleXY(node, side) {
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2;
+    switch (side) {
+        case 'top': return [cx, node.y];
+        case 'bottom': return [cx, node.y + node.height];
+        case 'left': return [node.x, cy];
+        case 'right': return [node.x + node.width, cy];
+        default: return [node.x + node.width, cy];
+    }
+}
+class EdgeHitTester {
+    /** Returns the topmost edge whose bezier passes within HIT_PX/zoom of (wx, wy). */
+    findEdgeAt(edges, nodeMap, wx, wy, zoom) {
+        const threshold = HIT_PX / zoom;
+        for (let i = edges.length - 1; i >= 0; i--) {
+            const edge = edges[i];
+            const src = nodeMap.get(edge.source);
+            const tgt = nodeMap.get(edge.target);
+            if (!src || !tgt)
+                continue;
+            const [sx, sy] = handleXY(src, edge.sourceHandle ?? 'right');
+            const [ex, ey] = handleXY(tgt, edge.targetHandle ?? 'left');
+            const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle);
+            for (let j = 0; j <= SAMPLES; j++) {
+                const [px, py] = cubicBezierPoint(j / SAMPLES, sx, sy, c1x, c1y, c2x, c2y, ex, ey);
+                if (Math.hypot(wx - px, wy - py) <= threshold)
+                    return edge;
+            }
+        }
+        return null;
+    }
+}
+
+const ENDPOINT_HIT_PX = 12;
+const HANDLE_HIT_PX = 14;
+class EdgeReroute {
+    constructor(canvas, viewport, graph, hitTester, getSelectedEdgeIds, onStateChange, onReroute) {
+        this.state = null;
+        this.canvas = canvas;
+        this.viewport = viewport;
+        this.graph = graph;
+        this.hitTester = hitTester;
+        this.getSelectedEdgeIds = getSelectedEdgeIds;
+        this.onStateChange = onStateChange;
+        this.onReroute = onReroute;
+        this.onMouseDown = this.handleMouseDown.bind(this);
+        this.onMouseMove = this.handleMouseMove.bind(this);
+        this.onMouseUp = this.handleMouseUp.bind(this);
+        // Capture phase — must fire before ConnectDrag's bubble-phase listener
+        canvas.addEventListener('mousedown', this.onMouseDown, true);
+        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup', this.onMouseUp);
+    }
+    isCapturing() { return this.state !== null; }
+    /** True if (clientX, clientY) is on an endpoint circle of a selected edge. */
+    isOnEndpoint(clientX, clientY) {
+        const [wx, wy] = this.toWorld(clientX, clientY);
+        const hitR = ENDPOINT_HIT_PX / this.viewport.zoom;
+        return this.getEndpointCircles().some(c => Math.hypot(wx - c.wx, wy - c.wy) <= hitR);
+    }
+    /** Endpoint circles to render for currently selected edges. */
+    getEndpointCircles() {
+        const selectedIds = this.getSelectedEdgeIds();
+        if (selectedIds.size === 0)
+            return [];
+        const nodeMap = new Map(this.graph.getNodes().map(n => [n.id, n]));
+        const result = [];
+        for (const edgeId of selectedIds) {
+            const edge = this.graph.getEdge(edgeId);
+            if (!edge)
+                continue;
+            const src = nodeMap.get(edge.source);
+            const tgt = nodeMap.get(edge.target);
+            if (!src || !tgt)
+                continue;
+            const srcSide = edge.sourceHandle ?? 'right';
+            const tgtSide = edge.targetHandle ?? 'left';
+            const srcH = getHandlePositions(src).find(h => h.side === srcSide) ?? getHandlePositions(src)[0];
+            const tgtH = getHandlePositions(tgt).find(h => h.side === tgtSide) ?? getHandlePositions(tgt)[0];
+            result.push({ wx: srcH.wx, wy: srcH.wy, edgeId, end: 'source' });
+            result.push({ wx: tgtH.wx, wy: tgtH.wy, edgeId, end: 'target' });
+        }
+        return result;
+    }
+    toWorld(clientX, clientY) {
+        const r = this.canvas.getBoundingClientRect();
+        return this.viewport.screenToWorld(clientX - r.left, clientY - r.top);
+    }
+    findTargetHandle(wx, wy, excludeNodeId) {
+        const hitR = HANDLE_HIT_PX / this.viewport.zoom;
+        for (const node of this.graph.getNodes()) {
+            if (node.id === excludeNodeId)
+                continue;
+            for (const h of getHandlePositions(node)) {
+                if (Math.hypot(wx - h.wx, wy - h.wy) <= hitR)
+                    return h;
+            }
+        }
+        const bodyNode = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+        if (!bodyNode || bodyNode.id === excludeNodeId)
+            return null;
+        let best = null, bestDist = Infinity;
+        for (const h of getHandlePositions(bodyNode)) {
+            const d = Math.hypot(wx - h.wx, wy - h.wy);
+            if (d < bestDist) {
+                bestDist = d;
+                best = h;
+            }
+        }
+        return best;
+    }
+    handleMouseDown(e) {
+        if (e.button !== 0)
+            return;
+        const circles = this.getEndpointCircles();
+        if (circles.length === 0)
+            return;
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        const hitR = ENDPOINT_HIT_PX / this.viewport.zoom;
+        for (const circle of circles) {
+            if (Math.hypot(wx - circle.wx, wy - circle.wy) > hitR)
+                continue;
+            const edge = this.graph.getEdge(circle.edgeId);
+            if (!edge)
+                continue;
+            const nodeMap = new Map(this.graph.getNodes().map(n => [n.id, n]));
+            let fixedHandle;
+            if (circle.end === 'source') {
+                // Moving source → fixed end is target
+                const tgt = nodeMap.get(edge.target);
+                const tgtSide = edge.targetHandle ?? 'left';
+                fixedHandle = getHandlePositions(tgt).find(h => h.side === tgtSide) ?? getHandlePositions(tgt)[0];
+            }
+            else {
+                // Moving target → fixed end is source
+                const src = nodeMap.get(edge.source);
+                const srcSide = edge.sourceHandle ?? 'right';
+                fixedHandle = getHandlePositions(src).find(h => h.side === srcSide) ?? getHandlePositions(src)[0];
+            }
+            // Block ConnectDrag and all other bubble-phase listeners on this element
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            this.state = {
+                edgeId: circle.edgeId,
+                movingEnd: circle.end,
+                fixedHandle,
+                pendingEndWx: wx,
+                pendingEndWy: wy,
+                targetNodeId: null,
+                targetHandle: null,
+            };
+            this.onStateChange(this.state);
+            this.canvas.style.cursor = 'crosshair';
+            return;
+        }
+    }
+    handleMouseMove(e) {
+        if (!this.state)
+            return;
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        const edge = this.graph.getEdge(this.state.edgeId);
+        if (!edge)
+            return;
+        const excludeNodeId = this.state.movingEnd === 'source' ? edge.source : edge.target;
+        const hit = this.findTargetHandle(wx, wy, excludeNodeId);
+        this.state = {
+            ...this.state,
+            pendingEndWx: hit ? hit.wx : wx,
+            pendingEndWy: hit ? hit.wy : wy,
+            targetNodeId: hit ? hit.nodeId : null,
+            targetHandle: hit ? hit.side : null,
+        };
+        this.onStateChange(this.state);
+    }
+    handleMouseUp(_e) {
+        if (!this.state)
+            return;
+        const { edgeId, movingEnd, targetNodeId, targetHandle } = this.state;
+        this.state = null;
+        this.onStateChange(null);
+        this.canvas.style.cursor = '';
+        if (targetNodeId && targetHandle) {
+            this.onReroute(edgeId, movingEnd, targetNodeId, targetHandle);
+        }
+    }
+    dispose() {
+        this.canvas.removeEventListener('mousedown', this.onMouseDown, true);
+        window.removeEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('mouseup', this.onMouseUp);
+    }
+}
+
+const MENU_STYLE = `
+  position: fixed;
+  background: #1a2340;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  padding: 4px;
+  z-index: 9000;
+  min-width: 170px;
+  font-family: system-ui, -apple-system, sans-serif;
+  user-select: none;
+`;
+const ITEM_BASE = `
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 8px 14px; border: none;
+  background: transparent; text-align: left;
+  font-size: 13px; border-radius: 5px;
+  cursor: pointer; transition: background .1s;
+  box-sizing: border-box; font-family: inherit;
+`;
+const SEP_STYLE = `
+  height: 1px; margin: 4px 8px;
+  background: rgba(255,255,255,0.1);
+`;
+class ContextMenu {
+    constructor() {
+        this.el = null;
+        this.subPanel = null;
+        this.hideSubTimer = null;
+        this.hideOnOutside = (e) => {
+            const target = e.target;
+            const inMenu = this.el ? this.el.contains(target) : false;
+            const inPanel = this.subPanel ? this.subPanel.contains(target) : false;
+            if (!inMenu && !inPanel)
+                this.hide();
+        };
+        this.hideOnScroll = () => this.hide();
+    }
+    show(clientX, clientY, entries) {
+        this.hide();
+        const menu = document.createElement('div');
+        menu.style.cssText = MENU_STYLE;
+        menu.style.left = `${clientX}px`;
+        menu.style.top = `${clientY}px`;
+        for (const entry of entries) {
+            if ('separator' in entry && entry.separator) {
+                const sep = document.createElement('div');
+                sep.style.cssText = SEP_STYLE;
+                menu.appendChild(sep);
+                continue;
+            }
+            if ('panel' in entry) {
+                menu.appendChild(this.buildSubItem(entry));
+                continue;
+            }
+            menu.appendChild(this.buildItem(entry));
+        }
+        document.body.appendChild(menu);
+        // Clamp to viewport
+        const r = menu.getBoundingClientRect();
+        if (r.right > window.innerWidth)
+            menu.style.left = `${clientX - r.width}px`;
+        if (r.bottom > window.innerHeight)
+            menu.style.top = `${clientY - r.height}px`;
+        this.el = menu;
+        requestAnimationFrame(() => {
+            document.addEventListener('pointerdown', this.hideOnOutside);
+            window.addEventListener('scroll', this.hideOnScroll, true);
+        });
+    }
+    buildItem(item) {
+        const btn = document.createElement('button');
+        btn.style.cssText = ITEM_BASE;
+        btn.style.color = item.destructive ? '#f87171' : '#d1d5db';
+        btn.style.opacity = item.disabled ? '0.45' : '1';
+        btn.style.cursor = item.disabled ? 'not-allowed' : 'pointer';
+        const label = document.createElement('span');
+        label.textContent = item.label;
+        btn.appendChild(label);
+        if (!item.disabled) {
+            btn.addEventListener('pointerenter', () => {
+                btn.style.background = 'rgba(255,255,255,0.08)';
+                this.scheduleHideSub(); // hovering a regular item hides any open sub-panel
+            });
+            btn.addEventListener('pointerleave', () => {
+                btn.style.background = 'transparent';
+            });
+            btn.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+                item.action();
+                this.hide();
+            });
+        }
+        return btn;
+    }
+    buildSubItem(item) {
+        const btn = document.createElement('button');
+        btn.style.cssText = ITEM_BASE;
+        btn.style.color = '#d1d5db';
+        btn.style.opacity = item.disabled ? '0.45' : '1';
+        btn.style.cursor = item.disabled ? 'not-allowed' : 'pointer';
+        const label = document.createElement('span');
+        label.textContent = item.label;
+        btn.appendChild(label);
+        const arrow = document.createElement('span');
+        arrow.textContent = '▶';
+        arrow.style.cssText = 'font-size: 9px; opacity: 0.55; margin-left: 8px; flex-shrink: 0;';
+        btn.appendChild(arrow);
+        if (!item.disabled) {
+            btn.addEventListener('pointerenter', () => {
+                btn.style.background = 'rgba(255,255,255,0.08)';
+                this.cancelHideSub();
+                this.showSubPanel(btn, item.panel());
+            });
+            btn.addEventListener('pointerleave', () => {
+                btn.style.background = 'transparent';
+                this.scheduleHideSub();
+            });
+        }
+        return btn;
+    }
+    // ── Sub-panel positioning ──────────────────────────────────────────────────
+    showSubPanel(anchorEl, panel) {
+        this.subPanel?.remove();
+        // Measure offscreen first
+        panel.style.cssText += '; position: fixed; left: -9999px; top: -9999px;';
+        document.body.appendChild(panel);
+        const pr = panel.getBoundingClientRect();
+        const ar = anchorEl.getBoundingClientRect();
+        const mr = this.el.getBoundingClientRect();
+        // Horizontal: try right of menu, fall back to left
+        const spaceRight = window.innerWidth - mr.right;
+        const spaceLeft = mr.left;
+        let left;
+        if (spaceRight >= pr.width + 8 || spaceRight >= spaceLeft) {
+            left = mr.right + 4;
+        }
+        else {
+            left = mr.left - pr.width - 4;
+        }
+        // Vertical: align top with the hovered item, clamp to viewport
+        let top = ar.top;
+        top = Math.min(top, window.innerHeight - pr.height - 8);
+        top = Math.max(top, 8);
+        panel.style.left = `${left}px`;
+        panel.style.top = `${top}px`;
+        this.subPanel = panel;
+        panel.addEventListener('pointerenter', () => this.cancelHideSub());
+        panel.addEventListener('pointerleave', () => this.scheduleHideSub());
+    }
+    hideSubPanel() {
+        this.subPanel?.remove();
+        this.subPanel = null;
+    }
+    scheduleHideSub() {
+        if (this.hideSubTimer !== null)
+            return;
+        this.hideSubTimer = window.setTimeout(() => {
+            this.hideSubTimer = null;
+            this.hideSubPanel();
+        }, 180);
+    }
+    cancelHideSub() {
+        if (this.hideSubTimer === null)
+            return;
+        clearTimeout(this.hideSubTimer);
+        this.hideSubTimer = null;
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+    hide() {
+        this.cancelHideSub();
+        this.hideSubPanel();
+        if (!this.el)
+            return;
+        this.el.remove();
+        this.el = null;
+        document.removeEventListener('pointerdown', this.hideOnOutside);
+        window.removeEventListener('scroll', this.hideOnScroll, true);
+    }
+    dispose() { this.hide(); }
+}
+
+const EDITING_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
+class KeyboardHandler {
+    constructor(canvas, opts) {
+        this.canvas = canvas;
+        this.onKeyDown = (e) => {
+            const tag = e.target?.tagName ?? '';
+            if (EDITING_TAGS.has(tag))
+                return;
+            switch (e.key) {
+                case 'Delete':
+                case 'Backspace':
+                    e.preventDefault();
+                    opts.onDelete();
+                    break;
+                case 'Escape':
+                    opts.onEscape();
+                    break;
+                case 'Tab':
+                    e.preventDefault();
+                    if (e.shiftKey)
+                        opts.onTabPrev();
+                    else
+                        opts.onTabNext();
+                    break;
+                case 'ArrowUp':
+                case 'ArrowDown':
+                case 'ArrowLeft':
+                case 'ArrowRight':
+                    e.preventDefault();
+                    opts.onArrowKey(e.key);
+                    break;
+                case 'z':
+                    if (e.metaKey || e.ctrlKey) {
+                        e.preventDefault();
+                        if (e.shiftKey)
+                            opts.onRedo();
+                        else
+                            opts.onUndo();
+                    }
+                    break;
+                case 'y':
+                    if (e.metaKey || e.ctrlKey) {
+                        e.preventDefault();
+                        opts.onRedo();
+                    }
+                    break;
+                case 'a':
+                    if (e.metaKey || e.ctrlKey) {
+                        e.preventDefault();
+                        opts.onSelectAll();
+                    }
+                    break;
+            }
+        };
+        canvas.addEventListener('keydown', this.onKeyDown);
+    }
+    dispose() {
+        this.canvas.removeEventListener('keydown', this.onKeyDown);
+    }
+}
+
+const MIN_DRAG_PX = 4; // pixels of movement before box is confirmed
+class BoxSelect {
+    constructor(canvas, viewport, opts) {
+        this.active = false;
+        this.startClientX = 0;
+        this.startClientY = 0;
+        this.overlay = null;
+        this.canvas = canvas;
+        this.viewport = viewport;
+        this.opts = opts;
+        this.onMouseDown = this.handleMouseDown.bind(this);
+        this.onMouseMove = this.handleMouseMove.bind(this);
+        this.onMouseUp = this.handleMouseUp.bind(this);
+        canvas.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup', this.onMouseUp);
+    }
+    isSelecting() { return this.active; }
+    offset() {
+        const r = this.canvas.getBoundingClientRect();
+        return { left: r.left, top: r.top };
+    }
+    handleMouseDown(e) {
+        // Only Shift + left button starts box select
+        if (e.button !== 0 || !e.shiftKey)
+            return;
+        if (this.opts.shouldBlock(e.clientX, e.clientY))
+            return;
+        e.preventDefault();
+        this.active = true;
+        this.startClientX = e.clientX;
+        this.startClientY = e.clientY;
+        this.createOverlay();
+    }
+    handleMouseMove(e) {
+        if (!this.active || !this.overlay)
+            return;
+        this.updateOverlay(e.clientX, e.clientY);
+    }
+    handleMouseUp(e) {
+        if (!this.active)
+            return;
+        this.active = false;
+        this.removeOverlay();
+        const dx = Math.abs(e.clientX - this.startClientX);
+        const dy = Math.abs(e.clientY - this.startClientY);
+        if (dx < MIN_DRAG_PX && dy < MIN_DRAG_PX)
+            return; // too small, ignore
+        const { left, top } = this.offset();
+        const [wax, way] = this.viewport.screenToWorld(Math.min(this.startClientX, e.clientX) - left, Math.min(this.startClientY, e.clientY) - top);
+        const [wbx, wby] = this.viewport.screenToWorld(Math.max(this.startClientX, e.clientX) - left, Math.max(this.startClientY, e.clientY) - top);
+        this.opts.onSelect(wax, way, wbx, wby);
+    }
+    createOverlay() {
+        const div = document.createElement('div');
+        div.style.cssText = `
+      position: fixed;
+      border: 1.5px dashed rgba(100,160,255,0.8);
+      background: rgba(60,120,255,0.06);
+      pointer-events: none;
+      z-index: 8000;
+      box-sizing: border-box;
+    `;
+        document.body.appendChild(div);
+        this.overlay = div;
+        this.updateOverlay(this.startClientX, this.startClientY);
+    }
+    updateOverlay(clientX, clientY) {
+        if (!this.overlay)
+            return;
+        const x = Math.min(this.startClientX, clientX);
+        const y = Math.min(this.startClientY, clientY);
+        const w = Math.abs(clientX - this.startClientX);
+        const h = Math.abs(clientY - this.startClientY);
+        this.overlay.style.left = `${x}px`;
+        this.overlay.style.top = `${y}px`;
+        this.overlay.style.width = `${w}px`;
+        this.overlay.style.height = `${h}px`;
+    }
+    removeOverlay() {
+        this.overlay?.remove();
+        this.overlay = null;
+    }
+    dispose() {
+        this.removeOverlay();
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        window.removeEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('mouseup', this.onMouseUp);
+    }
+}
+
+class LabelEditor {
+    constructor() {
+        this.input = null;
+        this.boundBlur = null;
+    }
+    startEdit(node, canvas, viewport, onDone) {
+        this.stopEdit();
+        const style = { ...DEFAULT_NODE_STYLE, ...node.style };
+        const [sx, sy] = viewport.worldToScreen(node.x + node.width / 2, node.y + node.height / 2);
+        const canvasRect = canvas.getBoundingClientRect();
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = node.label;
+        input.style.cssText = `
+      position: fixed;
+      left: ${canvasRect.left + sx}px;
+      top:  ${canvasRect.top + sy}px;
+      transform: translate(-50%, -50%);
+      width: ${Math.max(80, node.width * viewport.zoom - 20)}px;
+      padding: 4px 8px;
+      border: 2px solid ${style.borderColor};
+      border-radius: 4px;
+      background: ${style.backgroundColor};
+      color: ${style.textColor};
+      font-size: ${style.fontSize * viewport.zoom}px;
+      font-family: ${style.fontFamily};
+      text-align: center;
+      outline: none;
+      z-index: 8500;
+      box-sizing: border-box;
+    `;
+        let committed = false;
+        const commit = () => {
+            if (committed)
+                return;
+            committed = true;
+            onDone(input.value.trim() || node.label);
+            this.stopEdit();
+            // Return focus to canvas so keyboard shortcuts keep working
+            canvas.focus();
+        };
+        // Store a stable reference so removeEventListener works correctly
+        this.boundBlur = commit;
+        input.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter')
+                commit();
+            if (e.key === 'Escape') {
+                committed = true;
+                this.stopEdit();
+                canvas.focus();
+            }
+        });
+        input.addEventListener('blur', commit);
+        document.body.appendChild(input);
+        this.input = input;
+        requestAnimationFrame(() => { input.select(); });
+    }
+    stopEdit() {
+        if (!this.input)
+            return;
+        if (this.boundBlur) {
+            this.input.removeEventListener('blur', this.boundBlur);
+            this.boundBlur = null;
+        }
+        this.input.remove();
+        this.input = null;
+    }
+    dispose() { this.stopEdit(); }
+}
+
+const HANDLE_HALF = 4; // CSS px — half side of handle square
+const HIT_RADIUS = 8; // CSS px — pointer hit radius
+const MIN_W = 40;
+const MIN_H = 30;
+const DIR_CURSOR = {
+    nw: 'nw-resize', n: 'n-resize', ne: 'ne-resize', e: 'e-resize',
+    se: 'se-resize', s: 's-resize', sw: 'sw-resize', w: 'w-resize',
+};
+function nodeHandles(node) {
+    const { x, y, width: w, height: h } = node;
+    const cx = x + w / 2, cy = y + h / 2;
+    return [
+        { dir: 'nw', wx: x, wy: y },
+        { dir: 'n', wx: cx, wy: y },
+        { dir: 'ne', wx: x + w, wy: y },
+        { dir: 'e', wx: x + w, wy: cy },
+        { dir: 'se', wx: x + w, wy: y + h },
+        { dir: 's', wx: cx, wy: y + h },
+        { dir: 'sw', wx: x, wy: y + h },
+        { dir: 'w', wx: x, wy: cy },
+    ];
+}
+function applyResize(orig, dir, dwx, dwy) {
+    const hasW = dir === 'w' || dir === 'nw' || dir === 'sw';
+    const hasN = dir === 'n' || dir === 'nw' || dir === 'ne';
+    const hasE = dir === 'e' || dir === 'ne' || dir === 'se';
+    const hasS = dir === 's' || dir === 'se' || dir === 'sw';
+    let { x, y, width: w, height: h } = orig;
+    if (hasE)
+        w = Math.max(MIN_W, w + dwx);
+    if (hasS)
+        h = Math.max(MIN_H, h + dwy);
+    if (hasW) {
+        const eff = Math.min(dwx, w - MIN_W);
+        x += eff;
+        w -= eff;
+    }
+    if (hasN) {
+        const eff = Math.min(dwy, h - MIN_H);
+        y += eff;
+        h -= eff;
+    }
+    return { x, y, width: w, height: h };
+}
+class NodeResize {
+    constructor(container, canvas, viewport, graph, onBeforeMutation, onUpdate) {
+        this.selectedNodeId = null;
+        this.hoveredDir = null;
+        this.dragState = null;
+        this.canvas = canvas;
+        this.viewport = viewport;
+        this.graph = graph;
+        this.onBeforeMutation = onBeforeMutation;
+        this.onUpdate = onUpdate;
+        this.overlay = document.createElement('canvas');
+        this.overlay.style.cssText =
+            'position:absolute;inset:0;pointer-events:none;z-index:2;';
+        container.appendChild(this.overlay);
+        const ctx = this.overlay.getContext('2d');
+        if (!ctx)
+            throw new Error('NodeResize: 2d context unavailable');
+        this.ctx = ctx;
+        this.onMouseMove = this.handleMouseMove.bind(this);
+        this.onMouseDown = this.handleMouseDown.bind(this);
+        this.onMouseUp = this.handleMouseUp.bind(this);
+        canvas.addEventListener('mousemove', this.onMouseMove);
+        canvas.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mouseup', this.onMouseUp);
+    }
+    setSelectedNode(id) {
+        if (id !== this.selectedNodeId) {
+            this.selectedNodeId = id;
+            if (!id) {
+                this.hoveredDir = null;
+                this.dragState = null;
+            }
+        }
+    }
+    isCapturing() { return this.dragState !== null; }
+    isNearHandle(clientX, clientY) {
+        return this.findHandle(clientX, clientY) !== null;
+    }
+    toScreen(clientX, clientY) {
+        const r = this.canvas.getBoundingClientRect();
+        return [clientX - r.left, clientY - r.top];
+    }
+    toWorld(clientX, clientY) {
+        const [sx, sy] = this.toScreen(clientX, clientY);
+        return this.viewport.screenToWorld(sx, sy);
+    }
+    findHandle(clientX, clientY) {
+        if (!this.selectedNodeId)
+            return null;
+        const node = this.graph.getNode(this.selectedNodeId);
+        if (!node)
+            return null;
+        const [sx, sy] = this.toScreen(clientX, clientY);
+        for (const h of nodeHandles(node)) {
+            const [hx, hy] = this.viewport.worldToScreen(h.wx, h.wy);
+            if (Math.hypot(sx - hx, sy - hy) <= HIT_RADIUS)
+                return h;
+        }
+        return null;
+    }
+    handleMouseMove(e) {
+        if (this.dragState) {
+            const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+            const dwx = wx - this.dragState.startWx;
+            const dwy = wy - this.dragState.startWy;
+            const updates = applyResize(this.dragState.origNode, this.dragState.handle.dir, dwx, dwy);
+            this.graph.updateNode(this.dragState.origNode.id, updates);
+            this.onUpdate();
+            return;
+        }
+        const h = this.findHandle(e.clientX, e.clientY);
+        const newDir = h?.dir ?? null;
+        if (newDir !== this.hoveredDir) {
+            this.hoveredDir = newDir;
+            this.canvas.style.cursor = newDir ? DIR_CURSOR[newDir] : '';
+            this.onUpdate();
+        }
+    }
+    handleMouseDown(e) {
+        if (e.button !== 0)
+            return;
+        const h = this.findHandle(e.clientX, e.clientY);
+        if (!h || !this.selectedNodeId)
+            return;
+        const node = this.graph.getNode(this.selectedNodeId);
+        if (!node)
+            return;
+        e.stopPropagation();
+        this.onBeforeMutation();
+        const [wx, wy] = this.toWorld(e.clientX, e.clientY);
+        this.dragState = { handle: h, startWx: wx, startWy: wy, origNode: { ...node } };
+    }
+    handleMouseUp() {
+        if (this.dragState) {
+            this.dragState = null;
+            this.canvas.style.cursor = this.hoveredDir ? DIR_CURSOR[this.hoveredDir] : '';
+        }
+    }
+    render() {
+        const { overlay, ctx, viewport } = this;
+        const w = this.canvas.offsetWidth;
+        const h = this.canvas.offsetHeight;
+        if (overlay.width !== w || overlay.height !== h) {
+            overlay.width = w;
+            overlay.height = h;
+        }
+        ctx.clearRect(0, 0, w, h);
+        if (!this.selectedNodeId)
+            return;
+        const node = this.graph.getNode(this.selectedNodeId);
+        if (!node)
+            return;
+        for (const handle of nodeHandles(node)) {
+            const [sx, sy] = viewport.worldToScreen(handle.wx, handle.wy);
+            const isHovered = handle.dir === this.hoveredDir;
+            ctx.fillStyle = isHovered ? '#1a6ef5' : '#ffffff';
+            ctx.strokeStyle = '#1a6ef5';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.rect(sx - HANDLE_HALF, sy - HANDLE_HALF, HANDLE_HALF * 2, HANDLE_HALF * 2);
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+    dispose() {
+        this.canvas.removeEventListener('mousemove', this.onMouseMove);
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        window.removeEventListener('mouseup', this.onMouseUp);
+        this.overlay.remove();
+    }
+}
+
+/** Snapshot-based undo/redo history. */
+class History {
+    constructor(limit = 100) {
+        this.limit = limit;
+        this.past = [];
+        this.future = [];
+    }
+    /** Capture the current state before a mutation. */
+    save(snapshot) {
+        this.past.push(snapshot);
+        this.future = [];
+        if (this.past.length > this.limit)
+            this.past.shift();
+    }
+    /** Restore the previous state. Returns the snapshot to apply, or null if none. */
+    undo(current) {
+        if (!this.past.length)
+            return null;
+        this.future.push(current);
+        if (this.future.length > this.limit)
+            this.future.shift();
+        return this.past.pop();
+    }
+    /** Re-apply a previously undone state. Returns the snapshot to apply, or null if none. */
+    redo(current) {
+        if (!this.future.length)
+            return null;
+        this.past.push(current);
+        return this.future.pop();
+    }
+    canUndo() { return this.past.length > 0; }
+    canRedo() { return this.future.length > 0; }
+    clear() { this.past = []; this.future = []; }
+}
+
+/**
+ * Hierarchical layout (Sugiyama-style).
+ *
+ * 1. Assign layers using Kahn's topological sort (longest-path).
+ * 2. Order nodes within each layer with the barycenter heuristic
+ *    (forward + backward passes) to minimize edge crossings.
+ * 3. Place layers left→right; center each layer's column vertically.
+ *
+ * Cycles are handled gracefully: back-edges are ignored during layer
+ * assignment and any cycle-only subgraphs are placed at layer 0.
+ */
+function hierarchicalLayout(nodes, edges, gapX = 100, gapY = 60) {
+    if (nodes.length === 0)
+        return new Map();
+    const nodeMap = new Map(nodes.map(n => [n.id, n]));
+    // ── Build adjacency (ignore self-loops and dangling refs) ──────────────
+    const outEdges = new Map();
+    const inEdges = new Map();
+    for (const n of nodes) {
+        outEdges.set(n.id, new Set());
+        inEdges.set(n.id, new Set());
+    }
+    for (const e of edges) {
+        if (nodeMap.has(e.source) && nodeMap.has(e.target) && e.source !== e.target) {
+            outEdges.get(e.source).add(e.target);
+            inEdges.get(e.target).add(e.source);
+        }
+    }
+    // ── Layer assignment: Kahn's topological sort + longest-path ──────────
+    const inDegree = new Map();
+    for (const n of nodes)
+        inDegree.set(n.id, inEdges.get(n.id).size);
+    const layer = new Map();
+    const queue = [];
+    for (const n of nodes) {
+        if (inDegree.get(n.id) === 0) {
+            layer.set(n.id, 0);
+            queue.push(n.id);
+        }
+    }
+    // All-cycle graph: pick minimum-in-degree node as root
+    if (queue.length === 0) {
+        let min = Infinity, root = nodes[0].id;
+        for (const n of nodes) {
+            const d = inDegree.get(n.id);
+            if (d < min) {
+                min = d;
+                root = n.id;
+            }
+        }
+        layer.set(root, 0);
+        queue.push(root);
+    }
+    const remaining = new Map(inDegree);
+    let qi = 0;
+    while (qi < queue.length) {
+        const id = queue[qi++];
+        const l = layer.get(id);
+        for (const tgt of outEdges.get(id)) {
+            // Longest-path: only advance when this gives a deeper layer
+            if ((layer.get(tgt) ?? -1) < l + 1)
+                layer.set(tgt, l + 1);
+            const rem = remaining.get(tgt) - 1;
+            remaining.set(tgt, rem);
+            if (rem === 0)
+                queue.push(tgt);
+        }
+    }
+    // Nodes unreachable from roots (pure cycles) land at layer 0
+    for (const n of nodes) {
+        if (!layer.has(n.id))
+            layer.set(n.id, 0);
+    }
+    // ── Group nodes by layer ────────────────────────────────────────────────
+    const maxLayer = Math.max(...layer.values());
+    const groups = Array.from({ length: maxLayer + 1 }, () => []);
+    for (const [id, l] of layer)
+        groups[l].push(id);
+    // ── Barycenter heuristic (2 forward + 2 backward passes) ───────────────
+    const idxIn = (group, id) => {
+        const i = group.indexOf(id);
+        return i >= 0 ? i : group.length / 2;
+    };
+    for (let pass = 0; pass < 2; pass++) {
+        // Forward: sort by avg index of in-neighbors in previous layer
+        for (let l = 1; l <= maxLayer; l++) {
+            const prev = groups[l - 1];
+            groups[l].sort((a, b) => {
+                const predA = [...inEdges.get(a)].filter(s => layer.get(s) === l - 1);
+                const predB = [...inEdges.get(b)].filter(s => layer.get(s) === l - 1);
+                const bA = predA.length ? predA.reduce((s, x) => s + idxIn(prev, x), 0) / predA.length : 0;
+                const bB = predB.length ? predB.reduce((s, x) => s + idxIn(prev, x), 0) / predB.length : 0;
+                return bA - bB;
+            });
+        }
+        // Backward: sort by avg index of out-neighbors in next layer
+        for (let l = maxLayer - 1; l >= 0; l--) {
+            const next = groups[l + 1];
+            groups[l].sort((a, b) => {
+                const succA = [...outEdges.get(a)].filter(t => layer.get(t) === l + 1);
+                const succB = [...outEdges.get(b)].filter(t => layer.get(t) === l + 1);
+                const bA = succA.length ? succA.reduce((s, x) => s + idxIn(next, x), 0) / succA.length : 0;
+                const bB = succB.length ? succB.reduce((s, x) => s + idxIn(next, x), 0) / succB.length : 0;
+                return bA - bB;
+            });
+        }
+    }
+    // ── Coordinate assignment ──────────────────────────────────────────────
+    // Compute each layer's column height and the global max height (for centering)
+    const colHeight = groups.map(ids => ids.reduce((h, id) => h + (nodeMap.get(id)?.height ?? 60) + gapY, 0) - gapY);
+    const maxColHeight = Math.max(...colHeight, 0);
+    const result = new Map();
+    let x = 0;
+    for (let l = 0; l <= maxLayer; l++) {
+        const ids = groups[l];
+        const colW = Math.max(...ids.map(id => nodeMap.get(id)?.width ?? 120));
+        const startY = Math.round((maxColHeight - colHeight[l]) / 2);
+        let y = startY;
+        for (const id of ids) {
+            const n = nodeMap.get(id);
+            result.set(id, { x, y });
+            y += n.height + gapY;
+        }
+        x += colW + gapX;
+    }
+    return result;
+}
+/**
+ * Spring-force layout (Fruchterman-Reingold approximation).
+ * Works with any graph topology; useful when hierarchy is not meaningful.
+ */
+function forceLayout(nodes, edges, iterations = 150) {
+    if (nodes.length === 0)
+        return new Map();
+    const pos = new Map();
+    for (const n of nodes) {
+        pos.set(n.id, { x: n.x + n.width / 2, y: n.y + n.height / 2 });
+    }
+    const k = Math.sqrt(200 * 200 * nodes.length) / nodes.length * 5;
+    let temp = k * 2;
+    for (let iter = 0; iter < iterations; iter++) {
+        const disp = new Map();
+        for (const n of nodes)
+            disp.set(n.id, { x: 0, y: 0 });
+        // Repulsion
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const a = nodes[i], b = nodes[j];
+                const pa = pos.get(a.id), pb = pos.get(b.id);
+                const dx = pa.x - pb.x, dy = pa.y - pb.y;
+                const dist = Math.max(Math.hypot(dx, dy), 1);
+                const f = k * k / dist;
+                const da = disp.get(a.id), db = disp.get(b.id);
+                da.x += dx / dist * f;
+                da.y += dy / dist * f;
+                db.x -= dx / dist * f;
+                db.y -= dy / dist * f;
+            }
+        }
+        // Attraction along edges
+        for (const edge of edges) {
+            const pa = pos.get(edge.source), pb = pos.get(edge.target);
+            if (!pa || !pb)
+                continue;
+            const dx = pb.x - pa.x, dy = pb.y - pa.y;
+            const dist = Math.max(Math.hypot(dx, dy), 1);
+            const f = dist * dist / k;
+            const da = disp.get(edge.source), db = disp.get(edge.target);
+            da.x += dx / dist * f;
+            da.y += dy / dist * f;
+            db.x -= dx / dist * f;
+            db.y -= dy / dist * f;
+        }
+        for (const n of nodes) {
+            const p = pos.get(n.id), d = disp.get(n.id);
+            const dLen = Math.max(Math.hypot(d.x, d.y), 1);
+            p.x += d.x / dLen * Math.min(dLen, temp);
+            p.y += d.y / dLen * Math.min(dLen, temp);
+        }
+        temp *= 0.95;
+    }
+    const result = new Map();
+    for (const n of nodes) {
+        const c = pos.get(n.id);
+        result.set(n.id, { x: c.x - n.width / 2, y: c.y - n.height / 2 });
+    }
+    return result;
+}
+/**
+ * Arrange nodes in a uniform grid, sorted by current x position.
+ */
+function gridLayout(nodes, gap = 40) {
+    if (nodes.length === 0)
+        return new Map();
+    const cols = Math.ceil(Math.sqrt(nodes.length));
+    const sorted = [...nodes].sort((a, b) => a.x - b.x || a.y - b.y);
+    const cellW = Math.max(...nodes.map(n => n.width), 120) + gap;
+    const cellH = Math.max(...nodes.map(n => n.height), 60) + gap;
+    const result = new Map();
+    sorted.forEach((n, i) => {
+        result.set(n.id, {
+            x: (i % cols) * cellW,
+            y: Math.floor(i / cols) * cellH,
+        });
+    });
+    return result;
+}
+
+const PANEL_BASE = `
+  background: #1a2340;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  padding: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  user-select: none;
+`;
+function section(title, marginBottom = '12px') {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = marginBottom;
+    const lbl = document.createElement('div');
+    lbl.textContent = title;
+    lbl.style.cssText = 'font-size: 11px; color: #9ca3af; margin-bottom: 8px; letter-spacing: .03em;';
+    wrap.appendChild(lbl);
+    return wrap;
+}
+function hr() {
+    const d = document.createElement('div');
+    d.style.cssText = 'height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0 12px;';
+    return d;
+}
+class ContextPanels {
+    constructor(deps) {
+        this.deps = deps;
+    }
+    // ── Edge style ─────────────────────────────────────────────────────────────
+    edgeStyle(edge) {
+        const { graph, scheduleRender, beforeMutation } = this.deps;
+        const merged = { ...DEFAULT_EDGE_STYLE, ...edge.style };
+        const panel = document.createElement('div');
+        panel.style.cssText = PANEL_BASE + 'min-width: 220px;';
+        // ── Color ────────────────────────────────────────────────────────
+        const colorSec = section('Color');
+        const COLORS = ['#64748b', '#1a73e8', '#16a34a', '#d97706', '#dc2626', '#7c3aed', '#ec4899', '#06b6d4'];
+        const swatchRow = document.createElement('div');
+        swatchRow.style.cssText = 'display: flex; flex-wrap: wrap; gap: 6px;';
+        const refreshSwatches = () => {
+            const current = { ...DEFAULT_EDGE_STYLE, ...graph.getEdge(edge.id)?.style }.color;
+            swatchRow.querySelectorAll('[data-color]').forEach(el => {
+                const c = el.dataset['color'];
+                el.style.outline = c === current ? '2px solid #fff' : '2px solid transparent';
+                el.style.outlineOffset = '1px';
+            });
+        };
+        for (const color of COLORS) {
+            const sw = document.createElement('div');
+            sw.dataset['color'] = color;
+            sw.style.cssText = `
+        width: 22px; height: 22px; border-radius: 50%; background: ${color}; cursor: pointer;
+        transition: transform .1s, outline .1s;
+        outline: 2px solid ${color === merged.color ? '#fff' : 'transparent'}; outline-offset: 1px;
+      `;
+            sw.addEventListener('pointerenter', () => { sw.style.transform = 'scale(1.18)'; });
+            sw.addEventListener('pointerleave', () => { sw.style.transform = 'scale(1)'; });
+            sw.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                beforeMutation();
+                graph.updateEdge(edge.id, { style: { ...graph.getEdge(edge.id)?.style, color } });
+                scheduleRender();
+                refreshSwatches();
+            });
+            swatchRow.appendChild(sw);
+        }
+        colorSec.appendChild(swatchRow);
+        panel.appendChild(colorSec);
+        panel.appendChild(hr());
+        // ── Width ────────────────────────────────────────────────────────
+        const widthSec = section('Width');
+        const WIDTHS = [{ label: 'Thin', value: 1 }, { label: 'Medium', value: 2 }, { label: 'Thick', value: 4 }];
+        const widthRow = document.createElement('div');
+        widthRow.style.cssText = 'display: flex; gap: 6px;';
+        const refreshWidths = () => {
+            const current = { ...DEFAULT_EDGE_STYLE, ...graph.getEdge(edge.id)?.style }.width;
+            widthRow.querySelectorAll('[data-width]').forEach(el => {
+                const active = String(current) === el.dataset['width'];
+                el.style.background = active ? 'rgba(255,255,255,0.15)' : 'transparent';
+                el.style.borderColor = active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)';
+            });
+        };
+        for (const w of WIDTHS) {
+            const btn = document.createElement('button');
+            btn.dataset['width'] = String(w.value);
+            const active = merged.width === w.value;
+            btn.style.cssText = `
+        flex: 1; padding: 8px 4px; border-radius: 6px; cursor: pointer;
+        border: 1px solid ${active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)'};
+        background: ${active ? 'rgba(255,255,255,0.15)' : 'transparent'};
+        color: #d1d5db; font-size: 11px; font-family: inherit;
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        transition: background .1s, border-color .1s;
+      `;
+            const line = document.createElement('div');
+            line.style.cssText = `width: 28px; height: ${w.value}px; background: #d1d5db; border-radius: 2px;`;
+            const lbl = document.createElement('span');
+            lbl.textContent = w.label;
+            btn.appendChild(line);
+            btn.appendChild(lbl);
+            btn.addEventListener('pointerenter', () => {
+                if (btn.dataset['width'] !== String({ ...DEFAULT_EDGE_STYLE, ...graph.getEdge(edge.id)?.style }.width))
+                    btn.style.background = 'rgba(255,255,255,0.08)';
+            });
+            btn.addEventListener('pointerleave', () => refreshWidths());
+            btn.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                beforeMutation();
+                graph.updateEdge(edge.id, { style: { ...graph.getEdge(edge.id)?.style, width: w.value } });
+                scheduleRender();
+                refreshWidths();
+            });
+            widthRow.appendChild(btn);
+        }
+        widthSec.appendChild(widthRow);
+        panel.appendChild(widthSec);
+        panel.appendChild(hr());
+        // ── Line style ───────────────────────────────────────────────────
+        const dashSec = section('Line Style', '0');
+        const DASH_OPTS = [
+            { label: 'Solid', dashArray: undefined },
+            { label: 'Dashed', dashArray: [8, 4] },
+            { label: 'Dotted', dashArray: [2, 4] },
+        ];
+        const dashRow = document.createElement('div');
+        dashRow.style.cssText = 'display: flex; gap: 6px;';
+        const refreshDash = () => {
+            const current = { ...DEFAULT_EDGE_STYLE, ...graph.getEdge(edge.id)?.style }.dashArray;
+            dashRow.querySelectorAll('[data-dash]').forEach(el => {
+                const active = el.dataset['dash'] === (current ? JSON.stringify(current) : 'solid');
+                el.style.background = active ? 'rgba(255,255,255,0.15)' : 'transparent';
+                el.style.borderColor = active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)';
+            });
+        };
+        for (const opt of DASH_OPTS) {
+            const btn = document.createElement('button');
+            btn.dataset['dash'] = opt.dashArray ? JSON.stringify(opt.dashArray) : 'solid';
+            const active = opt.dashArray
+                ? JSON.stringify(merged.dashArray) === JSON.stringify(opt.dashArray)
+                : !merged.dashArray;
+            btn.style.cssText = `
+        flex: 1; padding: 8px 4px; border-radius: 6px; cursor: pointer;
+        border: 1px solid ${active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)'};
+        background: ${active ? 'rgba(255,255,255,0.15)' : 'transparent'};
+        color: #d1d5db; font-size: 11px; font-family: inherit;
+        display: flex; flex-direction: column; align-items: center; gap: 5px;
+        transition: background .1s, border-color .1s;
+      `;
+            const preview = document.createElement('div');
+            preview.style.cssText = 'width: 32px; height: 12px; display: flex; align-items: center;';
+            const lineEl = document.createElement('div');
+            if (!opt.dashArray) {
+                lineEl.style.cssText = 'width: 100%; height: 2px; background: #d1d5db; border-radius: 1px;';
+            }
+            else {
+                const [dash, gap] = opt.dashArray;
+                lineEl.style.cssText = `
+          width: 100%; height: 2px; border-radius: 1px;
+          background: repeating-linear-gradient(
+            90deg,
+            #d1d5db 0px, #d1d5db ${dash}px,
+            transparent ${dash}px, transparent ${dash + gap}px
+          );
+        `;
+            }
+            preview.appendChild(lineEl);
+            const lbl = document.createElement('span');
+            lbl.textContent = opt.label;
+            btn.appendChild(preview);
+            btn.appendChild(lbl);
+            btn.addEventListener('pointerenter', () => {
+                if (!active)
+                    btn.style.background = 'rgba(255,255,255,0.08)';
+            });
+            btn.addEventListener('pointerleave', () => refreshDash());
+            btn.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                beforeMutation();
+                const cur = { ...graph.getEdge(edge.id)?.style };
+                if (opt.dashArray) {
+                    graph.updateEdge(edge.id, { style: { ...cur, dashArray: opt.dashArray } });
+                }
+                else {
+                    const { dashArray: _da, ...rest } = cur;
+                    graph.updateEdge(edge.id, { style: rest });
+                }
+                scheduleRender();
+                refreshDash();
+            });
+            dashRow.appendChild(btn);
+        }
+        dashSec.appendChild(dashRow);
+        panel.appendChild(dashSec);
+        return panel;
+    }
+    // ── Background ─────────────────────────────────────────────────────────────
+    background() {
+        const { getBackground, setBackground } = this.deps;
+        const panel = document.createElement('div');
+        panel.style.cssText = PANEL_BASE + 'min-width: 180px;';
+        const title = document.createElement('div');
+        title.textContent = 'Background';
+        title.style.cssText = 'font-size: 11px; color: #9ca3af; margin-bottom: 10px; letter-spacing: .03em;';
+        panel.appendChild(title);
+        const PRESETS = [
+            { label: 'Light Gray', color: '#f7f7f7' },
+            { label: 'White', color: '#ffffff' },
+            { label: 'Warm White', color: '#fffbf0' },
+            { label: 'Blue Gray', color: '#f0f4f8' },
+            { label: 'Slate Dark', color: '#1e293b' },
+            { label: 'Midnight', color: '#0f172a' },
+        ];
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 6px;';
+        const refresh = () => {
+            grid.querySelectorAll('[data-bg]').forEach(el => {
+                el.style.outline = el.dataset['bg'] === getBackground()
+                    ? '2px solid #fff' : '2px solid transparent';
+            });
+        };
+        for (const p of PRESETS) {
+            const btn = document.createElement('button');
+            btn.dataset['bg'] = p.color;
+            btn.style.cssText = `
+        padding: 7px 10px; border-radius: 6px; cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.05);
+        color: #d1d5db; font-size: 11px; font-family: inherit;
+        display: flex; align-items: center; gap: 7px;
+        outline: ${p.color === getBackground() ? '2px solid #fff' : '2px solid transparent'};
+        outline-offset: 1px; transition: background .1s;
+      `;
+            const swatch = document.createElement('div');
+            swatch.style.cssText = `
+        width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0;
+        background: ${p.color}; border: 1px solid rgba(0,0,0,0.15);
+      `;
+            const lbl = document.createElement('span');
+            lbl.textContent = p.label;
+            btn.appendChild(swatch);
+            btn.appendChild(lbl);
+            btn.addEventListener('pointerenter', () => { btn.style.background = 'rgba(255,255,255,0.1)'; });
+            btn.addEventListener('pointerleave', () => { btn.style.background = 'rgba(255,255,255,0.05)'; });
+            btn.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                setBackground(p.color);
+                refresh();
+            });
+            grid.appendChild(btn);
+        }
+        panel.appendChild(grid);
+        return panel;
+    }
+    // ── Grid ───────────────────────────────────────────────────────────────────
+    grid() {
+        const { getGridConfig, setGrid } = this.deps;
+        const panel = document.createElement('div');
+        panel.style.cssText = PANEL_BASE + 'min-width: 200px;';
+        const title = document.createElement('div');
+        title.textContent = 'Grid';
+        title.style.cssText = 'font-size: 11px; color: #9ca3af; margin-bottom: 10px; letter-spacing: .03em;';
+        panel.appendChild(title);
+        const row = (label, control) => {
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;';
+            const lbl = document.createElement('span');
+            lbl.textContent = label;
+            lbl.style.cssText = 'font-size: 12px; color: #d1d5db;';
+            wrap.appendChild(lbl);
+            wrap.appendChild(control);
+            return wrap;
+        };
+        // Toggle
+        const toggleBtn = document.createElement('button');
+        const refreshToggle = () => {
+            const on = getGridConfig().visible;
+            toggleBtn.textContent = on ? 'On' : 'Off';
+            toggleBtn.style.background = on ? '#1a73e8' : 'rgba(255,255,255,0.08)';
+            toggleBtn.style.color = on ? '#fff' : '#9ca3af';
+        };
+        toggleBtn.style.cssText = `
+      padding: 4px 12px; border-radius: 5px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 11px; font-family: inherit; transition: background .1s, color .1s;
+    `;
+        refreshToggle();
+        toggleBtn.addEventListener('pointerdown', e => {
+            e.stopPropagation();
+            setGrid({ visible: !getGridConfig().visible });
+            refreshToggle();
+        });
+        panel.appendChild(row('Show Grid', toggleBtn));
+        // Type
+        const typeWrap = document.createElement('div');
+        typeWrap.style.cssText = 'display: flex; gap: 4px;';
+        const refreshType = () => {
+            typeWrap.querySelectorAll('[data-gtype]').forEach(el => {
+                const active = el.dataset['gtype'] === getGridConfig().type;
+                el.style.background = active ? 'rgba(255,255,255,0.15)' : 'transparent';
+                el.style.borderColor = active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)';
+            });
+        };
+        for (const t of ['dots', 'lines']) {
+            const btn = document.createElement('button');
+            btn.dataset['gtype'] = t;
+            btn.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+            btn.style.cssText = `
+        flex: 1; padding: 4px 0; border-radius: 5px; cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: ${getGridConfig().type === t ? 'rgba(255,255,255,0.15)' : 'transparent'};
+        color: #d1d5db; font-size: 11px; font-family: inherit; transition: background .1s;
+      `;
+            btn.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                setGrid({ type: t });
+                refreshType();
+            });
+            typeWrap.appendChild(btn);
+        }
+        panel.appendChild(row('Type', typeWrap));
+        // Size
+        const sizeWrap = document.createElement('div');
+        sizeWrap.style.cssText = 'display: flex; gap: 4px;';
+        const SIZES = [{ label: 'S', value: 10 }, { label: 'M', value: 20 }, { label: 'L', value: 40 }];
+        const refreshSize = () => {
+            sizeWrap.querySelectorAll('[data-gsize]').forEach(el => {
+                const active = el.dataset['gsize'] === String(getGridConfig().size);
+                el.style.background = active ? 'rgba(255,255,255,0.15)' : 'transparent';
+                el.style.borderColor = active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)';
+            });
+        };
+        for (const s of SIZES) {
+            const btn = document.createElement('button');
+            btn.dataset['gsize'] = String(s.value);
+            btn.textContent = s.label;
+            btn.style.cssText = `
+        flex: 1; padding: 4px 0; border-radius: 5px; cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: ${getGridConfig().size === s.value ? 'rgba(255,255,255,0.15)' : 'transparent'};
+        color: #d1d5db; font-size: 11px; font-family: inherit; transition: background .1s;
+      `;
+            btn.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                setGrid({ size: s.value });
+                refreshSize();
+            });
+            sizeWrap.appendChild(btn);
+        }
+        panel.appendChild(row('Size', sizeWrap));
+        return panel;
+    }
+    // ── Auto layout ────────────────────────────────────────────────────────────
+    autoLayout() {
+        const { graph, contextMenu, scheduleRender, beforeMutation } = this.deps;
+        const panel = document.createElement('div');
+        panel.style.cssText = PANEL_BASE + 'min-width: 180px;';
+        const title = document.createElement('div');
+        title.textContent = 'Auto Layout';
+        title.style.cssText = 'font-size: 11px; color: #9ca3af; margin-bottom: 10px; letter-spacing: .03em;';
+        panel.appendChild(title);
+        const makeBtn = (label, desc, onClick) => {
+            const btn = document.createElement('button');
+            btn.style.cssText = `
+        width: 100%; padding: 10px 12px; border-radius: 6px; cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.05);
+        color: #d1d5db; font-family: inherit;
+        text-align: left; margin-bottom: 6px; transition: background .1s;
+      `;
+            const name = document.createElement('div');
+            name.textContent = label;
+            name.style.cssText = 'font-size: 12px; font-weight: 500;';
+            const sub = document.createElement('div');
+            sub.textContent = desc;
+            sub.style.cssText = 'font-size: 10px; color: #6b7280; margin-top: 2px;';
+            btn.appendChild(name);
+            btn.appendChild(sub);
+            btn.addEventListener('pointerenter', () => { btn.style.background = 'rgba(255,255,255,0.1)'; });
+            btn.addEventListener('pointerleave', () => { btn.style.background = 'rgba(255,255,255,0.05)'; });
+            btn.addEventListener('pointerdown', e => {
+                e.stopPropagation();
+                onClick();
+                contextMenu.hide();
+            });
+            return btn;
+        };
+        panel.appendChild(makeBtn('Hierarchical', 'Layer-based, minimizes edge crossings', () => {
+            beforeMutation();
+            const result = hierarchicalLayout(graph.getNodes(), graph.getEdges());
+            for (const [id, pos] of result)
+                graph.updateNode(id, pos);
+            scheduleRender();
+        }));
+        panel.appendChild(makeBtn('Force', 'Spring-based organic arrangement', () => {
+            beforeMutation();
+            const result = forceLayout(graph.getNodes(), graph.getEdges());
+            for (const [id, pos] of result)
+                graph.updateNode(id, pos);
+            scheduleRender();
+        }));
+        panel.appendChild(makeBtn('Grid', 'Arrange nodes in a uniform grid', () => {
+            beforeMutation();
+            const result = gridLayout(graph.getNodes());
+            for (const [id, pos] of result)
+                graph.updateNode(id, pos);
+            scheduleRender();
+        }));
+        return panel;
+    }
+}
+
+const DEFAULT_GRID_CONFIG = {
+    visible: false,
+    size: 20,
+    type: 'dots',
+    color: 'rgba(0,0,0,0.15)',
+};
+const DEFAULT_MINIMAP_CONFIG = {
+    width: 200,
+    height: 150,
+    position: 'bottom-right',
+    background: 'rgba(255,255,255,0.92)',
+    nodeColor: '#94a3b8',
+};
+
+const PAD = 8;
+const RADIUS = 6;
+class Minimap {
+    constructor(container, config, onNavigate) {
+        // World-to-minimap transform, updated each render
+        this.scale = 1;
+        this.mapOffX = 0;
+        this.mapOffY = 0;
+        this.boundsMinX = 0;
+        this.boundsMinY = 0;
+        this.hasContent = false;
+        this.dragging = false;
+        this.config = { ...DEFAULT_MINIMAP_CONFIG, ...config };
+        this.onNavigate = onNavigate;
+        if (getComputedStyle(container).position === 'static') {
+            container.style.position = 'relative';
+        }
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = this.config.width;
+        this.canvas.height = this.config.height;
+        this.canvas.style.cssText = this.positionStyle();
+        container.appendChild(this.canvas);
+        const ctx = this.canvas.getContext('2d');
+        if (!ctx)
+            throw new Error('Minimap: 2d context unavailable');
+        this.ctx = ctx;
+        this.onMouseDown = (e) => {
+            e.stopPropagation();
+            this.dragging = true;
+            this.navigate(e);
+        };
+        this.onMouseMove = (e) => {
+            if (!this.dragging)
+                return;
+            e.stopPropagation();
+            this.navigate(e);
+        };
+        this.onMouseUp = () => { this.dragging = false; };
+        this.canvas.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup', this.onMouseUp);
+    }
+    positionStyle() {
+        const { position, width, height } = this.config;
+        const corner = {
+            'top-left': 'top:8px;left:8px',
+            'top-right': 'top:8px;right:8px',
+            'bottom-left': 'bottom:8px;left:8px',
+            'bottom-right': 'bottom:8px;right:8px',
+        }[position];
+        return `position:absolute;${corner};width:${width}px;height:${height}px;` +
+            `border-radius:${RADIUS}px;box-shadow:0 2px 8px rgba(0,0,0,0.15);` +
+            `cursor:pointer;z-index:10;`;
+    }
+    navigate(e) {
+        if (!this.hasContent)
+            return;
+        const rect = this.canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const wx = (mx - this.mapOffX) / this.scale + this.boundsMinX;
+        const wy = (my - this.mapOffY) / this.scale + this.boundsMinY;
+        this.onNavigate(wx, wy);
+    }
+    render(nodes, edges, viewport) {
+        const { width: W, height: H, background, nodeColor } = this.config;
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, W, H);
+        // Panel background
+        ctx.fillStyle = background;
+        ctx.beginPath();
+        ctx.roundRect(0, 0, W, H, RADIUS);
+        ctx.fill();
+        if (nodes.length === 0) {
+            this.hasContent = false;
+            return;
+        }
+        this.hasContent = true;
+        // Compute world bounds of all nodes
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const n of nodes) {
+            if (n.x < minX)
+                minX = n.x;
+            if (n.y < minY)
+                minY = n.y;
+            if (n.x + n.width > maxX)
+                maxX = n.x + n.width;
+            if (n.y + n.height > maxY)
+                maxY = n.y + n.height;
+        }
+        const boundsW = maxX - minX;
+        const boundsH = maxY - minY;
+        const availW = W - PAD * 2;
+        const availH = H - PAD * 2;
+        const scale = Math.min(availW / Math.max(boundsW, 1), availH / Math.max(boundsH, 1));
+        const offX = PAD + (availW - boundsW * scale) / 2;
+        const offY = PAD + (availH - boundsH * scale) / 2;
+        this.scale = scale;
+        this.boundsMinX = minX;
+        this.boundsMinY = minY;
+        this.mapOffX = offX;
+        this.mapOffY = offY;
+        const mx = (wx) => offX + (wx - minX) * scale;
+        const my = (wy) => offY + (wy - minY) * scale;
+        // Clip all drawing to the panel
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(0, 0, W, H, RADIUS);
+        ctx.clip();
+        // Edges — batched into one path for performance
+        if (edges.length > 0) {
+            const nodeMap = new Map();
+            for (const n of nodes)
+                nodeMap.set(n.id, n);
+            ctx.strokeStyle = 'rgba(148,163,184,0.45)';
+            ctx.lineWidth = Math.max(0.5, scale * 1.5);
+            ctx.beginPath();
+            for (const edge of edges) {
+                const src = nodeMap.get(edge.source);
+                const tgt = nodeMap.get(edge.target);
+                if (!src || !tgt)
+                    continue;
+                ctx.moveTo(mx(src.x + src.width / 2), my(src.y + src.height / 2));
+                ctx.lineTo(mx(tgt.x + tgt.width / 2), my(tgt.y + tgt.height / 2));
+            }
+            ctx.stroke();
+        }
+        // Nodes
+        for (const node of nodes) {
+            const nx = mx(node.x);
+            const ny = my(node.y);
+            const nw = Math.max(1, node.width * scale);
+            const nh = Math.max(1, node.height * scale);
+            ctx.fillStyle = node.style?.backgroundColor ?? nodeColor;
+            ctx.fillRect(nx, ny, nw, nh);
+        }
+        // Viewport rectangle
+        const vpLeft = mx(-viewport.x / viewport.zoom);
+        const vpTop = my(-viewport.y / viewport.zoom);
+        const vpW = (viewport.canvasWidth / viewport.zoom) * scale;
+        const vpH = (viewport.canvasHeight / viewport.zoom) * scale;
+        ctx.fillStyle = 'rgba(59,130,246,0.08)';
+        ctx.strokeStyle = 'rgba(59,130,246,0.75)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.rect(vpLeft, vpTop, vpW, vpH);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
+    setConfig(patch) {
+        this.config = { ...this.config, ...patch };
+        const { width, height } = this.config;
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.canvas.style.cssText = this.positionStyle();
+    }
+    dispose() {
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        window.removeEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.remove();
+    }
+}
+
+class HtmlOverlay {
+    constructor(parent) {
+        this.entries = new Map();
+        this.container = document.createElement('div');
+        this.container.style.cssText =
+            'position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;';
+        parent.appendChild(this.container);
+    }
+    sync(nodes, viewport) {
+        const active = new Set();
+        for (const node of nodes) {
+            if (!node.htmlContent)
+                continue;
+            active.add(node.id);
+            let entry = this.entries.get(node.id);
+            if (!entry) {
+                const div = document.createElement('div');
+                div.style.cssText = 'position:absolute;box-sizing:border-box;overflow:hidden;';
+                this.container.appendChild(div);
+                entry = { div, content: '' };
+                this.entries.set(node.id, entry);
+            }
+            if (entry.content !== node.htmlContent) {
+                entry.div.innerHTML = node.htmlContent;
+                entry.content = node.htmlContent;
+            }
+            const [sx, sy] = viewport.worldToScreen(node.x, node.y);
+            const w = node.width * viewport.zoom;
+            const h = node.height * viewport.zoom;
+            entry.div.style.left = `${sx}px`;
+            entry.div.style.top = `${sy}px`;
+            entry.div.style.width = `${w}px`;
+            entry.div.style.height = `${h}px`;
+        }
+        // Remove stale entries
+        for (const [id, entry] of this.entries) {
+            if (!active.has(id)) {
+                entry.div.remove();
+                this.entries.delete(id);
+            }
+        }
+    }
+    dispose() {
+        this.container.remove();
+        this.entries.clear();
+    }
+}
+
+class FlowChart extends EventEmitter {
+    constructor(options) {
+        super();
+        this.arrowMoveTimer = null;
+        this.rafId = null;
+        this.failed = false;
+        this.selectedIds = new Set();
+        this.selectedEdgeIds = new Set();
+        this.connectState = null;
+        this.rerouteState = null;
+        this.minimap = null;
+        if (typeof window === 'undefined' || typeof document === 'undefined') {
+            this.failed = true;
+            const err = new Error('@flowchart/core: browser environment required');
+            if (options.onError)
+                options.onError(err);
+            else
+                console.error('[FlowChart]', err.message);
+            return;
+        }
+        this.canvas = document.createElement('canvas');
+        this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;';
+        this.canvas.setAttribute('role', 'application');
+        this.canvas.setAttribute('aria-label', options.ariaLabel ?? 'Flowchart');
+        this.canvas.setAttribute('tabindex', '0');
+        options.container.appendChild(this.canvas);
+        this.ariaLive = document.createElement('div');
+        this.ariaLive.setAttribute('aria-live', 'polite');
+        this.ariaLive.setAttribute('aria-atomic', 'true');
+        this.ariaLive.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+        options.container.appendChild(this.ariaLive);
+        this.labelEditable = options.labelEditable ?? true;
+        this.bgColor = options.background ?? '#f7f7f7';
+        this.gridConfig = { ...DEFAULT_GRID_CONFIG, ...options.grid };
+        this.graph = new Graph();
+        this.viewport = new Viewport();
+        this.renderer = new WebGL2Renderer();
+        this.hitTester = new HitTester();
+        this.edgeHitTester = new EdgeHitTester();
+        this.history = new History(options.historyLimit ?? 100);
+        this.contextMenu = new ContextMenu();
+        this.labelEditor = new LabelEditor();
+        const { width, height } = options.container.getBoundingClientRect();
+        this.viewport.setSize(width, height);
+        if (options.nodes)
+            for (const n of options.nodes)
+                this.graph.addNode(n);
+        if (options.edges)
+            for (const e of options.edges)
+                this.graph.addEdge(e);
+        const ok = this.renderer.initialize(this.canvas, options.renderer);
+        if (!ok) {
+            this.failed = true;
+            const err = new Error('@flowchart/core: WebGL2 is not available in this environment');
+            if (options.onError)
+                options.onError(err);
+            else
+                console.error('[FlowChart]', err.message);
+            return;
+        }
+        this.renderer.resize(width, height);
+        this.htmlOverlay = new HtmlOverlay(options.container);
+        this.nodeResize = new NodeResize(options.container, this.canvas, this.viewport, this.graph, () => this.beforeMutation(), () => this.scheduleRender());
+        // Issue 9: Context panels extracted to separate module
+        this.panels = new ContextPanels({
+            graph: this.graph,
+            contextMenu: this.contextMenu,
+            scheduleRender: () => this.scheduleRender(),
+            beforeMutation: () => this.beforeMutation(),
+            getBackground: () => this.bgColor,
+            setBackground: c => this.setBackground(c),
+            getGridConfig: () => this.gridConfig,
+            setGrid: c => this.setGrid(c),
+        });
+        // Issue 3: EdgeReroute — capture-phase mousedown fires before ConnectDrag's bubble-phase
+        this.edgeReroute = new EdgeReroute(this.canvas, this.viewport, this.graph, this.hitTester, () => this.selectedEdgeIds, (state) => { this.rerouteState = state; this.scheduleRender(); }, (edgeId, movingEnd, targetNodeId, targetHandle) => {
+            this.beforeMutation();
+            if (movingEnd === 'source') {
+                this.graph.updateEdge(edgeId, { source: targetNodeId, sourceHandle: targetHandle });
+            }
+            else {
+                this.graph.updateEdge(edgeId, { target: targetNodeId, targetHandle: targetHandle });
+            }
+            this.rerouteState = null;
+            this.scheduleRender();
+        });
+        this.connectDrag = new ConnectDrag(this.canvas, this.viewport, this.graph, this.hitTester, (state) => { this.connectState = state; this.scheduleRender(); }, (sourceId, targetId, sourceHandle, targetHandle) => {
+            this.emit('connect', { sourceId, targetId, sourceHandle, targetHandle });
+        });
+        // Issue 3: onStart callback captures snapshot before any drag mutation
+        this.drag = new NodeDrag(this.canvas, this.viewport, this.graph, this.hitTester, () => this.beforeMutation(), // onStart: capture before-state
+        (_id, _x, _y) => this.scheduleRender(), // onMove
+        (id, x, y) => this.emit('nodeDragEnd', { id, x, y }), // onEnd
+        (clientX, clientY) => this.edgeReroute.isCapturing() ||
+            this.connectDrag.isCapturing() ||
+            this.connectDrag.isNearHandle(clientX, clientY) ||
+            this.nodeResize.isCapturing() ||
+            this.nodeResize.isNearHandle(clientX, clientY));
+        this.panZoom = new PanZoom(this.canvas, this.viewport, () => { this.scheduleRender(); this.emit('viewportChange', this.viewport.getState()); }, (sx, sy) => {
+            if (this.edgeReroute.isCapturing())
+                return true;
+            if (this.connectDrag.isCapturing())
+                return true;
+            if (this.nodeResize.isCapturing())
+                return true;
+            const [wx, wy] = this.viewport.screenToWorld(sx, sy);
+            return this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy) !== null;
+        });
+        this.boxSelect = new BoxSelect(this.canvas, this.viewport, {
+            shouldBlock: (clientX, clientY) => {
+                if (this.edgeReroute.isCapturing())
+                    return true;
+                const r = this.canvas.getBoundingClientRect();
+                const [wx, wy] = this.viewport.screenToWorld(clientX - r.left, clientY - r.top);
+                const nodes = this.graph.getNodes();
+                if (this.hitTester.findNodeAt(nodes, wx, wy))
+                    return true;
+                const nodeMap = new Map(nodes.map(n => [n.id, n]));
+                return this.edgeHitTester.findEdgeAt(this.graph.getEdges(), nodeMap, wx, wy, this.viewport.zoom) !== null;
+            },
+            onSelect: (minX, minY, maxX, maxY) => {
+                const inBox = this.hitTester.findNodesInBox(this.graph.getNodes(), minX, minY, maxX, maxY);
+                this.selectedIds = new Set(inBox.map(n => n.id));
+                this.selectedEdgeIds.clear();
+                this.emit('selectionChange', { selectedIds: [...this.selectedIds], edgeIds: [] });
+                this.scheduleRender();
+            },
+        });
+        // Issue 6: LabelEditor — canvas refocused after edit
+        this.canvas.addEventListener('dblclick', (e) => {
+            if (!this.labelEditable)
+                return;
+            const r = this.canvas.getBoundingClientRect();
+            const [wx, wy] = this.viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top);
+            const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+            if (!node)
+                return;
+            this.labelEditor.startEdit(node, this.canvas, this.viewport, (newLabel) => {
+                this.beforeMutation();
+                this.graph.updateNode(node.id, { label: newLabel });
+                this.scheduleRender();
+            });
+        });
+        this.canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const r = this.canvas.getBoundingClientRect();
+            const [wx, wy] = this.viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top);
+            const nodes = this.graph.getNodes();
+            const node = this.hitTester.findNodeAt(nodes, wx, wy);
+            if (node) {
+                if (!this.selectedIds.has(node.id)) {
+                    this.selectedIds.clear();
+                    this.selectedIds.add(node.id);
+                    this.selectedEdgeIds.clear();
+                    this.emit('selectionChange', { selectedIds: [node.id], edgeIds: [] });
+                    this.scheduleRender();
+                }
+                this.contextMenu.show(e.clientX, e.clientY, [
+                    {
+                        label: 'Edit Label',
+                        action: () => {
+                            this.labelEditor.startEdit(node, this.canvas, this.viewport, (newLabel) => {
+                                this.beforeMutation();
+                                this.graph.updateNode(node.id, { label: newLabel });
+                                this.scheduleRender();
+                            });
+                        },
+                    },
+                    { separator: true },
+                    { label: 'Delete Node', destructive: true, action: () => this.deleteSelected() },
+                ]);
+                return;
+            }
+            const nodeMap = new Map(nodes.map(n => [n.id, n]));
+            const edge = this.edgeHitTester.findEdgeAt(this.graph.getEdges(), nodeMap, wx, wy, this.viewport.zoom);
+            if (edge) {
+                if (!this.selectedEdgeIds.has(edge.id)) {
+                    this.selectedIds.clear();
+                    this.selectedEdgeIds.clear();
+                    this.selectedEdgeIds.add(edge.id);
+                    this.emit('selectionChange', { selectedIds: [], edgeIds: [edge.id] });
+                    this.scheduleRender();
+                }
+                this.contextMenu.show(e.clientX, e.clientY, [
+                    { label: 'Style', panel: () => this.panels.edgeStyle(edge) },
+                    { separator: true },
+                    { label: 'Delete Edge', destructive: true, action: () => this.deleteSelected() },
+                ]);
+                return;
+            }
+            // Pane right-click
+            this.contextMenu.show(e.clientX, e.clientY, [
+                { label: 'Background', panel: () => this.panels.background() },
+                { label: 'Grid', panel: () => this.panels.grid() },
+                { separator: true },
+                { label: 'Auto Layout', panel: () => this.panels.autoLayout() },
+            ]);
+        });
+        // Issue 6 + 3: KeyboardHandler — canvas-scoped + undo/redo
+        this.keyboardHandler = new KeyboardHandler(this.canvas, {
+            onDelete: () => this.deleteSelected(),
+            onEscape: () => {
+                this.connectDrag.cancel();
+                this.connectState = null;
+                if (this.selectedIds.size > 0 || this.selectedEdgeIds.size > 0) {
+                    this.selectedIds.clear();
+                    this.selectedEdgeIds.clear();
+                    this.emit('selectionChange', { selectedIds: [], edgeIds: [] });
+                }
+                this.scheduleRender();
+            },
+            onSelectAll: () => {
+                this.selectedIds = new Set(this.graph.getNodes().map(n => n.id));
+                this.selectedEdgeIds = new Set(this.graph.getEdges().map(e => e.id));
+                this.emit('selectionChange', {
+                    selectedIds: [...this.selectedIds],
+                    edgeIds: [...this.selectedEdgeIds],
+                });
+                this.scheduleRender();
+            },
+            onUndo: () => this.undo(),
+            onRedo: () => this.redo(),
+            onTabNext: () => this.tabSelectNode(1),
+            onTabPrev: () => this.tabSelectNode(-1),
+            onArrowKey: (dir) => this.moveSelectedByArrow(dir),
+        });
+        // Issue 2: Focus canvas on click so keyboard events are received
+        this.canvas.addEventListener('mousedown', () => { this.canvas.focus(); });
+        this.canvas.addEventListener('click', (e) => {
+            if (e.shiftKey)
+                return;
+            if (this.edgeReroute.isOnEndpoint(e.clientX, e.clientY))
+                return;
+            const r = this.canvas.getBoundingClientRect();
+            const [wx, wy] = this.viewport.screenToWorld(e.clientX - r.left, e.clientY - r.top);
+            const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy);
+            if (node) {
+                if (e.metaKey || e.ctrlKey) {
+                    if (this.selectedIds.has(node.id))
+                        this.selectedIds.delete(node.id);
+                    else
+                        this.selectedIds.add(node.id);
+                }
+                else {
+                    this.selectedIds.clear();
+                    this.selectedIds.add(node.id);
+                    this.selectedEdgeIds.clear();
+                }
+                this.emit('nodeClick', { node });
+                this.emit('selectionChange', {
+                    selectedIds: [...this.selectedIds],
+                    edgeIds: [...this.selectedEdgeIds],
+                });
+                this.scheduleRender();
+                return;
+            }
+            const nodes = this.graph.getNodes();
+            const nodeMap = new Map(nodes.map(n => [n.id, n]));
+            const edge = this.edgeHitTester.findEdgeAt(this.graph.getEdges(), nodeMap, wx, wy, this.viewport.zoom);
+            if (edge) {
+                if (e.metaKey || e.ctrlKey) {
+                    if (this.selectedEdgeIds.has(edge.id))
+                        this.selectedEdgeIds.delete(edge.id);
+                    else
+                        this.selectedEdgeIds.add(edge.id);
+                }
+                else {
+                    this.selectedIds.clear();
+                    this.selectedEdgeIds.clear();
+                    this.selectedEdgeIds.add(edge.id);
+                }
+                this.emit('selectionChange', {
+                    selectedIds: [...this.selectedIds],
+                    edgeIds: [...this.selectedEdgeIds],
+                });
+                this.scheduleRender();
+                return;
+            }
+            if (this.selectedIds.size > 0 || this.selectedEdgeIds.size > 0) {
+                this.selectedIds.clear();
+                this.selectedEdgeIds.clear();
+                this.emit('selectionChange', { selectedIds: [], edgeIds: [] });
+                this.scheduleRender();
+            }
+            this.emit('paneClick', { x: wx, y: wy });
+        });
+        this.resizeObserver = new ResizeObserver(entries => {
+            const rect = entries[0]?.contentRect;
+            if (!rect)
+                return;
+            this.viewport.setSize(rect.width, rect.height);
+            this.renderer.resize(rect.width, rect.height);
+            this.scheduleRender();
+        });
+        this.resizeObserver.observe(options.container);
+        if (options.minimap) {
+            this.minimap = new Minimap(options.container, options.minimap, (wx, wy) => {
+                this.viewport.x = this.viewport.canvasWidth / 2 - wx * this.viewport.zoom;
+                this.viewport.y = this.viewport.canvasHeight / 2 - wy * this.viewport.zoom;
+                this.scheduleRender();
+                this.emit('viewportChange', this.viewport.getState());
+            });
+        }
+        this.scheduleRender();
+    }
+    // ── Undo / Redo ───────────────────────────────────────────────────────────────
+    /** Capture current graph state for undo. Called before any mutation. */
+    beforeMutation() {
+        this.history.save({
+            nodes: this.graph.getNodes().map(n => {
+                const { style, ...rest } = n;
+                return style ? { ...rest, style: { ...style } } : rest;
+            }),
+            edges: this.graph.getEdges().map(e => {
+                const { style, ...rest } = e;
+                return style ? { ...rest, style: { ...style } } : rest;
+            }),
+        });
+        this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() });
+    }
+    applySnapshot(snap) {
+        this.graph.clear();
+        this.selectedIds.clear();
+        this.selectedEdgeIds.clear();
+        for (const n of snap.nodes)
+            this.graph.addNode(n);
+        for (const e of snap.edges)
+            this.graph.addEdge(e);
+        this.emit('selectionChange', { selectedIds: [], edgeIds: [] });
+        this.scheduleRender();
+    }
+    /** Undo the last action. Returns true if successful. */
+    undo() {
+        if (this.failed)
+            return false;
+        const current = {
+            nodes: this.graph.getNodes().map(n => { const { style, ...rest } = n; return style ? { ...rest, style: { ...style } } : rest; }),
+            edges: this.graph.getEdges().map(e => { const { style, ...rest } = e; return style ? { ...rest, style: { ...style } } : rest; }),
+        };
+        const prev = this.history.undo(current);
+        if (!prev)
+            return false;
+        this.applySnapshot(prev);
+        this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() });
+        return true;
+    }
+    /** Redo a previously undone action. Returns true if successful. */
+    redo() {
+        if (this.failed)
+            return false;
+        const current = {
+            nodes: this.graph.getNodes().map(n => { const { style, ...rest } = n; return style ? { ...rest, style: { ...style } } : rest; }),
+            edges: this.graph.getEdges().map(e => { const { style, ...rest } = e; return style ? { ...rest, style: { ...style } } : rest; }),
+        };
+        const next = this.history.redo(current);
+        if (!next)
+            return false;
+        this.applySnapshot(next);
+        this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() });
+        return true;
+    }
+    canUndo() { return this.history.canUndo(); }
+    canRedo() { return this.history.canRedo(); }
+    // ── Serialization ─────────────────────────────────────────────────────────────
+    /** Serialize the full chart state (nodes, edges, viewport). */
+    toJSON() {
+        return {
+            version: 1,
+            nodes: this.graph.getNodes().map(n => ({ ...n })),
+            edges: this.graph.getEdges().map(e => ({ ...e })),
+            viewport: this.viewport.getState(),
+        };
+    }
+    /** Load a previously serialized chart state. Replaces current content. */
+    fromJSON(data) {
+        if (this.failed)
+            return;
+        this.history.clear();
+        this.graph.clear();
+        this.selectedIds.clear();
+        this.selectedEdgeIds.clear();
+        for (const n of data.nodes)
+            this.graph.addNode(n);
+        for (const e of data.edges)
+            this.graph.addEdge(e);
+        if (data.viewport)
+            this.viewport.setState(data.viewport);
+        this.emit('selectionChange', { selectedIds: [], edgeIds: [] });
+        this.scheduleRender();
+    }
+    // ── Render ────────────────────────────────────────────────────────────────────
+    scheduleRender() {
+        if (this.failed || this.rafId !== null)
+            return;
+        this.rafId = requestAnimationFrame(() => {
+            this.rafId = null;
+            this.renderer.render(this.graph, this.viewport, this.selectedIds, this.connectState, this.selectedEdgeIds, this.bgColor, this.gridConfig.visible ? this.gridConfig : null, this.rerouteState, this.edgeReroute.getEndpointCircles());
+            this.htmlOverlay.sync(this.graph.getNodes(), this.viewport);
+            const selArr = [...this.selectedIds];
+            this.nodeResize.setSelectedNode(selArr.length === 1 ? selArr[0] : null);
+            this.nodeResize.render();
+            this.minimap?.render(this.graph.getNodes(), this.graph.getEdges(), this.viewport);
+        });
+    }
+    announceNode(label) {
+        this.ariaLive.textContent = `Selected: ${label}`;
+    }
+    tabSelectNode(direction) {
+        const nodes = this.graph.getNodes();
+        if (nodes.length === 0)
+            return;
+        const currentId = this.selectedIds.size === 1 ? [...this.selectedIds][0] : null;
+        const currentIdx = currentId ? nodes.findIndex(n => n.id === currentId) : -1;
+        const nextIdx = ((currentIdx + direction) + nodes.length) % nodes.length;
+        const next = nodes[nextIdx];
+        if (!next)
+            return;
+        this.selectedIds.clear();
+        this.selectedIds.add(next.id);
+        this.selectedEdgeIds.clear();
+        this.emit('selectionChange', { selectedIds: [next.id], edgeIds: [] });
+        this.announceNode(next.label);
+        this.scheduleRender();
+    }
+    moveSelectedByArrow(direction) {
+        if (this.selectedIds.size === 0)
+            return;
+        const STEP = 10;
+        const dx = direction === 'ArrowLeft' ? -STEP : direction === 'ArrowRight' ? STEP : 0;
+        const dy = direction === 'ArrowUp' ? -STEP : direction === 'ArrowDown' ? STEP : 0;
+        // Save history only on first keydown in a burst — subsequent rapid presses are coalesced
+        if (this.arrowMoveTimer === null) {
+            this.beforeMutation();
+        }
+        else {
+            clearTimeout(this.arrowMoveTimer);
+        }
+        this.arrowMoveTimer = setTimeout(() => { this.arrowMoveTimer = null; }, 400);
+        for (const id of this.selectedIds) {
+            const node = this.graph.getNode(id);
+            if (node)
+                this.graph.updateNode(id, { x: node.x + dx, y: node.y + dy });
+        }
+        this.scheduleRender();
+    }
+    deleteSelected() {
+        this.beforeMutation();
+        for (const id of this.selectedEdgeIds)
+            this.graph.removeEdge(id);
+        this.selectedEdgeIds.clear();
+        for (const id of this.selectedIds)
+            this.graph.removeNode(id);
+        this.selectedIds.clear();
+        this.emit('selectionChange', { selectedIds: [], edgeIds: [] });
+        this.scheduleRender();
+    }
+    // ── Node style API ────────────────────────────────────────────────────────────
+    setNodeStyle(id, style) {
+        const node = this.graph.getNode(id);
+        if (!node)
+            return;
+        this.graph.updateNode(id, { style: { ...node.style, ...style } });
+        this.scheduleRender();
+    }
+    setNodeBorderColor(id, color) { this.setNodeStyle(id, { borderColor: color }); }
+    setNodeBackgroundColor(id, color) { this.setNodeStyle(id, { backgroundColor: color }); }
+    setNodeSize(id, width, height) {
+        this.graph.updateNode(id, { width, height });
+        this.scheduleRender();
+    }
+    // ── Canvas appearance API ─────────────────────────────────────────────────────
+    setBackground(color) {
+        this.bgColor = color;
+        this.scheduleRender();
+    }
+    setGrid(config) {
+        this.gridConfig = { ...this.gridConfig, ...config };
+        this.scheduleRender();
+    }
+    // ── Selection API ─────────────────────────────────────────────────────────────
+    setLabelEditable(enabled) { this.labelEditable = enabled; }
+    getSelectedIds() { return [...this.selectedIds]; }
+    getSelectedEdgeIds() { return [...this.selectedEdgeIds]; }
+    setSelectedIds(ids) {
+        this.selectedIds = new Set(ids);
+        this.scheduleRender();
+    }
+    clearSelection() {
+        this.selectedIds.clear();
+        this.selectedEdgeIds.clear();
+        this.scheduleRender();
+    }
+    // ── Graph mutation API ────────────────────────────────────────────────────────
+    addNode(node) {
+        this.beforeMutation();
+        this.graph.addNode(node);
+        this.emit('nodeAdd', { node });
+        this.scheduleRender();
+    }
+    removeNode(id) {
+        this.beforeMutation();
+        this.graph.removeNode(id);
+        this.selectedIds.delete(id);
+        const remaining = new Set(this.graph.getEdges().map(e => e.id));
+        for (const eid of this.selectedEdgeIds) {
+            if (!remaining.has(eid))
+                this.selectedEdgeIds.delete(eid);
+        }
+        this.emit('nodeRemove', { id });
+        this.scheduleRender();
+    }
+    updateNode(id, updates) {
+        this.graph.updateNode(id, updates);
+        this.emit('nodeUpdate', { id, updates });
+        this.scheduleRender();
+    }
+    addEdge(edge) {
+        this.beforeMutation();
+        this.graph.addEdge(edge);
+        this.emit('edgeAdd', { edge });
+        this.scheduleRender();
+    }
+    removeEdge(id) {
+        this.beforeMutation();
+        this.graph.removeEdge(id);
+        this.selectedEdgeIds.delete(id);
+        this.emit('edgeRemove', { id });
+        this.scheduleRender();
+    }
+    setNodes(nodes) {
+        this.graph.clear();
+        this.selectedIds.clear();
+        this.selectedEdgeIds.clear();
+        this.history.clear();
+        for (const n of nodes)
+            this.graph.addNode(n);
+        this.scheduleRender();
+    }
+    setEdges(edges) {
+        for (const e of this.graph.getEdges())
+            this.graph.removeEdge(e.id);
+        this.selectedEdgeIds.clear();
+        for (const e of edges)
+            this.graph.addEdge(e);
+        this.scheduleRender();
+    }
+    // ── Viewport API ──────────────────────────────────────────────────────────────
+    getViewport() { return this.viewport.getState(); }
+    setViewport(state) {
+        this.viewport.setState(state);
+        this.scheduleRender();
+    }
+    fitView(padding = 40) {
+        const nodes = this.graph.getNodes();
+        if (nodes.length === 0)
+            return;
+        this.viewport.fit(computeNodeBounds(nodes), padding);
+        this.scheduleRender();
+    }
+    /** Request a render on the next animation frame. Useful for continuous rendering in benchmarks. */
+    requestRender() { this.scheduleRender(); }
+    // ── Minimap API ───────────────────────────────────────────────────────────────
+    /** Enable the minimap (or reconfigure it). Pass null to disable. */
+    setMinimap(config) {
+        if (config === null) {
+            this.minimap?.dispose();
+            this.minimap = null;
+            return;
+        }
+        if (this.minimap) {
+            this.minimap.setConfig(config);
+        }
+        else {
+            const container = this.canvas.parentElement;
+            if (!container)
+                return;
+            this.minimap = new Minimap(container, config, (wx, wy) => {
+                this.viewport.x = this.viewport.canvasWidth / 2 - wx * this.viewport.zoom;
+                this.viewport.y = this.viewport.canvasHeight / 2 - wy * this.viewport.zoom;
+                this.scheduleRender();
+                this.emit('viewportChange', this.viewport.getState());
+            });
+        }
+        this.scheduleRender();
+    }
+    // ── Lifecycle ─────────────────────────────────────────────────────────────────
+    dispose() {
+        if (this.rafId !== null)
+            cancelAnimationFrame(this.rafId);
+        if (this.arrowMoveTimer !== null)
+            clearTimeout(this.arrowMoveTimer);
+        if (!this.failed) {
+            this.panZoom.dispose();
+            this.drag.dispose();
+            this.connectDrag.dispose();
+            this.edgeReroute.dispose();
+            this.boxSelect.dispose();
+            this.keyboardHandler.dispose();
+            this.nodeResize.dispose();
+            this.renderer.dispose();
+        }
+        this.resizeObserver?.disconnect();
+        this.htmlOverlay?.dispose();
+        this.minimap?.dispose();
+        this.labelEditor?.dispose();
+        this.contextMenu?.dispose();
+        this.ariaLive?.remove();
+        this.canvas?.remove();
+        super.dispose();
+    }
+}
+
+let seq = 0;
+function generateId(prefix = 'node') {
+    return `${prefix}_${Date.now().toString(36)}_${(++seq).toString(36)}`;
+}
+
+exports.BoxSelect = BoxSelect;
+exports.ContextMenu = ContextMenu;
+exports.DEFAULT_EDGE_STYLE = DEFAULT_EDGE_STYLE;
+exports.DEFAULT_GRID_CONFIG = DEFAULT_GRID_CONFIG;
+exports.DEFAULT_MINIMAP_CONFIG = DEFAULT_MINIMAP_CONFIG;
+exports.DEFAULT_NODE_STYLE = DEFAULT_NODE_STYLE;
+exports.EdgeHitTester = EdgeHitTester;
+exports.EdgeReroute = EdgeReroute;
+exports.EventEmitter = EventEmitter;
+exports.FlowChart = FlowChart;
+exports.Graph = Graph;
+exports.History = History;
+exports.KeyboardHandler = KeyboardHandler;
+exports.LabelEditor = LabelEditor;
+exports.MAX_ZOOM = MAX_ZOOM;
+exports.MIN_ZOOM = MIN_ZOOM;
+exports.NodeResize = NodeResize;
+exports.Viewport = Viewport;
+exports.WebGL2Renderer = WebGL2Renderer;
+exports.forceLayout = forceLayout;
+exports.generateId = generateId;
+exports.gridLayout = gridLayout;
+exports.hierarchicalLayout = hierarchicalLayout;
+//# sourceMappingURL=index.cjs.js.map

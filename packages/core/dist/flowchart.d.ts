@@ -6,7 +6,7 @@ import type { EdgeData } from './graph/edge';
 import type { ViewportState } from './viewport/viewport';
 import type { RendererOptions } from './renderer/interface';
 import type { HandleSide } from './interaction/connect';
-import type { GridConfig } from './types';
+import type { GridConfig, MinimapConfig } from './types';
 export interface FlowChartOptions {
     container: HTMLElement;
     nodes?: NodeData[];
@@ -18,6 +18,8 @@ export interface FlowChartOptions {
     background?: string;
     /** Grid overlay config. */
     grid?: Partial<GridConfig>;
+    /** Minimap overlay config. Omit to disable. */
+    minimap?: Partial<MinimapConfig>;
     /** Accessible label for screen readers. Default: 'Flowchart'. */
     ariaLabel?: string;
     /** Max undo history entries. Default: 100. */
@@ -88,6 +90,7 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     private keyboardHandler;
     private boxSelect;
     private labelEditor;
+    private nodeResize;
     private history;
     private panels;
     private resizeObserver;
@@ -99,6 +102,8 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     private selectedEdgeIds;
     private connectState;
     private rerouteState;
+    private minimap;
+    private htmlOverlay;
     private labelEditable;
     private bgColor;
     private gridConfig;
@@ -154,6 +159,8 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     fitView(padding?: number): void;
     /** Request a render on the next animation frame. Useful for continuous rendering in benchmarks. */
     requestRender(): void;
+    /** Enable the minimap (or reconfigure it). Pass null to disable. */
+    setMinimap(config: Partial<MinimapConfig> | null): void;
     dispose(): void;
 }
 export {};

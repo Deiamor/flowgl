@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [feature] 노드 리사이즈 핸들
+- Summary: Canvas 2D 오버레이로 8방향(nw/n/ne/e/se/s/sw/w) 리사이즈 핸들 구현. 선택된 노드에 흰색 사각형(hover 시 파란색) 핸들 표시. 드래그로 크기 변경, MIN_W=40/MIN_H=30 최소 크기 보장. NodeDrag·PanZoom의 shouldBlock에 isCapturing()/isNearHandle() 연동으로 우선순위 충돌 없음.
+- Affected files: packages/core/src/interaction/node-resize.ts(신규), packages/core/src/flowchart.ts, packages/core/src/index.ts
+- Timestamp: 2026-06-01
+
 ## [feature] 커스텀 노드 모양 + HTML 오버레이
 - Summary: NodeStyle에 shape 필드(rectangle/circle/diamond/hexagon) 추가. NodeProgram GLSL에 shape별 SDF 함수 구현(sdfCircle·sdfDiamond·sdfHexagon·sdfRect). FLOATS_PER_INSTANCE 15→16. NodeData에 htmlContent 필드 추가 — HTML 콘텐츠를 Canvas 위에 절대 위치 div로 오버레이, 해당 노드는 WebGL 텍스트 레이블 생략. HtmlOverlay 클래스 신규 작성.
 - Affected files: packages/core/src/graph/node.ts, packages/core/src/renderer/webgl/programs/node-program.ts, packages/core/src/renderer/webgl/index.ts, packages/core/src/ui/html-overlay.ts(신규), packages/core/src/flowchart.ts, packages/core/src/index.ts

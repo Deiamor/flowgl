@@ -22,6 +22,7 @@ export type { Snapshot } from './history/history'
 export { generateId } from './utils/id'
 
 export { EdgeHitTester } from './interaction/edge-hit-test'
+export { NodeResize } from './interaction/node-resize'
 export { ContextMenu } from './interaction/context-menu'
 export type { MenuItem, MenuSeparator, MenuEntry } from './interaction/context-menu'
 export { KeyboardHandler } from './interaction/keyboard'

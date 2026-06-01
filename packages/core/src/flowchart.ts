@@ -12,6 +12,7 @@ import { ContextMenu } from './interaction/context-menu'
 import { KeyboardHandler } from './interaction/keyboard'
 import { BoxSelect } from './interaction/box-select'
 import { LabelEditor } from './interaction/label-edit'
+import { NodeResize } from './interaction/node-resize'
 import { History } from './history/history'
 import { ContextPanels } from './ui/context-panels'
 import { Minimap } from './ui/minimap'
@@ -80,6 +81,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private keyboardHandler!: KeyboardHandler
   private boxSelect!: BoxSelect
   private labelEditor!: LabelEditor
+  private nodeResize!: NodeResize
   private history!: History
   private panels!: ContextPanels
   private resizeObserver!: ResizeObserver
@@ -151,6 +153,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
     this.renderer.resize(width, height)
     this.htmlOverlay = new HtmlOverlay(options.container)
+    this.nodeResize  = new NodeResize(
+      options.container, this.canvas, this.viewport, this.graph,
+      () => this.beforeMutation(),
+      () => this.scheduleRender(),
+    )
 
     // Issue 9: Context panels extracted to separate module
     this.panels = new ContextPanels({
@@ -198,7 +205,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       (clientX, clientY) =>
         this.edgeReroute.isCapturing() ||
         this.connectDrag.isCapturing() ||
-        this.connectDrag.isNearHandle(clientX, clientY),
+        this.connectDrag.isNearHandle(clientX, clientY) ||
+        this.nodeResize.isCapturing() ||
+        this.nodeResize.isNearHandle(clientX, clientY),
     )
 
     this.panZoom = new PanZoom(
@@ -207,6 +216,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       (sx, sy) => {
         if (this.edgeReroute.isCapturing()) return true
         if (this.connectDrag.isCapturing()) return true
+        if (this.nodeResize.isCapturing()) return true
         const [wx, wy] = this.viewport.screenToWorld(sx, sy)
         return this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy) !== null
       },
@@ -525,6 +535,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.edgeReroute.getEndpointCircles(),
       )
       this.htmlOverlay.sync(this.graph.getNodes(), this.viewport)
+      const selArr = [...this.selectedIds]
+      this.nodeResize.setSelectedNode(selArr.length === 1 ? selArr[0]! : null)
+      this.nodeResize.render()
       this.minimap?.render(this.graph.getNodes(), this.graph.getEdges(), this.viewport)
     })
   }
@@ -738,6 +751,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.edgeReroute.dispose()
       this.boxSelect.dispose()
       this.keyboardHandler.dispose()
+      this.nodeResize.dispose()
       this.renderer.dispose()
     }
     this.resizeObserver?.disconnect()

@@ -1,7 +1,7 @@
 export { FlowChart } from './flowchart';
 export type { FlowChartOptions } from './flowchart';
 export { Graph } from './graph/graph';
-export type { NodeData, NodeStyle } from './graph/node';
+export type { NodeData, NodeStyle, NodeShape } from './graph/node';
 export type { EdgeData, EdgeStyle, EdgeType } from './graph/edge';
 export { DEFAULT_NODE_STYLE } from './graph/node';
 export { DEFAULT_EDGE_STYLE } from './graph/edge';
@@ -15,6 +15,7 @@ export { History } from './history/history';
 export type { Snapshot } from './history/history';
 export { generateId } from './utils/id';
 export { EdgeHitTester } from './interaction/edge-hit-test';
+export { NodeResize } from './interaction/node-resize';
 export { ContextMenu } from './interaction/context-menu';
 export type { MenuItem, MenuSeparator, MenuEntry } from './interaction/context-menu';
 export { KeyboardHandler } from './interaction/keyboard';
@@ -24,8 +25,8 @@ export type { BoxSelectOptions } from './interaction/box-select';
 export { LabelEditor } from './interaction/label-edit';
 export { EdgeReroute } from './interaction/edge-reroute';
 export type { RerouteState, EndpointCircle } from './interaction/edge-reroute';
-export type { GridConfig } from './types';
-export { DEFAULT_GRID_CONFIG } from './types';
+export type { GridConfig, MinimapConfig } from './types';
+export { DEFAULT_GRID_CONFIG, DEFAULT_MINIMAP_CONFIG } from './types';
 export { hierarchicalLayout, forceLayout, gridLayout } from './layout/auto-layout';
 export type { LayoutResult } from './layout/auto-layout';
 //# sourceMappingURL=index.d.ts.map

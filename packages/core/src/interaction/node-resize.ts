@@ -1,0 +1,211 @@
+import type { Graph } from '../graph/graph'
+import type { Viewport } from '../viewport/viewport'
+import type { NodeData } from '../graph/node'
+
+type Dir = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
+
+const HANDLE_HALF = 4    // CSS px — half side of handle square
+const HIT_RADIUS  = 8    // CSS px — pointer hit radius
+const MIN_W = 40
+const MIN_H = 30
+
+const DIR_CURSOR: Record<Dir, string> = {
+  nw: 'nw-resize', n: 'n-resize', ne: 'ne-resize', e: 'e-resize',
+  se: 'se-resize', s: 's-resize', sw: 'sw-resize', w: 'w-resize',
+}
+
+interface Handle { dir: Dir; wx: number; wy: number }
+
+function nodeHandles(node: NodeData): Handle[] {
+  const { x, y, width: w, height: h } = node
+  const cx = x + w / 2, cy = y + h / 2
+  return [
+    { dir: 'nw', wx: x,     wy: y     },
+    { dir: 'n',  wx: cx,    wy: y     },
+    { dir: 'ne', wx: x + w, wy: y     },
+    { dir: 'e',  wx: x + w, wy: cy    },
+    { dir: 'se', wx: x + w, wy: y + h },
+    { dir: 's',  wx: cx,    wy: y + h },
+    { dir: 'sw', wx: x,     wy: y + h },
+    { dir: 'w',  wx: x,     wy: cy    },
+  ]
+}
+
+function applyResize(
+  orig: NodeData, dir: Dir, dwx: number, dwy: number,
+): { x: number; y: number; width: number; height: number } {
+  const hasW = dir === 'w' || dir === 'nw' || dir === 'sw'
+  const hasN = dir === 'n' || dir === 'nw' || dir === 'ne'
+  const hasE = dir === 'e' || dir === 'ne' || dir === 'se'
+  const hasS = dir === 's' || dir === 'se' || dir === 'sw'
+
+  let { x, y, width: w, height: h } = orig
+  if (hasE) w = Math.max(MIN_W, w + dwx)
+  if (hasS) h = Math.max(MIN_H, h + dwy)
+  if (hasW) { const eff = Math.min(dwx, w - MIN_W); x += eff; w -= eff }
+  if (hasN) { const eff = Math.min(dwy, h - MIN_H); y += eff; h -= eff }
+  return { x, y, width: w, height: h }
+}
+
+export class NodeResize {
+  private canvas: HTMLCanvasElement
+  private overlay: HTMLCanvasElement
+  private ctx: CanvasRenderingContext2D
+  private viewport: Viewport
+  private graph: Graph
+  private onBeforeMutation: () => void
+  private onUpdate: () => void
+
+  private selectedNodeId: string | null = null
+  private hoveredDir: Dir | null = null
+  private dragState: {
+    handle: Handle
+    startWx: number
+    startWy: number
+    origNode: NodeData
+  } | null = null
+
+  private readonly onMouseMove: (e: MouseEvent) => void
+  private readonly onMouseDown: (e: MouseEvent) => void
+  private readonly onMouseUp:   () => void
+
+  constructor(
+    container: HTMLElement,
+    canvas: HTMLCanvasElement,
+    viewport: Viewport,
+    graph: Graph,
+    onBeforeMutation: () => void,
+    onUpdate: () => void,
+  ) {
+    this.canvas           = canvas
+    this.viewport         = viewport
+    this.graph            = graph
+    this.onBeforeMutation = onBeforeMutation
+    this.onUpdate         = onUpdate
+
+    this.overlay = document.createElement('canvas')
+    this.overlay.style.cssText =
+      'position:absolute;inset:0;pointer-events:none;z-index:2;'
+    container.appendChild(this.overlay)
+
+    const ctx = this.overlay.getContext('2d')
+    if (!ctx) throw new Error('NodeResize: 2d context unavailable')
+    this.ctx = ctx
+
+    this.onMouseMove = this.handleMouseMove.bind(this)
+    this.onMouseDown = this.handleMouseDown.bind(this)
+    this.onMouseUp   = this.handleMouseUp.bind(this)
+
+    canvas.addEventListener('mousemove',  this.onMouseMove)
+    canvas.addEventListener('mousedown',  this.onMouseDown)
+    window.addEventListener('mouseup',    this.onMouseUp)
+  }
+
+  setSelectedNode(id: string | null): void {
+    if (id !== this.selectedNodeId) {
+      this.selectedNodeId = id
+      if (!id) { this.hoveredDir = null; this.dragState = null }
+    }
+  }
+
+  isCapturing(): boolean { return this.dragState !== null }
+
+  isNearHandle(clientX: number, clientY: number): boolean {
+    return this.findHandle(clientX, clientY) !== null
+  }
+
+  private toScreen(clientX: number, clientY: number): [number, number] {
+    const r = this.canvas.getBoundingClientRect()
+    return [clientX - r.left, clientY - r.top]
+  }
+
+  private toWorld(clientX: number, clientY: number): [number, number] {
+    const [sx, sy] = this.toScreen(clientX, clientY)
+    return this.viewport.screenToWorld(sx, sy)
+  }
+
+  private findHandle(clientX: number, clientY: number): Handle | null {
+    if (!this.selectedNodeId) return null
+    const node = this.graph.getNode(this.selectedNodeId)
+    if (!node) return null
+    const [sx, sy] = this.toScreen(clientX, clientY)
+    for (const h of nodeHandles(node)) {
+      const [hx, hy] = this.viewport.worldToScreen(h.wx, h.wy)
+      if (Math.hypot(sx - hx, sy - hy) <= HIT_RADIUS) return h
+    }
+    return null
+  }
+
+  private handleMouseMove(e: MouseEvent): void {
+    if (this.dragState) {
+      const [wx, wy] = this.toWorld(e.clientX, e.clientY)
+      const dwx = wx - this.dragState.startWx
+      const dwy = wy - this.dragState.startWy
+      const updates = applyResize(this.dragState.origNode, this.dragState.handle.dir, dwx, dwy)
+      this.graph.updateNode(this.dragState.origNode.id, updates)
+      this.onUpdate()
+      return
+    }
+
+    const h = this.findHandle(e.clientX, e.clientY)
+    const newDir = h?.dir ?? null
+    if (newDir !== this.hoveredDir) {
+      this.hoveredDir = newDir
+      this.canvas.style.cursor = newDir ? DIR_CURSOR[newDir] : ''
+      this.onUpdate()
+    }
+  }
+
+  private handleMouseDown(e: MouseEvent): void {
+    if (e.button !== 0) return
+    const h = this.findHandle(e.clientX, e.clientY)
+    if (!h || !this.selectedNodeId) return
+    const node = this.graph.getNode(this.selectedNodeId)
+    if (!node) return
+    e.stopPropagation()
+    this.onBeforeMutation()
+    const [wx, wy] = this.toWorld(e.clientX, e.clientY)
+    this.dragState = { handle: h, startWx: wx, startWy: wy, origNode: { ...node } }
+  }
+
+  private handleMouseUp(): void {
+    if (this.dragState) {
+      this.dragState = null
+      this.canvas.style.cursor = this.hoveredDir ? DIR_CURSOR[this.hoveredDir] : ''
+    }
+  }
+
+  render(): void {
+    const { overlay, ctx, viewport } = this
+    const w = this.canvas.offsetWidth
+    const h = this.canvas.offsetHeight
+    if (overlay.width !== w || overlay.height !== h) {
+      overlay.width = w
+      overlay.height = h
+    }
+    ctx.clearRect(0, 0, w, h)
+
+    if (!this.selectedNodeId) return
+    const node = this.graph.getNode(this.selectedNodeId)
+    if (!node) return
+
+    for (const handle of nodeHandles(node)) {
+      const [sx, sy] = viewport.worldToScreen(handle.wx, handle.wy)
+      const isHovered = handle.dir === this.hoveredDir
+      ctx.fillStyle   = isHovered ? '#1a6ef5' : '#ffffff'
+      ctx.strokeStyle = '#1a6ef5'
+      ctx.lineWidth   = 1.5
+      ctx.beginPath()
+      ctx.rect(sx - HANDLE_HALF, sy - HANDLE_HALF, HANDLE_HALF * 2, HANDLE_HALF * 2)
+      ctx.fill()
+      ctx.stroke()
+    }
+  }
+
+  dispose(): void {
+    this.canvas.removeEventListener('mousemove',  this.onMouseMove)
+    this.canvas.removeEventListener('mousedown',  this.onMouseDown)
+    window.removeEventListener('mouseup',         this.onMouseUp)
+    this.overlay.remove()
+  }
+}
