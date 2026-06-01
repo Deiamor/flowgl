@@ -2,42 +2,37 @@ import type { Graph } from '../graph/graph'
 import type { Viewport } from '../viewport/viewport'
 import type { NodeData } from '../graph/node'
 
-type Dir = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
+type Dir = 'nw' | 'ne' | 'se' | 'sw'
 
-const HANDLE_HALF = 4    // CSS px — half side of handle square
-const HIT_RADIUS  = 8    // CSS px — pointer hit radius
+const HANDLE_HALF = 5    // CSS px — half side of handle square
+const HIT_RADIUS  = 10   // CSS px — pointer hit radius
 const MIN_W = 40
 const MIN_H = 30
 
 const DIR_CURSOR: Record<Dir, string> = {
-  nw: 'nw-resize', n: 'n-resize', ne: 'ne-resize', e: 'e-resize',
-  se: 'se-resize', s: 's-resize', sw: 'sw-resize', w: 'w-resize',
+  nw: 'nw-resize', ne: 'ne-resize',
+  se: 'se-resize', sw: 'sw-resize',
 }
 
 interface Handle { dir: Dir; wx: number; wy: number }
 
 function nodeHandles(node: NodeData): Handle[] {
   const { x, y, width: w, height: h } = node
-  const cx = x + w / 2, cy = y + h / 2
   return [
     { dir: 'nw', wx: x,     wy: y     },
-    { dir: 'n',  wx: cx,    wy: y     },
     { dir: 'ne', wx: x + w, wy: y     },
-    { dir: 'e',  wx: x + w, wy: cy    },
     { dir: 'se', wx: x + w, wy: y + h },
-    { dir: 's',  wx: cx,    wy: y + h },
     { dir: 'sw', wx: x,     wy: y + h },
-    { dir: 'w',  wx: x,     wy: cy    },
   ]
 }
 
 function applyResize(
   orig: NodeData, dir: Dir, dwx: number, dwy: number,
 ): { x: number; y: number; width: number; height: number } {
-  const hasW = dir === 'w' || dir === 'nw' || dir === 'sw'
-  const hasN = dir === 'n' || dir === 'nw' || dir === 'ne'
-  const hasE = dir === 'e' || dir === 'ne' || dir === 'se'
-  const hasS = dir === 's' || dir === 'se' || dir === 'sw'
+  const hasW = dir === 'nw' || dir === 'sw'
+  const hasN = dir === 'nw' || dir === 'ne'
+  const hasE = dir === 'ne' || dir === 'se'
+  const hasS = dir === 'se' || dir === 'sw'
 
   let { x, y, width: w, height: h } = orig
   if (hasE) w = Math.max(MIN_W, w + dwx)
