@@ -4,14 +4,16 @@ import type { EdgeData } from './edge'
 export class Graph {
   private nodes = new Map<string, NodeData>()
   private edges = new Map<string, EdgeData>()
-  // nodeId → set of edgeIds connected to it (for fast cascade-delete)
   private nodeEdgeIndex = new Map<string, Set<string>>()
+  // Increments on every mutation; renderers use this to skip work on static frames.
+  version = 0
 
   addNode(node: NodeData): void {
     this.nodes.set(node.id, { ...node })
     if (!this.nodeEdgeIndex.has(node.id)) {
       this.nodeEdgeIndex.set(node.id, new Set())
     }
+    this.version++
   }
 
   removeNode(id: string): void {
@@ -28,11 +30,15 @@ export class Graph {
     }
     this.nodes.delete(id)
     this.nodeEdgeIndex.delete(id)
+    this.version++
   }
 
   updateNode(id: string, updates: Partial<Omit<NodeData, 'id'>>): void {
     const node = this.nodes.get(id)
-    if (node) this.nodes.set(id, { ...node, ...updates })
+    if (node) {
+      this.nodes.set(id, { ...node, ...updates })
+      this.version++
+    }
   }
 
   addEdge(edge: EdgeData): void {
@@ -47,6 +53,7 @@ export class Graph {
     this.edges.set(edge.id, { ...edge })
     this.nodeEdgeIndex.get(edge.source)!.add(edge.id)
     this.nodeEdgeIndex.get(edge.target)!.add(edge.id)
+    this.version++
   }
 
   removeEdge(id: string): void {
@@ -56,6 +63,7 @@ export class Graph {
       this.nodeEdgeIndex.get(edge.target)?.delete(id)
     }
     this.edges.delete(id)
+    this.version++
   }
 
   updateEdge(id: string, updates: Partial<Omit<EdgeData, 'id'>>): void {
@@ -70,6 +78,7 @@ export class Graph {
       this.nodeEdgeIndex.get(updates.target)?.add(id)
     }
     this.edges.set(id, { ...edge, ...updates })
+    this.version++
   }
 
   getNode(id: string): NodeData | undefined {
@@ -100,5 +109,6 @@ export class Graph {
     this.nodes.clear()
     this.edges.clear()
     this.nodeEdgeIndex.clear()
+    this.version++
   }
 }

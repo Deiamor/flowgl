@@ -9,6 +9,16 @@ export declare class TextProgram {
     private atlas;
     private uMatrix;
     private uAtlas;
+    private quadCache;
+    private prevNodeIds;
+    private prevAtlasGeneration;
+    private scratch;
+    private prevNodeDrawCount;
+    private nodeRefCache;
+    private edgeLabelCache;
+    private prevLabeledEdgeIds;
+    private prevLabelAtlasGeneration;
+    private labelScratch;
     constructor(gl: WebGL2RenderingContext, atlas: TextAtlas);
     render(nodes: NodeData[], matrix: Float32Array): void;
     renderEdgeLabels(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array): void;

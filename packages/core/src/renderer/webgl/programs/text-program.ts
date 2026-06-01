@@ -86,6 +86,9 @@ export class TextProgram {
   private prevNodeIds: string[] = []
   private prevAtlasGeneration = -1
   private scratch = new Float32Array(0)
+  private prevNodeDrawCount = 0
+  // Reference-equality fast path: if nodeRef === stored ref, data hasn't changed
+  private nodeRefCache = new Map<string, NodeData>()
 
   // Per-edge-label quad cache
   private edgeLabelCache = new Map<string, { quad: Float32Array; key: string }>()
@@ -131,50 +134,37 @@ export class TextProgram {
     if (nodes.length === 0) return
     const gl = this.gl
 
-    // Pass 1: pre-warm atlas for all visible nodes — prevents mid-iteration eviction
-    for (const node of nodes) {
-      if (!node.label) continue
-      const style: NodeStyle = { ...DEFAULT_NODE_STYLE, ...node.style }
-      const font = `${style.fontSize}px ${style.fontFamily}`
-      const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2)
-      this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight)
-    }
-
     const gen = this.atlas.generation
 
     // On atlas eviction all cached UVs are stale — discard.
     if (gen !== this.prevAtlasGeneration) {
       this.quadCache.clear()
+      this.nodeRefCache.clear()
       this.prevAtlasGeneration = gen
     }
 
-    // Pass 2: fingerprint check; recompute only on cache miss
-    let dirty = false
+    // Step 1: find nodes whose quads need rebuilding.
+    // Uses NodeData reference equality first (O(1), no string alloc) before
+    // falling back to full fingerprint comparison.
+    const dirtyNodes: NodeData[] = []
     for (const node of nodes) {
       if (!node.label) continue
-      const style: NodeStyle = { ...DEFAULT_NODE_STYLE, ...node.style }
-      const font = `${style.fontSize}px ${style.fontFamily}`
-      const maxWidth = Math.max(0, node.width - TEXT_PADDING * 2)
-      const fp = `${node.x}|${node.y}|${node.width}|${node.height}|${node.label}|${font}|${style.textColor}|${style.lineHeight}`
+      if (this.nodeRefCache.get(node.id) === node && this.quadCache.has(node.id)) continue
 
-      const cached = this.quadCache.get(node.id)
-      if (cached?.key === fp) continue
-
-      const entry = this.atlas.getOrCreate(node.label, font, style.textColor, maxWidth, style.lineHeight)
-      if (!entry) continue
-
-      const cx = node.x + node.width  / 2
-      const cy = node.y + node.height / 2
-      const hw = entry.w / 2
-      const hh = entry.h / 2
-
-      const quad = new Float32Array(FLOATS_PER_QUAD)
-      writeQuad(quad, 0, cx - hw, cy - hh, cx + hw, cy + hh, entry.u0, entry.v0, entry.u1, entry.v1)
-      this.quadCache.set(node.id, { quad, key: fp })
-      dirty = true
+      // Ref changed or first time — check fingerprint before rebuilding
+      const fontSize   = node.style?.fontSize   ?? DEFAULT_NODE_STYLE.fontSize
+      const fontFamily = node.style?.fontFamily  ?? DEFAULT_NODE_STYLE.fontFamily
+      const textColor  = node.style?.textColor   ?? DEFAULT_NODE_STYLE.textColor
+      const lineHeight = node.style?.lineHeight  ?? DEFAULT_NODE_STYLE.lineHeight
+      const font = `${fontSize}px ${fontFamily}`
+      const fp = `${node.x}|${node.y}|${node.width}|${node.height}|${node.label}|${font}|${textColor}|${lineHeight}`
+      if (this.quadCache.get(node.id)?.key === fp) {
+        this.nodeRefCache.set(node.id, node)
+        continue
+      }
+      dirtyNodes.push(node)
     }
 
-    // Detect sort/count change
     const labeled = nodes.filter(n => n.label)
     let sortChanged = labeled.length !== this.prevNodeIds.length
     if (!sortChanged) {
@@ -182,33 +172,74 @@ export class TextProgram {
         if (labeled[i]!.id !== this.prevNodeIds[i]) { sortChanged = true; break }
       }
     }
-    const needsUpload = dirty || sortChanged
-
-    let drawCount = labeled.length * 6
+    const needsUpload = dirtyNodes.length > 0 || sortChanged
 
     if (needsUpload) {
+      // Pass 1: pre-warm atlas for ALL labeled nodes before computing any quads —
+      // prevents mid-loop atlas eviction from invalidating earlier entries.
+      for (const node of labeled) {
+        const fontSize   = node.style?.fontSize   ?? DEFAULT_NODE_STYLE.fontSize
+        const fontFamily = node.style?.fontFamily  ?? DEFAULT_NODE_STYLE.fontFamily
+        const textColor  = node.style?.textColor   ?? DEFAULT_NODE_STYLE.textColor
+        const lineHeight = node.style?.lineHeight  ?? DEFAULT_NODE_STYLE.lineHeight
+        const maxWidth   = Math.max(0, node.width - TEXT_PADDING * 2)
+        const font = `${fontSize}px ${fontFamily}`
+        this.atlas.getOrCreate(node.label!, font, textColor, maxWidth, lineHeight)
+      }
+
+      // Pass 2: build quads only for dirty nodes
+      for (const node of dirtyNodes) {
+        const fontSize   = node.style?.fontSize   ?? DEFAULT_NODE_STYLE.fontSize
+        const fontFamily = node.style?.fontFamily  ?? DEFAULT_NODE_STYLE.fontFamily
+        const textColor  = node.style?.textColor   ?? DEFAULT_NODE_STYLE.textColor
+        const lineHeight = node.style?.lineHeight  ?? DEFAULT_NODE_STYLE.lineHeight
+        const maxWidth   = Math.max(0, node.width - TEXT_PADDING * 2)
+        const font = `${fontSize}px ${fontFamily}`
+        const fp = `${node.x}|${node.y}|${node.width}|${node.height}|${node.label!}|${font}|${textColor}|${lineHeight}`
+        const entry = this.atlas.getOrCreate(node.label!, font, textColor, maxWidth, lineHeight)
+        if (!entry) continue
+
+        const cx = node.x + node.width  / 2
+        const cy = node.y + node.height / 2
+        const quad = new Float32Array(FLOATS_PER_QUAD)
+        writeQuad(quad, 0, cx - entry.w / 2, cy - entry.h / 2, cx + entry.w / 2, cy + entry.h / 2, entry.u0, entry.v0, entry.u1, entry.v1)
+        this.quadCache.set(node.id, { quad, key: fp })
+        this.nodeRefCache.set(node.id, node)
+      }
+
+      // Assemble combined buffer from cache
+      let drawCount = 0
       const totalFloats = labeled.length * FLOATS_PER_QUAD
       if (this.scratch.length < totalFloats) this.scratch = new Float32Array(totalFloats * 2)
       let offset = 0
       for (const node of labeled) {
         const cached = this.quadCache.get(node.id)
-        if (!cached) { drawCount -= 6; continue }
+        if (!cached) continue
         this.scratch.set(cached.quad, offset)
         offset += FLOATS_PER_QUAD
+        drawCount += 6
       }
       this.vertexBuffer.upload(this.scratch.subarray(0, offset))
       this.prevNodeIds = labeled.map(n => n.id)
-    }
+      this.prevNodeDrawCount = drawCount
 
-    // Evict stale quad cache entries
-    if (this.quadCache.size > labeled.length) {
-      const currentIds = new Set(labeled.map(n => n.id))
-      for (const id of this.quadCache.keys()) {
-        if (!currentIds.has(id)) this.quadCache.delete(id)
+      // Evict stale cache entries
+      if (this.quadCache.size > labeled.length) {
+        const currentIds = new Set(labeled.map(n => n.id))
+        for (const id of this.quadCache.keys()) {
+          if (!currentIds.has(id)) {
+            this.quadCache.delete(id)
+            this.nodeRefCache.delete(id)
+          }
+        }
       }
+
+      if (drawCount === 0) return
+    } else if (labeled.length === 0) {
+      return
     }
 
-    if (drawCount === 0) return
+    if (this.prevNodeDrawCount === 0) return
 
     this.atlas.flush(gl)
     gl.useProgram(this.program)
@@ -216,7 +247,7 @@ export class TextProgram {
     gl.uniform1i(this.uAtlas, 0)
     this.atlas.bind(gl, 0)
     gl.bindVertexArray(this.vao)
-    gl.drawArrays(gl.TRIANGLES, 0, drawCount)
+    gl.drawArrays(gl.TRIANGLES, 0, this.prevNodeDrawCount)
     gl.bindVertexArray(null)
   }
 

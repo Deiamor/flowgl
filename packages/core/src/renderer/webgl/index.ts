@@ -13,6 +13,8 @@ import { GridProgram } from './programs/grid-program'
 import { TextAtlas } from './atlas/text-atlas'
 import { parseColor } from './util/color'
 import { cullNodes, cullEdges } from './cull'
+import type { NodeData } from '../../graph/node'
+import type { EdgeData } from '../../graph/edge'
 
 export class WebGL2Renderer implements Renderer {
   private gl!: WebGL2RenderingContext
@@ -23,6 +25,19 @@ export class WebGL2Renderer implements Renderer {
   private gridProgram!:   GridProgram
   private atlas!: TextAtlas
   private dpr = 1
+
+  // Per-frame data cache — invalidated by graph.version or viewport change
+  private cachedGraphVersion = -1
+  private cachedVpX = NaN
+  private cachedVpY = NaN
+  private cachedVpZoom = NaN
+  private cachedVpWidth = NaN
+  private cachedVpHeight = NaN
+  private cachedAllNodes: NodeData[] = []
+  private cachedNodeMap:  Map<string, NodeData> = new Map()
+  private cachedAllEdges: EdgeData[] = []
+  private cachedVisNodes: NodeData[] = []
+  private cachedVisEdges: EdgeData[] = []
 
   initialize(canvas: HTMLCanvasElement, options: RendererOptions = {}): boolean {
     this.dpr = options.pixelRatio ?? window.devicePixelRatio ?? 1
@@ -68,14 +83,41 @@ export class WebGL2Renderer implements Renderer {
       this.gridProgram.render(viewport, grid.size, grid.type, grid.color)
     }
 
-    const matrix   = viewport.getMatrix()
-    const bounds   = viewport.getVisibleBounds()
-    const allNodes = graph.getNodes()
-    const nodeMap  = new Map(allNodes.map(n => [n.id, n]))
-    const allEdges = graph.getEdges()
+    const matrix = viewport.getMatrix()
 
-    const visNodes = cullNodes(allNodes, bounds)
-    const visEdges = cullEdges(allEdges, nodeMap, bounds)
+    // ── Rebuild cached data only when graph or viewport changed ───────────
+    const graphChanged   = graph.version !== this.cachedGraphVersion
+    const vpW = viewport.canvasWidth
+    const vpH = viewport.canvasHeight
+    const viewportChanged = (
+      viewport.x    !== this.cachedVpX    ||
+      viewport.y    !== this.cachedVpY    ||
+      viewport.zoom !== this.cachedVpZoom ||
+      vpW           !== this.cachedVpWidth ||
+      vpH           !== this.cachedVpHeight
+    )
+
+    if (graphChanged) {
+      this.cachedAllNodes = graph.getNodes()
+      this.cachedNodeMap  = new Map(this.cachedAllNodes.map(n => [n.id, n]))
+      this.cachedAllEdges = graph.getEdges()
+      this.cachedGraphVersion = graph.version
+    }
+
+    if (graphChanged || viewportChanged) {
+      const bounds = viewport.getVisibleBounds()
+      this.cachedVisNodes = cullNodes(this.cachedAllNodes, bounds)
+      this.cachedVisEdges = cullEdges(this.cachedAllEdges, this.cachedNodeMap, bounds)
+      this.cachedVpX      = viewport.x
+      this.cachedVpY      = viewport.y
+      this.cachedVpZoom   = viewport.zoom
+      this.cachedVpWidth  = vpW
+      this.cachedVpHeight = vpH
+    }
+
+    const visNodes = this.cachedVisNodes
+    const visEdges = this.cachedVisEdges
+    const nodeMap  = this.cachedNodeMap
 
     // Merge connect-drag target and reroute target for node highlight
     const connectTargetId = connectState?.targetNodeId ?? null

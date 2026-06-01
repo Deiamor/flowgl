@@ -15,6 +15,7 @@ export declare class TextAtlas {
     private shelfY;
     private shelfH;
     dirty: boolean;
+    generation: number;
     constructor();
     private key;
     getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor?: string): AtlasEntry | null;

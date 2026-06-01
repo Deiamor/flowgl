@@ -161,9 +161,12 @@ export class EdgeProgram {
     const gl = this.gl
 
     // Selected edges drawn last so they appear on top.
-    const sorted = [...edges].sort((a, b) =>
-      (selectedEdgeIds.has(a.id) ? 1 : 0) - (selectedEdgeIds.has(b.id) ? 1 : 0),
-    )
+    // Skip sort when nothing is selected — saves O(n log n) on static frames.
+    const sorted = selectedEdgeIds.size === 0
+      ? edges
+      : [...edges].sort((a, b) =>
+          (selectedEdgeIds.has(a.id) ? 1 : 0) - (selectedEdgeIds.has(b.id) ? 1 : 0),
+        )
 
     const valid: EdgeData[] = []
     for (const e of sorted) {

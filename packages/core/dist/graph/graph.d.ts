@@ -4,6 +4,7 @@ export declare class Graph {
     private nodes;
     private edges;
     private nodeEdgeIndex;
+    version: number;
     addNode(node: NodeData): void;
     removeNode(id: string): void;
     updateNode(id: string, updates: Partial<Omit<NodeData, 'id'>>): void;
