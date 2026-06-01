@@ -5,36 +5,43 @@ export const BEZIER_SEGMENTS = 16
 /**
  * Compute cubic bezier control points that respect handle exit/entry directions.
  *
- * Each handle side defines the direction the curve leaves (source) or enters (target):
- *   right  → exits/enters rightward  (+x)
- *   left   → exits/enters leftward   (-x)
- *   bottom → exits/enters downward   (+y)
- *   top    → exits/enters upward     (-y)
- *
- * Magnitude is clamped to [50, 150] world units so short connections always
- * produce a visible arc even when the two endpoints are very close.
+ * Uses axis-aware magnitude with a "backwards boost": when the target lies
+ * behind the source handle's exit direction, the control offset is increased
+ * using the cross-axis distance so the inflection point moves away from t≈0/1
+ * and the curve looks like a clean U-arc instead of a tight S.
  */
 export function edgeControlPoints(
   sx: number, sy: number, sourceHandle: string | undefined,
   ex: number, ey: number, targetHandle: string | undefined,
 ): [number, number, number, number] {
-  const dist = Math.hypot(ex - sx, ey - sy)
-  const mag  = Math.max(Math.min(dist * 0.5, 150), 50)
+  const dx    = ex - sx
+  const dy    = ey - sy
+  const absDx = Math.abs(dx)
+  const absDy = Math.abs(dy)
+
+  // Offset magnitude along a handle axis.
+  // forward=true  → target is ahead; proportional to axis distance (min 50).
+  // forward=false → target is behind; add cross-axis component so the U-curve
+  //                 extends far enough to avoid a pinched inflection near t=0/1.
+  const mag = (forward: boolean, axisDist: number, crossDist: number): number =>
+    forward
+      ? Math.max(axisDist * 0.4, 50)
+      : Math.max(axisDist * 0.4 + crossDist * 0.5, 80)
 
   let c1x: number, c1y: number
   switch (sourceHandle) {
-    case 'left':   c1x = sx - mag; c1y = sy;       break
-    case 'top':    c1x = sx;       c1y = sy - mag; break
-    case 'bottom': c1x = sx;       c1y = sy + mag; break
-    default:       c1x = sx + mag; c1y = sy;       break  // 'right' or undefined
+    case 'left':   c1x = sx - mag(dx <= 0, absDx, absDy); c1y = sy;                          break
+    case 'top':    c1x = sx;                               c1y = sy - mag(dy <= 0, absDy, absDx); break
+    case 'bottom': c1x = sx;                               c1y = sy + mag(dy >= 0, absDy, absDx); break
+    default:       c1x = sx + mag(dx >= 0, absDx, absDy); c1y = sy;                          break
   }
 
   let c2x: number, c2y: number
   switch (targetHandle) {
-    case 'right':  c2x = ex + mag; c2y = ey;       break
-    case 'top':    c2x = ex;       c2y = ey - mag; break
-    case 'bottom': c2x = ex;       c2y = ey + mag; break
-    default:       c2x = ex - mag; c2y = ey;       break  // 'left' or undefined
+    case 'right':  c2x = ex + mag(dx >= 0, absDx, absDy); c2y = ey;                          break
+    case 'top':    c2x = ex;                               c2y = ey - mag(dy <= 0, absDy, absDx); break
+    case 'bottom': c2x = ex;                               c2y = ey + mag(dy >= 0, absDy, absDx); break
+    default:       c2x = ex - mag(dx <= 0, absDx, absDy); c2y = ey;                          break
   }
 
   return [c1x, c1y, c2x, c2y]
@@ -84,13 +91,19 @@ export function buildBezierStrip(
       const [qx, qy] = pts[i - 1]!
       arcLen += Math.hypot(px - qx, py - qy)
     }
+    // Central difference for interior points: smoothly interpolates through
+    // inflection points, preventing the 180° normal flip that causes kinks.
     let nx: number, ny: number
-    if (i < segments) {
-      const [qx, qy] = pts[i + 1]!
+    if (i === 0) {
+      const [qx, qy] = pts[1]!
       nx = qy - py; ny = px - qx
-    } else {
-      const [qx, qy] = pts[i - 1]!
+    } else if (i === segments) {
+      const [qx, qy] = pts[segments - 1]!
       nx = py - qy; ny = qx - px
+    } else {
+      const [ax, ay] = pts[i - 1]!
+      const [bx, by] = pts[i + 1]!
+      nx = by - ay; ny = ax - bx
     }
     const len = Math.hypot(nx, ny) || 1
     const ux = nx / len * halfWidth, uy = ny / len * halfWidth
