@@ -9,6 +9,7 @@ export declare class EdgeProgram {
     private stripCache;
     private prevValidIds;
     private prevCombinedFloats;
+    private drawBatches;
     private scratch;
     private uMatrix;
     private uDashed;

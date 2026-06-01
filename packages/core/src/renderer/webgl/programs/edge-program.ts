@@ -74,12 +74,20 @@ function handleXY(node: NodeData, side: string | undefined): [number, number] {
   }
 }
 
-// Encodes all inputs that affect edge geometry into a single comparable string.
 function edgeFingerprint(
   src: NodeData, tgt: NodeData, edge: EdgeData,
   styleColor: string, styleWidth: number, isSelected: boolean,
 ): string {
   return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}`
+}
+
+// One GPU draw call covers a contiguous range of the combined VBO.
+interface DrawBatch {
+  vertStart: number
+  vertCount: number
+  dashed:  boolean
+  dashLen: number
+  gapLen:  number
 }
 
 export class EdgeProgram {
@@ -89,12 +97,14 @@ export class EdgeProgram {
   private vertexBuffer: DynamicBuffer
   private colorCache = new Map<string, [number, number, number, number]>()
 
-  // Per-edge geometry cache: recomputed only when fingerprint changes.
+  // Per-edge geometry cache.
   private stripCache = new Map<string, { strip: Float32Array; key: string }>()
   // Tracks the ordered edge IDs of the last uploaded combined buffer.
   private prevValidIds: string[] = []
   private prevCombinedFloats = 0
-  // Reusable assembly buffer for building the combined VBO on the CPU side.
+  // Batch descriptors reused every frame when buffer is not dirty.
+  private drawBatches: DrawBatch[] = []
+  // Reusable CPU-side assembly buffer.
   private scratch = new Float32Array(0)
 
   private uMatrix:  WebGLUniformLocation
@@ -143,8 +153,9 @@ export class EdgeProgram {
     selectedEdgeIds: Set<string> = new Set(),
   ): void {
     if (edges.length === 0) {
-      this.prevValidIds = []
+      this.prevValidIds     = []
       this.prevCombinedFloats = 0
+      this.drawBatches      = []
       return
     }
     const gl = this.gl
@@ -154,7 +165,6 @@ export class EdgeProgram {
       (selectedEdgeIds.has(a.id) ? 1 : 0) - (selectedEdgeIds.has(b.id) ? 1 : 0),
     )
 
-    // Keep only edges whose endpoints exist in the graph.
     const valid: EdgeData[] = []
     for (const e of sorted) {
       if (nodeMap.has(e.source) && nodeMap.has(e.target)) valid.push(e)
@@ -163,9 +173,8 @@ export class EdgeProgram {
 
     const vertsPerEdge  = (BEZIER_SEGMENTS + 1) * 2
     const floatsPerEdge = vertsPerEdge * EDGE_FLOATS_PER_VERT
-    const totalFloats   = valid.length * floatsPerEdge
 
-    // ── Step 1: per-edge fingerprint check; recompute only on cache miss ──
+    // ── Step 1: fingerprint check; recompute only on cache miss ───────────
     let dirty = false
     for (const edge of valid) {
       const src = nodeMap.get(edge.source)!
@@ -175,7 +184,7 @@ export class EdgeProgram {
       const fp = edgeFingerprint(src, tgt, edge, style.color, style.width, isSelected)
 
       const cached = this.stripCache.get(edge.id)
-      if (cached?.key === fp) continue  // geometry unchanged
+      if (cached?.key === fp) continue
 
       let [r, g, b, a] = parseColor(style.color, this.colorCache)
       if (isSelected) { r = 0.102; g = 0.451; b = 0.910; a = 1.0 }
@@ -192,7 +201,42 @@ export class EdgeProgram {
       dirty = true
     }
 
-    // ── Step 2: detect whether the combined buffer needs rebuilding ────────
+    // ── Step 2: group edges by dash config ────────────────────────────────
+    // Each unique dash config becomes one draw call (batched with degenerate
+    // vertices). Edges within a group retain their sorted order so selected
+    // edges remain on top within the non-dashed group.
+    interface EdgeGroup {
+      edges:   EdgeData[]
+      dashed:  boolean
+      dashLen: number
+      gapLen:  number
+    }
+    const groups: EdgeGroup[] = []
+    const groupIndex = new Map<string, number>()
+
+    for (const edge of valid) {
+      const isSelected = selectedEdgeIds.has(edge.id)
+      const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
+      const dashed  = !isSelected && !!style.dashArray
+      const dashLen = dashed ? (style.dashArray![0] ?? 8) : 8
+      const gapLen  = dashed ? (style.dashArray![1] ?? 4) : 4
+      const key     = dashed ? `${dashLen},${gapLen}` : ''
+
+      if (!groupIndex.has(key)) {
+        groupIndex.set(key, groups.length)
+        groups.push({ edges: [], dashed, dashLen, gapLen })
+      }
+      groups[groupIndex.get(key)!]!.edges.push(edge)
+    }
+
+    // Compute total float count including 2 degenerate vertices per intra-group gap.
+    let totalFloats = 0
+    for (const g of groups) {
+      totalFloats += g.edges.length * floatsPerEdge
+      if (g.edges.length > 1) totalFloats += (g.edges.length - 1) * 2 * EDGE_FLOATS_PER_VERT
+    }
+
+    // ── Step 3: detect whether combined buffer needs rebuilding ───────────
     let sortChanged = valid.length !== this.prevValidIds.length
     if (!sortChanged) {
       for (let i = 0; i < valid.length; i++) {
@@ -201,24 +245,54 @@ export class EdgeProgram {
     }
     const needsUpload = dirty || sortChanged || (totalFloats !== this.prevCombinedFloats)
 
-    // ── Step 3: assemble combined buffer and upload only when dirty ────────
+    // ── Step 4: assemble and upload only when dirty ───────────────────────
     if (needsUpload) {
-      if (this.scratch.length < totalFloats) {
-        this.scratch = new Float32Array(totalFloats * 2)
-      }
-      let offset = 0
-      for (const edge of valid) {
-        this.scratch.set(this.stripCache.get(edge.id)!.strip, offset)
-        offset += floatsPerEdge
-      }
-      this.vertexBuffer.upload(this.scratch.subarray(0, totalFloats))
-      this.prevValidIds     = valid.map(e => e.id)
-      this.prevCombinedFloats = totalFloats
-    }
-    // When !needsUpload the GPU buffer already holds the correct geometry —
-    // only the view matrix changes, which is set as a uniform below.
+      if (this.scratch.length < totalFloats) this.scratch = new Float32Array(totalFloats * 2)
 
-    // ── Step 4: evict cache entries for edges no longer in the graph ──────
+      const newBatches: DrawBatch[] = []
+      let elemOff = 0
+      let vertOff = 0
+
+      for (const group of groups) {
+        const batchVertStart = vertOff
+
+        for (let i = 0; i < group.edges.length; i++) {
+          const strip = this.stripCache.get(group.edges[i]!.id)!.strip
+          this.scratch.set(strip, elemOff)
+          elemOff += floatsPerEdge
+          vertOff += vertsPerEdge
+
+          if (i < group.edges.length - 1) {
+            // Degenerate stitch: repeat last vertex of this strip,
+            // then first vertex of the next strip. The GPU produces
+            // zero-area triangles and culls them, seamlessly joining
+            // the two strips into one draw call.
+            this.scratch.set(strip.subarray(strip.length - EDGE_FLOATS_PER_VERT), elemOff)
+            elemOff += EDGE_FLOATS_PER_VERT
+            const nextStrip = this.stripCache.get(group.edges[i + 1]!.id)!.strip
+            this.scratch.set(nextStrip.subarray(0, EDGE_FLOATS_PER_VERT), elemOff)
+            elemOff += EDGE_FLOATS_PER_VERT
+            vertOff += 2
+          }
+        }
+
+        newBatches.push({
+          vertStart: batchVertStart,
+          vertCount: vertOff - batchVertStart,
+          dashed:  group.dashed,
+          dashLen: group.dashLen,
+          gapLen:  group.gapLen,
+        })
+      }
+
+      this.vertexBuffer.upload(this.scratch.subarray(0, totalFloats))
+      this.prevValidIds       = valid.map(e => e.id)
+      this.prevCombinedFloats = totalFloats
+      this.drawBatches        = newBatches
+    }
+    // When !needsUpload the GPU buffer is current; only the view matrix changes.
+
+    // ── Step 5: evict stale cache entries ─────────────────────────────────
     if (this.stripCache.size > valid.length) {
       const currentIds = new Set(valid.map(e => e.id))
       for (const id of this.stripCache.keys()) {
@@ -226,24 +300,18 @@ export class EdgeProgram {
       }
     }
 
-    // ── Step 5: draw ──────────────────────────────────────────────────────
+    // ── Step 6: draw — one call per dash-config group ─────────────────────
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.bindVertexArray(this.vao)
 
-    let vertOffset = 0
-    for (const edge of valid) {
-      const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
-      const isSelected = selectedEdgeIds.has(edge.id)
-      if (!isSelected && style.dashArray) {
-        gl.uniform1i(this.uDashed, 1)
-        gl.uniform1f(this.uDashLen, style.dashArray[0] ?? 8)
-        gl.uniform1f(this.uGapLen,  style.dashArray[1] ?? 4)
-      } else {
-        gl.uniform1i(this.uDashed, 0)
+    for (const batch of this.drawBatches) {
+      gl.uniform1i(this.uDashed, batch.dashed ? 1 : 0)
+      if (batch.dashed) {
+        gl.uniform1f(this.uDashLen, batch.dashLen)
+        gl.uniform1f(this.uGapLen,  batch.gapLen)
       }
-      gl.drawArrays(gl.TRIANGLE_STRIP, vertOffset, vertsPerEdge)
-      vertOffset += vertsPerEdge
+      gl.drawArrays(gl.TRIANGLE_STRIP, batch.vertStart, batch.vertCount)
     }
 
     gl.bindVertexArray(null)
