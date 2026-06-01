@@ -152,6 +152,8 @@ export declare class FlowChart extends EventEmitter<FlowChartEvents> {
     getViewport(): ViewportState;
     setViewport(state: ViewportState): void;
     fitView(padding?: number): void;
+    /** Request a render on the next animation frame. Useful for continuous rendering in benchmarks. */
+    requestRender(): void;
     dispose(): void;
 }
 export {};

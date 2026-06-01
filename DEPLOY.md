@@ -11,7 +11,7 @@ pnpm dev          # starts Vite dev server at http://localhost:5173
 ### Build library
 ```bash
 pnpm build        # builds all packages via rollup
-# output: packages/core/dist/index.esm.js, index.cjs.js, index.d.ts
+# output: packages/core/dist/flowchart.esm.js, index.cjs.js, index.d.ts
 ```
 
 ### Publish (future)

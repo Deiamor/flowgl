@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Zero-dependency WebGL2 flowchart library",
   "keywords": ["flowchart", "webgl", "canvas", "diagram", "graph"],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/flowchart.esm.js",

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowChart Benchmark</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; }
+    #app { width: 100vw; height: 100vh; }
+
+    /* ── Top controls ─────────────────────────────────────────────── */
+    #controls {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 10px 16px;
+      background: rgba(14, 17, 40, 0.88); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    #controls h2 {
+      color: #e2e8f0; font-size: 14px; font-family: system-ui;
+      font-weight: 600; letter-spacing: .03em; white-space: nowrap;
+    }
+    .preset-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn {
+      padding: 6px 14px; border: none; border-radius: 6px;
+      background: #1e2d5a; color: #d1d5db; cursor: pointer;
+      font-size: 13px; font-family: system-ui; transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn:hover:not(:disabled) { background: #263872; }
+    .btn:disabled { opacity: .4; cursor: default; }
+    .btn.active { background: #3b5bdb; color: #fff; }
+    .btn.run-all { background: #1a5c3a; color: #6ee7b7; }
+    .btn.run-all:hover:not(:disabled) { background: #1f7046; }
+    #statusText {
+      color: #6b7280; font-size: 12px; font-family: system-ui;
+      min-width: 160px;
+    }
+    #statusText.running { color: #fbbf24; }
+    #statusText.done    { color: #34d399; }
+    .divider { width: 1px; height: 20px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+
+    /* ── Live stats bar ───────────────────────────────────────────── */
+    #live {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      display: flex; gap: 0; align-items: stretch;
+      background: rgba(14, 17, 40, 0.88); backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+    }
+    .stat-cell {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 6px 20px; gap: 2px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-label { color: #4b5563; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-value { color: #e5e7eb; font-size: 16px; font-weight: 600; min-width: 60px; text-align: center; }
+    .stat-value.green  { color: #34d399; }
+    .stat-value.yellow { color: #fbbf24; }
+    .stat-value.red    { color: #f87171; }
+
+    /* ── Results panel ────────────────────────────────────────────── */
+    #results {
+      position: fixed; right: 0; top: 50px; bottom: 40px; z-index: 20;
+      width: 480px;
+      background: rgba(14, 17, 40, 0.92); backdrop-filter: blur(8px);
+      border-left: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform .25s ease;
+    }
+    #results.visible { transform: translateX(0); }
+    #results h3 {
+      color: #9ca3af; font-size: 11px; text-transform: uppercase;
+      letter-spacing: .08em; font-family: system-ui;
+      padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    #results table {
+      width: 100%; border-collapse: collapse;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+    }
+    #results thead th {
+      padding: 8px 12px; color: #6b7280; font-size: 10px;
+      text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      text-align: right; background: rgba(0,0,0,0.2);
+    }
+    #results thead th:first-child { text-align: left; }
+    #results tbody td {
+      padding: 7px 12px; color: #d1d5db;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-align: right;
+    }
+    #results tbody td:first-child { text-align: left; color: #9ca3af; }
+    #results tbody tr:hover td { background: rgba(255,255,255,0.03); }
+    .fps-green  { color: #34d399 !important; font-weight: 600; }
+    .fps-yellow { color: #fbbf24 !important; font-weight: 600; }
+    .fps-red    { color: #f87171 !important; font-weight: 600; }
+
+    /* ── Progress bar ─────────────────────────────────────────────── */
+    #progressWrap {
+      position: fixed; top: 50px; left: 0; right: 0; z-index: 19;
+      height: 3px; background: rgba(255,255,255,0.06);
+      display: none;
+    }
+    #progressBar {
+      height: 100%; width: 0%; background: #3b5bdb;
+      transition: width .1s linear;
+    }
+
+    /* ── Toggle results button ────────────────────────────────────── */
+    #btnToggleResults {
+      position: fixed; right: 0; top: 50%; z-index: 21;
+      transform: translateY(-50%);
+      writing-mode: vertical-rl; text-orientation: mixed;
+      padding: 12px 6px;
+      background: rgba(30, 45, 90, 0.9); color: #9ca3af;
+      border: none; border-radius: 6px 0 0 6px;
+      cursor: pointer; font-size: 11px; font-family: system-ui;
+      letter-spacing: .06em; display: none;
+    }
+    #btnToggleResults:hover { background: rgba(38, 56, 114, 0.95); color: #d1d5db; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Top controls -->
+  <div id="controls">
+    <h2>Benchmark</h2>
+    <div class="divider"></div>
+    <div class="preset-group">
+      <button class="btn" data-n="100">100</button>
+      <button class="btn" data-n="500">500</button>
+      <button class="btn" data-n="1000">1 K</button>
+      <button class="btn" data-n="5000">5 K</button>
+      <button class="btn" data-n="10000">10 K</button>
+    </div>
+    <div class="divider"></div>
+    <button class="btn run-all" id="btnRunAll">▶ Run All</button>
+    <div class="divider"></div>
+    <span id="statusText">Ready — click a preset or Run All</span>
+  </div>
+
+  <!-- Progress bar -->
+  <div id="progressWrap"><div id="progressBar"></div></div>
+
+  <!-- Live stats -->
+  <div id="live">
+    <div class="stat-cell">
+      <span class="stat-label">Live FPS</span>
+      <span class="stat-value" id="liveFps">—</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-label">Frame ms</span>
+      <span class="stat-value" id="liveMs">—</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-label">Nodes</span>
+      <span class="stat-value" id="liveNodes">—</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-label">Edges</span>
+      <span class="stat-value" id="liveEdges">—</span>
+    </div>
+    <div class="stat-cell" style="border-right:none;margin-left:auto;">
+      <span class="stat-label">Browser</span>
+      <span class="stat-value" id="liveBrowser" style="font-size:11px;white-space:nowrap;">—</span>
+    </div>
+  </div>
+
+  <!-- Results panel -->
+  <div id="results">
+    <h3>Results</h3>
+    <div style="overflow-y:auto;flex:1;">
+      <table>
+        <thead>
+          <tr>
+            <th>Nodes</th>
+            <th>Edges</th>
+            <th>Avg FPS</th>
+            <th>Min FPS</th>
+            <th>P5 FPS</th>
+            <th>ms/frame</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Toggle results button -->
+  <button id="btnToggleResults">Results</button>
+
+  <script type="module">
+    import { FlowChart } from '@flowchart/core'
+
+    // ── Constants ──────────────────────────────────────────────────────────
+    const WARMUP_MS  = 800
+    const MEASURE_MS = 5000
+    const COLS       = { 100: 10, 500: 25, 1000: 40, 5000: 100, 10000: 125 }
+    const NODE_W = 160, NODE_H = 52, PITCH_X = 200, PITCH_Y = 110
+
+    // ── DOM refs ───────────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id)
+    const statusEl      = $('statusText')
+    const liveFpsEl     = $('liveFps')
+    const liveMsEl      = $('liveMs')
+    const liveNodesEl   = $('liveNodes')
+    const liveEdgesEl   = $('liveEdges')
+    const liveBrowserEl = $('liveBrowser')
+    const resultsBody   = $('resultsBody')
+    const progressWrap  = $('progressWrap')
+    const progressBar   = $('progressBar')
+    const resultsPanel  = $('results')
+    const toggleBtn     = $('btnToggleResults')
+
+    liveBrowserEl.textContent = navigator.userAgent.match(/Chrome\/[\d.]+|Firefox\/[\d.]+|Safari\/[\d.]+/)?.[0] ?? 'Unknown'
+
+    // ── FlowChart init ─────────────────────────────────────────────────────
+    const chart = new FlowChart({
+      container: $('app'),
+      background: '#1a1a2e',
+      grid: { visible: false },
+    })
+
+    // ── Scene generation ───────────────────────────────────────────────────
+    function generateScene(count) {
+      const cols = COLS[count] ?? Math.ceil(Math.sqrt(count * 1.5))
+      const nodes = [], edges = []
+      for (let i = 0; i < count; i++) {
+        const col = i % cols
+        const row = Math.floor(i / cols)
+        nodes.push({
+          id: `b${i}`,
+          x: col * PITCH_X,
+          y: row * PITCH_Y,
+          width: NODE_W,
+          height: NODE_H,
+          label: `Node ${i}`,
+        })
+        if (col > 0) edges.push({ id: `be${i}`, source: `b${i - 1}`, target: `b${i}` })
+      }
+      return { nodes, edges }
+    }
+
+    // ── Stats computation ──────────────────────────────────────────────────
+    function computeStats(nodeCount, edgeCount, deltas) {
+      const filtered = deltas.filter(d => d > 0 && d < 500)
+      if (filtered.length < 5) return null
+      const sorted = [...filtered].sort((a, b) => a - b)
+      const sum    = filtered.reduce((a, b) => a + b, 0)
+      const avgMs  = sum / filtered.length
+      const p95idx = Math.min(Math.floor(sorted.length * 0.95), sorted.length - 1)
+      return {
+        nodeCount,
+        edgeCount,
+        avgFps: 1000 / avgMs,
+        minFps: 1000 / sorted[sorted.length - 1],
+        p5Fps:  1000 / sorted[p95idx],
+        avgMs,
+      }
+    }
+
+    // ── Results table ──────────────────────────────────────────────────────
+    function fpsClass(fps) {
+      if (fps >= 55) return 'fps-green'
+      if (fps >= 28) return 'fps-yellow'
+      return 'fps-red'
+    }
+
+    function addResultRow(stats) {
+      const tr = document.createElement('tr')
+      tr.innerHTML = `
+        <td>${stats.nodeCount.toLocaleString()}</td>
+        <td>${stats.edgeCount.toLocaleString()}</td>
+        <td class="${fpsClass(stats.avgFps)}">${stats.avgFps.toFixed(1)}</td>
+        <td class="${fpsClass(stats.minFps)}">${stats.minFps.toFixed(1)}</td>
+        <td class="${fpsClass(stats.p5Fps)}">${stats.p5Fps.toFixed(1)}</td>
+        <td>${stats.avgMs.toFixed(2)}</td>
+      `
+      resultsBody.appendChild(tr)
+      resultsPanel.classList.add('visible')
+      toggleBtn.style.display = 'block'
+    }
+
+    // ── Core benchmark loop ────────────────────────────────────────────────
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)) }
+
+    async function runOne(count) {
+      statusEl.className = 'running'
+      statusEl.textContent = `Loading ${count.toLocaleString()} nodes…`
+
+      const { nodes, edges } = generateScene(count)
+      chart.setNodes(nodes)
+      chart.setEdges(edges)
+      chart.fitView()
+      liveNodesEl.textContent = count.toLocaleString()
+      liveEdgesEl.textContent = edges.length.toLocaleString()
+
+      await sleep(200)
+
+      // Warmup
+      statusEl.textContent = `Warming up…`
+      progressWrap.style.display = 'block'
+      progressBar.style.width = '0%'
+
+      const warmupEnd = performance.now() + WARMUP_MS
+      await new Promise(resolve => {
+        function warm(ts) {
+          chart.requestRender()
+          if (performance.now() < warmupEnd) requestAnimationFrame(warm)
+          else resolve()
+        }
+        requestAnimationFrame(warm)
+      })
+
+      // Measure
+      const frameDeltas = []
+      let lastTs = performance.now()
+      const measureStart = performance.now()
+      const measureEnd   = measureStart + MEASURE_MS
+      let liveFrameCount = 0, liveWindowStart = performance.now()
+
+      await new Promise(resolve => {
+        function measure(ts) {
+          const delta = ts - lastTs
+          lastTs = ts
+          if (delta > 0) frameDeltas.push(delta)
+
+          chart.requestRender()
+
+          // Progress bar
+          const elapsed = performance.now() - measureStart
+          progressBar.style.width = Math.min(100, (elapsed / MEASURE_MS) * 100) + '%'
+
+          // Live FPS (rolling 500ms window)
+          liveFrameCount++
+          const liveElapsed = performance.now() - liveWindowStart
+          if (liveElapsed >= 500) {
+            const fps = (liveFrameCount / liveElapsed) * 1000
+            const ms  = liveElapsed / liveFrameCount
+            liveFpsEl.textContent  = fps.toFixed(1)
+            liveMsEl.textContent   = ms.toFixed(2)
+            colorStatValue(liveFpsEl, fps)
+            liveFrameCount = 0
+            liveWindowStart = performance.now()
+          }
+
+          statusEl.textContent = `Measuring ${count.toLocaleString()} nodes… ${(elapsed / 1000).toFixed(1)}s / 5.0s`
+
+          if (performance.now() < measureEnd) requestAnimationFrame(measure)
+          else resolve()
+        }
+        requestAnimationFrame(measure)
+      })
+
+      progressWrap.style.display = 'none'
+      progressBar.style.width = '0%'
+
+      const stats = computeStats(count, edges.length, frameDeltas)
+      if (stats) addResultRow(stats)
+      return stats
+    }
+
+    function colorStatValue(el, fps) {
+      el.className = 'stat-value ' + (fps >= 55 ? 'green' : fps >= 28 ? 'yellow' : 'red')
+    }
+
+    // ── Button wiring ──────────────────────────────────────────────────────
+    let running = false
+
+    function setRunning(state) {
+      running = state
+      document.querySelectorAll('.btn').forEach(b => b.disabled = state)
+      if (!state) {
+        statusEl.className = 'done'
+        statusEl.textContent = 'Done'
+      }
+    }
+
+    document.querySelectorAll('[data-n]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (running) return
+        setRunning(true)
+        btn.classList.add('active')
+        await runOne(Number(btn.dataset.n))
+        btn.classList.remove('active')
+        setRunning(false)
+      })
+    })
+
+    $('btnRunAll').addEventListener('click', async () => {
+      if (running) return
+      setRunning(true)
+      resultsBody.innerHTML = ''
+      for (const count of [100, 500, 1000, 5000, 10000]) {
+        document.querySelector(`[data-n="${count}"]`)?.classList.add('active')
+        await runOne(count)
+        document.querySelector(`[data-n="${count}"]`)?.classList.remove('active')
+        await sleep(300)
+      }
+      setRunning(false)
+    })
+
+    toggleBtn.addEventListener('click', () => {
+      resultsPanel.classList.toggle('visible')
+    })
+  </script>
+</body>
+</html>

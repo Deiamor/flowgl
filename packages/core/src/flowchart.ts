@@ -677,6 +677,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.scheduleRender()
   }
 
+  /** Request a render on the next animation frame. Useful for continuous rendering in benchmarks. */
+  requestRender(): void { this.scheduleRender() }
+
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
   dispose(): void {

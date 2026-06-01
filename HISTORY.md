@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [chore] dist 정리 / MIT 라이선스 / 벤치마크 페이지 추가
+- Summary: dist/index.esm.js(구버전 ESM) 삭제. package.json license UNLICENSED→MIT, 루트 LICENSE 파일 생성. DEPLOY.md ESM 경로 수정(index.esm.js→flowchart.esm.js). FlowChart에 requestRender() 공개 메서드 추가. demo/benchmark.html 신규 작성 — 100/500/1K/5K/10K 노드 프리셋, 5초 측정, 인터랙션 활성 상태 avg/min/P5 FPS + ms/frame 결과 테이블.
+- Affected files: packages/core/dist/(index.esm.js 삭제), packages/core/package.json, LICENSE, DEPLOY.md, packages/core/src/flowchart.ts, demo/benchmark.html
+- Timestamp: 2026-06-01
+
 ## [fix + feature] 노드 드래그 충돌 수정 / 선택 / 연결 핸들
 - Summary: PanZoom·NodeDrag·ConnectDrag 3방향 우선순위 충돌 수정. 노드 클릭 선택(파란 테두리, Cmd 다중 선택), 핸들 드래그 연결(초록 target 하이라이트 + 점선 pending edge) 구현. connect 이벤트 발생 시 자동 addEdge.
 - Affected files: interaction/pan-zoom.ts, interaction/drag.ts, interaction/connect.ts(신규), renderer/webgl/programs/node-program.ts(+a_state), renderer/webgl/programs/handle-program.ts(신규), renderer/webgl/programs/edge-program.ts(bezier 유틸 분리), renderer/webgl/util/bezier.ts(신규), renderer/webgl/index.ts, flowchart.ts, demo/index.html
