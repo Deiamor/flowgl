@@ -174,15 +174,38 @@ export class EdgeProgram {
     const vertsPerEdge  = (BEZIER_SEGMENTS + 1) * 2
     const floatsPerEdge = vertsPerEdge * EDGE_FLOATS_PER_VERT
 
-    // ── Step 1: fingerprint check; recompute only on cache miss ───────────
+    // ── Step 1+2: fingerprint check + group by dash config (single pass) ───
+    // Merging both loops avoids computing { ...DEFAULT_EDGE_STYLE, ...edge.style }
+    // twice per edge per frame.
+    interface EdgeGroup {
+      edges:   EdgeData[]
+      dashed:  boolean
+      dashLen: number
+      gapLen:  number
+    }
+    const groups: EdgeGroup[] = []
+    const groupIndex = new Map<string, number>()
     let dirty = false
+
     for (const edge of valid) {
       const src = nodeMap.get(edge.source)!
       const tgt = nodeMap.get(edge.target)!
       const isSelected = selectedEdgeIds.has(edge.id)
       const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
-      const fp = edgeFingerprint(src, tgt, edge, style.color, style.width, isSelected)
 
+      // Dash grouping
+      const dashed  = !isSelected && !!style.dashArray
+      const dashLen = dashed ? (style.dashArray![0] ?? 8) : 8
+      const gapLen  = dashed ? (style.dashArray![1] ?? 4) : 4
+      const dashKey = dashed ? `${dashLen},${gapLen}` : ''
+      if (!groupIndex.has(dashKey)) {
+        groupIndex.set(dashKey, groups.length)
+        groups.push({ edges: [], dashed, dashLen, gapLen })
+      }
+      groups[groupIndex.get(dashKey)!]!.edges.push(edge)
+
+      // Fingerprint check; recompute geometry only on cache miss
+      const fp = edgeFingerprint(src, tgt, edge, style.color, style.width, isSelected)
       const cached = this.stripCache.get(edge.id)
       if (cached?.key === fp) continue
 
@@ -199,34 +222,6 @@ export class EdgeProgram {
       const strip = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth)
       this.stripCache.set(edge.id, { strip, key: fp })
       dirty = true
-    }
-
-    // ── Step 2: group edges by dash config ────────────────────────────────
-    // Each unique dash config becomes one draw call (batched with degenerate
-    // vertices). Edges within a group retain their sorted order so selected
-    // edges remain on top within the non-dashed group.
-    interface EdgeGroup {
-      edges:   EdgeData[]
-      dashed:  boolean
-      dashLen: number
-      gapLen:  number
-    }
-    const groups: EdgeGroup[] = []
-    const groupIndex = new Map<string, number>()
-
-    for (const edge of valid) {
-      const isSelected = selectedEdgeIds.has(edge.id)
-      const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
-      const dashed  = !isSelected && !!style.dashArray
-      const dashLen = dashed ? (style.dashArray![0] ?? 8) : 8
-      const gapLen  = dashed ? (style.dashArray![1] ?? 4) : 4
-      const key     = dashed ? `${dashLen},${gapLen}` : ''
-
-      if (!groupIndex.has(key)) {
-        groupIndex.set(key, groups.length)
-        groups.push({ edges: [], dashed, dashLen, gapLen })
-      }
-      groups[groupIndex.get(key)!]!.edges.push(edge)
     }
 
     // Compute total float count including 2 degenerate vertices per intra-group gap.
