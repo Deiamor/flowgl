@@ -153,16 +153,17 @@ export class EdgeProgram {
     selectedEdgeIds: Set<string> = new Set(),
   ): void {
     if (edges.length === 0) {
-      this.prevValidIds     = []
+      this.prevValidIds       = []
       this.prevCombinedFloats = 0
-      this.drawBatches      = []
+      this.drawBatches        = []
       return
     }
     const gl = this.gl
+    const selSize = selectedEdgeIds.size
 
     // Selected edges drawn last so they appear on top.
     // Skip sort when nothing is selected — saves O(n log n) on static frames.
-    const sorted = selectedEdgeIds.size === 0
+    const sorted = selSize === 0
       ? edges
       : [...edges].sort((a, b) =>
           (selectedEdgeIds.has(a.id) ? 1 : 0) - (selectedEdgeIds.has(b.id) ? 1 : 0),

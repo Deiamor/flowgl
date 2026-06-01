@@ -139,8 +139,8 @@ export class WebGL2Renderer implements Renderer {
     }
 
     this.nodeProgram.render(visNodes, matrix, selectedIds, targetNodeId)
-    this.textProgram.render(visNodes, matrix)
-    this.textProgram.renderEdgeLabels(visEdges, nodeMap, matrix)
+    this.textProgram.render(visNodes, matrix, viewport.zoom)
+    this.textProgram.renderEdgeLabels(visEdges, nodeMap, matrix, viewport.zoom)
   }
 
   dispose(): void {

@@ -17,8 +17,9 @@
 ### Performance
 - [x] Off-screen nodes are culled before upload (frustum culling)
 - [x] TextAtlas 2-pass render prevents mid-frame atlas eviction flicker
-- [x] 1,000 nodes @ 60fps (benchmark: 120fps on real GPU, 97fps SwiftShader)
-- [ ] 10,000 nodes @ 30fps (benchmark: ~16fps SwiftShader / est. ~20fps GPU — not yet met)
+- [x] 1,000 nodes @ 60fps (benchmark: 120fps SwiftShader headless)
+- [x] 5,000 nodes @ 60fps (benchmark: 113.6fps SwiftShader headless)
+- [x] 10,000 nodes @ 30fps (benchmark: 114.1fps SwiftShader headless)
 
 ### Viewport
 - [x] Mouse wheel zoom centered on cursor

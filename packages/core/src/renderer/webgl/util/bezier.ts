@@ -1,6 +1,6 @@
 // Floats per vertex for edge triangle-strip geometry
 export const EDGE_FLOATS_PER_VERT = 7  // pos(2) + arcLen(1) + color(4)
-export const BEZIER_SEGMENTS = 32
+export const BEZIER_SEGMENTS = 16
 
 /**
  * Compute cubic bezier control points that respect handle exit/entry directions.

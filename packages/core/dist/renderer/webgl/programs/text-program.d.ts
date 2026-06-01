@@ -20,8 +20,8 @@ export declare class TextProgram {
     private prevLabelAtlasGeneration;
     private labelScratch;
     constructor(gl: WebGL2RenderingContext, atlas: TextAtlas);
-    render(nodes: NodeData[], matrix: Float32Array): void;
-    renderEdgeLabels(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array): void;
+    render(nodes: NodeData[], matrix: Float32Array, zoom: number): void;
+    renderEdgeLabels(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array, zoom: number): void;
     dispose(): void;
 }
 //# sourceMappingURL=text-program.d.ts.map

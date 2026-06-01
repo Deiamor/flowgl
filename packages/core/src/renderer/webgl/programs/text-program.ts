@@ -130,8 +130,8 @@ export class TextProgram {
     this.uAtlas  = u('u_atlas')
   }
 
-  render(nodes: NodeData[], matrix: Float32Array): void {
-    if (nodes.length === 0) return
+  render(nodes: NodeData[], matrix: Float32Array, zoom: number): void {
+    if (nodes.length === 0 || zoom < 0.12) return
     const gl = this.gl
 
     const gen = this.atlas.generation
@@ -251,9 +251,9 @@ export class TextProgram {
     gl.bindVertexArray(null)
   }
 
-  renderEdgeLabels(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array): void {
+  renderEdgeLabels(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array, zoom: number): void {
     const labeled = edges.filter(e => e.label)
-    if (labeled.length === 0) return
+    if (labeled.length === 0 || zoom < 0.12) return
     const gl = this.gl
 
     // Pass 1: pre-warm atlas

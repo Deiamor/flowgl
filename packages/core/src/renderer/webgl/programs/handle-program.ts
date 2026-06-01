@@ -1,6 +1,6 @@
 import { createProgram } from '../context'
 import { DynamicBuffer } from '../buffers/dynamic-buffer'
-import { buildBezierStrip, edgeControlPoints, EDGE_FLOATS_PER_VERT } from '../util/bezier'
+import { buildBezierStrip, edgeControlPoints, EDGE_FLOATS_PER_VERT, BEZIER_SEGMENTS } from '../util/bezier'
 import { parseColor } from '../util/color'
 import { getHandlePositions } from '../../../interaction/connect'
 import { DEFAULT_NODE_STYLE } from '../../../graph/node'
@@ -297,7 +297,7 @@ export class HandleProgram {
     gl.uniform1f(this.uDashLen, 10 / zoom)
     gl.uniform1f(this.uGapLen,  5 / zoom)
     gl.bindVertexArray(this.edgeVao)
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, (32 + 1) * 2)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, (BEZIER_SEGMENTS + 1) * 2)
     gl.bindVertexArray(null)
   }
 
@@ -356,7 +356,7 @@ export class HandleProgram {
     gl.uniform1f(this.uDashLen, 10 / zoom)
     gl.uniform1f(this.uGapLen,  5  / zoom)
     gl.bindVertexArray(this.edgeVao)
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, (32 + 1) * 2)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, (BEZIER_SEGMENTS + 1) * 2)
     gl.bindVertexArray(null)
   }
 

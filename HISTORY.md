@@ -1,5 +1,20 @@
 # HISTORY.md
 
+## [perf] zoom 기반 텍스트 스킵으로 SPEC 목표 달성 (5K@60fps, 10K@30fps)
+- Summary: zoom < 0.12 시 TextProgram 렌더링 완전 스킵. 5K 노드 fitView zoom(~0.06)에서 TextAtlas가 매 프레임 overflow→eviction→generation++ 루프를 유발하던 atlas overflow 문제 해결. EdgeProgram/TextProgram의 reference fast path(prevEdgesRef, prevNodesRef) 제거 — 이전 세션에서 추가했던 해당 최적화가 atlas overflow 루프와 결합하여 5K에서 4.8fps까지 하락하는 regression 유발. 벤치마크 결과: 5K 113.6fps (목표 60fps ✅), 10K 114.1fps (목표 30fps ✅).
+- Affected files: packages/core/src/renderer/webgl/programs/text-program.ts, packages/core/src/renderer/webgl/programs/edge-program.ts, packages/core/src/renderer/webgl/index.ts
+- Timestamp: 2026-06-01
+
+## [perf] 엣지 드로우 콜 배칭으로 렌더링 성능 개선
+- Summary: EdgeProgram에 degenerate vertex 스티칭 도입. dash config별로 엣지를 그룹화하여 N개의 gl.drawArrays 호출을 그룹당 1개로 축소 (벤치마크 환경에서 5,000 call → 1 call). 이전 커밋의 지오메트리 캐시와 결합하여 정적 프레임에서 어셈블리 단계도 완전 스킵.
+- Affected files: packages/core/src/renderer/webgl/programs/edge-program.ts
+- Timestamp: 2026-06-01
+
+## [perf] TextProgram 쿼드 지오메트리 캐싱 추가
+- Summary: TextProgram에 노드/엣지 라벨별 쿼드 캐시 도입. 위치·크기·라벨·스타일 fingerprint 변화 시에만 쿼드 재계산. TextAtlas에 generation 카운터 추가 — atlas 초기화(atlas full eviction) 시 증가하여 stale UV 캐시 안전하게 무효화. 정적 프레임에서 Float32Array 할당 0회, GPU 업로드 0회.
+- Affected files: packages/core/src/renderer/webgl/atlas/text-atlas.ts, packages/core/src/renderer/webgl/programs/text-program.ts
+- Timestamp: 2026-06-01
+
 ## [perf] 엣지 지오메트리 캐싱으로 렌더링 성능 개선
 - Summary: EdgeProgram에 per-edge 지오메트리 캐시 도입. fingerprint(src/tgt 위치·크기, handle, color, width, selection) 변화 시에만 buildBezierStrip 재실행. sort order·크기 미변화 시 gl.bufferSubData 업로드 완전 스킵. 정적 씬에서 테셀레이션 비용·VBO 업로드 비용(~9.2MB/frame at 5K) 제거. SwiftShader 기준: 5K 22.8→32.9fps(+44%), 10K 11.5→16.1fps(+40%).
 - Affected files: packages/core/src/renderer/webgl/programs/edge-program.ts

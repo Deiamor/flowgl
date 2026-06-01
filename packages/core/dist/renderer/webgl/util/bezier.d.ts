@@ -1,5 +1,5 @@
 export declare const EDGE_FLOATS_PER_VERT = 7;
-export declare const BEZIER_SEGMENTS = 32;
+export declare const BEZIER_SEGMENTS = 16;
 /**
  * Compute cubic bezier control points that respect handle exit/entry directions.
  *

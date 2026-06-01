@@ -103,6 +103,13 @@ export class NodeProgram {
   private uMatrix: WebGLUniformLocation
   private scratch = new Float32Array(0)
 
+  // Instance-buffer cache: skip rebuild when nodes/selection/target are unchanged
+  private prevNodes: NodeData[] | null = null
+  private prevSelectedSize = -1
+  private prevSelectedJoined = ''
+  private prevTargetNodeId: string | null = null
+  private prevInstanceCount = 0
+
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl
     this.program = createProgram(gl, VERT, FRAG)
@@ -160,31 +167,50 @@ export class NodeProgram {
     if (nodes.length === 0) return
     const gl = this.gl
 
-    const needed = nodes.length * FLOATS_PER_INSTANCE
-    if (this.scratch.length < needed) this.scratch = new Float32Array(needed * 2)
-    const data = this.scratch
-    let i = 0
-    for (const node of nodes) {
-      const style: NodeStyle = { ...DEFAULT_NODE_STYLE, ...node.style }
-      const [fr, fg, fb, fa] = parseColor(style.backgroundColor)
-      const [sr, sg, sb, sa] = parseColor(style.borderColor)
+    // Fast path: rebuild instance buffer only when data actually changed.
+    // selectedIds is a mutated Set, so compare size + sorted-joined for correctness.
+    const selSize   = selectedIds.size
+    const selJoined = selSize === 0 ? '' : [...selectedIds].sort().join(',')
+    const dataChanged = (
+      nodes !== this.prevNodes          ||
+      nodes.length !== this.prevInstanceCount ||
+      selSize   !== this.prevSelectedSize   ||
+      selJoined !== this.prevSelectedJoined ||
+      targetNodeId !== this.prevTargetNodeId
+    )
 
-      let state = 0
-      if (selectedIds.has(node.id))     state = 1
-      else if (node.id === targetNodeId) state = 0.5
+    if (dataChanged) {
+      const needed = nodes.length * FLOATS_PER_INSTANCE
+      if (this.scratch.length < needed) this.scratch = new Float32Array(needed * 2)
+      const data = this.scratch
+      let i = 0
+      for (const node of nodes) {
+        const style: NodeStyle = { ...DEFAULT_NODE_STYLE, ...node.style }
+        const [fr, fg, fb, fa] = parseColor(style.backgroundColor)
+        const [sr, sg, sb, sa] = parseColor(style.borderColor)
 
-      data[i++] = node.x + node.width  / 2
-      data[i++] = node.y + node.height / 2
-      data[i++] = node.width
-      data[i++] = node.height
-      data[i++] = fr; data[i++] = fg; data[i++] = fb; data[i++] = fa
-      data[i++] = sr; data[i++] = sg; data[i++] = sb; data[i++] = sa
-      data[i++] = style.borderWidth
-      data[i++] = style.borderRadius
-      data[i++] = state
+        let state = 0
+        if (selectedIds.has(node.id))      state = 1
+        else if (node.id === targetNodeId)  state = 0.5
+
+        data[i++] = node.x + node.width  / 2
+        data[i++] = node.y + node.height / 2
+        data[i++] = node.width
+        data[i++] = node.height
+        data[i++] = fr; data[i++] = fg; data[i++] = fb; data[i++] = fa
+        data[i++] = sr; data[i++] = sg; data[i++] = sb; data[i++] = sa
+        data[i++] = style.borderWidth
+        data[i++] = style.borderRadius
+        data[i++] = state
+      }
+      this.instanceBuffer.upload(data.subarray(0, needed))
+      this.prevNodes         = nodes
+      this.prevInstanceCount = nodes.length
+      this.prevSelectedSize  = selSize
+      this.prevSelectedJoined = selJoined
+      this.prevTargetNodeId  = targetNodeId
     }
 
-    this.instanceBuffer.upload(data.subarray(0, needed))
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.bindVertexArray(this.vao)
