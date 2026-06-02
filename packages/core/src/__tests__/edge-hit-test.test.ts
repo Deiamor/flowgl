@@ -89,4 +89,39 @@ describe('EdgeHitTester', () => {
     const result = ht.findEdgeAt(edges, makeMap(nodes), 50, 125, 1)
     expect(result).not.toBeNull()
   })
+
+  it('very small zoom → large world-space threshold → hits edge from far away', () => {
+    // At zoom=0.01, threshold = 8/0.01 = 800 world units; anything within 800 units hits
+    const nodes = [nd('a', 0, 0), nd('b', 200, 0)]
+    const edges: EdgeData[] = [{ id: 'e1', source: 'a', target: 'b' }]
+    const result = ht.findEdgeAt(edges, makeMap(nodes), 150, 300, 0.01)
+    expect(result).not.toBeNull()
+  })
+
+  it('self-loop (source === target) — returns finite result, no crash', () => {
+    const nodes = [nd('a', 100, 100)]
+    const edges: EdgeData[] = [{ id: 'e1', source: 'a', target: 'a' }]
+    // Self-loop won't throw; result may or may not hit depending on curve shape
+    expect(() => ht.findEdgeAt(edges, makeMap(nodes), 200, 125, 1)).not.toThrow()
+  })
+
+  it('all four handle combinations — no crash', () => {
+    const nodes = [nd('a', 0, 0), nd('b', 200, 100)]
+    const sides = ['left', 'right', 'top', 'bottom'] as const
+    for (const src of sides) {
+      for (const tgt of sides) {
+        const edges: EdgeData[] = [{ id: 'e', source: 'a', target: 'b', sourceHandle: src, targetHandle: tgt }]
+        expect(() => ht.findEdgeAt(edges, makeMap(nodes), 100, 50, 1)).not.toThrow()
+      }
+    }
+  })
+
+  it('edge with named port handles — no crash', () => {
+    const nodes = [
+      nd('a', 0, 0, 100, 50, { ports: [{ id: 'out', side: 'right', offset: 0.5 }] }),
+      nd('b', 200, 0),
+    ]
+    const edges: EdgeData[] = [{ id: 'e1', source: 'a', target: 'b', sourceHandle: 'out' }]
+    expect(() => ht.findEdgeAt(edges, makeMap(nodes), 150, 25, 1)).not.toThrow()
+  })
 })
