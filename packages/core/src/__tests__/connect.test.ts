@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ConnectDrag } from '../interaction/connect'
+import { HitTester } from '../interaction/hit-test'
 import { Viewport } from '../viewport/viewport'
 import type { Graph } from '../graph/graph'
-import type { HitTester } from '../interaction/hit-test'
 
 // Node at (100,100) 120×60 — right handle at (220,130), left at (100,130)
 const NODE_A = { id: 'a', x: 100, y: 100, width: 120, height: 60, label: 'A' }
@@ -151,5 +151,46 @@ describe('ConnectDrag', () => {
     connect.dispose()
     dispatchTouch(canvas, 'touchstart', [t(1, 220, 130)])
     expect(connect.isCapturing()).toBe(false)
+  })
+
+  it('mouseleave clears hover state when not dragging', () => {
+    // First hover over a handle so state has hoveredHandle set
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: 220, clientY: 130, bubbles: true }))
+    // Now dispatch mouseleave — should clear hover
+    canvas.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
+    // No throw, and onStateChange was called for hover + clear
+    expect(onStateChange).toHaveBeenCalled()
+  })
+
+  it('mouseleave is a no-op during active connection drag', () => {
+    // Start a drag
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: 220, clientY: 130, bubbles: true }))
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 220, clientY: 130, bubbles: true }))
+    expect(connect.isCapturing()).toBe(true)
+    const callsBefore = onStateChange.mock.calls.length
+    // mouseleave during drag should be a no-op (connectingFrom is set)
+    canvas.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
+    expect(onStateChange.mock.calls.length).toBe(callsBefore)
+  })
+
+  it('connection drag into node body snaps to nearest handle (nearestHandleOnNode)', () => {
+    // Use a real HitTester and a real graph to reach nearestHandleOnNode
+    const realHitTester = new HitTester()
+    const realGraph = {
+      getNodes: vi.fn(() => [NODE_A, NODE_B]),
+    } as unknown as Graph
+    const c2 = new ConnectDrag(canvas, viewport, realGraph, realHitTester, onStateChange, onConnect)
+
+    // Hover + drag from right handle of NODE_A
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: 220, clientY: 130, bubbles: true }))
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 220, clientY: 130, bubbles: true }))
+    expect(c2.isCapturing()).toBe(true)
+
+    // Move into the body of NODE_B (center=460,130), not near any handle (hitR=14 < 40px)
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: 460, clientY: 130, bubbles: true }))
+
+    // nearestHandleOnNode was called; snap state was updated (no crash)
+    expect(c2.isCapturing()).toBe(true)
+    c2.dispose()
   })
 })

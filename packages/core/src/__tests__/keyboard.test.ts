@@ -15,6 +15,12 @@ function makeOpts() {
     onTabNext:   vi.fn(),
     onTabPrev:   vi.fn(),
     onArrowKey:  vi.fn(),
+    onCopy:             vi.fn(),
+    onPaste:            vi.fn(),
+    onCut:              vi.fn(),
+    onDuplicate:        vi.fn(),
+    onFitView:          vi.fn(),
+    onFitViewSelection: vi.fn(),
   }
 }
 
@@ -139,6 +145,43 @@ describe('KeyboardHandler', () => {
   ] as const)('calls onArrowKey with direction %s', (key) => {
     canvas.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }))
     expect(opts.onArrowKey).toHaveBeenCalledWith(key)
+  })
+
+  it('calls onCopy on Ctrl+C', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'c', ctrlKey: true, bubbles: true }))
+    expect(opts.onCopy).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls onCopy on Meta+C', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'c', metaKey: true, bubbles: true }))
+    expect(opts.onCopy).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls onPaste on Ctrl+V', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'v', ctrlKey: true, bubbles: true }))
+    expect(opts.onPaste).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls onCut on Ctrl+X', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'x', ctrlKey: true, bubbles: true }))
+    expect(opts.onCut).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls onDuplicate on Ctrl+D', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', ctrlKey: true, bubbles: true }))
+    expect(opts.onDuplicate).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls onFitView on F key', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'f', bubbles: true }))
+    expect(opts.onFitView).toHaveBeenCalledTimes(1)
+    expect(opts.onFitViewSelection).not.toHaveBeenCalled()
+  })
+
+  it('calls onFitViewSelection on Shift+F', () => {
+    canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'f', shiftKey: true, bubbles: true }))
+    expect(opts.onFitViewSelection).toHaveBeenCalledTimes(1)
+    expect(opts.onFitView).not.toHaveBeenCalled()
   })
 
   it('ignores Tab when targeting an INPUT element', () => {

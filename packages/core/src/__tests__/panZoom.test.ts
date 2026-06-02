@@ -118,6 +118,35 @@ describe('PanZoom', () => {
     blocked.dispose()
   })
 
+  it('2-finger touchstart initializes pinch tracking', () => {
+    dispatchTouch(canvas, 'touchstart', [t(100, 100), t(200, 100)])
+    // No pan should have happened (2-touch = pinch mode)
+    expect(viewport.x).toBe(0)
+    expect(viewport.y).toBe(0)
+  })
+
+  it('2-finger touchmove above MIN_PINCH_DIST zooms viewport', () => {
+    const initialZoom = viewport.zoom
+    // Start with 2 touches far apart (dist > MIN_PINCH_DIST=10)
+    dispatchTouch(canvas, 'touchstart', [t(100, 100), t(300, 100)])
+    // Move touches farther apart → zoom in
+    dispatchTouch(canvas, 'touchmove', [t(50, 100), t(350, 100)], [t(50, 100), t(350, 100)])
+    expect(onUpdate).toHaveBeenCalled()
+    expect(viewport.zoom).toBeGreaterThan(initialZoom)
+  })
+
+  it('touchend resets panning state', () => {
+    dispatchTouch(canvas, 'touchstart', [t(100, 100)])
+    expect(viewport.x).toBe(0)
+    const touchEndEvent = new Event('touchend', { bubbles: true, cancelable: true })
+    Object.defineProperty(touchEndEvent, 'touches', { value: [] })
+    Object.defineProperty(touchEndEvent, 'changedTouches', { value: [{ identifier: 1, clientX: 100, clientY: 100 }] })
+    canvas.dispatchEvent(touchEndEvent)
+    // After touchend, moving should not pan
+    dispatchTouch(canvas, 'touchmove', [t(200, 100)], [t(200, 100)])
+    expect(viewport.x).toBe(0)
+  })
+
   it('dispose() removes all listeners', () => {
     panZoom.dispose()
     canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 0, clientY: 0, bubbles: true }))

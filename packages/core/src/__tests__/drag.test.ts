@@ -207,4 +207,75 @@ describe('NodeDrag', () => {
     const [id] = onMove.mock.calls[0]!
     expect(id).toBe('n1')
   })
+
+  it('onStart receives the dragged node id', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+
+    new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 160, clientY: 130, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 210, clientY: 160, bubbles: true }))
+
+    expect(onStart).toHaveBeenCalledWith('n1')
+  })
+
+  it('co-selected nodes move with the dragged node', () => {
+    const other = { id: 'n2', x: 300, y: 200, width: 120, height: 60, label: 'other' }
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    ;(graph.getNode as ReturnType<typeof vi.fn>).mockImplementation((id: string) =>
+      id === 'n1' ? mockNode : id === 'n2' ? other : undefined,
+    )
+
+    const updateNode = graph.updateNode as ReturnType<typeof vi.fn>
+
+    new NodeDrag(
+      canvas, viewport, graph, hitTester,
+      onStart, onMove, onEnd,
+      undefined, undefined, undefined,
+      // getCoselected returns n2 as co-selected
+      () => ['n2'],
+    )
+
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 160, clientY: 130, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 210, clientY: 160, bubbles: true }))
+
+    // Both n1 and n2 should have been updated
+    const ids = updateNode.mock.calls.map((c: unknown[]) => c[0])
+    expect(ids).toContain('n1')
+    expect(ids).toContain('n2')
+  })
+
+  it('dispose() removes all event listeners so drag no longer fires', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+
+    const drag = new NodeDrag(canvas, viewport, graph, hitTester, onStart, onMove, onEnd)
+
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 160, clientY: 130, bubbles: true }))
+    drag.dispose()
+
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 210, clientY: 160, bubbles: true }))
+    expect(onMove).not.toHaveBeenCalled()
+  })
+
+  it('coselected node missing from graph returns null from map (null branch)', () => {
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    ;(graph.getNode as ReturnType<typeof vi.fn>).mockImplementation((id: string) =>
+      id === 'n1' ? mockNode : null,
+    )
+
+    new NodeDrag(
+      canvas, viewport, graph, hitTester,
+      onStart, onMove, onEnd,
+      undefined, undefined, undefined,
+      () => ['ghost'],
+    )
+
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 160, clientY: 130, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 210, clientY: 160, bubbles: true }))
+
+    // Ghost node is filtered out, only n1 is moved
+    const ids = (graph.updateNode as ReturnType<typeof vi.fn>).mock.calls.map((c: unknown[]) => c[0])
+    expect(ids).toContain('n1')
+    expect(ids).not.toContain('ghost')
+  })
 })

@@ -107,9 +107,10 @@ describe('BoxSelect', () => {
 
   it('dispose() prevents future events from firing', () => {
     const boxSelect = new BoxSelect(canvas, viewport, { shouldBlock: () => false, onSelect })
-    boxSelect.dispose()
-
+    // Start a drag first so shouldBlock is evaluated (covers the lambda at this position)
     canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, shiftKey: true, clientX: 100, clientY: 100, bubbles: true }))
+    boxSelect.dispose()
+    // After dispose, releasing the mouse should NOT trigger onSelect
     window.dispatchEvent(new MouseEvent('mouseup',   { clientX: 200, clientY: 200, bubbles: true }))
 
     expect(onSelect).not.toHaveBeenCalled()

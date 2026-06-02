@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { Graph } from '../graph/graph'
+import { shapeToFloat } from '../graph/node'
 import type { NodeData } from '../graph/node'
 import type { EdgeData } from '../graph/edge'
 
@@ -119,5 +120,21 @@ describe('Graph', () => {
     expect(g.getNodes()).toHaveLength(2)
     expect(Array.isArray(g.getEdges())).toBe(true)
     expect(g.getEdges()).toHaveLength(1)
+  })
+})
+
+describe('shapeToFloat', () => {
+  it('returns 0 for rectangle (default)', () => {
+    expect(shapeToFloat('rectangle')).toBe(0)
+    expect(shapeToFloat(undefined)).toBe(0)
+  })
+  it('returns 1 for circle', () => {
+    expect(shapeToFloat('circle')).toBe(1)
+  })
+  it('returns 2 for diamond', () => {
+    expect(shapeToFloat('diamond')).toBe(2)
+  })
+  it('returns 3 for hexagon', () => {
+    expect(shapeToFloat('hexagon')).toBe(3)
   })
 })
