@@ -3,9 +3,11 @@ import type { Viewport } from '../viewport/viewport'
 import type { HitTester } from './hit-test'
 import type { NodeData } from '../graph/node'
 
-export type NodeMoveHandler    = (id: string, x: number, y: number) => void
-export type NodeDragEndHandler = (id: string, x: number, y: number) => void
-export type NodeDragStartHandler = () => void
+export type NodeMoveHandler      = (id: string, x: number, y: number) => void
+export type NodeDragEndHandler   = (id: string, x: number, y: number) => void
+export type NodeDragStartHandler = (id: string) => void
+
+interface ChildOffset { id: string; dx: number; dy: number }
 
 export class NodeDrag {
   private canvas: HTMLCanvasElement
@@ -16,10 +18,14 @@ export class NodeDrag {
   private onMove: NodeMoveHandler
   private onEnd: NodeDragEndHandler
   private shouldBlock: (clientX: number, clientY: number) => boolean
+  private getSnapGrid: () => number
+  private getChildren: (nodeId: string) => string[]
+  private getCoselected: (nodeId: string) => string[]
 
   private dragging: NodeData | null = null
   private dragOffsetX = 0
   private dragOffsetY = 0
+  private dragChildren: ChildOffset[] = []
   private didMove = false
   private activeTouchId: number | null = null
 
@@ -39,15 +45,21 @@ export class NodeDrag {
     onMove: NodeMoveHandler,
     onEnd: NodeDragEndHandler,
     shouldBlock: (clientX: number, clientY: number) => boolean = () => false,
+    getSnapGrid: () => number = () => 0,
+    getChildren: (nodeId: string) => string[] = () => [],
+    getCoselected: (nodeId: string) => string[] = () => [],
   ) {
-    this.canvas       = canvas
-    this.viewport     = viewport
-    this.graph        = graph
-    this.hitTester    = hitTester
-    this.onStart      = onStart
-    this.onMove       = onMove
-    this.onEnd        = onEnd
-    this.shouldBlock  = shouldBlock
+    this.canvas        = canvas
+    this.viewport      = viewport
+    this.graph         = graph
+    this.hitTester     = hitTester
+    this.onStart       = onStart
+    this.onMove        = onMove
+    this.onEnd         = onEnd
+    this.shouldBlock   = shouldBlock
+    this.getSnapGrid   = getSnapGrid
+    this.getChildren   = getChildren
+    this.getCoselected = getCoselected
 
     this.onMouseDown  = this.handleMouseDown.bind(this)
     this.onMouseMove  = this.handleMouseMove.bind(this)
@@ -61,8 +73,13 @@ export class NodeDrag {
     window.addEventListener('mouseup',     this.onMouseUp)
     canvas.addEventListener('touchstart',  this.onTouchStart, { passive: false })
     canvas.addEventListener('touchmove',   this.onTouchMove,  { passive: false })
-    canvas.addEventListener('touchend',    this.onTouchEnd)
-    canvas.addEventListener('touchcancel', this.onTouchEnd)
+    canvas.addEventListener('touchend',    this.onTouchEnd,   { passive: false })
+    canvas.addEventListener('touchcancel', this.onTouchEnd,   { passive: false })
+  }
+
+  private snap(v: number): number {
+    const g = this.getSnapGrid()
+    return g > 0 ? Math.round(v / g) * g : v
   }
 
   private toWorld(clientX: number, clientY: number): [number, number] {
@@ -75,25 +92,33 @@ export class NodeDrag {
     if (this.shouldBlock(e.clientX, e.clientY)) return
     const [wx, wy] = this.toWorld(e.clientX, e.clientY)
     const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy)
-    if (!node) return
+    if (!node || node.locked) return
     e.stopPropagation()
     this.dragging    = node
     this.dragOffsetX = wx - node.x
     this.dragOffsetY = wy - node.y
     this.didMove     = false
+    const children   = this.getChildren(node.id)
+    const childSet   = new Set(children)
+    const coselected = this.getCoselected(node.id).filter(id => !childSet.has(id))
+    this.dragChildren = [...children, ...coselected].map(id => {
+      const n = this.graph.getNode(id)
+      return n ? { id, dx: n.x - node.x, dy: n.y - node.y } : null
+    }).filter(Boolean) as ChildOffset[]
     this.canvas.style.cursor = 'grab'
   }
 
   private handleMouseMove(e: MouseEvent): void {
     if (!this.dragging) return
     const [wx, wy] = this.toWorld(e.clientX, e.clientY)
-    const nx = wx - this.dragOffsetX
-    const ny = wy - this.dragOffsetY
+    const nx = this.snap(wx - this.dragOffsetX)
+    const ny = this.snap(wy - this.dragOffsetY)
     if (!this.didMove) {
-      this.onStart()
+      this.onStart(this.dragging.id)
       this.didMove = true
     }
     this.graph.updateNode(this.dragging.id, { x: nx, y: ny })
+    for (const c of this.dragChildren) this.graph.updateNode(c.id, { x: nx + c.dx, y: ny + c.dy })
     this.canvas.style.cursor = 'grabbing'
     this.onMove(this.dragging.id, nx, ny)
   }
@@ -112,7 +137,7 @@ export class NodeDrag {
     if (this.shouldBlock(touch.clientX, touch.clientY)) return
     const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
     const node = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy)
-    if (!node) return
+    if (!node || node.locked) return
     e.preventDefault()
     e.stopPropagation()
     this.activeTouchId = touch.identifier
@@ -120,6 +145,13 @@ export class NodeDrag {
     this.dragOffsetX   = wx - node.x
     this.dragOffsetY   = wy - node.y
     this.didMove       = false
+    const children     = this.getChildren(node.id)
+    const childSet     = new Set(children)
+    const coselected   = this.getCoselected(node.id).filter(id => !childSet.has(id))
+    this.dragChildren  = [...children, ...coselected].map(id => {
+      const n = this.graph.getNode(id)
+      return n ? { id, dx: n.x - node.x, dy: n.y - node.y } : null
+    }).filter(Boolean) as ChildOffset[]
     this.canvas.style.cursor = 'grab'
   }
 
@@ -129,13 +161,14 @@ export class NodeDrag {
     if (!touch) return
     e.preventDefault()
     const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
-    const nx = wx - this.dragOffsetX
-    const ny = wy - this.dragOffsetY
+    const nx = this.snap(wx - this.dragOffsetX)
+    const ny = this.snap(wy - this.dragOffsetY)
     if (!this.didMove) {
-      this.onStart()
+      this.onStart(this.dragging.id)
       this.didMove = true
     }
     this.graph.updateNode(this.dragging.id, { x: nx, y: ny })
+    for (const c of this.dragChildren) this.graph.updateNode(c.id, { x: nx + c.dx, y: ny + c.dy })
     this.canvas.style.cursor = 'grabbing'
     this.onMove(this.dragging.id, nx, ny)
   }

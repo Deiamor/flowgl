@@ -5,6 +5,7 @@ import type { TextAtlas } from '../atlas/text-atlas'
 import type { NodeData, NodeStyle } from '../../../graph/node'
 import { DEFAULT_NODE_STYLE } from '../../../graph/node'
 import type { EdgeData } from '../../../graph/edge'
+import { handleXY } from '../util/handle-xy'
 
 // Per-vertex: position(2) + uv(2) = 4 floats
 const FLOATS_PER_VERT = 4
@@ -44,17 +45,6 @@ void main() {
 }
 `
 
-function handleXY(node: NodeData, side: string | undefined): [number, number] {
-  const cx = node.x + node.width  / 2
-  const cy = node.y + node.height / 2
-  switch (side) {
-    case 'top':    return [cx, node.y]
-    case 'bottom': return [cx, node.y + node.height]
-    case 'left':   return [node.x, cy]
-    case 'right':  return [node.x + node.width, cy]
-    default:       return [node.x + node.width, cy]
-  }
-}
 
 function writeQuad(
   data: Float32Array,

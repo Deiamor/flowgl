@@ -1,9 +1,14 @@
 import { createProgram } from '../context'
 import { DynamicBuffer } from '../buffers/dynamic-buffer'
-import { buildBezierStrip, edgeControlPoints, EDGE_FLOATS_PER_VERT, BEZIER_SEGMENTS } from '../util/bezier'
+import {
+  buildBezierStrip, edgeControlPoints,
+  buildStraightStrip, buildPolylineStrip, stepWaypoints,
+  EDGE_FLOATS_PER_VERT, BEZIER_SEGMENTS,
+} from '../util/bezier'
 import type { EdgeData, EdgeStyle } from '../../../graph/edge'
 import { DEFAULT_EDGE_STYLE } from '../../../graph/edge'
 import type { NodeData } from '../../../graph/node'
+import { handleXY } from '../util/handle-xy'
 
 const VERT = /* glsl */ `#version 300 es
 precision highp float;
@@ -33,13 +38,14 @@ in vec4  v_color;
 uniform bool  u_dashed;
 uniform float u_dashLen;
 uniform float u_gapLen;
+uniform float u_dashOffset;
 
 out vec4 fragColor;
 
 void main() {
   if (u_dashed) {
     float period = u_dashLen + u_gapLen;
-    if (mod(v_arcLen, period) > u_dashLen) discard;
+    if (mod(v_arcLen - u_dashOffset, period) > u_dashLen) discard;
   }
   fragColor = v_color;
 }
@@ -62,32 +68,22 @@ function parseColor(
   return result
 }
 
-function handleXY(node: NodeData, side: string | undefined): [number, number] {
-  const cx = node.x + node.width  / 2
-  const cy = node.y + node.height / 2
-  switch (side) {
-    case 'top':    return [cx, node.y]
-    case 'bottom': return [cx, node.y + node.height]
-    case 'left':   return [node.x, cy]
-    case 'right':  return [node.x + node.width, cy]
-    default:       return [node.x + node.width, cy]
-  }
-}
-
 function edgeFingerprint(
   src: NodeData, tgt: NodeData, edge: EdgeData,
   styleColor: string, styleWidth: number, isSelected: boolean,
 ): string {
-  return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}`
+  const wpts = edge.waypoints ? edge.waypoints.map(w => `${w.x},${w.y}`).join(';') : ''
+  return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${edge.type ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}|${edge.animated ? 1 : 0}|${wpts}`
 }
 
 // One GPU draw call covers a contiguous range of the combined VBO.
 interface DrawBatch {
   vertStart: number
   vertCount: number
-  dashed:  boolean
-  dashLen: number
-  gapLen:  number
+  dashed:    boolean
+  dashLen:   number
+  gapLen:    number
+  animated:  boolean
 }
 
 export class EdgeProgram {
@@ -107,10 +103,11 @@ export class EdgeProgram {
   // Reusable CPU-side assembly buffer.
   private scratch = new Float32Array(0)
 
-  private uMatrix:  WebGLUniformLocation
-  private uDashed:  WebGLUniformLocation
-  private uDashLen: WebGLUniformLocation
-  private uGapLen:  WebGLUniformLocation
+  private uMatrix:     WebGLUniformLocation
+  private uDashed:     WebGLUniformLocation
+  private uDashLen:    WebGLUniformLocation
+  private uGapLen:     WebGLUniformLocation
+  private uDashOffset: WebGLUniformLocation
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl
@@ -140,10 +137,11 @@ export class EdgeProgram {
       if (!loc) throw new Error(`EdgeProgram: uniform '${name}' not found`)
       return loc
     }
-    this.uMatrix  = u('u_matrix')
-    this.uDashed  = u('u_dashed')
-    this.uDashLen = u('u_dashLen')
-    this.uGapLen  = u('u_gapLen')
+    this.uMatrix     = u('u_matrix')
+    this.uDashed     = u('u_dashed')
+    this.uDashLen    = u('u_dashLen')
+    this.uGapLen     = u('u_gapLen')
+    this.uDashOffset = u('u_dashOffset')
   }
 
   render(
@@ -151,6 +149,7 @@ export class EdgeProgram {
     nodeMap: Map<string, NodeData>,
     matrix: Float32Array,
     selectedEdgeIds: Set<string> = new Set(),
+    dashOffset = 0,
   ): void {
     if (edges.length === 0) {
       this.prevValidIds       = []
@@ -175,9 +174,6 @@ export class EdgeProgram {
     }
     if (valid.length === 0) return
 
-    const vertsPerEdge  = (BEZIER_SEGMENTS + 1) * 2
-    const floatsPerEdge = vertsPerEdge * EDGE_FLOATS_PER_VERT
-
     // ── Step 1: fingerprint check (hot path — no style spread) ───────────
     // Access only the two properties needed for the fingerprint directly,
     // deferring the full style spread to cache-miss paths only.
@@ -200,11 +196,23 @@ export class EdgeProgram {
 
       const [sx, sy] = handleXY(src, edge.sourceHandle ?? 'right')
       const [ex, ey] = handleXY(tgt, edge.targetHandle ?? 'left')
-      const [c1x, c1y, c2x, c2y] = edgeControlPoints(
-        sx, sy, edge.sourceHandle,
-        ex, ey, edge.targetHandle,
-      )
-      const strip = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth)
+
+      let strip: Float32Array
+      if (edge.waypoints && edge.waypoints.length > 0) {
+        const pts: [number, number][] = [[sx, sy], ...edge.waypoints.map(w => [w.x, w.y] as [number, number]), [ex, ey]]
+        strip = buildPolylineStrip(pts, r, g, b, a, halfWidth)
+      } else if (edge.type === 'straight') {
+        strip = buildStraightStrip(sx, sy, ex, ey, r, g, b, a, halfWidth)
+      } else if (edge.type === 'step') {
+        const pts = stepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
+        strip = buildPolylineStrip(pts, r, g, b, a, halfWidth)
+      } else {
+        const [c1x, c1y, c2x, c2y] = edgeControlPoints(
+          sx, sy, edge.sourceHandle,
+          ex, ey, edge.targetHandle,
+        )
+        strip = buildBezierStrip(sx, sy, c1x, c1y, c2x, c2y, ex, ey, r, g, b, a, halfWidth)
+      }
       this.stripCache.set(edge.id, { strip, key: fp })
       dirty = true
     }
@@ -223,10 +231,11 @@ export class EdgeProgram {
     // per-frame overhead on static scenes.
     if (needsUpload) {
       interface EdgeGroup {
-        edges:   EdgeData[]
-        dashed:  boolean
-        dashLen: number
-        gapLen:  number
+        edges:    EdgeData[]
+        dashed:   boolean
+        dashLen:  number
+        gapLen:   number
+        animated: boolean
       }
       const groups: EdgeGroup[] = []
       const groupIndex = new Map<string, number>()
@@ -234,20 +243,26 @@ export class EdgeProgram {
       for (const edge of valid) {
         const isSelected = selectedEdgeIds.has(edge.id)
         const style: EdgeStyle = { ...DEFAULT_EDGE_STYLE, ...edge.style }
-        const dashed  = !isSelected && !!style.dashArray
-        const dashLen = dashed ? (style.dashArray![0] ?? 8) : 8
-        const gapLen  = dashed ? (style.dashArray![1] ?? 4) : 4
-        const dashKey = dashed ? `${dashLen},${gapLen}` : ''
+        const animated = !!edge.animated
+        const dashed   = animated || (!isSelected && !!style.dashArray)
+        const dashLen  = dashed ? (style.dashArray?.[0] ?? 8) : 8
+        const gapLen   = dashed ? (style.dashArray?.[1] ?? 4) : 4
+        // Animated edges get a separate batch (prefixed with 'a:') so dashOffset
+        // applies only to them, not to ordinary dashed edges.
+        const dashKey  = animated ? `a:${dashLen},${gapLen}` : (dashed ? `${dashLen},${gapLen}` : '')
         if (!groupIndex.has(dashKey)) {
           groupIndex.set(dashKey, groups.length)
-          groups.push({ edges: [], dashed, dashLen, gapLen })
+          groups.push({ edges: [], dashed, dashLen, gapLen, animated })
         }
         groups[groupIndex.get(dashKey)!]!.edges.push(edge)
       }
 
+      // Compute exact buffer size from actual strip lengths (varies by edge type)
       let totalFloats = 0
       for (const g of groups) {
-        totalFloats += g.edges.length * floatsPerEdge
+        for (const edge of g.edges) {
+          totalFloats += this.stripCache.get(edge.id)!.strip.length
+        }
         if (g.edges.length > 1) totalFloats += (g.edges.length - 1) * 2 * EDGE_FLOATS_PER_VERT
       }
 
@@ -263,14 +278,12 @@ export class EdgeProgram {
         for (let i = 0; i < group.edges.length; i++) {
           const strip = this.stripCache.get(group.edges[i]!.id)!.strip
           this.scratch.set(strip, elemOff)
-          elemOff += floatsPerEdge
-          vertOff += vertsPerEdge
+          elemOff += strip.length
+          vertOff += strip.length / EDGE_FLOATS_PER_VERT
 
           if (i < group.edges.length - 1) {
             // Degenerate stitch: repeat last vertex of this strip,
-            // then first vertex of the next strip. The GPU produces
-            // zero-area triangles and culls them, seamlessly joining
-            // the two strips into one draw call.
+            // then first vertex of the next strip.
             this.scratch.set(strip.subarray(strip.length - EDGE_FLOATS_PER_VERT), elemOff)
             elemOff += EDGE_FLOATS_PER_VERT
             const nextStrip = this.stripCache.get(group.edges[i + 1]!.id)!.strip
@@ -283,9 +296,10 @@ export class EdgeProgram {
         newBatches.push({
           vertStart: batchVertStart,
           vertCount: vertOff - batchVertStart,
-          dashed:  group.dashed,
-          dashLen: group.dashLen,
-          gapLen:  group.gapLen,
+          dashed:   group.dashed,
+          dashLen:  group.dashLen,
+          gapLen:   group.gapLen,
+          animated: group.animated,
         })
       }
 
@@ -312,8 +326,11 @@ export class EdgeProgram {
     for (const batch of this.drawBatches) {
       gl.uniform1i(this.uDashed, batch.dashed ? 1 : 0)
       if (batch.dashed) {
-        gl.uniform1f(this.uDashLen, batch.dashLen)
-        gl.uniform1f(this.uGapLen,  batch.gapLen)
+        gl.uniform1f(this.uDashLen,    batch.dashLen)
+        gl.uniform1f(this.uGapLen,     batch.gapLen)
+        gl.uniform1f(this.uDashOffset, batch.animated ? dashOffset : 0.0)
+      } else {
+        gl.uniform1f(this.uDashOffset, 0.0)
       }
       gl.drawArrays(gl.TRIANGLE_STRIP, batch.vertStart, batch.vertCount)
     }

@@ -39,6 +39,9 @@ export class EdgeReroute {
   ) => void
 
   private state: RerouteState | null = null
+  private disabled = false
+
+  setDisabled(v: boolean): void { this.disabled = v }
 
   private readonly onMouseDown: (e: MouseEvent) => void
   private readonly onMouseMove: (e: MouseEvent) => void
@@ -104,8 +107,10 @@ export class EdgeReroute {
 
       const srcSide  = edge.sourceHandle ?? 'right'
       const tgtSide  = edge.targetHandle ?? 'left'
-      const srcH = getHandlePositions(src).find(h => h.side === srcSide) ?? getHandlePositions(src)[0]!
-      const tgtH = getHandlePositions(tgt).find(h => h.side === tgtSide) ?? getHandlePositions(tgt)[0]!
+      const srcHandles = getHandlePositions(src)
+      const tgtHandles = getHandlePositions(tgt)
+      const srcH = srcHandles.find(h => h.side === srcSide) ?? srcHandles[0]!
+      const tgtH = tgtHandles.find(h => h.side === tgtSide) ?? tgtHandles[0]!
 
       result.push({ wx: srcH.wx, wy: srcH.wy, edgeId, end: 'source' })
       result.push({ wx: tgtH.wx, wy: tgtH.wy, edgeId, end: 'target' })
@@ -118,18 +123,23 @@ export class EdgeReroute {
     return this.viewport.screenToWorld(clientX - r.left, clientY - r.top)
   }
 
-  private findTargetHandle(wx: number, wy: number, excludeNodeId: string): HandlePos | null {
+  private findTargetHandle(
+    wx: number, wy: number,
+    excludeHandle: { nodeId: string, side: string },
+  ): HandlePos | null {
     const hitR = HANDLE_HIT_PX / this.viewport.zoom
 
+    // Allow reconnecting to any handle except the exact one currently connected
     for (const node of this.graph.getNodes()) {
-      if (node.id === excludeNodeId) continue
       for (const h of getHandlePositions(node)) {
+        if (h.nodeId === excludeHandle.nodeId && h.side === excludeHandle.side) continue
         if (Math.hypot(wx - h.wx, wy - h.wy) <= hitR) return h
       }
     }
 
+    // Body-drop fallback: only for OTHER nodes (ambiguous which port on same node)
     const bodyNode = this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy)
-    if (!bodyNode || bodyNode.id === excludeNodeId) return null
+    if (!bodyNode || bodyNode.id === excludeHandle.nodeId) return null
 
     let best: HandlePos | null = null, bestDist = Infinity
     for (const h of getHandlePositions(bodyNode)) {
@@ -140,7 +150,7 @@ export class EdgeReroute {
   }
 
   private handleMouseDown(e: MouseEvent): void {
-    if (e.button !== 0) return
+    if (e.button !== 0 || this.disabled) return
     const circles = this.getEndpointCircles()
     if (circles.length === 0) return
 
@@ -156,15 +166,15 @@ export class EdgeReroute {
 
       let fixedHandle: HandlePos
       if (circle.end === 'source') {
-        // Moving source → fixed end is target
-        const tgt    = nodeMap.get(edge.target)!
+        const tgt     = nodeMap.get(edge.target)!
         const tgtSide = edge.targetHandle ?? 'left'
-        fixedHandle  = getHandlePositions(tgt).find(h => h.side === tgtSide) ?? getHandlePositions(tgt)[0]!
+        const tgtH    = getHandlePositions(tgt)
+        fixedHandle   = tgtH.find(h => h.side === tgtSide) ?? tgtH[0]!
       } else {
-        // Moving target → fixed end is source
-        const src    = nodeMap.get(edge.source)!
+        const src     = nodeMap.get(edge.source)!
         const srcSide = edge.sourceHandle ?? 'right'
-        fixedHandle  = getHandlePositions(src).find(h => h.side === srcSide) ?? getHandlePositions(src)[0]!
+        const srcH    = getHandlePositions(src)
+        fixedHandle   = srcH.find(h => h.side === srcSide) ?? srcH[0]!
       }
 
       // Block ConnectDrag and all other bubble-phase listeners on this element
@@ -193,8 +203,10 @@ export class EdgeReroute {
     const edge = this.graph.getEdge(this.state.edgeId)
     if (!edge) return
 
-    const excludeNodeId = this.state.movingEnd === 'source' ? edge.source : edge.target
-    const hit = this.findTargetHandle(wx, wy, excludeNodeId)
+    const excludeHandle = this.state.movingEnd === 'source'
+      ? { nodeId: edge.source, side: edge.sourceHandle ?? 'right' }
+      : { nodeId: edge.target, side: edge.targetHandle ?? 'left' }
+    const hit = this.findTargetHandle(wx, wy, excludeHandle)
 
     this.state = {
       ...this.state,

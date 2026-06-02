@@ -155,7 +155,7 @@ describe('EdgeReroute', () => {
     window.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
     expect(reroute.isCapturing()).toBe(false)
     expect(onReroute).not.toHaveBeenCalled()
-    const lastCall = onStateChange.mock.calls.at(-1)!
+    const lastCall = onStateChange.mock.calls[onStateChange.mock.calls.length - 1]!
     expect(lastCall[0]).toBeNull()
   })
 

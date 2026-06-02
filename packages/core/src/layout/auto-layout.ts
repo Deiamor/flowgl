@@ -212,6 +212,36 @@ export function forceLayout(
 }
 
 /**
+ * Arrange nodes evenly around a circle.
+ * The first node is placed at the top (−π/2) and the rest follow clockwise.
+ *
+ * @param nodes  Nodes to arrange.
+ * @param radius Circle radius in world units. Auto-sized when omitted.
+ */
+export function circularLayout(nodes: NodeData[], radius?: number): LayoutResult {
+  if (nodes.length === 0) return new Map()
+  if (nodes.length === 1) {
+    return new Map([[nodes[0]!.id, { x: 0, y: 0 }]])
+  }
+
+  const maxDim = Math.max(...nodes.map(n => Math.max(n.width, n.height)))
+  const r = radius ?? Math.max(150, nodes.length * (maxDim / 2 + 20))
+
+  const result: LayoutResult = new Map()
+  const step = (2 * Math.PI) / nodes.length
+
+  for (let i = 0; i < nodes.length; i++) {
+    const n     = nodes[i]!
+    const angle = i * step - Math.PI / 2
+    result.set(n.id, {
+      x: Math.round(r * Math.cos(angle) - n.width  / 2),
+      y: Math.round(r * Math.sin(angle) - n.height / 2),
+    })
+  }
+  return result
+}
+
+/**
  * Arrange nodes in a uniform grid, sorted by current x position.
  */
 export function gridLayout(nodes: NodeData[], gap = 40): LayoutResult {

@@ -52,7 +52,7 @@ export class PanZoom {
     canvas.addEventListener('wheel',      this.onWheel,      { passive: false })
     canvas.addEventListener('touchstart', this.onTouchStart, { passive: false })
     canvas.addEventListener('touchmove',  this.onTouchMove,  { passive: false })
-    canvas.addEventListener('touchend',   this.onTouchEnd)
+    canvas.addEventListener('touchend',   this.onTouchEnd,   { passive: false })
   }
 
   private offset(): { left: number; top: number } {

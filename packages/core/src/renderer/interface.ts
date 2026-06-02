@@ -7,7 +7,12 @@ export interface RendererOptions {
 }
 
 export interface Renderer {
-  initialize(canvas: HTMLCanvasElement, options?: RendererOptions): boolean
+  initialize(
+    canvas: HTMLCanvasElement,
+    options?: RendererOptions,
+    onContextLost?: () => void,
+    onContextRestored?: () => void,
+  ): boolean
   render(graph: Graph, viewport: Viewport): void
   resize(width: number, height: number): void
   dispose(): void

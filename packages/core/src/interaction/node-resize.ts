@@ -50,9 +50,13 @@ export class NodeResize {
   private graph: Graph
   private onBeforeMutation: () => void
   private onUpdate: () => void
+  private onResizeEnd: (id: string, x: number, y: number, width: number, height: number) => void
 
   private selectedNodeId: string | null = null
   private hoveredDir: Dir | null = null
+  private disabled = false
+
+  setDisabled(v: boolean): void { this.disabled = v }
   private dragState: {
     handle: Handle
     startWx: number
@@ -71,12 +75,14 @@ export class NodeResize {
     graph: Graph,
     onBeforeMutation: () => void,
     onUpdate: () => void,
+    onResizeEnd: (id: string, x: number, y: number, width: number, height: number) => void = () => {},
   ) {
     this.canvas           = canvas
     this.viewport         = viewport
     this.graph            = graph
     this.onBeforeMutation = onBeforeMutation
     this.onUpdate         = onUpdate
+    this.onResizeEnd      = onResizeEnd
 
     this.overlay = document.createElement('canvas')
     this.overlay.style.cssText =
@@ -122,7 +128,7 @@ export class NodeResize {
   private findHandle(clientX: number, clientY: number): Handle | null {
     if (!this.selectedNodeId) return null
     const node = this.graph.getNode(this.selectedNodeId)
-    if (!node) return null
+    if (!node || node.locked) return null
     const [sx, sy] = this.toScreen(clientX, clientY)
     for (const h of nodeHandles(node)) {
       const [hx, hy] = this.viewport.worldToScreen(h.wx, h.wy)
@@ -152,7 +158,7 @@ export class NodeResize {
   }
 
   private handleMouseDown(e: MouseEvent): void {
-    if (e.button !== 0) return
+    if (e.button !== 0 || this.disabled) return
     const h = this.findHandle(e.clientX, e.clientY)
     if (!h || !this.selectedNodeId) return
     const node = this.graph.getNode(this.selectedNodeId)
@@ -165,6 +171,8 @@ export class NodeResize {
 
   private handleMouseUp(): void {
     if (this.dragState) {
+      const node = this.graph.getNode(this.dragState.origNode.id)
+      if (node) this.onResizeEnd(node.id, node.x, node.y, node.width, node.height)
       this.dragState = null
       this.canvas.style.cursor = this.hoveredDir ? DIR_CURSOR[this.hoveredDir] : ''
     }

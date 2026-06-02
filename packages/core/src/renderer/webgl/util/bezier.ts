@@ -1,6 +1,121 @@
 // Floats per vertex for edge triangle-strip geometry
 export const EDGE_FLOATS_PER_VERT = 7  // pos(2) + arcLen(1) + color(4)
-export const BEZIER_SEGMENTS = 16
+export const BEZIER_SEGMENTS = 32
+
+/**
+ * Compute waypoints for an orthogonal (step) edge.
+ * The path exits source in the handle direction, turns 90°, and enters target
+ * from the opposite of targetHandle's direction.
+ */
+export function stepWaypoints(
+  sx: number, sy: number, sourceHandle: string | undefined,
+  ex: number, ey: number, targetHandle: string | undefined,
+): [number, number][] {
+  const isH = (h: string | undefined) => h === 'left' || h === 'right' || h == null
+  const srcH = isH(sourceHandle)
+  const tgtH = isH(targetHandle)
+
+  if (srcH && tgtH) {
+    const mx = (sx + ex) / 2
+    return [[sx, sy], [mx, sy], [mx, ey], [ex, ey]]
+  }
+  if (!srcH && !tgtH) {
+    const my = (sy + ey) / 2
+    return [[sx, sy], [sx, my], [ex, my], [ex, ey]]
+  }
+  if (srcH && !tgtH) {
+    return [[sx, sy], [ex, sy], [ex, ey]]
+  }
+  return [[sx, sy], [sx, ey], [ex, ey]]
+}
+
+/**
+ * Build a triangle strip for a straight line between two points.
+ */
+export function buildStraightStrip(
+  sx: number, sy: number,
+  ex: number, ey: number,
+  r: number, g: number, b: number, a: number,
+  halfWidth: number,
+): Float32Array {
+  const dx = ex - sx, dy = ey - sy
+  const len = Math.hypot(dx, dy) || 1
+  const ux = (-dy / len) * halfWidth, uy = (dx / len) * halfWidth
+  const arcLen = len
+  const data = new Float32Array(4 * EDGE_FLOATS_PER_VERT)
+  let c = 0
+  const write = (x: number, y: number, arc: number): void => {
+    data[c++] = x; data[c++] = y; data[c++] = arc
+    data[c++] = r; data[c++] = g; data[c++] = b; data[c++] = a
+  }
+  write(sx + ux, sy + uy, 0)
+  write(sx - ux, sy - uy, 0)
+  write(ex + ux, ey + uy, arcLen)
+  write(ex - ux, ey - uy, arcLen)
+  return data
+}
+
+/**
+ * Build a triangle strip for a polyline (step/orthogonal routing).
+ * Miters corners by computing per-vertex normals from adjacent segments.
+ */
+export function buildPolylineStrip(
+  pts: [number, number][],
+  r: number, g: number, b: number, a: number,
+  halfWidth: number,
+): Float32Array {
+  if (pts.length < 2) return new Float32Array(0)
+
+  const n = pts.length
+  const data = new Float32Array(n * 2 * EDGE_FLOATS_PER_VERT)
+  let c = 0, arcLen = 0
+
+  const write = (x: number, y: number, arc: number): void => {
+    data[c++] = x; data[c++] = y; data[c++] = arc
+    data[c++] = r; data[c++] = g; data[c++] = b; data[c++] = a
+  }
+
+  for (let i = 0; i < n; i++) {
+    const [px, py] = pts[i]!
+    if (i > 0) {
+      const [qx, qy] = pts[i - 1]!
+      arcLen += Math.hypot(px - qx, py - qy)
+    }
+
+    let nx: number, ny: number
+    if (i === 0) {
+      const [qx, qy] = pts[1]!
+      const dx = qx - px, dy = qy - py
+      const l = Math.hypot(dx, dy) || 1
+      nx = -dy / l; ny = dx / l
+    } else if (i === n - 1) {
+      const [qx, qy] = pts[n - 2]!
+      const dx = px - qx, dy = py - qy
+      const l = Math.hypot(dx, dy) || 1
+      nx = -dy / l; ny = dx / l
+    } else {
+      // Miter: average the two segment normals
+      const [ax, ay] = pts[i - 1]!
+      const [bx, by] = pts[i + 1]!
+      const d1x = px - ax, d1y = py - ay
+      const d2x = bx - px, d2y = by - py
+      const l1 = Math.hypot(d1x, d1y) || 1
+      const l2 = Math.hypot(d2x, d2y) || 1
+      const n1x = -d1y / l1, n1y = d1x / l1
+      const n2x = -d2y / l2, n2y = d2x / l2
+      nx = (n1x + n2x) / 2
+      ny = (n1y + n2y) / 2
+      // Normalize miter length to maintain halfWidth
+      const ml = Math.hypot(nx, ny) || 1
+      nx /= ml; ny /= ml
+    }
+
+    const ux = nx * halfWidth, uy = ny * halfWidth
+    write(px + ux, py + uy, arcLen)
+    write(px - ux, py - uy, arcLen)
+  }
+  return data
+}
 
 /**
  * Compute cubic bezier control points that respect handle exit/entry directions.
@@ -23,9 +138,11 @@ export function edgeControlPoints(
   // forward=true  → target is ahead; proportional to axis distance (min 50).
   // forward=false → target is behind; add cross-axis component so the U-curve
   //                 extends far enough to avoid a pinched inflection near t=0/1.
+  // forward: cap at axisDist*0.45 so c1 never crosses c2 (prevents S-kink).
+  // backward: boost with cross-axis so U-curve inflection stays away from t≈0/1.
   const mag = (forward: boolean, axisDist: number, crossDist: number): number =>
     forward
-      ? Math.max(axisDist * 0.4, 50)
+      ? Math.min(Math.max(Math.hypot(axisDist, crossDist) * 0.35, 40), axisDist * 0.45)
       : Math.max(axisDist * 0.4 + crossDist * 0.5, 80)
 
   let c1x: number, c1y: number

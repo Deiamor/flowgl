@@ -1,14 +1,20 @@
 type ArrowDirection = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight'
 
 export interface KeyboardOptions {
-  onDelete:    () => void
-  onEscape:    () => void
-  onSelectAll: () => void
-  onUndo:      () => void
-  onRedo:      () => void
-  onTabNext:   () => void
-  onTabPrev:   () => void
-  onArrowKey:  (direction: ArrowDirection) => void
+  onDelete:          () => void
+  onEscape:          () => void
+  onSelectAll:       () => void
+  onUndo:            () => void
+  onRedo:            () => void
+  onTabNext:         () => void
+  onTabPrev:         () => void
+  onArrowKey:        (direction: ArrowDirection) => void
+  onCopy:            () => void
+  onPaste:           () => void
+  onCut:             () => void
+  onDuplicate:       () => void
+  onFitView:         () => void
+  onFitViewSelection:() => void
 }
 
 const EDITING_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT'])
@@ -61,6 +67,37 @@ export class KeyboardHandler {
           if (e.metaKey || e.ctrlKey) {
             e.preventDefault()
             opts.onSelectAll()
+          }
+          break
+        case 'c':
+          if (e.metaKey || e.ctrlKey) {
+            e.preventDefault()
+            opts.onCopy()
+          }
+          break
+        case 'v':
+          if (e.metaKey || e.ctrlKey) {
+            e.preventDefault()
+            opts.onPaste()
+          }
+          break
+        case 'x':
+          if (e.metaKey || e.ctrlKey) {
+            e.preventDefault()
+            opts.onCut()
+          }
+          break
+        case 'd':
+          if (e.metaKey || e.ctrlKey) {
+            e.preventDefault()
+            opts.onDuplicate()
+          }
+          break
+        case 'f':
+          if (!e.metaKey && !e.ctrlKey) {
+            e.preventDefault()
+            if (e.shiftKey) opts.onFitViewSelection()
+            else opts.onFitView()
           }
           break
       }

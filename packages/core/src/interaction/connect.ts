@@ -3,7 +3,7 @@ import type { NodeData } from '../graph/node'
 import type { Viewport } from '../viewport/viewport'
 import type { HitTester } from './hit-test'
 
-export type HandleSide = 'top' | 'right' | 'bottom' | 'left'
+export type HandleSide = 'top' | 'right' | 'bottom' | 'left' | (string & {})
 
 export interface HandlePos {
   nodeId: string
@@ -28,6 +28,22 @@ const HANDLE_HIT_PX = 14
 export function getHandlePositions(node: NodeData): HandlePos[] {
   const cx = node.x + node.width  / 2
   const cy = node.y + node.height / 2
+
+  if (node.ports && node.ports.length > 0) {
+    return node.ports.map(port => {
+      const off = port.offset ?? 0.5
+      let wx: number, wy: number
+      switch (port.side) {
+        case 'left':   wx = node.x;               wy = node.y + off * node.height; break
+        case 'right':  wx = node.x + node.width;  wy = node.y + off * node.height; break
+        case 'top':    wx = node.x + off * node.width; wy = node.y;                break
+        case 'bottom': wx = node.x + off * node.width; wy = node.y + node.height;  break
+        default:       wx = node.x + node.width;  wy = cy
+      }
+      return { nodeId: node.id, side: port.id, wx, wy }
+    })
+  }
+
   return [
     { nodeId: node.id, side: 'right',  wx: node.x + node.width, wy: cy },
     { nodeId: node.id, side: 'left',   wx: node.x,               wy: cy },
@@ -60,6 +76,9 @@ export class ConnectDrag {
   }
 
   private connectTouchId: number | null = null
+  private disabled = false
+
+  setDisabled(v: boolean): void { this.disabled = v }
 
   private readonly onMouseMove:  (e: MouseEvent) => void
   private readonly onMouseDown:  (e: MouseEvent) => void
@@ -103,8 +122,8 @@ export class ConnectDrag {
     canvas.addEventListener('mouseleave',  this.onMouseLeave)
     canvas.addEventListener('touchstart',  this.onTouchStart, { passive: false })
     canvas.addEventListener('touchmove',   this.onTouchMove,  { passive: false })
-    canvas.addEventListener('touchend',    this.onTouchEnd)
-    canvas.addEventListener('touchcancel', this.onTouchEnd)
+    canvas.addEventListener('touchend',    this.onTouchEnd,   { passive: false })
+    canvas.addEventListener('touchcancel', this.onTouchEnd,   { passive: false })
   }
 
   isCapturing(): boolean {
@@ -238,7 +257,7 @@ export class ConnectDrag {
   }
 
   private handleMouseDown(e: MouseEvent): void {
-    if (e.button !== 0) return
+    if (e.button !== 0 || this.disabled) return
     // Use the already-tracked hoveredHandle — avoids re-computation lag
     const handle = this.state.hoveredHandle
     if (!handle) return
@@ -287,7 +306,7 @@ export class ConnectDrag {
   }
 
   private handleTouchStart(e: TouchEvent): void {
-    if (this.connectTouchId !== null || e.touches.length !== 1) return
+    if (this.disabled || this.connectTouchId !== null || e.touches.length !== 1) return
     const touch = e.touches[0]!
     const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
     const handle = this.findNearestHandle(wx, wy)

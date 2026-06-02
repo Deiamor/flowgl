@@ -9,6 +9,9 @@ export class Graph {
   version = 0
 
   addNode(node: NodeData): void {
+    if (this.nodes.has(node.id)) {
+      console.warn(`[Graph] addNode: node '${node.id}' already exists — overwriting`)
+    }
     this.nodes.set(node.id, { ...node })
     if (!this.nodeEdgeIndex.has(node.id)) {
       this.nodeEdgeIndex.set(node.id, new Set())
@@ -39,6 +42,13 @@ export class Graph {
       this.nodes.set(id, { ...node, ...updates })
       this.version++
     }
+  }
+
+  /** Replace a node entirely (no field merging). Used to remove optional fields. */
+  replaceNode(node: NodeData): void {
+    if (!this.nodes.has(node.id)) return
+    this.nodes.set(node.id, { ...node })
+    this.version++
   }
 
   addEdge(edge: EdgeData): void {
@@ -95,6 +105,18 @@ export class Graph {
 
   getEdges(): EdgeData[] {
     return Array.from(this.edges.values())
+  }
+
+  /** O(degree) — uses the edge index instead of scanning all edges. */
+  getEdgesForNode(nodeId: string): EdgeData[] {
+    const ids = this.nodeEdgeIndex.get(nodeId)
+    if (!ids || ids.size === 0) return []
+    const result: EdgeData[] = []
+    for (const id of ids) {
+      const e = this.edges.get(id)
+      if (e) result.push(e)
+    }
+    return result
   }
 
   get nodeCount(): number {

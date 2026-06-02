@@ -1,24 +1,15 @@
 import type { EdgeData } from '../graph/edge'
+import { DEFAULT_EDGE_STYLE } from '../graph/edge'
 import type { NodeData } from '../graph/node'
 import { cubicBezierPoint, edgeControlPoints } from '../renderer/webgl/util/bezier'
+import { handleXY } from '../renderer/webgl/util/handle-xy'
 
-const SAMPLES   = 40   // points sampled along the bezier for hit detection
-const HIT_PX    = 8    // screen-space tolerance in pixels
-
-function handleXY(node: NodeData, side: string | undefined): [number, number] {
-  const cx = node.x + node.width  / 2
-  const cy = node.y + node.height / 2
-  switch (side) {
-    case 'top':    return [cx, node.y]
-    case 'bottom': return [cx, node.y + node.height]
-    case 'left':   return [node.x, cy]
-    case 'right':  return [node.x + node.width, cy]
-    default:       return [node.x + node.width, cy]
-  }
-}
+const SAMPLES    = 40  // points sampled along the bezier for hit detection
+const MIN_HIT_PX = 8   // minimum screen-space tolerance in pixels
 
 export class EdgeHitTester {
-  /** Returns the topmost edge whose bezier passes within HIT_PX/zoom of (wx, wy). */
+  /** Returns the topmost edge whose bezier passes within the hit area of (wx, wy).
+   *  Hit area = max(MIN_HIT_PX, visual half-width) in screen pixels. */
   findEdgeAt(
     edges: EdgeData[],
     nodeMap: Map<string, NodeData>,
@@ -26,13 +17,15 @@ export class EdgeHitTester {
     wy: number,
     zoom: number,
   ): EdgeData | null {
-    const threshold = HIT_PX / zoom
-
     for (let i = edges.length - 1; i >= 0; i--) {
       const edge = edges[i]!
       const src = nodeMap.get(edge.source)
       const tgt = nodeMap.get(edge.target)
       if (!src || !tgt) continue
+
+      const edgeHalfWidth = (edge.style?.width ?? DEFAULT_EDGE_STYLE.width) / 2
+      // threshold in world units: at least MIN_HIT_PX screen px, at least visual half-width
+      const threshold = Math.max(MIN_HIT_PX / zoom, edgeHalfWidth)
 
       const [sx, sy] = handleXY(src, edge.sourceHandle ?? 'right')
       const [ex, ey] = handleXY(tgt, edge.targetHandle ?? 'left')

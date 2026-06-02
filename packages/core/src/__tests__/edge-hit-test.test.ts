@@ -3,8 +3,8 @@ import { EdgeHitTester } from '../interaction/edge-hit-test'
 import type { EdgeData } from '../graph/edge'
 import type { NodeData } from '../graph/node'
 
-const nd = (id: string, x: number, y: number, w = 100, h = 50): NodeData => ({
-  id, label: id, x, y, width: w, height: h,
+const nd = (id: string, x: number, y: number, w = 100, h = 50, extra: Partial<NodeData> = {}): NodeData => ({
+  id, label: id, x, y, width: w, height: h, ...extra,
 })
 
 function makeMap(nodes: NodeData[]): Map<string, NodeData> {

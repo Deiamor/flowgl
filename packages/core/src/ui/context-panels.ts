@@ -452,4 +452,10 @@ export class ContextPanels {
 
     return panel
   }
+
+  dispose(): void {
+    // Panel HTMLElements are factory-created per context-menu show; they are
+    // appended to and removed from DOM by ContextMenu, which owns their lifecycle.
+    // The deps object holds no DOM references that need teardown here.
+  }
 }
