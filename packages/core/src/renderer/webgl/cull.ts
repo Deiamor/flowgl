@@ -5,12 +5,26 @@ import type { AABB } from '../../viewport/viewport'
 const EDGE_CULL_PADDING = 200
 
 export function cullNodes(nodes: NodeData[], bounds: AABB): NodeData[] {
-  return nodes.filter(n =>
-    n.x + n.width  >= bounds.minX &&
-    n.x            <= bounds.maxX &&
-    n.y + n.height >= bounds.minY &&
-    n.y            <= bounds.maxY,
-  )
+  // First pass: collect visible group IDs so children are not culled when
+  // their parent group is still partially in view.
+  const visibleGroupIds = new Set<string>()
+  for (const n of nodes) {
+    if (
+      n.type === 'group' &&
+      n.x + n.width  >= bounds.minX && n.x <= bounds.maxX &&
+      n.y + n.height >= bounds.minY && n.y <= bounds.maxY
+    ) {
+      visibleGroupIds.add(n.id)
+    }
+  }
+
+  return nodes.filter(n => {
+    if (n.parentId && visibleGroupIds.has(n.parentId)) return true
+    return (
+      n.x + n.width  >= bounds.minX && n.x <= bounds.maxX &&
+      n.y + n.height >= bounds.minY && n.y <= bounds.maxY
+    )
+  })
 }
 
 export function cullEdges(
