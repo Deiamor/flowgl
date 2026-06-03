@@ -5,13 +5,14 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/v/@flowgl/core" alt="npm version"></a>
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license">
   <img src="https://img.shields.io/badge/tests-795%20passing-brightgreen" alt="795 tests passing">
+  <img src="https://img.shields.io/badge/renderer-WebGL2-orange" alt="WebGL2">
+  <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">
 </p>
 
 <p align="center">
-  <img src="https://placehold.co/800x450?text=flowgl+demo" alt="flowgl demo">
+  <img src="./assets/screenshot-light.png" alt="flowgl light theme" width="800">
 </p>
 
 ---
@@ -112,6 +113,9 @@ export function Pipeline() {
 ## Features
 
 ### Nodes
+
+<img src="./assets/screenshot-dark.png" alt="flowgl dark theme" width="600" align="right">
+
 - 📐 Shape variants — rectangle, diamond, hexagon, ellipse, custom
 - 🖱️ Drag & drop with snap-to-grid
 - 🔲 Multi-select — Cmd+click, Shift+drag box select
@@ -123,6 +127,8 @@ export function Pipeline() {
 - 🔌 Named ports with `maxConnections` limits
 - 💬 Node tooltips
 - 🔤 Multi-line labels with automatic RTL detection
+
+<br clear="right">
 
 ### Edges
 - 〰️ Bezier curves, smooth GPU rendering
@@ -158,9 +164,9 @@ export function Pipeline() {
 
 | Package | Description |
 |---|---|
-| `@flowgl/react` | React hooks + `<FlowGLCanvas>` component with full controlled / uncontrolled API |
-| `@flowgl/vue` | Vue 3 composables + `<FlowGLCanvas>` component |
-| `@flowgl/svelte` | Svelte stores + `<FlowGLCanvas>` action |
+| `@flowgl/react` | `<Flowchart>` component with full controlled / uncontrolled API |
+| `@flowgl/vue` | Vue 3 `<Flowchart>` component |
+| `@flowgl/svelte` | Svelte `<Flowchart>` component |
 
 All wrappers are thin bindings over `@flowgl/core` — no extra runtime weight.
 
