@@ -2815,6 +2815,42 @@ describe('FlowChart private method coverage', () => {
     chart.dispose()
   })
 
+  it('moveSelectedByArrow moves group children together with group', () => {
+    const chart = makeChart({
+      nodes: [
+        { id: 'grp', x: 100, y: 100, width: 200, height: 200, label: 'G', type: 'group' },
+        { id: 'c1',  x: 120, y: 120, width: 80, height: 50, label: 'C1', parentId: 'grp' },
+        { id: 'c2',  x: 120, y: 200, width: 80, height: 50, label: 'C2', parentId: 'grp' },
+      ],
+    })
+    chart.setSelectedIds(['grp'])
+    ;(chart as any).moveSelectedByArrow('ArrowRight')
+    const grp = chart.getNodes().find(nd => nd.id === 'grp')!
+    const c1  = chart.getNodes().find(nd => nd.id === 'c1')!
+    const c2  = chart.getNodes().find(nd => nd.id === 'c2')!
+    expect(grp.x).toBe(110)
+    expect(c1.x).toBe(130)
+    expect(c2.x).toBe(130)
+    chart.dispose()
+  })
+
+  it('moveSelectedByArrow does not double-move child selected together with its group', () => {
+    const chart = makeChart({
+      nodes: [
+        { id: 'grp', x: 100, y: 100, width: 200, height: 200, label: 'G', type: 'group' },
+        { id: 'c1',  x: 120, y: 120, width: 80, height: 50, label: 'C1', parentId: 'grp' },
+      ],
+    })
+    chart.setSelectedIds(['grp', 'c1'])
+    ;(chart as any).moveSelectedByArrow('ArrowDown')
+    const grp = chart.getNodes().find(nd => nd.id === 'grp')!
+    const c1  = chart.getNodes().find(nd => nd.id === 'c1')!
+    // Both selected; child should move exactly STEP=10, not 20
+    expect(grp.y).toBe(110)
+    expect(c1.y).toBe(130)
+    chart.dispose()
+  })
+
   it('startEdgeLabelEdit appends an input to the DOM', () => {
     const chart = makeChart({
       nodes: [n('a'), n('b', 200)],

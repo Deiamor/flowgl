@@ -1,7 +1,7 @@
 {
-  "name": "@flowchart/react",
+  "name": "@flowgl/react",
   "version": "0.1.0",
-  "description": "React wrapper for @flowchart/core WebGL flowchart",
+  "description": "React wrapper for @flowgl/core WebGL flowchart",
   "keywords": ["flowchart", "webgl", "react", "diagram", "graph"],
   "license": "MIT",
   "type": "module",
@@ -28,7 +28,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@flowchart/core": "workspace:*"
+    "@flowgl/core": "workspace:*"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",

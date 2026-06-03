@@ -3,3 +3,13 @@ dist/
 *.tsbuildinfo
 .DS_Store
 .rollup.cache/
+coverage/
+
+# Claude workflow files (internal)
+AGENTS.md
+DEPLOY.md
+HISTORY.md
+PRODUCT.md
+PROJECT.md
+SPEC_CHECKLIST.md
+TASK.md

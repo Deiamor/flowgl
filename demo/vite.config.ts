@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@flowchart/core':  resolve(__dirname, '../packages/core/src/index.ts'),
-      '@flowchart/react': resolve(__dirname, '../packages/react/src/index.ts'),
+      '@flowgl/core':  resolve(__dirname, '../packages/core/src/index.ts'),
+      '@flowgl/react': resolve(__dirname, '../packages/react/src/index.ts'),
     },
   },
 })

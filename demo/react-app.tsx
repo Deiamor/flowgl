@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Flowchart } from '@flowchart/react'
-import type { NodeData, EdgeData, FlowChart } from '@flowchart/react'
+import { Flowchart } from '@flowgl/react'
+import type { NodeData, EdgeData, FlowChart } from '@flowgl/react'
 
 const initialNodes: NodeData[] = [
   { id: 'n1', x: 80,  y: 180, width: 150, height: 52, label: 'Start',

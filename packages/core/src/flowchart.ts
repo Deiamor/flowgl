@@ -173,7 +173,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
     if (typeof window === 'undefined' || typeof document === 'undefined') {
       this.failed = true
-      const err = new Error('@flowchart/core: browser environment required')
+      const err = new Error('@flowgl/core: browser environment required')
       if (options.onError) options.onError(err)
       else console.error('[FlowChart]', err.message)
       return
@@ -230,7 +230,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       options.renderer,
       () => {
         console.warn('[FlowChart] WebGL context lost — rendering suspended')
-        options.onError?.(new Error('@flowchart/core: WebGL context lost'))
+        options.onError?.(new Error('@flowgl/core: WebGL context lost'))
       },
       () => {
         console.info('[FlowChart] WebGL context restored — resuming')
@@ -239,7 +239,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     )
     if (!ok) {
       this.failed = true
-      const err = new Error('@flowchart/core: WebGL2 is not available in this environment')
+      const err = new Error('@flowgl/core: WebGL2 is not available in this environment')
       if (options.onError) options.onError(err)
       else console.error('[FlowChart]', err.message)
       return
@@ -413,7 +413,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.nodeResize.isNearHandle(clientX, clientY),
       () => this.snapGridSize,
       (nodeId) => this.graph.getNodes().filter(n => n.parentId === nodeId).map(n => n.id),
-      (nodeId) => [...this.selectedIds].filter(id => id !== nodeId),
+      (nodeId) => this.selectedIds.has(nodeId) ? [...this.selectedIds].filter(id => id !== nodeId) : [],
     )
 
     this.panZoom = new PanZoom(
@@ -1346,9 +1346,21 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         if (n) this.announce(`${n.label || n.id} at ${Math.round(n.x)}, ${Math.round(n.y)}`)
       }
     }, 400)
+    const movedIds = new Set<string>()
     for (const id of this.selectedIds) {
+      if (movedIds.has(id)) continue
       const node = this.graph.getNode(id)
-      if (node) this.graph.updateNode(id, { x: node.x + dx, y: node.y + dy })
+      if (!node) continue
+      this.graph.updateNode(id, { x: node.x + dx, y: node.y + dy })
+      movedIds.add(id)
+      if (node.type === 'group') {
+        for (const child of this.graph.getNodes().filter(n => n.parentId === id)) {
+          if (!movedIds.has(child.id)) {
+            this.graph.updateNode(child.id, { x: child.x + dx, y: child.y + dy })
+            movedIds.add(child.id)
+          }
+        }
+      }
     }
     this.scheduleRender()
   }

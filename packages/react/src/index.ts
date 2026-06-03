@@ -12,5 +12,5 @@ export type {
   GridConfig,
   MinimapConfig,
   HandleSide,
-} from '@flowchart/core'
-export { FlowChart, generateId, DEFAULT_NODE_STYLE, DEFAULT_EDGE_STYLE } from '@flowchart/core'
+} from '@flowgl/core'
+export { FlowChart, generateId, DEFAULT_NODE_STYLE, DEFAULT_EDGE_STYLE } from '@flowgl/core'

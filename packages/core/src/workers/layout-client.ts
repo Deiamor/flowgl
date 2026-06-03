@@ -20,7 +20,7 @@ interface Pending {
  *
  * Usage (Vite / bundler with `?worker` support):
  * ```ts
- * import Worker from '@flowchart/core/layout-worker?worker'
+ * import Worker from '@flowgl/core/layout-worker?worker'
  * const client = new LayoutWorkerClient(new Worker())
  * const positions = await client.runLayout('hierarchical', nodes, edges)
  * chart.animateLayout(positions)

@@ -278,4 +278,65 @@ describe('NodeDrag', () => {
     expect(ids).toContain('n1')
     expect(ids).not.toContain('ghost')
   })
+
+  it('children of a coselected group also move with the dragged node', () => {
+    // Scenario: dragging n1, group is coselected, group's children c1/c2 must also move
+    const grp = { id: 'grp', x: 300, y: 200, width: 150, height: 100, label: 'G', type: 'group' }
+    const c1  = { id: 'c1',  x: 320, y: 220, width: 80,  height: 40,  label: 'C1', parentId: 'grp' }
+    const c2  = { id: 'c2',  x: 320, y: 280, width: 80,  height: 40,  label: 'C2', parentId: 'grp' }
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    ;(graph.getNode as ReturnType<typeof vi.fn>).mockImplementation((id: string) => {
+      if (id === 'n1')  return mockNode
+      if (id === 'grp') return grp
+      if (id === 'c1')  return c1
+      if (id === 'c2')  return c2
+      return undefined
+    })
+
+    new NodeDrag(
+      canvas, viewport, graph, hitTester,
+      onStart, onMove, onEnd,
+      undefined, undefined,
+      // getChildren: grp has c1 and c2
+      (nodeId: string) => nodeId === 'grp' ? ['c1', 'c2'] : [],
+      // getCoselected: grp is coselected when dragging n1
+      () => ['grp'],
+    )
+
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 160, clientY: 130, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 210, clientY: 160, bubbles: true }))
+
+    const ids = (graph.updateNode as ReturnType<typeof vi.fn>).mock.calls.map((c: unknown[]) => c[0])
+    expect(ids).toContain('n1')
+    expect(ids).toContain('grp')
+    expect(ids).toContain('c1')
+    expect(ids).toContain('c2')
+  })
+
+  it('child not double-moved when it is both a direct child and in coselected', () => {
+    // grp is the dragged node; its children c1/c2 are in children list
+    // even if c1 appears in coselected it should only be moved once
+    ;(hitTester.findNodeAt as ReturnType<typeof vi.fn>).mockReturnValue(mockNode)
+    const c1 = { id: 'c1', x: 120, y: 110, width: 80, height: 40, label: 'C1' }
+    ;(graph.getNode as ReturnType<typeof vi.fn>).mockImplementation((id: string) =>
+      id === 'n1' ? mockNode : id === 'c1' ? c1 : undefined,
+    )
+
+    const updateNode = graph.updateNode as ReturnType<typeof vi.fn>
+
+    new NodeDrag(
+      canvas, viewport, graph, hitTester,
+      onStart, onMove, onEnd,
+      undefined, undefined,
+      () => ['c1'],       // c1 is a direct child of dragged node
+      () => ['c1'],       // c1 also appears in coselected (edge case)
+    )
+
+    canvas.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 160, clientY: 130, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 210, clientY: 160, bubbles: true }))
+
+    // c1 should appear exactly once in updateNode calls (not twice)
+    const c1Calls = updateNode.mock.calls.filter((c: unknown[]) => c[0] === 'c1')
+    expect(c1Calls).toHaveLength(1)
+  })
 })

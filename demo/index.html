@@ -46,6 +46,25 @@
       position: fixed; top: 14px; left: 14px; z-index: 10;
       color: #4b5563; font-size: 11px; font-family: system-ui; line-height: 1.9;
     }
+    #zoomWidget {
+      position: fixed; bottom: 36px; left: 14px; z-index: 20;
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(20, 24, 48, 0.88); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+      padding: 4px 6px;
+    }
+    #zoomWidget button {
+      width: 28px; height: 28px; padding: 0;
+      font-size: 18px; text-align: center;
+      background: transparent; color: #d1d5db;
+      border-radius: 4px;
+    }
+    #zoomWidget button:hover { background: rgba(255,255,255,0.1); }
+    #zoomLevel {
+      min-width: 44px; text-align: center;
+      color: #9ca3af; font-size: 11px; font-family: monospace;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -53,9 +72,21 @@
     Drag empty → pan · Scroll → zoom<br>
     Click node → select · ⌘+Click → multi<br>
     Hover node edge → drag dot to connect<br>
-    ⌘Z → undo · ⌘⇧Z / ⌘Y → redo
+    ⌘Z → undo · ⌘⇧Z / ⌘Y → redo<br>
+    ⌘C/X/V → copy/cut/paste · ⌘D → duplicate<br>
+    F → fit view · Shift+F → fit selection<br>
+    Double-click group → collapse/expand<br>
+    Shift+drag → box select (nodes + edges)<br>
+    Click edge → select, drag midpoint → waypoint
   </div>
   <div id="app"></div>
+
+  <div id="zoomWidget">
+    <button id="btnZoomOut">−</button>
+    <span id="zoomLevel">100%</span>
+    <button id="btnZoomIn">+</button>
+    <button id="btnZoomReset" title="Reset zoom" style="font-size:11px;width:36px;">1:1</button>
+  </div>
 
   <div id="sidebar">
     <h3>History</h3>
@@ -67,10 +98,92 @@
     <h3>Canvas</h3>
     <div class="btn-group">
       <button id="btnFit">Fit View</button>
+      <button id="btnFitSel">Fit Selection</button>
       <button id="btnAdd">Add 100 Nodes</button>
       <button id="btnStress">Stress Test (5 k)</button>
       <button id="btnClear">Clear All</button>
+      <button id="btnLayout">Auto Layout (Hierarchical)</button>
+      <button id="btnCircularLayout">⊙ Circular Layout</button>
+      <button id="btnExportPNG">⬇ Export PNG</button>
+      <button id="btnExportSVG">⬇ Export SVG</button>
+      <button id="btnReadOnly">🔒 Toggle ReadOnly</button>
     </div>
+
+    <h3>Align (2+ selected)</h3>
+    <div class="btn-group" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button id="btnAlignL">⇐ Left</button>
+      <button id="btnAlignR">Right ⇒</button>
+      <button id="btnAlignCX">↔ Center</button>
+      <button id="btnAlignT">⇑ Top</button>
+      <button id="btnAlignB">Bottom ⇓</button>
+      <button id="btnAlignCY">↕ Middle</button>
+      <button id="btnDistH">⇔ Dist H</button>
+      <button id="btnDistV">⇕ Dist V</button>
+    </div>
+
+    <h3>Theme</h3>
+    <div class="btn-group" style="flex-direction:row;gap:6px;">
+      <button id="btnThemeLight" style="flex:1;">☀ Light</button>
+      <button id="btnThemeDark" style="flex:1;">🌙 Dark</button>
+    </div>
+
+    <h3>Zoom</h3>
+    <div class="btn-group" style="flex-direction:row;gap:6px;">
+      <button id="btnZoomInAPI" style="flex:1;">+ Zoom In</button>
+      <button id="btnZoomOutAPI" style="flex:1;">− Zoom Out</button>
+    </div>
+
+    <h3>Navigate</h3>
+    <div class="btn-group">
+      <button id="btnPanTo">Pan to (0, 0)</button>
+      <button id="btnGetBounds">Log Node Bounds</button>
+      <button id="btnBatchAdd">Batch Add 5 Nodes</button>
+      <button id="btnScrollN1">Scroll to Start (n1)</button>
+    </div>
+
+    <h3>Edit (selection)</h3>
+    <div class="btn-group">
+      <button id="btnSelectAll">Select All</button>
+      <button id="btnDuplicate">⧉ Duplicate (Ctrl+D)</button>
+      <button id="btnToggleAnim">▶ Toggle Animated (e1)</button>
+      <button id="btnDeleteSelected">🗑 Delete Selected</button>
+      <button id="btnClearHistory">Clear History</button>
+    </div>
+
+    <h3>Node Status</h3>
+    <div class="btn-group" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button id="btnStatusError">🔴 Error (n1)</button>
+      <button id="btnStatusWarn">🟡 Warning (n1)</button>
+      <button id="btnStatusOk">🟢 Success (n1)</button>
+      <button id="btnStatusInfo">🔵 Info (n1)</button>
+      <button id="btnStatusClear" style="grid-column:1/-1;">✕ Clear Status (n1)</button>
+    </div>
+
+    <h3>Search</h3>
+    <div class="field">
+      <input type="text" id="fSearch" placeholder="Search nodes by label…" />
+    </div>
+    <div id="searchResult" style="font-size:11px;color:#9ca3af;min-height:14px;"></div>
+
+    <h3>Group</h3>
+    <div class="btn-group">
+      <button id="btnGroup">Group selected (makes 1st node parent)</button>
+      <button id="btnUngroup">Ungroup selected children</button>
+    </div>
+
+    <h3>Import / Edge</h3>
+    <div class="btn-group">
+      <button id="btnImportMerge">Import (merge) 2 nodes</button>
+      <button id="btnSwapE1">⇄ Swap e1 direction</button>
+      <button id="btnEdgesBetween">Edges n1↔n2 (log)</button>
+    </div>
+
+    <h3>Graph Analysis</h3>
+    <div class="btn-group">
+      <button id="btnHasCycle">Detect Cycle</button>
+      <button id="btnFindPaths">Find Paths (n1→n5)</button>
+    </div>
+    <div id="analysisResult" style="margin-top:6px;font-size:11px;color:#ccc;min-height:16px;word-break:break-all;"></div>
 
     <h3>Selected Node</h3>
     <div class="field">
@@ -103,7 +216,7 @@
   </div>
 
   <script type="module">
-    import { FlowChart, generateId } from '@flowchart/core'
+    import { FlowChart, generateId, hierarchicalLayout, circularLayout } from '@flowgl/core'
 
     // ── Init ────────────────────────────────────────────────────────
     const chart = new FlowChart({
@@ -120,6 +233,15 @@
           style: { backgroundColor: '#fce4ec', borderColor: '#e53935', shape: 'hexagon' } },
         { id: 'n5', x: 860, y: 180, width: 160, height: 80, label: '',
           htmlContent: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font:bold 13px system-ui;color:#8e24aa;background:#f3e5f5;border:2px solid #8e24aa;border-radius:8px;box-sizing:border-box">⚡ End</div>' },
+        { id: 'n6', x: 1140, y: 80, width: 160, height: 120, label: 'Named Ports',
+          style: { backgroundColor: '#e8eaf6', borderColor: '#3949ab' },
+          ports: [
+            { id: 'in-top',    side: 'top',    offset: 0.5 },
+            { id: 'in-left',   side: 'left',   offset: 0.25 },
+            { id: 'out-left',  side: 'left',   offset: 0.75 },
+            { id: 'out-right', side: 'right',  offset: 0.5 },
+          ],
+        },
       ],
       edges: [
         { id: 'e1', source: 'n1', target: 'n2' },
@@ -127,8 +249,17 @@
         { id: 'e3', source: 'n2', target: 'n4', style: { dashArray: [8, 4] } },
         { id: 'e4', source: 'n3', target: 'n5' },
         { id: 'e5', source: 'n4', target: 'n5' },
+        { id: 'e6', source: 'n5', target: 'n6', targetHandle: 'in-top', style: { width: 10, color: '#1565c0' } },
       ],
     })
+
+    // Add tooltip to n1 for demo
+    chart.updateNode('n1', { tooltip: 'This is the Start node.\nHover to see tooltip.' })
+
+    // Group demo: n3 and n4 are inside a group container
+    chart.addNode({ id: 'grp1', x: 560, y: 60, width: 240, height: 280, label: 'Group',
+      type: 'group', style: { backgroundColor: 'rgba(120,144,190,0.12)', borderColor: '#7890be', borderWidth: 1, borderRadius: 12 } })
+    chart.groupNodes('grp1', ['n3', 'n4'])
 
     // ── Stats ────────────────────────────────────────────────────────
     const $ = id => document.getElementById(id)
@@ -220,6 +351,18 @@
 
     // ── Canvas buttons ────────────────────────────────────────────────
     $('btnFit').addEventListener('click', () => chart.fitView())
+    $('btnFitSel').addEventListener('click', () => chart.fitViewToSelection())
+
+    $('btnLayout').addEventListener('click', () => {
+      const result = hierarchicalLayout(chart.getNodes(), chart.getEdges())
+      chart.animateLayout(result, 500)
+      setTimeout(() => chart.fitView(), 520)
+    })
+    $('btnCircularLayout').addEventListener('click', () => {
+      const result = circularLayout(chart.getNodes())
+      chart.animateLayout(result, 500)
+      setTimeout(() => chart.fitView(), 520)
+    })
 
     let autoN = 100
     $('btnAdd').addEventListener('click', () => {
@@ -258,6 +401,253 @@
       chart.setViewport({ x: 0, y: 0, zoom: 1 })
       updateStats()
     })
+
+    $('btnExportPNG').addEventListener('click', () => {
+      const dataUrl = chart.exportPNG(2)
+      if (!dataUrl) return
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = 'flowchart.png'
+      a.click()
+    })
+
+    $('btnExportSVG').addEventListener('click', () => {
+      const svg = chart.exportSVG()
+      const blob = new Blob([svg], { type: 'image/svg+xml' })
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'flowchart.svg'
+      a.click()
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000)
+    })
+
+    let isReadOnly = false
+    $('btnReadOnly').addEventListener('click', () => {
+      isReadOnly = !isReadOnly
+      chart.setReadOnly(isReadOnly)
+      $('btnReadOnly').textContent = isReadOnly ? '🔓 Disable ReadOnly' : '🔒 Toggle ReadOnly'
+      $('btnReadOnly').style.background = isReadOnly ? '#5a1e1e' : ''
+    })
+
+    // ── Align / distribute ───────────────────────────────────────────
+    $('btnAlignL').addEventListener('click',  () => chart.alignNodes('left'))
+    $('btnAlignR').addEventListener('click',  () => chart.alignNodes('right'))
+    $('btnAlignCX').addEventListener('click', () => chart.alignNodes('center'))
+    $('btnAlignT').addEventListener('click',  () => chart.alignNodes('top'))
+    $('btnAlignB').addEventListener('click',  () => chart.alignNodes('bottom'))
+    $('btnAlignCY').addEventListener('click', () => chart.alignNodes('middle'))
+    $('btnDistH').addEventListener('click',   () => chart.distributeNodes('horizontal'))
+    $('btnDistV').addEventListener('click',   () => chart.distributeNodes('vertical'))
+
+    // ── Group / ungroup ──────────────────────────────────────────────
+    $('btnGroup').addEventListener('click', () => {
+      const ids = chart.getSelectedIds()
+      if (ids.length < 2) { $('statEvt').textContent = 'select 2+ nodes to group'; return }
+      const [parentId, ...childIds] = ids
+      chart.groupNodes(parentId, childIds)
+      $('statEvt').textContent = `grouped: ${childIds.join(',')} → ${parentId}`
+    })
+    $('btnUngroup').addEventListener('click', () => {
+      const ids = chart.getSelectedIds()
+      chart.ungroupNodes(ids)
+      $('statEvt').textContent = `ungrouped: ${ids.join(',')}`
+    })
+
+    // ── Theme ────────────────────────────────────────────────────────
+    $('btnThemeLight').addEventListener('click', () => chart.setTheme('light'))
+    $('btnThemeDark').addEventListener('click',  () => chart.setTheme('dark'))
+
+    // ── Zoom API ─────────────────────────────────────────────────────
+    $('btnZoomInAPI').addEventListener('click', () => { chart.zoomIn(); updateZoomLabel() })
+    $('btnZoomOutAPI').addEventListener('click', () => { chart.zoomOut(); updateZoomLabel() })
+
+    // ── Navigate ─────────────────────────────────────────────────────
+    $('btnPanTo').addEventListener('click', () => {
+      chart.panTo(0, 0)
+      $('statEvt').textContent = 'panTo(0, 0)'
+    })
+    $('btnGetBounds').addEventListener('click', () => {
+      const b = chart.getNodesBounds()
+      $('statEvt').textContent = b
+        ? `bounds: (${Math.round(b.minX)},${Math.round(b.minY)})→(${Math.round(b.maxX)},${Math.round(b.maxY)})`
+        : 'bounds: (empty)'
+    })
+    $('btnBatchAdd').addEventListener('click', () => {
+      const before = chart.getNodes().length
+      chart.batchUpdate(() => {
+        for (let i = 0; i < 5; i++) {
+          chart.addNode({ id: `batch${Date.now()}_${i}`, x: i * 160, y: 400, width: 140, height: 52, label: `Batch ${i + 1}` })
+        }
+      })
+      updateStats()
+      $('statEvt').textContent = `batch added ${chart.getNodes().length - before} nodes`
+    })
+    $('btnScrollN1').addEventListener('click', () => chart.scrollToNode('n1'))
+
+    // ── Import / Edge ─────────────────────────────────────────────────
+    $('btnImportMerge').addEventListener('click', () => {
+      const ts = Date.now()
+      chart.importJSON({
+        nodes: [
+          { id: `im${ts}a`, x: -200, y: 400, width: 140, height: 52, label: 'Imported A' },
+          { id: `im${ts}b`, x:    0, y: 400, width: 140, height: 52, label: 'Imported B' },
+        ],
+        edges: [],
+      }, 'merge')
+      updateStats()
+      $('statEvt').textContent = 'merged 2 nodes'
+    })
+    $('btnSwapE1').addEventListener('click', () => {
+      const e = chart.getEdge('e1')
+      if (!e) { $('statEvt').textContent = 'e1 not found'; return }
+      const before = `${e.source}→${e.target}`
+      chart.swapEdgeDirection('e1')
+      const after = chart.getEdge('e1')
+      $('statEvt').textContent = `e1: ${before} → ${after?.source}→${after?.target}`
+    })
+    $('btnEdgesBetween').addEventListener('click', () => {
+      const edges = chart.getEdgesBetween('n1', 'n2')
+      $('statEvt').textContent = `n1↔n2: ${edges.length} edge(s) [${edges.map(e => e.id).join(', ')}]`
+    })
+
+    // ── Event logs ───────────────────────────────────────────────────
+    chart.on('nodeHover', ({ node }) => {
+      if (node) $('statEvt').textContent = `hover: ${node.label || node.id}`
+    })
+    chart.on('nodeDragStart', ({ id }) => {
+      $('statEvt').textContent = `dragStart: ${id}`
+    })
+    chart.on('nodeResize', ({ id, width, height }) => {
+      $('statEvt').textContent = `resize: ${id} → ${Math.round(width)}×${Math.round(height)}`
+    })
+    chart.on('nodeDoubleClick', ({ node }) => {
+      $('statEvt').textContent = `dblclick: ${node.label || node.id}`
+    })
+    chart.on('edgeClick', ({ edge }) => {
+      $('statEvt').textContent = `edgeClick: ${edge.id}`
+    })
+    chart.on('edgeUpdate', ({ id, updates }) => {
+      const keys = Object.keys(updates).join(',')
+      $('statEvt').textContent = `edgeUpdate: ${id} [${keys}]`
+    })
+
+    // ── Select All ───────────────────────────────────────────────────
+    $('btnSelectAll').addEventListener('click', () => {
+      chart.selectAll()
+      const nc = chart.getSelectedIds().length
+      const ec = chart.getSelectedEdgeIds().length
+      $('statEvt').textContent = `selected all: ${nc} nodes, ${ec} edges`
+    })
+
+    // ── Animated edge toggle ─────────────────────────────────────────
+    let e1Animated = false
+    $('btnToggleAnim').addEventListener('click', () => {
+      e1Animated = !e1Animated
+      chart.updateEdge('e1', { animated: e1Animated })
+      $('btnToggleAnim').textContent = e1Animated ? '⏸ Stop Animated (e1)' : '▶ Toggle Animated (e1)'
+      $('statEvt').textContent = `e1 animated: ${e1Animated}`
+    })
+
+    // ── Duplicate ────────────────────────────────────────────────────
+    $('btnDuplicate').addEventListener('click', () => {
+      const before = chart.getNodes().length
+      chart.duplicateSelected()
+      const after = chart.getNodes().length
+      $('statEvt').textContent = `duplicated: +${after - before} nodes`
+      updateStats()
+    })
+
+    // ── Delete selected ──────────────────────────────────────────────
+    $('btnDeleteSelected').addEventListener('click', () => {
+      chart.deleteSelected()
+      updateStats()
+      $('statEvt').textContent = 'deleted selection'
+    })
+
+    // ── Clear history ─────────────────────────────────────────────────
+    $('btnClearHistory').addEventListener('click', () => {
+      chart.clearHistory()
+      $('statEvt').textContent = 'history cleared'
+    })
+
+    // ── Node status badges ────────────────────────────────────────────
+    $('btnStatusError').addEventListener('click', () => {
+      chart.setNodeStatus('n1', 'error')
+      $('statEvt').textContent = 'n1 status: error'
+    })
+    $('btnStatusWarn').addEventListener('click', () => {
+      chart.setNodeStatus('n1', 'warning')
+      $('statEvt').textContent = 'n1 status: warning'
+    })
+    $('btnStatusOk').addEventListener('click', () => {
+      chart.setNodeStatus('n1', 'success')
+      $('statEvt').textContent = 'n1 status: success'
+    })
+    $('btnStatusInfo').addEventListener('click', () => {
+      chart.setNodeStatus('n1', 'info')
+      $('statEvt').textContent = 'n1 status: info'
+    })
+    $('btnStatusClear').addEventListener('click', () => {
+      chart.setNodeStatus('n1', null)
+      $('statEvt').textContent = 'n1 status: cleared'
+    })
+
+    // ── Search ───────────────────────────────────────────────────────
+    $('fSearch').addEventListener('input', e => {
+      const q = e.target.value
+      const results = chart.searchNodes(q)
+      if (!q.trim()) {
+        $('searchResult').textContent = ''
+      } else {
+        $('searchResult').textContent = results.length
+          ? `${results.length} match(es): ${results.map(n => n.label || n.id).slice(0, 3).join(', ')}${results.length > 3 ? '…' : ''}`
+          : 'no matches'
+      }
+    })
+
+    // ── Graph analysis ───────────────────────────────────────────────
+    $('btnHasCycle').addEventListener('click', () => {
+      const cycle = chart.hasCycle()
+      $('analysisResult').textContent = cycle ? '⚠ Cycle detected!' : '✓ No cycle found'
+      $('analysisResult').style.color = cycle ? '#f87171' : '#86efac'
+    })
+    $('btnFindPaths').addEventListener('click', () => {
+      const paths = chart.findPaths('n1', 'n5')
+      if (paths.length === 0) {
+        $('analysisResult').textContent = 'No paths from n1 to n5'
+        $('analysisResult').style.color = '#9ca3af'
+      } else {
+        $('analysisResult').textContent = `${paths.length} path(s): ` + paths.map(p => p.join('→')).join(' | ')
+        $('analysisResult').style.color = '#93c5fd'
+      }
+    })
+
+    // ── Zoom controls ────────────────────────────────────────────────
+    const ZOOM_STEPS = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4]
+    function updateZoomLabel() {
+      const z = chart.viewport.zoom
+      $('zoomLevel').textContent = Math.round(z * 100) + '%'
+    }
+    $('btnZoomIn').addEventListener('click', () => {
+      const vp = chart.getViewport()
+      const next = ZOOM_STEPS.find(s => s > vp.zoom + 0.001) ?? ZOOM_STEPS[ZOOM_STEPS.length - 1]
+      chart.setViewport({ ...vp, zoom: next })
+      updateZoomLabel()
+    })
+    $('btnZoomOut').addEventListener('click', () => {
+      const vp = chart.getViewport()
+      const prev = [...ZOOM_STEPS].reverse().find(s => s < vp.zoom - 0.001) ?? ZOOM_STEPS[0]
+      chart.setViewport({ ...vp, zoom: prev })
+      updateZoomLabel()
+    })
+    $('btnZoomReset').addEventListener('click', () => {
+      const vp = chart.getViewport()
+      chart.setViewport({ ...vp, zoom: 1 })
+      updateZoomLabel()
+    })
+    // Keep label in sync with scroll/pinch zoom
+    chart.on('viewportChange', updateZoomLabel)
+    updateZoomLabel()
 
     // Sync history buttons after keyboard undo/redo
     document.addEventListener('keydown', e => {

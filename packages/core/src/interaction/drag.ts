@@ -101,7 +101,18 @@ export class NodeDrag {
     const children   = this.getChildren(node.id)
     const childSet   = new Set(children)
     const coselected = this.getCoselected(node.id).filter(id => !childSet.has(id))
-    this.dragChildren = [...children, ...coselected].map(id => {
+    // When a coselected node is a group, also drag its children so they stay inside
+    const allIds = new Set([node.id, ...children, ...coselected])
+    for (const csId of coselected) {
+      const csNode = this.graph.getNode(csId)
+      if (csNode?.type === 'group') {
+        for (const cId of this.getChildren(csId)) {
+          if (!allIds.has(cId)) allIds.add(cId)
+        }
+      }
+    }
+    allIds.delete(node.id)
+    this.dragChildren = [...allIds].map(id => {
       const n = this.graph.getNode(id)
       return n ? { id, dx: n.x - node.x, dy: n.y - node.y } : null
     }).filter(Boolean) as ChildOffset[]
@@ -148,7 +159,17 @@ export class NodeDrag {
     const children     = this.getChildren(node.id)
     const childSet     = new Set(children)
     const coselected   = this.getCoselected(node.id).filter(id => !childSet.has(id))
-    this.dragChildren  = [...children, ...coselected].map(id => {
+    const allIds       = new Set([node.id, ...children, ...coselected])
+    for (const csId of coselected) {
+      const csNode = this.graph.getNode(csId)
+      if (csNode?.type === 'group') {
+        for (const cId of this.getChildren(csId)) {
+          if (!allIds.has(cId)) allIds.add(cId)
+        }
+      }
+    }
+    allIds.delete(node.id)
+    this.dragChildren  = [...allIds].map(id => {
       const n = this.graph.getNode(id)
       return n ? { id, dx: n.x - node.x, dy: n.y - node.y } : null
     }).filter(Boolean) as ChildOffset[]

@@ -1,0 +1,47 @@
+{
+  "name": "@flowgl/svelte",
+  "version": "0.1.0",
+  "description": "Svelte wrapper for @flowgl/core WebGL flowchart",
+  "keywords": ["flowchart", "webgl", "svelte", "diagram", "graph"],
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/flowchart-svelte.esm.js",
+  "svelte": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "svelte": "./src/index.ts",
+      "import": "./dist/flowchart-svelte.esm.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "svelte": ">=4.0"
+  },
+  "dependencies": {
+    "@flowgl/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "svelte": "^4.0.0",
+    "svelte-check": "^3.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json",
+    "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  }
+}

@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@flowchart/core": "workspace:*",
-    "@flowchart/react": "workspace:*",
+    "@flowgl/core": "workspace:*",
+    "@flowgl/react": "workspace:*",
     "react": "^18",
     "react-dom": "^18"
   },

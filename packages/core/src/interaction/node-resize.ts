@@ -62,6 +62,7 @@ export class NodeResize {
     startWx: number
     startWy: number
     origNode: NodeData
+    origChildren: Array<{ id: string; x: number; y: number }>
   } | null = null
 
   private readonly onMouseMove: (e: MouseEvent) => void
@@ -144,6 +145,16 @@ export class NodeResize {
       const dwy = wy - this.dragState.startWy
       const updates = applyResize(this.dragState.origNode, this.dragState.handle.dir, dwx, dwy)
       this.graph.updateNode(this.dragState.origNode.id, updates)
+      // When group origin changes (W/N resize), move children by the same delta
+      if (this.dragState.origChildren.length > 0) {
+        const dx = updates.x - this.dragState.origNode.x
+        const dy = updates.y - this.dragState.origNode.y
+        if (dx !== 0 || dy !== 0) {
+          for (const child of this.dragState.origChildren) {
+            this.graph.updateNode(child.id, { x: child.x + dx, y: child.y + dy })
+          }
+        }
+      }
       this.onUpdate()
       return
     }
@@ -166,7 +177,12 @@ export class NodeResize {
     e.stopPropagation()
     this.onBeforeMutation()
     const [wx, wy] = this.toWorld(e.clientX, e.clientY)
-    this.dragState = { handle: h, startWx: wx, startWy: wy, origNode: { ...node } }
+    const origChildren = node.type === 'group'
+      ? this.graph.getNodes()
+          .filter(c => c.parentId === node.id)
+          .map(c => ({ id: c.id, x: c.x, y: c.y }))
+      : []
+    this.dragState = { handle: h, startWx: wx, startWy: wy, origNode: { ...node }, origChildren }
   }
 
   private handleMouseUp(): void {

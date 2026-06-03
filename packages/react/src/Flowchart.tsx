@@ -5,7 +5,7 @@ import {
   useRef,
   type CSSProperties,
 } from 'react'
-import { FlowChart, generateId } from '@flowchart/core'
+import { FlowChart, generateId } from '@flowgl/core'
 import type {
   NodeData,
   EdgeData,
@@ -13,7 +13,7 @@ import type {
   GridConfig,
   MinimapConfig,
   HandleSide,
-} from '@flowchart/core'
+} from '@flowgl/core'
 
 export interface ConnectParams {
   sourceId: string
@@ -27,12 +27,10 @@ export interface FlowchartProps {
   edges?: EdgeData[]
   onNodesChange?: (nodes: NodeData[]) => void
   onEdgesChange?: (edges: EdgeData[]) => void
-  /** Called when the user drags a connection handle to create an edge. */
   onConnect?: (params: ConnectParams) => void
   onNodeClick?: (node: NodeData) => void
   onSelectionChange?: (params: { selectedIds: string[]; edgeIds: string[] }) => void
   onViewportChange?: (state: ViewportState) => void
-  /** Called once after the FlowChart instance is ready. */
   onInit?: (chart: FlowChart) => void
   style?: CSSProperties
   className?: string
@@ -40,7 +38,9 @@ export interface FlowchartProps {
   minimap?: Partial<MinimapConfig>
   grid?: Partial<GridConfig>
   labelEditable?: boolean
+  readOnly?: boolean
   historyLimit?: number
+  ariaLabel?: string
   onError?: (err: Error) => void
 }
 
@@ -84,7 +84,9 @@ export const Flowchart = forwardRef<FlowChart | null, FlowchartProps>(
         ...(props.minimap       !== undefined && { minimap:       props.minimap       }),
         ...(props.grid          !== undefined && { grid:          props.grid          }),
         ...(props.labelEditable !== undefined && { labelEditable: props.labelEditable }),
+        ...(props.readOnly      !== undefined && { readOnly:      props.readOnly      }),
         ...(props.historyLimit  !== undefined && { historyLimit:  props.historyLimit  }),
+        ...(props.ariaLabel     !== undefined && { ariaLabel:     props.ariaLabel     }),
         ...(props.onError       !== undefined && { onError:       props.onError       }),
       })
 
@@ -145,6 +147,11 @@ export const Flowchart = forwardRef<FlowChart | null, FlowchartProps>(
       chart.setEdges(props.edges ?? [])
       lastEdgesRef.current = props.edges
     }, [props.edges])
+
+    // Sync readOnly prop → chart
+    useEffect(() => {
+      if (props.readOnly !== undefined) instanceRef.current?.setReadOnly(props.readOnly)
+    }, [props.readOnly])
 
     return (
       <div
