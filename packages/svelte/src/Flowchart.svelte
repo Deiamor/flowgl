@@ -11,13 +11,6 @@
     FlowChartOptions,
   } from '@flowgl/core'
 
-  export interface ConnectParams {
-    sourceId:     string
-    targetId:     string
-    sourceHandle: HandleSide
-    targetHandle: HandleSide
-  }
-
   // Props
   export let nodes:         NodeData[]             = []
   export let edges:         EdgeData[]             = []
@@ -38,7 +31,7 @@
   const dispatch = createEventDispatcher<{
     nodesChange:    NodeData[]
     edgesChange:    EdgeData[]
-    connect:        ConnectParams
+    connect:        { sourceId: string; targetId: string; sourceHandle: HandleSide; targetHandle: HandleSide }
     nodeClick:      NodeData
     selectionChange:{ selectedIds: string[]; edgeIds: string[] }
     viewportChange: ViewportState

@@ -10,6 +10,8 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 - `@flowgl/core@0.1.0` — first public release on npm
 - `@flowgl/react@0.1.0` — first public release on npm
+- `@flowgl/vue@0.1.0` — first public release on npm
+- `@flowgl/svelte@0.1.0` — first public release on npm
 - GitHub repository `github.com/Deiamor/flowgl` made public
 
 ## [Unreleased]

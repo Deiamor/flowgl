@@ -46,11 +46,11 @@ Zero runtime dependencies. No D3. No React. No Lodash. `@flowgl/core` ships as a
 ```bash
 # Core (framework-agnostic)
 npm install @flowgl/core
-pnpm add @flowgl/core
 
-# React wrapper
+# Framework wrappers
 npm install @flowgl/react
-pnpm add @flowgl/react
+npm install @flowgl/vue
+npm install @flowgl/svelte
 ```
 
 ---
@@ -167,8 +167,8 @@ export function Pipeline() {
 |---|---|---|
 | `@flowgl/core` | [![npm](https://img.shields.io/npm/v/@flowgl/core)](https://www.npmjs.com/package/@flowgl/core) | Framework-agnostic core library |
 | `@flowgl/react` | [![npm](https://img.shields.io/npm/v/@flowgl/react)](https://www.npmjs.com/package/@flowgl/react) | `<Flowchart>` component with full controlled / uncontrolled API |
-| `@flowgl/vue` | coming soon | Vue 3 `<Flowchart>` component |
-| `@flowgl/svelte` | coming soon | Svelte `<Flowchart>` component |
+| `@flowgl/vue` | [![npm](https://img.shields.io/npm/v/@flowgl/vue)](https://www.npmjs.com/package/@flowgl/vue) | Vue 3 `<Flowchart>` component |
+| `@flowgl/svelte` | [![npm](https://img.shields.io/npm/v/@flowgl/svelte)](https://www.npmjs.com/package/@flowgl/svelte) | Svelte `<Flowchart>` component |
 
 All wrappers are thin bindings over `@flowgl/core` — no extra runtime weight.
 
