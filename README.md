@@ -39,18 +39,17 @@ Zero runtime dependencies. No D3. No React. No Lodash. `@flowgl/core` ships as a
 
 ---
 
-## Getting started
-
-> **npm publish coming soon.** For now, clone the repo and build from source.
+## Installation
 
 ```bash
-git clone https://github.com/Deiamor/flowgl.git
-cd flowgl
-pnpm install
-pnpm -F @flowgl/core build
-```
+# Core (framework-agnostic)
+npm install @flowgl/core
+pnpm add @flowgl/core
 
-Then link or copy `packages/core/dist` into your project, or import directly from the source via your bundler's alias.
+# React wrapper
+npm install @flowgl/react
+pnpm add @flowgl/react
+```
 
 ---
 
