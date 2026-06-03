@@ -6,6 +6,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license">
+  <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/v/@flowgl/core?label=%40flowgl%2Fcore" alt="npm @flowgl/core"></a>
+  <a href="https://www.npmjs.com/package/@flowgl/react"><img src="https://img.shields.io/npm/v/@flowgl/react?label=%40flowgl%2Freact" alt="npm @flowgl/react"></a>
   <img src="https://img.shields.io/badge/tests-795%20passing-brightgreen" alt="795 tests passing">
   <img src="https://img.shields.io/badge/renderer-WebGL2-orange" alt="WebGL2">
   <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">
@@ -161,11 +163,12 @@ export function Pipeline() {
 
 ## Framework wrappers
 
-| Package | Description |
-|---|---|
-| `@flowgl/react` | `<Flowchart>` component with full controlled / uncontrolled API |
-| `@flowgl/vue` | Vue 3 `<Flowchart>` component |
-| `@flowgl/svelte` | Svelte `<Flowchart>` component |
+| Package | Status | Description |
+|---|---|---|
+| `@flowgl/core` | [![npm](https://img.shields.io/npm/v/@flowgl/core)](https://www.npmjs.com/package/@flowgl/core) | Framework-agnostic core library |
+| `@flowgl/react` | [![npm](https://img.shields.io/npm/v/@flowgl/react)](https://www.npmjs.com/package/@flowgl/react) | `<Flowchart>` component with full controlled / uncontrolled API |
+| `@flowgl/vue` | coming soon | Vue 3 `<Flowchart>` component |
+| `@flowgl/svelte` | coming soon | Svelte `<Flowchart>` component |
 
 All wrappers are thin bindings over `@flowgl/core` — no extra runtime weight.
 

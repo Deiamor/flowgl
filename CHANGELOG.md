@@ -1,8 +1,16 @@
 # Changelog
 
-All notable changes to `@flowchart/core` will be documented here.
+All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## [0.1.0] — 2026-06-03
+
+### Added
+
+- `@flowgl/core@0.1.0` — first public release on npm
+- `@flowgl/react@0.1.0` — first public release on npm
+- GitHub repository `github.com/Deiamor/flowgl` made public
 
 ## [Unreleased]
 
