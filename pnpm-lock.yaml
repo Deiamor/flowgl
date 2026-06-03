@@ -14,10 +14,10 @@ importers:
 
   demo:
     dependencies:
-      '@flowchart/core':
+      '@flowgl/core':
         specifier: workspace:*
         version: link:../packages/core
-      '@flowchart/react':
+      '@flowgl/react':
         specifier: workspace:*
         version: link:../packages/react
       react:
@@ -72,7 +72,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@flowchart/core':
+      '@flowgl/core':
         specifier: workspace:*
         version: link:../core
       react:
@@ -103,7 +103,7 @@ importers:
 
   packages/svelte:
     dependencies:
-      '@flowchart/core':
+      '@flowgl/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -125,7 +125,7 @@ importers:
 
   packages/vue:
     dependencies:
-      '@flowchart/core':
+      '@flowgl/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
