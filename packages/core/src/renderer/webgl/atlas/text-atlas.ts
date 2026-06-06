@@ -7,7 +7,7 @@ interface AtlasEntry {
 }
 
 function isRTL(text: string): boolean {
-  return /[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text)
+  return /[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text)
 }
 
 function wrapLines(text: string, maxWidth: number, ctx: OffscreenCanvasRenderingContext2D): string[] {
@@ -39,23 +39,30 @@ export class TextAtlas {
   private shelfX = 0
   private shelfY = 0
   private shelfH = 0
+  // Logical canvas size in CSS pixels (= ATLAS_SIZE / dpr)
+  private readonly logicalSize: number
+  private readonly dpr: number
   dirty = false
   generation = 0
 
-  constructor() {
+  constructor(dpr = 1) {
+    this.dpr = Math.max(1, Math.round(dpr))
+    this.logicalSize = Math.floor(ATLAS_SIZE / this.dpr)
     this.offscreen = new OffscreenCanvas(ATLAS_SIZE, ATLAS_SIZE)
     const ctx = this.offscreen.getContext('2d')
     if (!ctx) throw new Error('TextAtlas: OffscreenCanvas 2D context unavailable')
     this.ctx = ctx
+    // Scale up so CSS-pixel font sizes produce dpr× more physical pixels → crisp text on Retina
+    this.ctx.scale(this.dpr, this.dpr)
     this.ctx.textBaseline = 'top'
   }
 
-  private key(text: string, font: string, maxWidth: number, lineHeight: number, bgColor: string): string {
-    return `${font}|${maxWidth}|${lineHeight}|${bgColor}|${text}`
+  private key(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor: string): string {
+    return `${font}|${color}|${maxWidth}|${lineHeight}|${bgColor}|${text}`
   }
 
   getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor = ''): AtlasEntry | null {
-    const k = this.key(text, font, maxWidth, lineHeight, bgColor)
+    const k = this.key(text, font, color, maxWidth, lineHeight, bgColor)
     const cached = this.entries.get(k)
     if (cached) return cached
 
@@ -74,18 +81,20 @@ export class TextAtlas {
       if (lw > blockW) blockW = lw
     }
 
+    // w/h are in CSS (logical) pixels
     const w = blockW + PADDING * 2
     const h = lines.length * lineStep + PADDING * 2
 
-    if (w > ATLAS_SIZE || h > ATLAS_SIZE) return null
+    if (w > this.logicalSize || h > this.logicalSize) return null
 
-    if (this.shelfX + w > ATLAS_SIZE) {
+    if (this.shelfX + w > this.logicalSize) {
       this.shelfY += this.shelfH
       this.shelfX = 0
       this.shelfH = 0
     }
-    if (this.shelfY + h > ATLAS_SIZE) {
-      this.ctx.clearRect(0, 0, ATLAS_SIZE, ATLAS_SIZE)
+    if (this.shelfY + h > this.logicalSize) {
+      // Atlas full — clear and start over (ctx transform survives clearRect)
+      this.ctx.clearRect(0, 0, this.logicalSize, this.logicalSize)
       this.entries.clear()
       this.shelfX = 0
       this.shelfY = 0
@@ -105,11 +114,14 @@ export class TextAtlas {
       this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
     }
 
+    // UV coords are in physical-pixel space (0..ATLAS_SIZE)
+    const px = this.shelfX * this.dpr
+    const py = this.shelfY * this.dpr
     const entry: AtlasEntry = {
-      u0: this.shelfX / ATLAS_SIZE,
-      v0: this.shelfY / ATLAS_SIZE,
-      u1: (this.shelfX + w) / ATLAS_SIZE,
-      v1: (this.shelfY + h) / ATLAS_SIZE,
+      u0: px / ATLAS_SIZE,
+      v0: py / ATLAS_SIZE,
+      u1: (px + w * this.dpr) / ATLAS_SIZE,
+      v1: (py + h * this.dpr) / ATLAS_SIZE,
       w,
       h,
     }

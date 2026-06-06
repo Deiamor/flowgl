@@ -2,7 +2,7 @@ import type { Graph } from '../graph/graph';
 import type { NodeData } from '../graph/node';
 import type { Viewport } from '../viewport/viewport';
 import type { HitTester } from './hit-test';
-export type HandleSide = 'top' | 'right' | 'bottom' | 'left';
+export type HandleSide = 'top' | 'right' | 'bottom' | 'left' | (string & {});
 export interface HandlePos {
     nodeId: string;
     side: HandleSide;
@@ -28,6 +28,8 @@ export declare class ConnectDrag {
     private onConnect;
     private state;
     private connectTouchId;
+    private disabled;
+    setDisabled(v: boolean): void;
     private readonly onMouseMove;
     private readonly onMouseDown;
     private readonly onMouseUp;

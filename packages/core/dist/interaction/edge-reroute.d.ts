@@ -26,6 +26,8 @@ export declare class EdgeReroute {
     private onStateChange;
     private onReroute;
     private state;
+    private disabled;
+    setDisabled(v: boolean): void;
     private readonly onMouseDown;
     private readonly onMouseMove;
     private readonly onMouseUp;

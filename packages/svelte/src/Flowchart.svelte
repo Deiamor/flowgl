@@ -24,6 +24,12 @@
   export let width:         string                 = '100%'
   export let height:        string                 = '100%'
   export let className:     string                 = ''
+  /**
+   * When `true` (default), the wrapper automatically calls `chart.addEdge()` when a
+   * connection is drawn. Set to `false` to handle edge creation yourself inside the
+   * `connect` event handler.
+   */
+  export let autoConnect:   boolean                = true
 
   // Expose chart instance
   export let chart: FlowChart | null = null
@@ -33,6 +39,12 @@
     edgesChange:    EdgeData[]
     connect:        { sourceId: string; targetId: string; sourceHandle: HandleSide; targetHandle: HandleSide }
     nodeClick:      NodeData
+    nodeAdd:        NodeData
+    nodeRemove:     string
+    nodeUpdate:     { id: string; updates: Partial<NodeData> }
+    edgeAdd:        EdgeData
+    edgeRemove:     string
+    edgeUpdate:     { id: string; updates: Partial<EdgeData> }
     selectionChange:{ selectedIds: string[]; edgeIds: string[] }
     viewportChange: ViewportState
     init:           FlowChart
@@ -65,16 +77,24 @@
     })
 
     chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
-      chart!.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
-      const e = chart!.graph.getEdges()
-      lastEdges = e
-      dispatch('edgesChange', e)
+      if (autoConnect) {
+        chart!.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
+        const e = chart!.graph.getEdges()
+        lastEdges = e
+        dispatch('edgesChange', e)
+      }
       dispatch('connect', { sourceId, targetId, sourceHandle, targetHandle })
     })
 
-    chart.on('nodeClick',       ({ node }) => dispatch('nodeClick', node))
-    chart.on('selectionChange', (params)  => dispatch('selectionChange', params))
-    chart.on('viewportChange',  (state)   => dispatch('viewportChange', state))
+    chart.on('nodeAdd',        ({ node })        => dispatch('nodeAdd', node))
+    chart.on('nodeRemove',     ({ id })          => dispatch('nodeRemove', id))
+    chart.on('nodeUpdate',     ({ id, updates }) => dispatch('nodeUpdate', { id, updates: updates as Partial<NodeData> }))
+    chart.on('edgeAdd',        ({ edge })        => dispatch('edgeAdd', edge))
+    chart.on('edgeRemove',     ({ id })          => dispatch('edgeRemove', id))
+    chart.on('edgeUpdate',     ({ id, updates }) => dispatch('edgeUpdate', { id, updates: updates as Partial<EdgeData> }))
+    chart.on('nodeClick',       ({ node })       => dispatch('nodeClick', node))
+    chart.on('selectionChange', (params)         => dispatch('selectionChange', params))
+    chart.on('viewportChange',  (state)          => dispatch('viewportChange', state))
 
     dispatch('init', chart)
   })
@@ -97,6 +117,18 @@
 
   $: if (chart && readOnly !== undefined) {
     chart.setReadOnly(readOnly)
+  }
+
+  $: if (chart && background !== undefined) {
+    chart.setBackground(background)
+  }
+
+  $: if (chart && grid !== undefined) {
+    chart.setGrid(grid)
+  }
+
+  $: if (chart) {
+    chart.setMinimap(minimap ?? null)
   }
 </script>
 

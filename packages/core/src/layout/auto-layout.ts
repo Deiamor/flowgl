@@ -21,14 +21,16 @@ export function hierarchicalLayout(
   gapX = 100,
   gapY = 60,
 ): LayoutResult {
-  if (nodes.length === 0) return new Map()
+  // Child nodes (parentId set) are positioned relative to their parent; skip them.
+  const roots = nodes.filter(n => !n.parentId)
+  if (roots.length === 0) return new Map()
 
-  const nodeMap = new Map(nodes.map(n => [n.id, n]))
+  const nodeMap = new Map(roots.map(n => [n.id, n]))
 
   // ── Build adjacency (ignore self-loops and dangling refs) ──────────────
   const outEdges = new Map<string, Set<string>>()
   const inEdges  = new Map<string, Set<string>>()
-  for (const n of nodes) {
+  for (const n of roots) {
     outEdges.set(n.id, new Set())
     inEdges.set(n.id, new Set())
   }
@@ -41,12 +43,12 @@ export function hierarchicalLayout(
 
   // ── Layer assignment: Kahn's topological sort + longest-path ──────────
   const inDegree = new Map<string, number>()
-  for (const n of nodes) inDegree.set(n.id, inEdges.get(n.id)!.size)
+  for (const n of roots) inDegree.set(n.id, inEdges.get(n.id)!.size)
 
   const layer = new Map<string, number>()
   const queue: string[] = []
 
-  for (const n of nodes) {
+  for (const n of roots) {
     if (inDegree.get(n.id) === 0) {
       layer.set(n.id, 0)
       queue.push(n.id)
@@ -54,8 +56,8 @@ export function hierarchicalLayout(
   }
   // All-cycle graph: pick minimum-in-degree node as root
   if (queue.length === 0) {
-    let min = Infinity, root = nodes[0]!.id
-    for (const n of nodes) {
+    let min = Infinity, root = roots[0]!.id
+    for (const n of roots) {
       const d = inDegree.get(n.id)!
       if (d < min) { min = d; root = n.id }
     }
@@ -77,7 +79,7 @@ export function hierarchicalLayout(
     }
   }
   // Nodes unreachable from roots (pure cycles) land at layer 0
-  for (const n of nodes) { if (!layer.has(n.id)) layer.set(n.id, 0) }
+  for (const n of roots) { if (!layer.has(n.id)) layer.set(n.id, 0) }
 
   // ── Group nodes by layer ────────────────────────────────────────────────
   const maxLayer = Math.max(...layer.values())
@@ -151,26 +153,27 @@ export function forceLayout(
   edges: EdgeData[],
   iterations = 150,
 ): LayoutResult {
-  if (nodes.length === 0) return new Map()
+  const roots = nodes.filter(n => !n.parentId)
+  if (roots.length === 0) return new Map()
 
   type Vec2 = { x: number; y: number }
 
   const pos = new Map<string, Vec2>()
-  for (const n of nodes) {
+  for (const n of roots) {
     pos.set(n.id, { x: n.x + n.width / 2, y: n.y + n.height / 2 })
   }
 
-  const k = Math.sqrt(200 * 200 * nodes.length) / nodes.length * 5
+  const k = Math.sqrt(200 * 200 * roots.length) / roots.length * 5
   let temp = k * 2
 
   for (let iter = 0; iter < iterations; iter++) {
     const disp = new Map<string, Vec2>()
-    for (const n of nodes) disp.set(n.id, { x: 0, y: 0 })
+    for (const n of roots) disp.set(n.id, { x: 0, y: 0 })
 
     // Repulsion
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const a = nodes[i]!, b = nodes[j]!
+    for (let i = 0; i < roots.length; i++) {
+      for (let j = i + 1; j < roots.length; j++) {
+        const a = roots[i]!, b = roots[j]!
         const pa = pos.get(a.id)!, pb = pos.get(b.id)!
         const dx = pa.x - pb.x, dy = pa.y - pb.y
         const dist = Math.max(Math.hypot(dx, dy), 1)
@@ -193,7 +196,7 @@ export function forceLayout(
       db.x -= dx / dist * f;  db.y -= dy / dist * f
     }
 
-    for (const n of nodes) {
+    for (const n of roots) {
       const p = pos.get(n.id)!, d = disp.get(n.id)!
       const dLen = Math.max(Math.hypot(d.x, d.y), 1)
       p.x += d.x / dLen * Math.min(dLen, temp)
@@ -204,7 +207,7 @@ export function forceLayout(
   }
 
   const result: LayoutResult = new Map()
-  for (const n of nodes) {
+  for (const n of roots) {
     const c = pos.get(n.id)!
     result.set(n.id, { x: c.x - n.width / 2, y: c.y - n.height / 2 })
   }
@@ -219,19 +222,20 @@ export function forceLayout(
  * @param radius Circle radius in world units. Auto-sized when omitted.
  */
 export function circularLayout(nodes: NodeData[], radius?: number): LayoutResult {
-  if (nodes.length === 0) return new Map()
-  if (nodes.length === 1) {
-    return new Map([[nodes[0]!.id, { x: 0, y: 0 }]])
+  const roots = nodes.filter(n => !n.parentId)
+  if (roots.length === 0) return new Map()
+  if (roots.length === 1) {
+    return new Map([[roots[0]!.id, { x: 0, y: 0 }]])
   }
 
-  const maxDim = Math.max(...nodes.map(n => Math.max(n.width, n.height)))
-  const r = radius ?? Math.max(150, nodes.length * (maxDim / 2 + 20))
+  const maxDim = Math.max(...roots.map(n => Math.max(n.width, n.height)))
+  const r = radius ?? Math.max(150, roots.length * (maxDim / 2 + 20))
 
   const result: LayoutResult = new Map()
-  const step = (2 * Math.PI) / nodes.length
+  const step = (2 * Math.PI) / roots.length
 
-  for (let i = 0; i < nodes.length; i++) {
-    const n     = nodes[i]!
+  for (let i = 0; i < roots.length; i++) {
+    const n     = roots[i]!
     const angle = i * step - Math.PI / 2
     result.set(n.id, {
       x: Math.round(r * Math.cos(angle) - n.width  / 2),
@@ -245,12 +249,13 @@ export function circularLayout(nodes: NodeData[], radius?: number): LayoutResult
  * Arrange nodes in a uniform grid, sorted by current x position.
  */
 export function gridLayout(nodes: NodeData[], gap = 40): LayoutResult {
-  if (nodes.length === 0) return new Map()
+  const roots = nodes.filter(n => !n.parentId)
+  if (roots.length === 0) return new Map()
 
-  const cols   = Math.ceil(Math.sqrt(nodes.length))
-  const sorted = [...nodes].sort((a, b) => a.x - b.x || a.y - b.y)
-  const cellW  = Math.max(...nodes.map(n => n.width),  120) + gap
-  const cellH  = Math.max(...nodes.map(n => n.height),  60) + gap
+  const cols   = Math.ceil(Math.sqrt(roots.length))
+  const sorted = [...roots].sort((a, b) => a.x - b.x || a.y - b.y)
+  const cellW  = Math.max(...roots.map(n => n.width),  120) + gap
+  const cellH  = Math.max(...roots.map(n => n.height),  60) + gap
 
   const result: LayoutResult = new Map()
   sorted.forEach((n, i) => {

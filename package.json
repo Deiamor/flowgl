@@ -5,7 +5,9 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm --filter demo dev",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @flowgl/core test",
+    "test:coverage": "pnpm --filter @flowgl/core exec vitest run --coverage"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

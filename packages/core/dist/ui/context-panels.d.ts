@@ -20,5 +20,6 @@ export declare class ContextPanels {
     background(): HTMLElement;
     grid(): HTMLElement;
     autoLayout(): HTMLElement;
+    dispose(): void;
 }
 //# sourceMappingURL=context-panels.d.ts.map

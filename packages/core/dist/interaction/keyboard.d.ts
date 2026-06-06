@@ -8,6 +8,12 @@ export interface KeyboardOptions {
     onTabNext: () => void;
     onTabPrev: () => void;
     onArrowKey: (direction: ArrowDirection) => void;
+    onCopy: () => void;
+    onPaste: () => void;
+    onCut: () => void;
+    onDuplicate: () => void;
+    onFitView: () => void;
+    onFitViewSelection: () => void;
 }
 export declare class KeyboardHandler {
     private readonly canvas;

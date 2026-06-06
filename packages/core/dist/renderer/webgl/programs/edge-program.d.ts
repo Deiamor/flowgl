@@ -15,8 +15,9 @@ export declare class EdgeProgram {
     private uDashed;
     private uDashLen;
     private uGapLen;
+    private uDashOffset;
     constructor(gl: WebGL2RenderingContext);
-    render(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array, selectedEdgeIds?: Set<string>): void;
+    render(edges: EdgeData[], nodeMap: Map<string, NodeData>, matrix: Float32Array, selectedEdgeIds?: Set<string>, dashOffset?: number): void;
     dispose(): void;
 }
 //# sourceMappingURL=edge-program.d.ts.map

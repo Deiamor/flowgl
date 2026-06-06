@@ -55,7 +55,7 @@ export class WebGL2Renderer implements Renderer {
     const gl = createWebGL2Context(canvas, options.antialias ?? true)
     if (!gl) return false
     this.gl            = gl
-    this.atlas         = new TextAtlas()
+    this.atlas         = new TextAtlas(this.dpr)
     this.nodeProgram   = new NodeProgram(gl)
     this.edgeProgram   = new EdgeProgram(gl)
     this.capProgram    = new CapProgram(gl)
@@ -80,7 +80,7 @@ export class WebGL2Renderer implements Renderer {
 
   private reinitializePrograms(): void {
     const gl = this.gl
-    this.atlas         = new TextAtlas()
+    this.atlas         = new TextAtlas(this.dpr)
     this.nodeProgram   = new NodeProgram(gl)
     this.edgeProgram   = new EdgeProgram(gl)
     this.capProgram    = new CapProgram(gl)

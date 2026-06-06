@@ -14,9 +14,11 @@ export declare class TextAtlas {
     private shelfX;
     private shelfY;
     private shelfH;
+    private readonly logicalSize;
+    private readonly dpr;
     dirty: boolean;
     generation: number;
-    constructor();
+    constructor(dpr?: number);
     private key;
     getOrCreate(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor?: string): AtlasEntry | null;
     flush(gl: WebGL2RenderingContext): void;

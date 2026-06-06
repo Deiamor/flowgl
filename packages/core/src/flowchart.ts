@@ -73,6 +73,10 @@ export interface FlowChartOptions {
    * If omitted, a console.error is emitted instead.
    */
   onError?: (err: Error) => void
+  /** Called when the WebGL context is lost (e.g. GPU reset, tab backgrounded on mobile). */
+  onContextLost?: () => void
+  /** Called when the WebGL context is restored after a loss event. */
+  onContextRestored?: () => void
   /** When true, automatically fit the view to the initial nodes after construction. Default: false. */
   autoFit?: boolean
 }
@@ -160,6 +164,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private edgeDashOffset  = 0
   private batching        = false
   private batchMutSaved   = false
+  private lastDragEndTime = 0
 
   // Canvas event handler references — stored so dispose() can removeEventListener
   private canvasDblClick!:      (e: MouseEvent) => void
@@ -230,10 +235,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       options.renderer,
       () => {
         console.warn('[FlowChart] WebGL context lost — rendering suspended')
-        options.onError?.(new Error('@flowgl/core: WebGL context lost'))
+        options.onContextLost?.()
       },
       () => {
         console.info('[FlowChart] WebGL context restored — resuming')
+        options.onContextRestored?.()
         this.scheduleRender()
       },
     )
@@ -402,7 +408,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.canvas, this.viewport, this.graph, this.hitTester,
       (id) => { this.beforeMutation(); this.emit('nodeDragStart', { id }) },
       (_id, _x, _y) => this.scheduleRender(),
-      (id, x, y)    => this.emit('nodeDragEnd', { id, x, y }),
+      (id, x, y)    => { this.lastDragEndTime = Date.now(); this.emit('nodeDragEnd', { id, x, y }) },
       (clientX, clientY) =>
         this.readOnly ||
         this.edgeWaypoint.isCapturing() ||
@@ -475,6 +481,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.emit('nodeDoubleClick', { node })
         if (this.readOnly) return
         if (node.type === 'group') {
+          // Drag end fires a click event; a rapid follow-up click creates a spurious
+          // dblclick. Suppress collapse if a drag just ended.
+          if (Date.now() - this.lastDragEndTime < 300) return
           this.toggleCollapse(node.id)
           this.announce(node.collapsed ? `Expanded ${node.label || node.id}` : `Collapsed ${node.label || node.id}`)
           return
@@ -851,10 +860,13 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       const cx = n.x + n.width / 2, cy = n.y + n.height / 2
       const shape = s.shape ?? 'rectangle'
       if (shape === 'circle') {
-        const r = Math.min(n.width, n.height) / 2
         parts.push(`<ellipse cx="${cx}" cy="${cy}" rx="${n.width/2}" ry="${n.height/2}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
       } else if (shape === 'diamond') {
         const pts = `${cx},${n.y} ${n.x+n.width},${cy} ${cx},${n.y+n.height} ${n.x},${cy}`
+        parts.push(`<polygon points="${pts}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
+      } else if (shape === 'hexagon') {
+        const qw = n.width / 4
+        const pts = `${n.x+qw},${n.y} ${n.x+n.width-qw},${n.y} ${n.x+n.width},${cy} ${n.x+n.width-qw},${n.y+n.height} ${n.x+qw},${n.y+n.height} ${n.x},${cy}`
         parts.push(`<polygon points="${pts}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
       } else {
         parts.push(`<rect x="${n.x}" y="${n.y}" width="${n.width}" height="${n.height}" rx="${s.borderRadius}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
@@ -1132,8 +1144,23 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     const entries: [string, { x: number; y: number }][] = targets instanceof Map
       ? [...targets.entries()]
       : targets.map(({ id, x, y }) => [id, { x, y }])
+
+    // Extend entries: for each group parent being moved, carry its children along.
+    const allTargets = new Map<string, { x: number; y: number }>(entries)
+    for (const [id, pos] of entries) {
+      const parent = this.graph.getNode(id)
+      if (!parent) continue
+      const dx = pos.x - parent.x
+      const dy = pos.y - parent.y
+      for (const child of this.graph.getNodes().filter(n => n.parentId === id)) {
+        if (!allTargets.has(child.id)) {
+          allTargets.set(child.id, { x: child.x + dx, y: child.y + dy })
+        }
+      }
+    }
+
     const map = new Map<string, { fx: number; fy: number; tx: number; ty: number }>()
-    for (const [id, { x, y }] of entries) {
+    for (const [id, { x, y }] of allTargets) {
       const node = this.graph.getNode(id)
       if (!node) continue
       map.set(id, { fx: node.x, fy: node.y, tx: x, ty: y })

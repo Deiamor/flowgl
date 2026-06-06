@@ -3,9 +3,12 @@ import { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from '../
 import type { NodeData } from '../graph/node'
 import type { EdgeData } from '../graph/edge'
 
-const node = (id: string): NodeData => ({
-  id, label: id, x: 0, y: 0, width: 120, height: 60,
+const node = (id: string, extra: Partial<NodeData> = {}): NodeData => ({
+  id, label: id, x: 0, y: 0, width: 120, height: 60, ...extra,
 })
+
+const childNode = (id: string, parentId: string, x = 10, y = 10): NodeData =>
+  node(id, { parentId, x, y })
 
 const edge = (id: string, source: string, target: string): EdgeData => ({
   id, source, target,
@@ -55,6 +58,14 @@ describe('hierarchicalLayout', () => {
     const result = hierarchicalLayout([node('solo')], [])
     expect(result.size).toBe(1)
   })
+
+  it('skips child nodes (parentId set) — only root nodes in result', () => {
+    const parent = node('p', { type: 'group' })
+    const child  = childNode('c', 'p')
+    const result = hierarchicalLayout([parent, child], [])
+    expect(result.has('p')).toBe(true)
+    expect(result.has('c')).toBe(false)
+  })
 })
 
 describe('forceLayout', () => {
@@ -78,6 +89,14 @@ describe('forceLayout', () => {
       expect(isFinite(pos.y)).toBe(true)
     }
   })
+
+  it('skips child nodes — only root nodes in result', () => {
+    const parent = node('p', { type: 'group' })
+    const child  = childNode('c', 'p')
+    const result = forceLayout([parent, child], [])
+    expect(result.has('p')).toBe(true)
+    expect(result.has('c')).toBe(false)
+  })
 })
 
 describe('gridLayout', () => {
@@ -100,6 +119,14 @@ describe('gridLayout', () => {
     // 4 nodes → 2×2 grid → 2 distinct x values and 2 distinct y values
     expect(xs.size).toBe(2)
     expect(ys.size).toBe(2)
+  })
+
+  it('skips child nodes — only root nodes in result', () => {
+    const parent = node('p', { type: 'group' })
+    const child  = childNode('c', 'p')
+    const result = gridLayout([parent, child])
+    expect(result.has('p')).toBe(true)
+    expect(result.has('c')).toBe(false)
   })
 })
 
@@ -147,5 +174,17 @@ describe('circularLayout', () => {
       expect(isFinite(pos.x)).toBe(true)
       expect(isFinite(pos.y)).toBe(true)
     }
+  })
+
+  it('skips child nodes — only root nodes placed on the circle', () => {
+    const parent = node('p', { type: 'group' })
+    const child  = childNode('c', 'p')
+    const other  = node('q')
+    const result = circularLayout([parent, child, other])
+    expect(result.has('p')).toBe(true)
+    expect(result.has('q')).toBe(true)
+    expect(result.has('c')).toBe(false)
+    // only 2 roots → single node result lands each at a distinct circle position
+    expect(result.size).toBe(2)
   })
 })

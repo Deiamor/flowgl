@@ -1,4 +1,4 @@
-# @flowchart/core
+# @flowgl/core
 
 Zero-dependency WebGL2 flowchart library for the browser.
 
@@ -23,13 +23,13 @@ Zero-dependency WebGL2 flowchart library for the browser.
 ## Installation
 
 ```bash
-npm install @flowchart/core
+npm install @flowgl/core
 ```
 
 ## Quick start
 
 ```ts
-import { FlowChart } from '@flowchart/core'
+import { FlowChart } from '@flowgl/core'
 
 const chart = new FlowChart({
   container: document.getElementById('app')!,
@@ -321,7 +321,7 @@ chart.dispose(): void   // remove canvas, release GPU resources, remove listener
 ## Layout utilities
 
 ```ts
-import { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from '@flowchart/core'
+import { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from '@flowgl/core'
 ```
 
 | Function | Signature | Best for |
@@ -372,3 +372,13 @@ Keyboard events are scoped to the canvas element (canvas must be focused). Click
 ## Browser support
 
 Requires **WebGL2** — available in all modern browsers (Chrome 56+, Firefox 51+, Safari 15+, Edge 79+). Server-side rendering is not supported; use `onError` to handle non-browser environments gracefully.
+
+## Known limitations
+
+### Text quality at high zoom
+
+Node labels are rendered into a 2048×2048 texture atlas using Canvas 2D. Text stays crisp up to approximately 2× zoom on a standard DPR-1 display (4× on a Retina/HiDPI display) because the atlas is pre-scaled by the device pixel ratio. Beyond that threshold, zooming in will blur the glyphs because the atlas is a fixed-resolution bitmap.
+
+**Workaround**: avoid workflows that require reading fine-grained text at zoom factors above 3–4×.
+
+**Future direction**: replacing the Canvas 2D atlas with signed distance field (SDF) font rendering would provide resolution-independent glyphs at any zoom level. This is tracked as a future enhancement.

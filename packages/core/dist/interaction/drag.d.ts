@@ -3,7 +3,7 @@ import type { Viewport } from '../viewport/viewport';
 import type { HitTester } from './hit-test';
 export type NodeMoveHandler = (id: string, x: number, y: number) => void;
 export type NodeDragEndHandler = (id: string, x: number, y: number) => void;
-export type NodeDragStartHandler = () => void;
+export type NodeDragStartHandler = (id: string) => void;
 export declare class NodeDrag {
     private canvas;
     private viewport;
@@ -13,9 +13,13 @@ export declare class NodeDrag {
     private onMove;
     private onEnd;
     private shouldBlock;
+    private getSnapGrid;
+    private getChildren;
+    private getCoselected;
     private dragging;
     private dragOffsetX;
     private dragOffsetY;
+    private dragChildren;
     private didMove;
     private activeTouchId;
     private readonly onMouseDown;
@@ -24,7 +28,8 @@ export declare class NodeDrag {
     private readonly onTouchStart;
     private readonly onTouchMove;
     private readonly onTouchEnd;
-    constructor(canvas: HTMLCanvasElement, viewport: Viewport, graph: Graph, hitTester: HitTester, onStart: NodeDragStartHandler, onMove: NodeMoveHandler, onEnd: NodeDragEndHandler, shouldBlock?: (clientX: number, clientY: number) => boolean);
+    constructor(canvas: HTMLCanvasElement, viewport: Viewport, graph: Graph, hitTester: HitTester, onStart: NodeDragStartHandler, onMove: NodeMoveHandler, onEnd: NodeDragEndHandler, shouldBlock?: (clientX: number, clientY: number) => boolean, getSnapGrid?: () => number, getChildren?: (nodeId: string) => string[], getCoselected?: (nodeId: string) => string[]);
+    private snap;
     private toWorld;
     private handleMouseDown;
     private handleMouseMove;

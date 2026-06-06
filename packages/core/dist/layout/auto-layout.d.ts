@@ -23,6 +23,14 @@ export declare function hierarchicalLayout(nodes: NodeData[], edges: EdgeData[],
  */
 export declare function forceLayout(nodes: NodeData[], edges: EdgeData[], iterations?: number): LayoutResult;
 /**
+ * Arrange nodes evenly around a circle.
+ * The first node is placed at the top (−π/2) and the rest follow clockwise.
+ *
+ * @param nodes  Nodes to arrange.
+ * @param radius Circle radius in world units. Auto-sized when omitted.
+ */
+export declare function circularLayout(nodes: NodeData[], radius?: number): LayoutResult;
+/**
  * Arrange nodes in a uniform grid, sorted by current x position.
  */
 export declare function gridLayout(nodes: NodeData[], gap?: number): LayoutResult;

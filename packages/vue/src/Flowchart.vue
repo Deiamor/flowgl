@@ -36,6 +36,7 @@ const props = withDefaults(defineProps<{
   style?:            string | Record<string, string>
   width?:            string
   height?:           string
+  autoConnect?:      boolean
 }>(), {
   nodes:         () => [],
   edges:         () => [],
@@ -48,6 +49,12 @@ const emit = defineEmits<{
   edgesChange:    [edges: EdgeData[]]
   connect:        [params: ConnectParams]
   nodeClick:      [node: NodeData]
+  nodeAdd:        [node: NodeData]
+  nodeRemove:     [id: string]
+  nodeUpdate:     [id: string, updates: Partial<NodeData>]
+  edgeAdd:        [edge: EdgeData]
+  edgeRemove:     [id: string]
+  edgeUpdate:     [id: string, updates: Partial<EdgeData>]
   selectionChange:[params: { selectedIds: string[]; edgeIds: string[] }]
   viewportChange: [state: ViewportState]
   init:           [chart: FlowChart]
@@ -79,13 +86,13 @@ onMounted(() => {
     nodes:     props.nodes,
     edges:     props.edges,
   }
-  if (props.background   !== undefined) options.background   = props.background
-  if (props.minimap      !== undefined) options.minimap      = props.minimap
-  if (props.grid         !== undefined) options.grid         = props.grid
+  if (props.background    !== undefined) options.background    = props.background
+  if (props.minimap       !== undefined) options.minimap       = props.minimap
+  if (props.grid          !== undefined) options.grid          = props.grid
   if (props.labelEditable !== undefined) options.labelEditable = props.labelEditable
-  if (props.readOnly     !== undefined) options.readOnly     = props.readOnly
-  if (props.historyLimit !== undefined) options.historyLimit = props.historyLimit
-  if (props.ariaLabel    !== undefined) options.ariaLabel    = props.ariaLabel
+  if (props.readOnly      !== undefined) options.readOnly      = props.readOnly
+  if (props.historyLimit  !== undefined) options.historyLimit  = props.historyLimit
+  if (props.ariaLabel     !== undefined) options.ariaLabel     = props.ariaLabel
   options.onError = (err) => emit('error', err)
 
   const chart = new FlowChart(options)
@@ -99,16 +106,24 @@ onMounted(() => {
   })
 
   chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
-    chart.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
-    const edges = chart.graph.getEdges()
-    lastEdges = edges
-    emit('edgesChange', edges)
+    if (props.autoConnect !== false) {
+      chart.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
+      const edges = chart.graph.getEdges()
+      lastEdges = edges
+      emit('edgesChange', edges)
+    }
     emit('connect', { sourceId, targetId, sourceHandle, targetHandle })
   })
 
-  chart.on('nodeClick',       ({ node }) => emit('nodeClick', node))
-  chart.on('selectionChange', (params)  => emit('selectionChange', params))
-  chart.on('viewportChange',  (state)   => emit('viewportChange', state))
+  chart.on('nodeAdd',        ({ node })            => emit('nodeAdd', node))
+  chart.on('nodeRemove',     ({ id })              => emit('nodeRemove', id))
+  chart.on('nodeUpdate',     ({ id, updates })     => emit('nodeUpdate', id, updates as Partial<NodeData>))
+  chart.on('edgeAdd',        ({ edge })            => emit('edgeAdd', edge))
+  chart.on('edgeRemove',     ({ id })              => emit('edgeRemove', id))
+  chart.on('edgeUpdate',     ({ id, updates })     => emit('edgeUpdate', id, updates as Partial<EdgeData>))
+  chart.on('nodeClick',       ({ node })           => emit('nodeClick', node))
+  chart.on('selectionChange', (params)             => emit('selectionChange', params))
+  chart.on('viewportChange',  (state)              => emit('viewportChange', state))
 
   chartRef.value = chart
   emit('init', chart)
@@ -136,4 +151,16 @@ watch(() => props.edges, (edges) => {
 watch(() => props.readOnly, (v) => {
   if (v !== undefined) chartRef.value?.setReadOnly(v)
 })
+
+watch(() => props.background, (v) => {
+  if (v !== undefined) chartRef.value?.setBackground(v)
+})
+
+watch(() => props.grid, (v) => {
+  if (v !== undefined) chartRef.value?.setGrid(v)
+}, { deep: true })
+
+watch(() => props.minimap, (v) => {
+  chartRef.value?.setMinimap(v ?? null)
+}, { deep: true })
 </script>
