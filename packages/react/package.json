@@ -38,15 +38,22 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.7.0",
+    "happy-dom": "^20.9.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "rollup": "^4.18.0",
     "tslib": "^2.6.3",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vitest": "^2.1.9"
   },
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
     "build:dev": "rollup -c rollup.config.mjs --environment MODE:development",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
   }

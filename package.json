@@ -6,7 +6,8 @@
     "build": "pnpm -r build",
     "dev": "pnpm --filter demo dev",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm --filter @flowgl/core test",
+    "test": "pnpm --filter @flowgl/core test && pnpm --filter '@flowgl/react' test && pnpm --filter '@flowgl/vue' test && pnpm --filter '@flowgl/svelte' test",
+    "test:wrappers": "pnpm --filter '@flowgl/react' test && pnpm --filter '@flowgl/vue' test && pnpm --filter '@flowgl/svelte' test",
     "test:coverage": "pnpm --filter @flowgl/core exec vitest run --coverage"
   },
   "devDependencies": {

@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [D-1] 프레임워크 래퍼 테스트 추가 — @flowgl/react, @flowgl/vue, @flowgl/svelte 각 9개 (총 27개)
+- Summary: 세 프레임워크 래퍼 패키지에 vitest 기반 유닛 테스트를 신규 추가. 각 패키지에 vitest.config.ts와 `__tests__/Flowchart.test.*` 파일 작성. MockChart는 `vi.hoisted` 패턴으로 선언(클래스 hoisting 오류 방지). Svelte 패키지는 `resolve.conditions: ['browser']` 설정으로 SSR no-op 대신 DOM 클라이언트 런타임(onMount 실행)을 로드. Vue 테스트는 Vue reactive proxy 래핑으로 인해 props 검증 시 `toBe` 대신 `toStrictEqual` 사용. 루트 `pnpm test` 스크립트 갱신으로 3개 패키지 테스트 병렬 실행.
+- Affected files: packages/react/vitest.config.ts (신규), packages/react/src/__tests__/Flowchart.test.tsx (신규), packages/vue/vitest.config.ts (신규), packages/vue/src/__tests__/Flowchart.test.ts (신규), packages/svelte/vitest.config.ts (신규), packages/svelte/src/__tests__/Flowchart.test.ts (신규), packages/react/package.json, packages/vue/package.json, packages/svelte/package.json, package.json
+- Timestamp: 2026-06-09
+
 ## [deploy] 데모 사이트 배포 — Cloudflare Workers + wrangler.toml
 - Summary: `https://dev.flowgl.ouranos.kr/` 에 데모 사이트 배포. `wrangler.toml` 신규 추가 (`name = "flowgl"`, `assets.directory = "./demo/dist"`). Cloudflare Workers 정적 에셋 방식으로 배포. GitHub push 시 CI 자동 빌드·배포. 빌드 명령: `pnpm --filter demo build`, 배포 명령: `npx wrangler deploy`.
 - Affected files: wrangler.toml (신규)
