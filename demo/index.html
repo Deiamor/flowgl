@@ -104,6 +104,7 @@
       <button id="btnClear">Clear All</button>
       <button id="btnLayout">Auto Layout (Hierarchical)</button>
       <button id="btnCircularLayout">⊙ Circular Layout</button>
+      <button id="btnWorkerLayout">⚡ Force Layout (Worker)</button>
       <button id="btnExportPNG">⬇ Export PNG</button>
       <button id="btnExportSVG">⬇ Export SVG</button>
       <button id="btnReadOnly">🔒 Toggle ReadOnly</button>
@@ -216,7 +217,7 @@
   </div>
 
   <script type="module">
-    import { FlowChart, generateId, hierarchicalLayout, circularLayout } from '@flowgl/core'
+    import { FlowChart, generateId, hierarchicalLayout, circularLayout, LayoutWorkerClient } from '@flowgl/core'
 
     // ── Init ────────────────────────────────────────────────────────
     const chart = new FlowChart({
@@ -362,6 +363,30 @@
       const result = circularLayout(chart.getNodes())
       chart.animateLayout(result, 500)
       setTimeout(() => chart.fitView(), 520)
+    })
+
+    $('btnWorkerLayout').addEventListener('click', async () => {
+      const btn = $('btnWorkerLayout')
+      btn.disabled = true
+      btn.textContent = '⏳ Running...'
+      try {
+        const worker = new Worker(
+          new URL('../packages/core/src/workers/layout-worker.ts', import.meta.url),
+          { type: 'module' },
+        )
+        const client = new LayoutWorkerClient(worker)
+        const positions = await client.runLayout('force', chart.getNodes(), chart.getEdges())
+        const posMap = new Map(positions.map(p => [p.id, { x: p.x, y: p.y }]))
+        chart.animateLayout(posMap, 500)
+        setTimeout(() => chart.fitView(), 520)
+        client.dispose()
+        $('statEvt').textContent = 'force layout (worker) done'
+      } catch (err) {
+        $('statEvt').textContent = `worker error: ${err}`
+      } finally {
+        btn.disabled = false
+        btn.textContent = '⚡ Force Layout (Worker)'
+      }
     })
 
     let autoN = 100
