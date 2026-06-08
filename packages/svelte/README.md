@@ -2,6 +2,8 @@
 
 Svelte 4 wrapper for [@flowgl/core](https://www.npmjs.com/package/@flowgl/core) — a zero-dependency WebGL2 flowchart library.
 
+[GitHub](https://github.com/Deiamor/flowgl) · [npm](https://www.npmjs.com/package/@flowgl/svelte)
+
 ## Installation
 
 ```bash

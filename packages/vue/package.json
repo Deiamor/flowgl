@@ -1,8 +1,15 @@
 {
   "name": "@flowgl/vue",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Vue 3 wrapper for @flowgl/core WebGL flowchart",
-  "keywords": ["flowchart", "webgl", "vue", "vue3", "diagram", "graph"],
+  "keywords": [
+    "flowchart",
+    "webgl",
+    "vue",
+    "vue3",
+    "diagram",
+    "graph"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "dist/index.cjs.js",

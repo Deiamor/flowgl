@@ -1,8 +1,14 @@
 {
   "name": "@flowgl/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React wrapper for @flowgl/core WebGL flowchart",
-  "keywords": ["flowchart", "webgl", "react", "diagram", "graph"],
+  "keywords": [
+    "flowchart",
+    "webgl",
+    "react",
+    "diagram",
+    "graph"
+  ],
   "license": "MIT",
   "type": "module",
   "main": "dist/index.cjs.js",
