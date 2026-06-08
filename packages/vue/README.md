@@ -2,7 +2,7 @@
 
 Vue 3 wrapper for [@flowgl/core](https://www.npmjs.com/package/@flowgl/core) — a zero-dependency WebGL2 flowchart library.
 
-[GitHub](https://github.com/Deiamor/flowgl) · [npm](https://www.npmjs.com/package/@flowgl/vue)
+[GitHub](https://github.com/Deiamor/flowgl) · [npm](https://www.npmjs.com/package/@flowgl/vue) · [Demo](https://dev.flowgl.ouranos.kr/)
 
 ## Installation
 

@@ -1,6 +1,6 @@
 {
   "name": "@flowgl/react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React wrapper for @flowgl/core WebGL flowchart",
   "keywords": [
     "flowchart",

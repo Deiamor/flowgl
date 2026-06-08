@@ -1,6 +1,6 @@
 {
   "name": "@flowgl/vue",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Vue 3 wrapper for @flowgl/core WebGL flowchart",
   "keywords": [
     "flowchart",
