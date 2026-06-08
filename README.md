@@ -196,3 +196,4 @@ When WebGL2 is unavailable the `onError` callback is invoked — no silent crash
 ## License
 
 MIT © [Deiamor](https://github.com/Deiamor)
+
