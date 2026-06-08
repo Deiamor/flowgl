@@ -2,7 +2,7 @@
 
 Zero-dependency WebGL2 flowchart library for the browser.
 
-[GitHub](https://github.com/Deiamor/flowgl) · [npm](https://www.npmjs.com/package/@flowgl/core)
+[GitHub](https://github.com/Deiamor/flowgl) · [npm](https://www.npmjs.com/package/@flowgl/core) · [Demo](https://dev.flowgl.ouranos.kr/)
 
 ## Features
 
