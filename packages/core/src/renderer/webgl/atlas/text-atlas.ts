@@ -1,5 +1,49 @@
 const ATLAS_SIZE = 2048
-const PADDING = 4
+const PADDING = 8
+const SDF_SPREAD = 4
+
+function propagateEDT(dist: Float32Array, w: number, h: number): void {
+  const s2 = Math.SQRT2
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x
+      let d = dist[i]!
+      if (x > 0)              d = Math.min(d, dist[i - 1]!     + 1)
+      if (y > 0)              d = Math.min(d, dist[i - w]!     + 1)
+      if (x > 0 && y > 0)    d = Math.min(d, dist[i - w - 1]! + s2)
+      if (x < w-1 && y > 0)  d = Math.min(d, dist[i - w + 1]! + s2)
+      dist[i] = d
+    }
+  }
+  for (let y = h-1; y >= 0; y--) {
+    for (let x = w-1; x >= 0; x--) {
+      const i = y * w + x
+      let d = dist[i]!
+      if (x < w-1)              d = Math.min(d, dist[i + 1]!     + 1)
+      if (y < h-1)              d = Math.min(d, dist[i + w]!     + 1)
+      if (x < w-1 && y < h-1)  d = Math.min(d, dist[i + w + 1]! + s2)
+      if (x > 0   && y < h-1)  d = Math.min(d, dist[i + w - 1]! + s2)
+      dist[i] = d
+    }
+  }
+}
+
+function computeSDF(pixels: Uint8ClampedArray, w: number, h: number, spread: number): void {
+  const n = w * h
+  const INF = (spread + 1) * 2
+  const dIn  = new Float32Array(n)
+  const dOut = new Float32Array(n)
+  for (let i = 0; i < n; i++) {
+    if (pixels[i * 4 + 3]! > 127) { dIn[i] = 0; dOut[i] = INF }
+    else                          { dIn[i] = INF; dOut[i] = 0 }
+  }
+  propagateEDT(dIn,  w, h)
+  propagateEDT(dOut, w, h)
+  for (let i = 0; i < n; i++) {
+    const signed = dOut[i]! - dIn[i]!
+    pixels[i * 4 + 3] = Math.max(0, Math.min(255, Math.round((0.5 + signed / (2 * spread)) * 255)))
+  }
+}
 
 interface AtlasEntry {
   u0: number; v0: number; u1: number; v1: number
@@ -105,13 +149,37 @@ export class TextAtlas {
     if (bgColor) {
       this.ctx.fillStyle = bgColor
       this.ctx.fillRect(this.shelfX, this.shelfY, w, h)
-    }
-
-    this.ctx.fillStyle = color
-    this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
-
-    for (let i = 0; i < lines.length; i++) {
-      this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
+      this.ctx.fillStyle = color
+      this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+      for (let i = 0; i < lines.length; i++) {
+        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
+      }
+    } else {
+      // SDF path: render to temp canvas → compute distance field → putImageData
+      // Falls back to bitmap when getImageData is unavailable (e.g. test environments)
+      const physW = Math.ceil(w * this.dpr)
+      const physH = Math.ceil(h * this.dpr)
+      const tmp = new OffscreenCanvas(physW, physH)
+      const tctx = tmp.getContext('2d')!
+      tctx.scale(this.dpr, this.dpr)
+      tctx.font = font
+      tctx.textBaseline = 'top'
+      tctx.fillStyle = color
+      tctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+      for (let i = 0; i < lines.length; i++) {
+        tctx.fillText(lines[i]!, PADDING, PADDING + i * lineStep)
+      }
+      if (typeof tctx.getImageData === 'function') {
+        const imageData = tctx.getImageData(0, 0, physW, physH)
+        computeSDF(imageData.data, physW, physH, SDF_SPREAD * this.dpr)
+        this.ctx.putImageData(imageData, this.shelfX * this.dpr, this.shelfY * this.dpr)
+      } else {
+        this.ctx.fillStyle = color
+        this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+        for (let i = 0; i < lines.length; i++) {
+          this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
+        }
+      }
     }
 
     // UV coords are in physical-pixel space (0..ATLAS_SIZE)

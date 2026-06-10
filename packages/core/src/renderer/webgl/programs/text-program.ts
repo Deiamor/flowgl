@@ -37,11 +37,20 @@ precision mediump float;
 in vec2 v_uv;
 
 uniform sampler2D u_atlas;
+uniform float u_sdf;
 
 out vec4 fragColor;
 
 void main() {
-  fragColor = texture(u_atlas, v_uv);
+  vec4 s = texture(u_atlas, v_uv);
+  if (u_sdf > 0.5) {
+    float d  = s.a;
+    float w  = fwidth(d) * 0.7;
+    float a  = smoothstep(0.5 - w, 0.5 + w, d);
+    fragColor = vec4(s.rgb, a);
+  } else {
+    fragColor = s;
+  }
 }
 `
 
@@ -70,6 +79,7 @@ export class TextProgram {
 
   private uMatrix: WebGLUniformLocation
   private uAtlas: WebGLUniformLocation
+  private uSdf: WebGLUniformLocation
 
   // Per-node quad cache
   private quadCache = new Map<string, { quad: Float32Array; key: string }>()
@@ -118,6 +128,7 @@ export class TextProgram {
     }
     this.uMatrix = u('u_matrix')
     this.uAtlas  = u('u_atlas')
+    this.uSdf    = u('u_sdf')
   }
 
   render(nodes: NodeData[], matrix: Float32Array, zoom: number): void {
@@ -235,6 +246,7 @@ export class TextProgram {
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.uniform1i(this.uAtlas, 0)
+    gl.uniform1f(this.uSdf, 1.0)
     this.atlas.bind(gl, 0)
     gl.bindVertexArray(this.vao)
     gl.drawArrays(gl.TRIANGLES, 0, this.prevNodeDrawCount)
@@ -323,6 +335,7 @@ export class TextProgram {
     gl.useProgram(this.program)
     gl.uniformMatrix4fv(this.uMatrix, false, matrix)
     gl.uniform1i(this.uAtlas, 0)
+    gl.uniform1f(this.uSdf, 0.0)
     this.atlas.bind(gl, 0)
     gl.bindVertexArray(this.vao)
     gl.drawArrays(gl.TRIANGLES, 0, drawCount)

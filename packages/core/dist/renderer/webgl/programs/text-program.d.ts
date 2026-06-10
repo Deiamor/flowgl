@@ -9,6 +9,7 @@ export declare class TextProgram {
     private atlas;
     private uMatrix;
     private uAtlas;
+    private uSdf;
     private quadCache;
     private prevNodeIds;
     private prevAtlasGeneration;
