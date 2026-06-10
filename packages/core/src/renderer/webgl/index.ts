@@ -4,7 +4,7 @@ import type { Viewport } from '../../viewport/viewport'
 import type { ConnectState } from '../../interaction/connect'
 import type { RerouteState, EndpointCircle } from '../../interaction/edge-reroute'
 import type { GridConfig } from '../../types'
-import { createWebGL2Context } from './context'
+import { createWebGL2Context, applyGlState } from './context'
 import { NodeProgram } from './programs/node-program'
 import { EdgeProgram } from './programs/edge-program'
 import { CapProgram }  from './programs/cap-program'
@@ -80,6 +80,8 @@ export class WebGL2Renderer implements Renderer {
 
   private reinitializePrograms(): void {
     const gl = this.gl
+    // WebGL state (BLEND, blendFunc, etc.) is reset on context loss — restore it.
+    applyGlState(gl)
     this.atlas         = new TextAtlas(this.dpr)
     this.nodeProgram   = new NodeProgram(gl)
     this.edgeProgram   = new EdgeProgram(gl)

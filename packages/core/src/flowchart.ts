@@ -490,9 +490,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         }
         if (!this.labelEditable) return
         this.labelEditor.startEdit(node, this.canvas, this.viewport, (newLabel) => {
-          this.beforeMutation()
-          this.graph.updateNode(node.id, { label: newLabel })
-          this.scheduleRender()
+          if (newLabel === node.label) return
+          this.updateNode(node.id, { label: newLabel })
         })
         return
       }
@@ -534,9 +533,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
             label: 'Edit Label',
             action: () => {
               this.labelEditor.startEdit(node, this.canvas, this.viewport, (newLabel) => {
-                this.beforeMutation()
-                this.graph.updateNode(node.id, { label: newLabel })
-                this.scheduleRender()
+                if (newLabel === node.label) return
+                this.updateNode(node.id, { label: newLabel })
               })
             },
           },
@@ -1270,15 +1268,15 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       if (committed) return
       committed = true
       const newLabel = input.value.trim()
-      this.beforeMutation()
-      if (newLabel) this.graph.updateEdge(edge.id, { label: newLabel })
-      else this.graph.updateEdge(edge.id, { label: '' })
-      this.scheduleRender()
+      if (newLabel !== (edge.label ?? '')) {
+        this.updateEdge(edge.id, { label: newLabel })
+      }
       input.remove()
       this.canvas.focus()
     }
     input.addEventListener('keydown', (ev: KeyboardEvent) => {
       ev.stopPropagation()
+      if (ev.isComposing || ev.keyCode === 229) return
       if (ev.key === 'Enter') commit()
       if (ev.key === 'Escape') { committed = true; input.remove(); this.canvas.focus() }
     })

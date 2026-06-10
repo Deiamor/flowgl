@@ -150,4 +150,27 @@ describe('LabelEditor', () => {
     expect(onDone).not.toHaveBeenCalled()
     expect(document.querySelector('input')).not.toBeNull()
   })
+
+  it('Enter during IME composition does not commit (isComposing)', () => {
+    const onDone = vi.fn()
+    editor.startEdit(nd(), canvas, viewport, onDone)
+    const input = document.querySelector('input') as HTMLInputElement
+    input.value = '변경'
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', isComposing: true, bubbles: true }))
+    expect(onDone).not.toHaveBeenCalled()
+    expect(document.querySelector('input')).not.toBeNull()
+    // Second Enter after composition ends commits normally
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    expect(onDone).toHaveBeenCalledOnce()
+    expect(onDone.mock.calls[0]![0]).toBe('변경')
+  })
+
+  it('Enter during IME composition (keyCode 229) does not commit', () => {
+    const onDone = vi.fn()
+    editor.startEdit(nd(), canvas, viewport, onDone)
+    const input = document.querySelector('input') as HTMLInputElement
+    input.value = '편집'
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Process', keyCode: 229, bubbles: true }))
+    expect(onDone).not.toHaveBeenCalled()
+  })
 })

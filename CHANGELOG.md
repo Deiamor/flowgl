@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.4] — 2026-06-10
+
+### Fixed
+
+- WebGL `BLEND` state was not restored after `webglcontextrestored` — text labels rendered as solid dark rectangles because per-pixel alpha was written directly to the framebuffer instead of being blended. Extracted `applyGlState()` from `createWebGL2Context()` and call it from `reinitializePrograms()` so the blend equation survives a context loss/restore cycle.
+- Inline label editor committed mid-IME composition — Enter pressed to confirm a Korean / Japanese / Chinese composition would fire `commit()` before the composition was finalized. Added `e.isComposing || e.keyCode === 229` guard to both node and edge label keydown handlers.
+- Inline label editor bypassed the public `updateNode()` / `updateEdge()` paths and called `graph.updateNode()` directly, so the `nodeUpdate` / `edgeUpdate` events never fired for inline edits. Wrappers (React / Vue / Svelte) that rely on those events to sync controlled state did not learn about the change. Inline editors now route through the public mutation methods.
+
 ## [0.1.3] — 2026-06-10
 
 ### Added

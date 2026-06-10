@@ -1,5 +1,10 @@
 # HISTORY.md
 
+## [fix] 노드/엣지 inline label edit — 컨텍스트 손실 후 텍스트가 검은 박스 + IME composition 중 commit + nodeUpdate 이벤트 미발화 3건 동시 수정
+- Summary: (1) **WebGL BLEND 상태 복구 — text-as-dark-blob 버그** : `createWebGL2Context()`에서 한 번만 호출되던 `gl.enable(gl.BLEND)` + `blendFuncSeparate(...)`를 `applyGlState()` 헬퍼로 추출하고, `WebGL2Renderer.reinitializePrograms()` (webglcontextrestored 핸들러에서 호출됨)에서도 호출. 컨텍스트 손실 후 alpha=0 픽셀의 RGB(0,0,0)가 그대로 프레임버퍼에 쓰여 텍스트 영역이 검은 직사각형으로 보이던 버그 수정. (2) **IME composition guard** : 노드·엣지 label editor의 keydown 핸들러에 `e.isComposing || e.keyCode === 229` 검사 추가. 한국어/일본어/중국어 입력 중 Enter로 composition 확정 시 commit이 조기 발화되는 문제 차단. (3) **inline editor → public mutation routing** : 노드·엣지 inline editor가 `graph.updateNode()` / `graph.updateEdge()`를 직접 호출하여 `nodeUpdate` / `edgeUpdate` 이벤트가 발화되지 않던 문제 수정. `this.updateNode(id, updates)` / `this.updateEdge(id, updates)` 공개 메서드 사용으로 변경 — beforeMutation + emit + scheduleRender 일관성 확보. React/Vue/Svelte 래퍼의 onNodeUpdate / onEdgeUpdate가 inline edit에도 정상 전달됨. (4) **테스트 2개 추가** : label-editor.test.ts에 `isComposing=true` 시 Enter 무시 + `keyCode=229` (legacy Process) 시 Enter 무시 검증. 861 tests PASS. TypeScript PASS. Playwright headless 검증: 라벨 "Start" → "Renamed" 즉시 시각 반영 확인 ✓.
+- Affected files: packages/core/src/renderer/webgl/context.ts, packages/core/src/renderer/webgl/index.ts, packages/core/src/interaction/label-edit.ts, packages/core/src/flowchart.ts, packages/core/src/__tests__/label-editor.test.ts, packages/*/package.json (0.1.3→0.1.4), CHANGELOG.md, README.md (테스트 배지 859→861)
+- Timestamp: 2026-06-10
+
 ## [0.1.3-release] npm 0.1.3 배포 — SDF 텍스트 렌더링 포함 4개 패키지
 - Summary: @flowgl/core@0.1.3, @flowgl/react@0.1.3, @flowgl/vue@0.1.3, @flowgl/svelte@0.1.3 npmjs 배포. SDF 텍스트 렌더링(zoom 2× 이상에서 선명한 라벨), 프레임워크 래퍼 테스트 NodeData fixture 타입 오류(width/height 누락) 수정 포함.
 - Affected files: packages/*/package.json (버전 0.1.3), packages/*/src/__tests__/Flowchart.test.* (fixture 수정)

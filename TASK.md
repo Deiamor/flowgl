@@ -148,3 +148,8 @@ tasks:
     title: README GitHub/Demo 링크 추가, 테스트 배지 최신화
     status: done
     dependencies: [C-1, C-2]
+
+  - id: C-4
+    title: 0.1.4 — inline label edit 텍스트 미반영 버그 수정 (BLEND restore + IME guard + public updateNode 라우팅)
+    status: done
+    dependencies: [C-1]

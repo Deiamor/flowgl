@@ -57,6 +57,10 @@ export class LabelEditor {
     this.boundBlur = commit
     input.addEventListener('keydown', (e: KeyboardEvent) => {
       e.stopPropagation()
+      // Ignore Enter/Escape while an IME composition is in progress —
+      // pressing Enter to confirm Korean/Japanese/Chinese composition would
+      // otherwise commit the edit prematurely with the pre-commit value.
+      if (e.isComposing || e.keyCode === 229) return
       if (e.key === 'Enter') commit()
       if (e.key === 'Escape') { committed = true; this.stopEdit(); canvas.focus() }
     })

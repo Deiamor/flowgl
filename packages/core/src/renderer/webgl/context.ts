@@ -4,9 +4,13 @@ export function createWebGL2Context(
 ): WebGL2RenderingContext | null {
   const gl = canvas.getContext('webgl2', { antialias, premultipliedAlpha: false, alpha: true })
   if (!gl) return null
+  applyGlState(gl)
+  return gl
+}
+
+export function applyGlState(gl: WebGL2RenderingContext): void {
   gl.enable(gl.BLEND)
   gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
-  return gl
 }
 
 export function createShader(gl: WebGL2RenderingContext, type: number, source: string): WebGLShader {
