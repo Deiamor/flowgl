@@ -95,7 +95,7 @@ describe('Flowchart (Vue)', () => {
   it('nodes prop change → chart.setNodes()', async () => {
     const wrapper = mount(Flowchart, { props: { nodes } })
     const chart = mockState.lastChart!
-    const newNodes = [{ id: 'n2', x: 10, y: 10, label: 'Node 2' }]
+    const newNodes = [{ id: 'n2', x: 10, y: 10, width: 120, height: 40, label: 'Node 2' }]
     await wrapper.setProps({ nodes: newNodes })
     await nextTick()
     expect(chart.setNodes).toHaveBeenCalledWith(newNodes)

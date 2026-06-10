@@ -100,7 +100,7 @@ describe('Flowchart (Svelte)', () => {
     const { component } = render(Flowchart, { props: { nodes } })
     await tick()
     const chart = mockState.lastChart!
-    const newNodes = [{ id: 'n2', x: 10, y: 10, label: 'Node 2' }]
+    const newNodes = [{ id: 'n2', x: 10, y: 10, width: 120, height: 40, label: 'Node 2' }]
     await component.$set({ nodes: newNodes })
     await tick()
     expect(chart.setNodes).toHaveBeenCalledWith(newNodes)

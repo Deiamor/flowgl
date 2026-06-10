@@ -96,7 +96,7 @@ describe('Flowchart (React)', () => {
   it('nodes prop change → chart.setNodes()', async () => {
     const { rerender } = render(<Flowchart nodes={nodes} />)
     const chart = mockState.lastChart!
-    const newNodes = [{ id: 'n2', x: 10, y: 10, label: 'Node 2' }]
+    const newNodes = [{ id: 'n2', x: 10, y: 10, width: 120, height: 40, label: 'Node 2' }]
     await act(async () => { rerender(<Flowchart nodes={newNodes} />) })
     expect(chart.setNodes).toHaveBeenCalledWith(newNodes)
   })
