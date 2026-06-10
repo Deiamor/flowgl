@@ -19,8 +19,9 @@ Zero-dependency WebGL2 flowchart library for the browser.
 - **Minimap** — optional overview panel, configurable position and size
 - **Node status badges** — `error | warning | success | info` rendered at the top-right corner
 - **Accessible** — `role="application"`, `aria-live` announcements, full keyboard control
+- **SDF text rendering** — Signed Distance Field font atlas delivers sharp labels at any zoom level (dead-reckoning EDT + `smoothstep(fwidth)` in GLSL)
 - **SSR-safe** — detects non-browser environments and calls `onError` instead of crashing
-- **220 tests** across 10 test files
+- **832 tests** across 23 test files
 
 ## Installation
 
@@ -375,12 +376,8 @@ Keyboard events are scoped to the canvas element (canvas must be focused). Click
 
 Requires **WebGL2** — available in all modern browsers (Chrome 56+, Firefox 51+, Safari 15+, Edge 79+). Server-side rendering is not supported; use `onError` to handle non-browser environments gracefully.
 
-## Known limitations
+## Text rendering
 
-### Text quality at high zoom
+Node labels use a **Signed Distance Field (SDF)** texture atlas. Glyphs are rendered to a Canvas 2D offscreen buffer, a dead-reckoning Euclidean distance transform is applied to the alpha channel, and the result is stored as `(R, G, B) = textColor`, `A = SDF distance`. The fragment shader reconstructs sharp edges via `smoothstep(fwidth(dist) * 0.7)`, making labels crisp at any zoom level — including high-DPI displays and deep zoom-in.
 
-Node labels are rendered into a 2048×2048 texture atlas using Canvas 2D. Text stays crisp up to approximately 2× zoom on a standard DPR-1 display (4× on a Retina/HiDPI display) because the atlas is pre-scaled by the device pixel ratio. Beyond that threshold, zooming in will blur the glyphs because the atlas is a fixed-resolution bitmap.
-
-**Workaround**: avoid workflows that require reading fine-grained text at zoom factors above 3–4×.
-
-**Future direction**: replacing the Canvas 2D atlas with signed distance field (SDF) font rendering would provide resolution-independent glyphs at any zoom level. This is tracked as a future enhancement.
+Edge labels (which include a background fill) continue to use the bitmap path and retain their previous quality characteristics.
