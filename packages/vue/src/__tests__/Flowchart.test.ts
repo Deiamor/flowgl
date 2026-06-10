@@ -58,7 +58,7 @@ vi.mock('@flowgl/core', () => ({
   generateId: (prefix: string) => `${prefix}-test-id`,
 }))
 
-const nodes = [{ id: 'n1', x: 0, y: 0, label: 'Node 1' }]
+const nodes = [{ id: 'n1', x: 0, y: 0, width: 120, height: 40, label: 'Node 1' }]
 const edges = [{ id: 'e1', source: 'n1', target: 'n1' }]
 
 beforeEach(() => {
