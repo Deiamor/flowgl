@@ -4,6 +4,57 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.3] — 2026-06-10
+
+### Added
+
+- SDF (Signed Distance Field) text rendering for node labels — zoom-invariant sharp text at any zoom level using dead-reckoning EDT + `smoothstep(fwidth)` in GLSL fragment shader
+
+### Changed
+
+- `TextAtlas` PADDING 4→8 px; glyph-only entries now store distance field in alpha channel (RGB = text color), with bitmap fallback for environments lacking `getImageData`
+
+### Fixed
+
+- Test `NodeData` fixtures missing required `width` / `height` fields in all three wrapper test files
+
+## [0.1.2] — 2026-06-09
+
+### Added
+
+- Vitest unit tests for `@flowgl/react`, `@flowgl/vue`, `@flowgl/svelte` — 9 tests each (27 total): constructor on mount, dispose on unmount, onInit callback, initial props, nodes/edges/readOnly prop sync, autoConnect behavior
+- `vi.hoisted` MockChart pattern shared across all wrapper tests
+- Force Layout worker integration in demo (`LayoutWorkerClient`)
+
+### Changed
+
+- Root `pnpm test` script runs all 4 packages; `test:wrappers` script added
+
+## [0.1.1] — 2026-06-09
+
+### Added
+
+- `readOnly`, `snapGrid`, `autoFit`, `minimap` constructor options
+- Events `nodeDoubleClick`, `nodeDragStart`, `edgeClick`, `edgeDoubleClick`, `edgeUpdate`, `nodeResize`, `nodeHover`, `edgeHover`
+- Node mutations `deleteSelected()`, `duplicateSelected()`, `lockNode()`, `unlockNode()`, `setNodeShape()`, `setNodeStatus()`
+- Edge mutations `updateEdge()`, `setEdgeStyle()`, `swapEdgeDirection()`
+- Graph queries `getNode()`, `getEdge()`, `getEdgesForNode()`, `getEdgesBetween()`, `getIncomers()`, `getOutgoers()`, `getConnectedNodes()`, `hasCycle()`, `findPaths()`
+- Viewport `zoomIn()`, `zoomOut()`, `zoomTo()`, `fitViewToSelection()`, `panTo()`, `getNodesBounds()`, `scrollToNode()`
+- History `clearHistory()`, `batchUpdate(fn)`
+- Group `collapseNode()`, `expandNode()`, `groupNodes()`, `ungroupNodes()`
+- Alignment `alignNodes()`, `distributeNodes()`; Layout `circularLayout()`, `animateLayout()`
+- Export `exportPNG()`, `exportSVG()`
+- `NodeStyle.shape` variants (circle, diamond, hexagon); `NodeStatus` type; `NodeData` fields tooltip/locked/status/parentId/collapsed/ports/htmlContent; `EdgeData` fields animated/waypoints
+- GitHub link and demo site URL in all package READMEs
+
+### Fixed
+
+- Group drag spurious dblclick; canvas event listener leak on dispose; GPU leak in CapProgram; undo inconsistency for setNodeStyle/setNodeSize/lockNode/collapseNode/groupNodes
+
+### Changed
+
+- `getEdgesForNode()`, `getIncomers()`, `getOutgoers()` use O(degree) index; test suite expanded from 127 to 832 tests
+
 ## [0.1.0] — 2026-06-03
 
 ### Added

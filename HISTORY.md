@@ -1,5 +1,15 @@
 # HISTORY.md
 
+## [0.1.3-release] npm 0.1.3 배포 — SDF 텍스트 렌더링 포함 4개 패키지
+- Summary: @flowgl/core@0.1.3, @flowgl/react@0.1.3, @flowgl/vue@0.1.3, @flowgl/svelte@0.1.3 npmjs 배포. SDF 텍스트 렌더링(zoom 2× 이상에서 선명한 라벨), 프레임워크 래퍼 테스트 NodeData fixture 타입 오류(width/height 누락) 수정 포함.
+- Affected files: packages/*/package.json (버전 0.1.3), packages/*/src/__tests__/Flowchart.test.* (fixture 수정)
+- Timestamp: 2026-06-10
+
+## [feat] SDF 텍스트 렌더링 — 고줌 레벨 라벨 선명도 개선
+- Summary: Canvas 2D 텍스처 아틀라스의 비트맵 렌더링 방식을 SDF(Signed Distance Field)로 전환. Dead-reckoning EDT(8방향 근사 유클리드 거리 변환)로 glyph alpha → 거리 필드 계산. 아틀라스 픽셀: RGB = 텍스트 색상, A = SDF 거리값(0.5 = 경계). FRAG 셰이더: u_sdf=1.0 시 smoothstep(fwidth(d)*0.7) 적용 → 임의 줌에서 선명한 엣지. 엣지 라벨(bgColor 있는 항목)은 기존 비트맵 경로 유지(u_sdf=0.0). getImageData 미지원 환경(테스트)에서는 비트맵 폴백.
+- Affected files: packages/core/src/renderer/webgl/atlas/text-atlas.ts, packages/core/src/renderer/webgl/programs/text-program.ts
+- Timestamp: 2026-06-10
+
 ## [D-1] 프레임워크 래퍼 테스트 추가 — @flowgl/react, @flowgl/vue, @flowgl/svelte 각 9개 (총 27개)
 - Summary: 세 프레임워크 래퍼 패키지에 vitest 기반 유닛 테스트를 신규 추가. 각 패키지에 vitest.config.ts와 `__tests__/Flowchart.test.*` 파일 작성. MockChart는 `vi.hoisted` 패턴으로 선언(클래스 hoisting 오류 방지). Svelte 패키지는 `resolve.conditions: ['browser']` 설정으로 SSR no-op 대신 DOM 클라이언트 런타임(onMount 실행)을 로드. Vue 테스트는 Vue reactive proxy 래핑으로 인해 props 검증 시 `toBe` 대신 `toStrictEqual` 사용. 루트 `pnpm test` 스크립트 갱신으로 3개 패키지 테스트 병렬 실행.
 - Affected files: packages/react/vitest.config.ts (신규), packages/react/src/__tests__/Flowchart.test.tsx (신규), packages/vue/vitest.config.ts (신규), packages/vue/src/__tests__/Flowchart.test.ts (신규), packages/svelte/vitest.config.ts (신규), packages/svelte/src/__tests__/Flowchart.test.ts (신규), packages/react/package.json, packages/vue/package.json, packages/svelte/package.json, package.json
