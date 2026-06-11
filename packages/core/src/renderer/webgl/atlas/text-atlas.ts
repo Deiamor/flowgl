@@ -107,7 +107,8 @@ export class TextAtlas {
     this.ctx = ctx
     // Scale up so CSS-pixel font sizes produce dpr× more physical pixels → crisp text on Retina
     this.ctx.scale(this.dpr, this.dpr)
-    this.ctx.textBaseline = 'top'
+    // textBaseline is set per-fillText below (always 'alphabetic'); no need
+    // to pre-configure here.
   }
 
   private key(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor: string): string {
@@ -187,13 +188,24 @@ export class TextAtlas {
       this.generation++
     }
 
+    // Position the alphabetic baseline of the first line at PADDING + ascent.
+    // Using textBaseline='top' here is dangerous: Chromium returns *negative*
+    // actualBoundingBoxAscent for many glyphs (e.g. -1.4 for "End" in
+    // 16px system-ui), which means the glyph's true top edge sits ABOVE
+    // PADDING — by the time SDF_SPREAD widens the field, those pixels get
+    // clipped against the offscreen canvas top edge and the glyph's SDF is
+    // ruined. Switching to 'alphabetic' + explicit baseline keeps the entire
+    // ink (plus its SDF halo) inside the canvas no matter the glyph's sign.
+    const baselineY = PADDING + ascent
+
     if (bgColor) {
       this.ctx.fillStyle = bgColor
       this.ctx.fillRect(this.shelfX, this.shelfY, w, h)
       this.ctx.fillStyle = color
+      this.ctx.textBaseline = 'alphabetic'
       this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
       for (let i = 0; i < lines.length; i++) {
-        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
+        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
       }
     } else {
       // SDF path: render to temp canvas → compute distance field → putImageData
@@ -204,11 +216,11 @@ export class TextAtlas {
       const tctx = tmp.getContext('2d')!
       tctx.scale(this.dpr, this.dpr)
       tctx.font = font
-      tctx.textBaseline = 'top'
+      tctx.textBaseline = 'alphabetic'
       tctx.fillStyle = color
       tctx.direction = isRTL(text) ? 'rtl' : 'ltr'
       for (let i = 0; i < lines.length; i++) {
-        tctx.fillText(lines[i]!, PADDING, PADDING + i * lineStep)
+        tctx.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
       }
       if (typeof tctx.getImageData === 'function') {
         const imageData = tctx.getImageData(0, 0, physW, physH)
@@ -216,9 +228,10 @@ export class TextAtlas {
         this.ctx.putImageData(imageData, this.shelfX * this.dpr, this.shelfY * this.dpr)
       } else {
         this.ctx.fillStyle = color
+        this.ctx.textBaseline = 'alphabetic'
         this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
         for (let i = 0; i < lines.length; i++) {
-          this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + PADDING + i * lineStep)
+          this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
         }
       }
     }
