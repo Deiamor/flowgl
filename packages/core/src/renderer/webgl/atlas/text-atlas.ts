@@ -1,4 +1,10 @@
-const ATLAS_SIZE = 2048
+// Reduced from 2048 to 1024 — Chromium's headless rasterizer corrupts
+// fillText output on a 2048×2048 OffscreenCanvas (live trace: same fillText
+// writes 261 nz pixels at the live atlas vs. only 113 in chart instance,
+// even on a virgin row). 1024×1024 is large enough for typical demos
+// (~120 entries before eviction) and stays inside the rasterizer's safe
+// envelope. Atlas eviction kicks in earlier under heavy node counts.
+const ATLAS_SIZE = 1024
 // Padding must be ≥ SDF_SPREAD * 2 so the distance field's "halo" around
 // every glyph (which extends SDF_SPREAD pixels outward in every direction
 // at logical pixel scale, doubled at dpr=2) stays inside the cell — otherwise
