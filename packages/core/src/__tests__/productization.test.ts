@@ -516,6 +516,35 @@ describe('TextAtlas — atlas eviction on overflow', () => {
     const entry = atlas.getOrCreate('Hello', '14px system-ui', '#000000', 200, 1.4)
     expect(entry).not.toBeNull()
   })
+
+  it('entry height is conservative when measureText returns zero ascent (emoji / CJK / Hangul case)', () => {
+    // happy-dom's measureText returns 0 for actualBoundingBoxAscent/Descent
+    // on emoji and CJK glyphs in real browsers too (varies by version).
+    // The fallback path must still produce an entry tall enough to avoid clipping.
+    const atlas = new TextAtlas(1)
+    const e = atlas.getOrCreate('⚡ End', '14px system-ui', '#000', 200, 1.4)
+    expect(e).not.toBeNull()
+    // fontSize 14 → fallback ascent 12.6 + descent 4.2 = 16.8 → ceil = 17
+    // lineStep = ceil(17 * 1.4) = 24; h = 24 + PADDING*2(8) = 24 + 16 = 40
+    expect(e!.h).toBeGreaterThanOrEqual(32)
+  })
+
+  it('entry width is conservative when measureText.width is near zero', () => {
+    const atlas = new TextAtlas(1)
+    const e = atlas.getOrCreate('한국어', '14px system-ui', '#000', 200, 1.4)
+    expect(e).not.toBeNull()
+    // 3 Hangul chars × fontSize(14) × 0.6 = 25.2 → ceil 26 + PADDING*2(8) = 34
+    expect(e!.w).toBeGreaterThanOrEqual(24)
+  })
+
+  it('handles mixed ASCII + CJK without truncating either', () => {
+    const atlas = new TextAtlas(1)
+    const e = atlas.getOrCreate('Test 한국', '14px system-ui', '#000', 200, 1.4)
+    expect(e).not.toBeNull()
+    // 7 chars × 14 × 0.6 = 58.8 → ceil 59 + 16 = 75
+    expect(e!.w).toBeGreaterThanOrEqual(40)
+    expect(e!.h).toBeGreaterThanOrEqual(32)
+  })
 })
 
 // ── Security: exportSVG attribute injection prevention ────────────────────────

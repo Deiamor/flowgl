@@ -50,6 +50,15 @@ interface AtlasEntry {
   w: number; h: number
 }
 
+/**
+ * Parse the pixel size out of a CSS `font` shorthand like `"14px system-ui"` or
+ * `"bold 13px sans-serif"`. Falls back to 14 if no `px` number is present.
+ */
+function parseFontSize(font: string): number {
+  const m = font.match(/(\d+(?:\.\d+)?)px/)
+  return m ? parseFloat(m[1]!) : 14
+}
+
 function isRTL(text: string): boolean {
   return /[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text)
 }
@@ -113,17 +122,49 @@ export class TextAtlas {
     this.ctx.font = font
     const lines = wrapLines(text, maxWidth, this.ctx)
 
-    const sample = this.ctx.measureText(lines[0] ?? '')
-    const lineH = Math.ceil(
-      (sample.actualBoundingBoxAscent ?? 0) + (sample.actualBoundingBoxDescent ?? 0),
-    )
-    const lineStep = Math.max(lineH, Math.ceil(lineH * lineHeight))
+    // Extract font-size from `font` ("14px system-ui" → 14) so we have a
+    // conservative fallback when measureText returns degenerate metrics
+    // (notably for emoji and CJK / Hangul / Hiragana on browsers that
+    // don't fill `actualBoundingBox*` correctly).
+    const fontSizePx = parseFontSize(font)
 
-    let blockW = 0
+    // Pick the widest line's metrics, not just lines[0] — a multi-line
+    // label might have any line dominate the height.
+    let ascent  = 0
+    let descent = 0
+    let blockW  = 0
     for (const line of lines) {
-      const lw = Math.ceil(this.ctx.measureText(line).width)
+      const m = this.ctx.measureText(line)
+      // For ascent / descent, take the MAX of:
+      //   1. actualBoundingBoxAscent / Descent (per-glyph; can be 0 for emoji)
+      //   2. fontBoundingBoxAscent  / Descent  (font-wide; missing in some browsers)
+      //   3. fontSizePx * 0.9 / 0.3            (safe minimum so glyphs are never clipped)
+      // This combination guarantees the temp canvas is large enough to fit
+      // any mix of ASCII + CJK + emoji glyphs without clipping the bottom
+      // descender or the top of a tall ideograph.
+      const a = Math.max(
+        m.actualBoundingBoxAscent ?? 0,
+        m.fontBoundingBoxAscent   ?? 0,
+        fontSizePx * 0.9,
+      )
+      const d = Math.max(
+        m.actualBoundingBoxDescent ?? 0,
+        m.fontBoundingBoxDescent   ?? 0,
+        fontSizePx * 0.3,
+      )
+      if (a > ascent)  ascent  = a
+      if (d > descent) descent = d
+      // For width, fall back to a conservative estimate based on character
+      // count if `m.width` reports near-zero (Chromium did this for some
+      // emoji codepoints prior to v118).
+      const measured = m.width
+      const estimated = line.length * fontSizePx * 0.6
+      const lw = Math.ceil(Math.max(measured, estimated))
       if (lw > blockW) blockW = lw
     }
+
+    const lineH    = Math.ceil(ascent + descent)
+    const lineStep = Math.max(lineH, Math.ceil(lineH * lineHeight))
 
     // w/h are in CSS (logical) pixels
     const w = blockW + PADDING * 2
