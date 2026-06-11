@@ -4,6 +4,19 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.5] — 2026-06-11
+
+### Security
+
+- **`NodeData.htmlContent` is now opt-in unsafe.** `HtmlOverlay` writes still go through `innerHTML`, but the new `FlowChartOptions.sanitizeHtml` hook lets callers plug in a vetted sanitizer (e.g. DOMPurify). If `htmlContent` is set without a sanitizer, a one-time console warning is emitted documenting the trust boundary.
+- **`exportSVG` style fields are now whitelisted.** `backgroundColor` / `borderColor` / `textColor` / edge `color` are validated against a CSS-color regex (hex, rgb()/rgba(), hsl()/hsla(), named); invalid input falls back to the documented defaults. `borderWidth` / `borderRadius` / `fontSize` go through a finite-non-negative number guard. `dashArray` requires every entry to be a finite non-negative number — otherwise the attribute is omitted entirely.
+- **`label-edit.ts` no longer concatenates user-controlled CSS.** The inline label editor's `cssText` is split into a fixed-shape base block plus per-property `setProperty` calls for `border-color`, `background`, `color`, `font-size`, `font-family`. `fontFamily` rejects `<`, `>`, `;`, `{`, `}` to block declaration breakouts.
+
+### Changed
+
+- `tsconfig.build.json` introduced so Rollup declaration emission excludes `src/__tests__` — published tarballs no longer ship 46 `.test.d.ts` / `.test.d.ts.map` files.
+- `*.tgz` added to `.gitignore`; stale 0.1.0 tarball removed from the working tree.
+
 ## [0.1.4] — 2026-06-10
 
 ### Fixed

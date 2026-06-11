@@ -21,7 +21,7 @@ Zero-dependency WebGL2 flowchart library for the browser.
 - **Accessible** — `role="application"`, `aria-live` announcements, full keyboard control
 - **SDF text rendering** — Signed Distance Field font atlas delivers sharp labels at any zoom level (dead-reckoning EDT + `smoothstep(fwidth)` in GLSL)
 - **SSR-safe** — detects non-browser environments and calls `onError` instead of crashing
-- **834 tests** across 23 test files
+- **840 tests** across 23 test files
 
 ## Installation
 

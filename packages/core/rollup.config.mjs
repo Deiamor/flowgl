@@ -19,7 +19,7 @@ export default defineConfig({
     },
   ],
   plugins: [
-    typescript({ tsconfig: './tsconfig.json', declaration: true, declarationDir: 'dist', sourceMap: isDev, outputToFilesystem: true }),
+    typescript({ tsconfig: './tsconfig.build.json', declaration: true, declarationDir: 'dist', sourceMap: isDev, outputToFilesystem: true }),
     ...(isDev ? [] : [terser({
       compress: { passes: 2 },
       mangle: { reserved: ['FlowChart', 'generateId'] },

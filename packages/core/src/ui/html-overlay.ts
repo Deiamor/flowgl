@@ -6,15 +6,20 @@ interface OverlayEntry {
   content: string
 }
 
+export type HtmlSanitizer = (html: string) => string
+
 export class HtmlOverlay {
   private container: HTMLElement
   private entries = new Map<string, OverlayEntry>()
+  private sanitizer: HtmlSanitizer
+  private warned = false
 
-  constructor(parent: HTMLElement) {
+  constructor(parent: HTMLElement, sanitizer?: HtmlSanitizer) {
     this.container = document.createElement('div')
     this.container.style.cssText =
       'position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;'
     parent.appendChild(this.container)
+    this.sanitizer = sanitizer ?? identitySanitizer
   }
 
   sync(nodes: NodeData[], viewport: Viewport): void {
@@ -34,7 +39,12 @@ export class HtmlOverlay {
       }
 
       if (entry.content !== node.htmlContent) {
-        entry.div.innerHTML = node.htmlContent
+        if (this.sanitizer === identitySanitizer && !this.warned) {
+          this.warned = true
+          // eslint-disable-next-line no-console
+          console.warn('[@flowgl/core] NodeData.htmlContent is being written to innerHTML without a sanitizer. Pass `sanitizeHtml` to FlowChart options when htmlContent may contain untrusted input.')
+        }
+        entry.div.innerHTML = this.sanitizer(node.htmlContent)
         entry.content = node.htmlContent
       }
 
@@ -61,3 +71,5 @@ export class HtmlOverlay {
     this.entries.clear()
   }
 }
+
+function identitySanitizer(html: string): string { return html }

@@ -517,3 +517,109 @@ describe('TextAtlas — atlas eviction on overflow', () => {
     expect(entry).not.toBeNull()
   })
 })
+
+// ── Security: exportSVG attribute injection prevention ────────────────────────
+
+describe('FlowChart.exportSVG — attribute injection hardening', () => {
+  let container: HTMLElement
+  beforeEach(() => { container = makeContainer() })
+  afterEach(() => { document.body.removeChild(container) })
+
+  it('rejects hostile borderColor and falls back to default', () => {
+    const chart = new FlowChart({
+      container,
+      onError: () => {},
+      nodes: [{
+        id: 'n', x: 0, y: 0, width: 100, height: 50, label: 'X',
+        style: { borderColor: 'red"/><script>alert(1)</script><rect fill="red' },
+      }],
+    })
+    const svg = chart.exportSVG()
+    expect(svg).not.toContain('<script')
+    expect(svg).not.toContain('alert(1)')
+    // Falls back to default stroke
+    expect(svg).toMatch(/stroke="#1a73e8"/)
+  })
+
+  it('accepts well-formed hex / rgb / named colors', () => {
+    const chart = new FlowChart({
+      container,
+      onError: () => {},
+      nodes: [
+        { id: 'h', x: 0,   y: 0, width: 100, height: 50, label: 'H', style: { backgroundColor: '#ff00aa' } },
+        { id: 'r', x: 120, y: 0, width: 100, height: 50, label: 'R', style: { backgroundColor: 'rgb(255, 0, 0)' } },
+        { id: 'n', x: 240, y: 0, width: 100, height: 50, label: 'N', style: { backgroundColor: 'dodgerblue' } },
+      ],
+    })
+    const svg = chart.exportSVG()
+    expect(svg).toContain('fill="#ff00aa"')
+    expect(svg).toContain('fill="rgb(255, 0, 0)"')
+    expect(svg).toContain('fill="dodgerblue"')
+  })
+
+  it('rejects non-finite borderWidth and falls back', () => {
+    const chart = new FlowChart({
+      container,
+      onError: () => {},
+      nodes: [{
+        id: 'n', x: 0, y: 0, width: 100, height: 50, label: 'X',
+        style: { borderWidth: Infinity as unknown as number },
+      }],
+    })
+    const svg = chart.exportSVG()
+    expect(svg).toMatch(/stroke-width="2"/)
+  })
+
+  it('rejects hostile dashArray (non-numeric entries) and omits the attribute', () => {
+    const chart = new FlowChart({
+      container,
+      onError: () => {},
+      nodes: [
+        { id: 'a', x: 0,   y: 0, width: 80, height: 40, label: 'A' },
+        { id: 'b', x: 200, y: 0, width: 80, height: 40, label: 'B' },
+      ],
+      edges: [{
+        id: 'e', source: 'a', target: 'b',
+        style: { dashArray: ['8' as unknown as number, '"/><script>x</script><rect dashed="' as unknown as number] },
+      }],
+    })
+    const svg = chart.exportSVG()
+    expect(svg).not.toContain('<script')
+    expect(svg).not.toMatch(/stroke-dasharray=/)
+  })
+
+  it('escapes label content', () => {
+    const chart = new FlowChart({
+      container,
+      onError: () => {},
+      nodes: [{
+        id: 'n', x: 0, y: 0, width: 100, height: 50,
+        label: '</text><script>alert(1)</script>',
+      }],
+    })
+    const svg = chart.exportSVG()
+    expect(svg).not.toContain('<script')
+    expect(svg).toContain('&lt;/text&gt;')
+  })
+})
+
+// ── Security: HtmlOverlay sanitizer ───────────────────────────────────────────
+
+describe('FlowChart — HTML overlay sanitizer', () => {
+  let container: HTMLElement
+  beforeEach(() => { container = makeContainer() })
+  afterEach(() => { document.body.removeChild(container) })
+
+  it('accepts sanitizeHtml option in constructor without error', () => {
+    const sanitize = vi.fn((s: string) => s.replace(/<script[^>]*>.*?<\/script>/gi, ''))
+    expect(() => new FlowChart({
+      container,
+      onError: () => {},
+      sanitizeHtml: sanitize,
+      nodes: [{
+        id: 'n', x: 0, y: 0, width: 100, height: 50, label: '',
+        htmlContent: '<b>safe</b><script>evil()</script>',
+      }],
+    })).not.toThrow()
+  })
+})

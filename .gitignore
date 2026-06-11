@@ -4,6 +4,7 @@ dist/
 .DS_Store
 .rollup.cache/
 coverage/
+*.tgz
 
 # Claude workflow files (internal)
 AGENTS.md

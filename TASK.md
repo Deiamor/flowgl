@@ -153,3 +153,28 @@ tasks:
     title: 0.1.4 — inline label edit 텍스트 미반영 버그 수정 (BLEND restore + IME guard + public updateNode 라우팅)
     status: done
     dependencies: [C-1]
+
+  - id: D-1
+    title: 0.1.5 Phase 1 — Security/Distribution 하드닝 (XSS sink + CSS injection + SVG attribute injection + dist test artifact 제거)
+    status: done
+    dependencies: [C-4]
+
+  - id: D-2
+    title: 0.2.0 Phase 2 — API/Architecture 정리 (Renderer interface 정직화, graph private화, setNode* 통합)
+    status: pending
+    dependencies: [D-1]
+
+  - id: D-3
+    title: 0.2.0 Phase 3 — God Class 분해 (Export/GraphAnalysis/Alignment/LayoutAnimator 추출)
+    status: pending
+    dependencies: [D-2]
+
+  - id: D-4
+    title: Phase 4 — Docs & A11y (cookbook + migration guide + WCAG + ARIA 강화)
+    status: pending
+    dependencies: [D-3]
+
+  - id: D-5
+    title: Phase 5 — Playwright E2E + 채택성 신호 강화
+    status: pending
+    dependencies: [D-3]

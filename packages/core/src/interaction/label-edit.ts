@@ -24,24 +24,28 @@ export class LabelEditor {
     const input = document.createElement('input')
     input.type  = 'text'
     input.value = node.label
-    input.style.cssText = `
-      position: fixed;
-      left: ${canvasRect.left + sx}px;
-      top:  ${canvasRect.top  + sy}px;
-      transform: translate(-50%, -50%);
-      width: ${Math.max(80, node.width * viewport.zoom - 20)}px;
-      padding: 4px 8px;
-      border: 2px solid ${style.borderColor};
-      border-radius: 4px;
-      background: ${style.backgroundColor};
-      color: ${style.textColor};
-      font-size: ${style.fontSize * viewport.zoom}px;
-      font-family: ${style.fontFamily};
-      text-align: center;
-      outline: none;
-      z-index: 8500;
-      box-sizing: border-box;
-    `
+    // Set base style via cssText (no user input), then user-controlled fields
+    // via setProperty to prevent CSS-injection breakouts.
+    input.style.cssText = [
+      'position:fixed',
+      'transform:translate(-50%,-50%)',
+      'padding:4px 8px',
+      'border-radius:4px',
+      'text-align:center',
+      'outline:none',
+      'z-index:8500',
+      'box-sizing:border-box',
+      'border-style:solid',
+      'border-width:2px',
+    ].join(';')
+    input.style.setProperty('left',         `${canvasRect.left + sx}px`)
+    input.style.setProperty('top',          `${canvasRect.top  + sy}px`)
+    input.style.setProperty('width',        `${Math.max(80, node.width * viewport.zoom - 20)}px`)
+    input.style.setProperty('border-color', safeColor(style.borderColor,     '#1a73e8'))
+    input.style.setProperty('background',   safeColor(style.backgroundColor, '#fff'))
+    input.style.setProperty('color',        safeColor(style.textColor,       '#1a1a1a'))
+    input.style.setProperty('font-size',    `${safeNumber(style.fontSize, 14) * viewport.zoom}px`)
+    input.style.setProperty('font-family',  safeFontFamily(style.fontFamily, 'system-ui, sans-serif'))
 
     let committed = false
     const commit = (): void => {
@@ -82,4 +86,25 @@ export class LabelEditor {
   }
 
   dispose(): void { this.stopEdit() }
+}
+
+function safeColor(c: string | undefined, fallback: string): string {
+  if (typeof c !== 'string') return fallback
+  if (/^#[0-9a-fA-F]{3,8}$/.test(c)) return c
+  if (/^rgba?\(\s*[\d.,%\s]+\)$/.test(c)) return c
+  if (/^hsla?\(\s*[\d.,%\s]+\)$/.test(c)) return c
+  if (/^[a-zA-Z]{1,32}$/.test(c)) return c
+  return fallback
+}
+
+function safeNumber(n: unknown, fallback: number): number {
+  if (typeof n !== 'number' || !Number.isFinite(n) || n < 0 || n > 1e4) return fallback
+  return n
+}
+
+function safeFontFamily(s: string | undefined, fallback: string): string {
+  if (typeof s !== 'string' || s.length > 200) return fallback
+  // Block characters that could escape an attribute or inject another CSS declaration.
+  if (/[<>;{}]/.test(s)) return fallback
+  return s
 }

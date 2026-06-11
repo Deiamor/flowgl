@@ -79,6 +79,13 @@ export interface FlowChartOptions {
   onContextRestored?: () => void
   /** When true, automatically fit the view to the initial nodes after construction. Default: false. */
   autoFit?: boolean
+  /**
+   * Sanitize `NodeData.htmlContent` before it is written to `innerHTML`.
+   * Required when htmlContent may contain untrusted input — otherwise a
+   * console warning is emitted on first use. Use a vetted sanitizer such as
+   * DOMPurify: `sanitizeHtml: (s) => DOMPurify.sanitize(s)`.
+   */
+  sanitizeHtml?: (html: string) => string
 }
 
 export interface FlowChartEvents extends Record<string, unknown> {
@@ -251,7 +258,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       return
     }
     this.renderer.resize(width, height)
-    this.htmlOverlay = new HtmlOverlay(options.container)
+    this.htmlOverlay = new HtmlOverlay(options.container, options.sanitizeHtml)
 
     // Waypoint handle overlay
     this.waypointOverlay = document.createElement('div')
@@ -855,22 +862,28 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
     for (const n of sorted) {
       const s = { backgroundColor: '#fff', borderColor: '#1a73e8', borderWidth: 2, borderRadius: 8, textColor: '#1a1a1a', fontSize: 14, ...n.style }
+      const bg     = this.safeColor(s.backgroundColor, '#fff')
+      const border = this.safeColor(s.borderColor,     '#1a73e8')
+      const text   = this.safeColor(s.textColor,       '#1a1a1a')
+      const bw     = this.safeNumber(s.borderWidth, 2)
+      const br     = this.safeNumber(s.borderRadius, 8)
+      const fs     = this.safeNumber(s.fontSize, 14)
       const cx = n.x + n.width / 2, cy = n.y + n.height / 2
       const shape = s.shape ?? 'rectangle'
       if (shape === 'circle') {
-        parts.push(`<ellipse cx="${cx}" cy="${cy}" rx="${n.width/2}" ry="${n.height/2}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
+        parts.push(`<ellipse cx="${cx}" cy="${cy}" rx="${n.width/2}" ry="${n.height/2}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
       } else if (shape === 'diamond') {
         const pts = `${cx},${n.y} ${n.x+n.width},${cy} ${cx},${n.y+n.height} ${n.x},${cy}`
-        parts.push(`<polygon points="${pts}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
+        parts.push(`<polygon points="${pts}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
       } else if (shape === 'hexagon') {
         const qw = n.width / 4
         const pts = `${n.x+qw},${n.y} ${n.x+n.width-qw},${n.y} ${n.x+n.width},${cy} ${n.x+n.width-qw},${n.y+n.height} ${n.x+qw},${n.y+n.height} ${n.x},${cy}`
-        parts.push(`<polygon points="${pts}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
+        parts.push(`<polygon points="${pts}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
       } else {
-        parts.push(`<rect x="${n.x}" y="${n.y}" width="${n.width}" height="${n.height}" rx="${s.borderRadius}" fill="${s.backgroundColor}" stroke="${s.borderColor}" stroke-width="${s.borderWidth}"/>`)
+        parts.push(`<rect x="${n.x}" y="${n.y}" width="${n.width}" height="${n.height}" rx="${br}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
       }
       if (n.label) {
-        parts.push(`<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="${s.textColor}" font-size="${s.fontSize}" font-family="system-ui,sans-serif">${this.svgEscape(n.label)}</text>`)
+        parts.push(`<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="${text}" font-size="${fs}" font-family="system-ui,sans-serif">${this.svgEscape(n.label)}</text>`)
       }
     }
 
@@ -881,6 +894,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       const [sx, sy] = handleXY(src, edge.sourceHandle)
       const [ex, ey] = handleXY(tgt, edge.targetHandle)
       const st = { color: '#555555', width: 2, ...edge.style }
+      const color = this.safeColor(st.color, '#555555')
+      const width = this.safeNumber(st.width, 2)
       let d: string
       if (edge.waypoints && edge.waypoints.length > 0) {
         const pts = [[sx, sy], ...edge.waypoints.map(w => [w.x, w.y]), [ex, ey]]
@@ -891,8 +906,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
         d = `M${sx},${sy} C${c1x},${c1y} ${c2x},${c2y} ${ex},${ey}`
       }
-      const dash = st.dashArray ? `stroke-dasharray="${st.dashArray.join(' ')}"` : ''
-      parts.push(`<path d="${d}" fill="none" stroke="${st.color}" stroke-width="${st.width}" marker-end="url(#arrow)" ${dash}/>`)
+      const dashStr = this.safeDashArray(st.dashArray)
+      const dash = dashStr ? `stroke-dasharray="${dashStr}"` : ''
+      parts.push(`<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" marker-end="url(#arrow)" ${dash}/>`)
       if (edge.label) {
         const mx = (sx + ex) / 2, my = (sy + ey) / 2
         parts.push(`<rect x="${mx-24}" y="${my-9}" width="48" height="18" rx="3" fill="rgba(255,255,255,0.92)"/>`)
@@ -905,6 +921,31 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
   private svgEscape(s: string): string {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  }
+
+  /** Validate that a color string is safe to embed in an SVG attribute. */
+  private safeColor(c: string | undefined, fallback: string): string {
+    if (typeof c !== 'string') return fallback
+    // hex (#rgb, #rgba, #rrggbb, #rrggbbaa), rgb()/rgba(), hsl()/hsla(), CSS named colors
+    if (/^#[0-9a-fA-F]{3,8}$/.test(c)) return c
+    if (/^rgba?\(\s*[\d.,%\s]+\)$/.test(c)) return c
+    if (/^hsla?\(\s*[\d.,%\s]+\)$/.test(c)) return c
+    if (/^[a-zA-Z]{1,32}$/.test(c)) return c
+    return fallback
+  }
+
+  /** Validate that a length string is safe to embed in an SVG attribute. */
+  private safeNumber(n: unknown, fallback: number): number {
+    if (typeof n !== 'number') return fallback
+    if (!Number.isFinite(n) || n < 0 || n > 1e6) return fallback
+    return n
+  }
+
+  /** Validate dash array — array of finite non-negative numbers. */
+  private safeDashArray(arr: unknown): string | null {
+    if (!Array.isArray(arr)) return null
+    if (!arr.every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1e4)) return null
+    return arr.join(' ')
   }
 
   /** Serialize the full chart state (nodes, edges, viewport). */
