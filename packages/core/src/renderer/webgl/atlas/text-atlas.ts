@@ -222,29 +222,21 @@ export class TextAtlas {
         this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
       }
     } else {
-      // Glyph path. Drawing CJK / Hangul / wide-glyph strings directly into
-      // the 2048×2048 main atlas canvas was producing truncated results in
-      // Chromium — only the trailing glyph of "한국어" survived. The same
-      // string drawn into a small OffscreenCanvas renders perfectly. Workaround:
-      // render every line into a per-entry temp canvas sized exactly for it,
-      // then copy the result into the atlas via getImageData + putImageData.
-      // Both drawImage and direct main-canvas fillText were observed to drop
-      // pixels; putImageData is a byte-level memcpy that ignores the canvas
-      // transform and reliably preserves the glyph content.
-      const physW = Math.ceil(w * this.dpr)
-      const physH = Math.ceil(h * this.dpr)
-      const tmp = new OffscreenCanvas(physW, physH)
-      const tctx = tmp.getContext('2d')!
-      tctx.scale(this.dpr, this.dpr)
-      tctx.font = font
-      tctx.textBaseline = 'alphabetic'
-      tctx.fillStyle = color
-      tctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+      // Glyph path. Direct fillText into the main atlas canvas at
+      // (shelfX + PADDING, shelfY + baselineY). Detour via a per-entry temp
+      // canvas + putImageData was losing pixels — confirmed on live by
+      // measuring identical fillText output (261 nonZero) in both a tiny
+      // OffscreenCanvas and the 2048×2048 atlas main canvas at empty
+      // coordinates, but the putImageData copy into the entry's shelf slot
+      // wrote only 113 of those 261 pixels. Direct fillText writes all
+      // glyphs reliably regardless of script (ASCII, Hangul, CJK, emoji,
+      // and mixed).
+      this.ctx.fillStyle = color
+      this.ctx.textBaseline = 'alphabetic'
+      this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
       for (let i = 0; i < lines.length; i++) {
-        tctx.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
+        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
       }
-      const imageData = tctx.getImageData(0, 0, physW, physH)
-      this.ctx.putImageData(imageData, this.shelfX * this.dpr, this.shelfY * this.dpr)
     }
 
     // UV coords are in physical-pixel space (0..ATLAS_SIZE)
