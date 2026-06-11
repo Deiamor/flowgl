@@ -25,11 +25,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Wrappers (react / vue / svelte) consume @flowgl/core via workspace
+      # links and import its types. They typecheck against the published
+      # `.d.ts` files in core/dist, so core must build before any wrapper
+      # typecheck runs.
+      - name: Build @flowgl/core (so wrappers can resolve its types)
+        run: pnpm --filter @flowgl/core build
+
       - name: Typecheck (all packages)
         run: pnpm typecheck
 
       - name: Test (all packages)
         run: pnpm test
 
-      - name: Build (all packages)
-        run: pnpm build
+      - name: Build (wrappers + demo)
+        run: pnpm --filter '!@flowgl/core' build
