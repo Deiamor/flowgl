@@ -4,12 +4,27 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0] — 2026-06-12
+## [0.2.6] — 2026-06-12
 
 ### Changed
 
-- **Default renderer is now Canvas2D** (was WebGL2). Renders CJK / Hangul / emoji / mixed strings correctly across browsers — the WebGL2 atlas write path was corrupting non-ASCII glyphs inside the chart's render frame, which 13 attempted fixes failed to repair. Canvas2D is the right default for the typical interactive workload (under 500 nodes). Opt into WebGL2 with `rendererKind: 'webgl2'` if your labels are ASCII-only and you need the throughput for 1k+ nodes.
 - `FlowChart.canvasDblClick` now suppresses the inline label editor for nodes whose visual is rendered via `htmlContent` — editing `label` on such a node had no visible effect because `HtmlOverlay` owns the pixels. The `nodeDoubleClick` event still fires so consumer apps can route those nodes to their own editor.
+
+### Added
+
+- `Canvas2DRenderer` ships behind the same `Renderer` interface as `WebGL2Renderer`. Opt in with `rendererKind: 'canvas2d'`. Useful for environments without WebGL2 or for CJK-heavy workloads (see Known limitations).
+- `services/safe-css.ts` — single source of truth for the CSS-attribute allow-list (safeColor / safeNumber / safeDashArray / safeFontFamily). `svg-export.ts` and `label-edit.ts` now share these validators instead of carrying duplicate copies.
+- `packages/core/PERFORMANCE.md` documents SPEC verification (5K @ 113.6 fps avg, 10K @ 114.1 fps avg under SwiftShader) and the 8 optimizations behind those numbers.
+- 3 new axe-core tests covering Korean `ariaLabel`, `aria-keyshortcuts` token grammar, and the sr-only positioning of the `aria-live` region.
+
+### Security
+
+- All 4 packages enable `publishConfig.provenance: true`. Consumers can verify the tarball with `npm audit signatures @flowgl/<pkg>`.
+- New `scripts/generate-sbom.mjs` emits deterministic CycloneDX 1.5 SBOMs for all 4 packages; each tarball ships `sbom.json`.
+
+### Known limitations
+
+- WebGL2 atlas drops glyph pixels for CJK / Hangul / Japanese / mixed strings inside the chart's render frame (every isolated reproduction renders 261 nz pixels; live in-frame produces 113). Workaround: opt the affected chart into Canvas2D with `rendererKind: 'canvas2d'`. The atlas-level root cause is under investigation as a separate workstream; resolving it will land in a future minor release without changing the default renderer.
 
 ### Security
 

@@ -33,7 +33,7 @@
 
 ## Why flowgl
 
-Every other diagramming library renders to SVG or Canvas 2D — both CPU-bound and DOM-heavy. flowgl renders graphs through one of two interchangeable backends — a default Canvas 2D path that renders every script correctly (ASCII, CJK, Hangul, emoji), and an opt-in WebGL2 path that takes the same `Renderer` interface for high-throughput ASCII-only workloads. The result is smooth interaction at graph sizes that make SVG-based tools crawl.
+Every other diagramming library renders to SVG or Canvas 2D — both CPU-bound and DOM-heavy. flowgl renders nodes, edges, text, and the minimap on a single WebGL2 context: instanced draw calls, geometry batching, frustum culling, and a fragment-shader text atlas. The result is smooth interaction at graph sizes that make SVG-based tools crawl. A Canvas 2D fallback ships behind the same `Renderer` interface for environments without WebGL2 or for CJK-heavy workloads (see Known limitations below).
 
 Zero runtime dependencies. No D3. No React. No Lodash. `@flowgl/core` ships as a single ES module you own entirely. Every release is signed with npm provenance attestations and ships a CycloneDX SBOM in the tarball.
 
