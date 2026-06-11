@@ -4,6 +4,17 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.4] — 2026-06-11
+
+### Changed
+
+- `FlowChart` shrunk from 1946 → 1769 LOC by extracting three more services:
+  - `services/graph-analysis.ts` — `getIncomers`, `getOutgoers`, `getConnectedNodes`, `hasCycle`, `findPaths` are now pure functions that take a `Graph` argument. `FlowChart`'s methods delegate.
+  - `services/alignment.ts` — `alignNodes(graph, nodes, axis)` and `distributeNodes(graph, nodes, axis)` extracted.
+  - `services/layout-animator.ts` — `LayoutAnimator` class owns the smoothstep RAF loop. `FlowChart.animateLayout(...)` delegates and `dispose()` cancels via `layoutAnimator.dispose()`.
+
+No public API changes — methods on `FlowChart` keep the same signatures.
+
 ## [0.2.3] — 2026-06-11
 
 ### Security

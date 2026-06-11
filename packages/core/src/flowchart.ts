@@ -21,6 +21,9 @@ import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
 import { exportGraphAsSvg } from './services/svg-export'
 import { validateChartJson } from './services/json-validate'
+import { getIncomers as analysisGetIncomers, getOutgoers as analysisGetOutgoers, getConnectedNodes as analysisGetConnectedNodes, hasCycle as analysisHasCycle, findPaths as analysisFindPaths } from './services/graph-analysis'
+import { alignNodes as alignmentAlignNodes, distributeNodes as alignmentDistributeNodes, type AlignAxis, type DistributeAxis } from './services/alignment'
+import { LayoutAnimator } from './services/layout-animator'
 import type { NodeData, NodeStyle, NodeShape, NodeStatus } from './graph/node'
 import type { EdgeData, EdgeStyle } from './graph/edge'
 import type { ViewportState, AABB } from './viewport/viewport'
@@ -144,13 +147,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private ariaLive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
   private rafId: number | null = null
-  private animRafId: number | null = null
   private pendingResize: { w: number, h: number } | null = null
-  private layoutAnim: {
-    targets: Map<string, { fx: number; fy: number; tx: number; ty: number }>
-    start: number
-    dur: number
-  } | null = null
+  private layoutAnimator!: LayoutAnimator
   private failed = false
 
   private selectedIds      = new Set<string>()
@@ -231,6 +229,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.onBeforeDelete  = options.onBeforeDelete
 
     this.graph        = new Graph()
+    this.layoutAnimator = new LayoutAnimator(this.graph, () => this.scheduleRender())
     this.viewport     = new Viewport()
     this.renderer     = new WebGL2Renderer()
     this.hitTester    = new HitTester()
@@ -918,98 +917,13 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.scheduleRender()
   }
 
-  // ── Graph analysis ───────────────────────────────────────────────────────────
+  // ── Graph analysis ─ delegates to services/graph-analysis ────────────────────
 
-  getIncomers(nodeId: string): NodeData[] {
-    const result: NodeData[] = []
-    for (const edge of this.graph.getEdgesForNode(nodeId)) {
-      if (edge.target === nodeId) {
-        const node = this.graph.getNode(edge.source)
-        if (node) result.push(node)
-      }
-    }
-    return result
-  }
-
-  getOutgoers(nodeId: string): NodeData[] {
-    const result: NodeData[] = []
-    for (const edge of this.graph.getEdgesForNode(nodeId)) {
-      if (edge.source === nodeId) {
-        const node = this.graph.getNode(edge.target)
-        if (node) result.push(node)
-      }
-    }
-    return result
-  }
-
-  getConnectedNodes(nodeId: string): NodeData[] {
-    const seen = new Set<string>()
-    const result: NodeData[] = []
-    for (const edge of this.graph.getEdgesForNode(nodeId)) {
-      const otherId = edge.source === nodeId ? edge.target : edge.source
-      if (!seen.has(otherId)) {
-        seen.add(otherId)
-        const node = this.graph.getNode(otherId)
-        if (node) result.push(node)
-      }
-    }
-    return result
-  }
-
-  hasCycle(): boolean {
-    const nodes = this.graph.getNodes()
-    const adj = new Map<string, string[]>()
-    for (const n of nodes) adj.set(n.id, [])
-    for (const e of this.graph.getEdges()) adj.get(e.source)?.push(e.target)
-
-    const WHITE = 0, GREY = 1, BLACK = 2
-    const color = new Map<string, number>()
-    for (const n of nodes) color.set(n.id, WHITE)
-
-    const dfs = (id: string): boolean => {
-      color.set(id, GREY)
-      for (const neighbor of adj.get(id) ?? []) {
-        const c = color.get(neighbor) ?? WHITE
-        if (c === GREY) return true
-        if (c === WHITE && dfs(neighbor)) return true
-      }
-      color.set(id, BLACK)
-      return false
-    }
-
-    for (const n of nodes) {
-      if ((color.get(n.id) ?? WHITE) === WHITE && dfs(n.id)) return true
-    }
-    return false
-  }
-
-  findPaths(sourceId: string, targetId: string): string[][] {
-    if (sourceId === targetId) return []
-    const adj = new Map<string, string[]>()
-    for (const n of this.graph.getNodes()) adj.set(n.id, [])
-    for (const e of this.graph.getEdges()) adj.get(e.source)?.push(e.target)
-
-    const results: string[][] = []
-    const visited = new Set<string>()
-
-    const dfs = (current: string, path: string[]): void => {
-      if (current === targetId) { results.push([...path]); return }
-      if (results.length >= 100) return   // safety cap
-      for (const neighbor of adj.get(current) ?? []) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor)
-          path.push(neighbor)
-          dfs(neighbor, path)
-          path.pop()
-          visited.delete(neighbor)
-        }
-      }
-    }
-
-    visited.add(sourceId)
-    dfs(sourceId, [sourceId])
-    return results
-  }
+  getIncomers(nodeId: string): NodeData[] { return analysisGetIncomers(this.graph, nodeId) }
+  getOutgoers(nodeId: string): NodeData[] { return analysisGetOutgoers(this.graph, nodeId) }
+  getConnectedNodes(nodeId: string): NodeData[] { return analysisGetConnectedNodes(this.graph, nodeId) }
+  hasCycle(): boolean { return analysisHasCycle(this.graph) }
+  findPaths(sourceId: string, targetId: string): string[][] { return analysisFindPaths(this.graph, sourceId, targetId) }
 
   // ── Search / highlight ───────────────────────────────────────────────────────
 
@@ -1106,62 +1020,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     targets: { id: string; x: number; y: number }[] | Map<string, { x: number; y: number }>,
     duration = 400,
   ): void {
-    if (this.animRafId !== null) {
-      cancelAnimationFrame(this.animRafId)
-      this.animRafId = null
-    }
-    const entries: [string, { x: number; y: number }][] = targets instanceof Map
-      ? [...targets.entries()]
-      : targets.map(({ id, x, y }) => [id, { x, y }])
-
-    // Extend entries: for each group parent being moved, carry its children along.
-    const allTargets = new Map<string, { x: number; y: number }>(entries)
-    for (const [id, pos] of entries) {
-      const parent = this.graph.getNode(id)
-      if (!parent) continue
-      const dx = pos.x - parent.x
-      const dy = pos.y - parent.y
-      for (const child of this.graph.getNodes().filter(n => n.parentId === id)) {
-        if (!allTargets.has(child.id)) {
-          allTargets.set(child.id, { x: child.x + dx, y: child.y + dy })
-        }
-      }
-    }
-
-    const map = new Map<string, { fx: number; fy: number; tx: number; ty: number }>()
-    for (const [id, { x, y }] of allTargets) {
-      const node = this.graph.getNode(id)
-      if (!node) continue
-      map.set(id, { fx: node.x, fy: node.y, tx: x, ty: y })
-    }
-    if (map.size === 0) return
-    this.layoutAnim = { targets: map, start: performance.now(), dur: duration }
-    this.tickLayoutAnim()
-  }
-
-  private tickLayoutAnim(): void {
-    if (!this.layoutAnim) return
-    const { targets, start, dur } = this.layoutAnim
-    const elapsed = performance.now() - start
-    const raw = Math.min(elapsed / dur, 1)
-    const t = raw * raw * (3 - 2 * raw)   // smoothstep
-
-    for (const [id, { fx, fy, tx, ty }] of targets) {
-      this.graph.updateNode(id, {
-        x: fx + (tx - fx) * t,
-        y: fy + (ty - fy) * t,
-      })
-    }
-    this.scheduleRender()
-
-    if (raw < 1) {
-      this.animRafId = requestAnimationFrame(() => {
-        this.animRafId = null
-        this.tickLayoutAnim()
-      })
-    } else {
-      this.layoutAnim = null
-    }
+    this.layoutAnimator.animate(targets, duration)
   }
 
   private scheduleRender(): void {
@@ -1504,76 +1363,19 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
   // ── Alignment & distribution API ─────────────────────────────────────────────
 
-  alignNodes(axis: 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom'): void {
+  alignNodes(axis: AlignAxis): void {
     if (this.selectedIds.size < 2) return
     const nodes = [...this.selectedIds].map(id => this.graph.getNode(id)).filter(Boolean) as NodeData[]
     this.beforeMutation()
-    switch (axis) {
-      case 'left': {
-        const min = Math.min(...nodes.map(n => n.x))
-        for (const n of nodes) this.graph.updateNode(n.id, { x: min })
-        break
-      }
-      case 'right': {
-        const max = Math.max(...nodes.map(n => n.x + n.width))
-        for (const n of nodes) this.graph.updateNode(n.id, { x: max - n.width })
-        break
-      }
-      case 'center': {
-        const mid = nodes.reduce((s, n) => s + n.x + n.width / 2, 0) / nodes.length
-        for (const n of nodes) this.graph.updateNode(n.id, { x: mid - n.width / 2 })
-        break
-      }
-      case 'top': {
-        const min = Math.min(...nodes.map(n => n.y))
-        for (const n of nodes) this.graph.updateNode(n.id, { y: min })
-        break
-      }
-      case 'bottom': {
-        const max = Math.max(...nodes.map(n => n.y + n.height))
-        for (const n of nodes) this.graph.updateNode(n.id, { y: max - n.height })
-        break
-      }
-      case 'middle': {
-        const mid = nodes.reduce((s, n) => s + n.y + n.height / 2, 0) / nodes.length
-        for (const n of nodes) this.graph.updateNode(n.id, { y: mid - n.height / 2 })
-        break
-      }
-    }
+    alignmentAlignNodes(this.graph, nodes, axis)
     this.scheduleRender()
   }
 
-  distributeNodes(axis: 'horizontal' | 'vertical'): void {
+  distributeNodes(axis: DistributeAxis): void {
     if (this.selectedIds.size < 3) return
     const nodes = [...this.selectedIds].map(id => this.graph.getNode(id)).filter(Boolean) as NodeData[]
     this.beforeMutation()
-    if (axis === 'horizontal') {
-      const sorted = [...nodes].sort((a, b) => a.x - b.x)
-      const first = sorted[0]!
-      const last  = sorted[sorted.length - 1]!
-      const totalSpan = (last.x + last.width) - first.x
-      const totalNodeWidth = sorted.reduce((s, n) => s + n.width, 0)
-      const gap = (totalSpan - totalNodeWidth) / (sorted.length - 1)
-      let cursor = first.x + first.width
-      for (let i = 1; i < sorted.length - 1; i++) {
-        cursor += gap
-        this.graph.updateNode(sorted[i]!.id, { x: cursor })
-        cursor += sorted[i]!.width
-      }
-    } else {
-      const sorted = [...nodes].sort((a, b) => a.y - b.y)
-      const first = sorted[0]!
-      const last  = sorted[sorted.length - 1]!
-      const totalSpan = (last.y + last.height) - first.y
-      const totalNodeHeight = sorted.reduce((s, n) => s + n.height, 0)
-      const gap = (totalSpan - totalNodeHeight) / (sorted.length - 1)
-      let cursor = first.y + first.height
-      for (let i = 1; i < sorted.length - 1; i++) {
-        cursor += gap
-        this.graph.updateNode(sorted[i]!.id, { y: cursor })
-        cursor += sorted[i]!.height
-      }
-    }
+    alignmentDistributeNodes(this.graph, nodes, axis)
     this.scheduleRender()
   }
 
@@ -1931,7 +1733,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
   dispose(): void {
     if (this.rafId !== null) cancelAnimationFrame(this.rafId)
-    if (this.animRafId !== null) cancelAnimationFrame(this.animRafId)
+    this.layoutAnimator?.dispose()
     if (this.arrowMoveTimer !== null) clearTimeout(this.arrowMoveTimer)
     if (!this.failed) {
       this.panZoom.dispose()
