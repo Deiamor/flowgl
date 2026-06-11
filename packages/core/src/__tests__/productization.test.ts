@@ -37,6 +37,7 @@ function makeMockCtx2d() {
     clearRect: vi.fn(),
     save: vi.fn(),
     restore: vi.fn(),
+    drawImage: vi.fn(),
   }
 }
 

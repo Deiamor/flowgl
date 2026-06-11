@@ -244,35 +244,36 @@ export class TextAtlas {
     // ink (plus its SDF halo) inside the canvas no matter the glyph's sign.
     const baselineY = PADDING + ascent
 
+    // Per-entry OffscreenCanvas architecture: draw the entry's glyphs into
+    // its own small canvas first, then drawImage that canvas into the main
+    // atlas. After 12 failed fixes on the direct-fillText-into-main approach
+    // (live trace: identical fillText writes 261 nz pixels in an isolated
+    // OffscreenCanvas but only 113 inside the chart's render frame), every
+    // failure mode pointed at some hidden state held by the chart's atlas
+    // canvas during the live render that's absent from any isolated repro.
+    // A fresh per-entry canvas can't carry that state, and drawImage is a
+    // verified-clean pixel copy (live test confirmed 261-nz copy at every
+    // position on the main atlas).
+    const physW = Math.ceil(w * this.dpr)
+    const physH = Math.ceil(h * this.dpr)
+    const entryCanvas = new OffscreenCanvas(physW, physH)
+    const ec = entryCanvas.getContext('2d')
+    if (!ec) return null
+    if (this.dpr !== 1) ec.scale(this.dpr, this.dpr)
+    ec.font = font
+    ec.textBaseline = 'alphabetic'
+    ec.direction = isRTL(text) ? 'rtl' : 'ltr'
     if (bgColor) {
-      this.ctx.fillStyle = bgColor
-      this.ctx.fillRect(this.shelfX, this.shelfY, w, h)
-      this.ctx.fillStyle = color
-      this.ctx.textBaseline = 'alphabetic'
-      this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
-      for (let i = 0; i < lines.length; i++) {
-        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
-      }
-    } else {
-      // Glyph path. Direct fillText into the main atlas canvas at
-      // (shelfX + PADDING, shelfY + baselineY).
-      //
-      // CRITICAL: clear the shelf slot first. Without clearRect, Chromium's
-      // headless fillText into a fresh slot on a row that already contains
-      // ink from neighboring entries silently drops most of the glyph
-      // pixels — live trace measured the same fillText writing 261 nz pixels
-      // to a virgin row and only 113 nz pixels to the actual shelf slot
-      // (1023, 0), even though that exact rectangle reported 0 ink before
-      // the call. clearRect resets the per-pixel state so fillText behaves
-      // identically to its standalone form.
-      this.ctx.clearRect(this.shelfX, this.shelfY, w, h)
-      this.ctx.fillStyle = color
-      this.ctx.textBaseline = 'alphabetic'
-      this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
-      for (let i = 0; i < lines.length; i++) {
-        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
-      }
+      ec.fillStyle = bgColor
+      ec.fillRect(0, 0, w, h)
     }
+    ec.fillStyle = color
+    for (let i = 0; i < lines.length; i++) {
+      ec.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
+    }
+    // Copy the freshly-rasterized canvas into the main atlas's shelf slot.
+    this.ctx.clearRect(this.shelfX, this.shelfY, w, h)
+    this.ctx.drawImage(entryCanvas, 0, 0, physW, physH, this.shelfX, this.shelfY, w, h)
 
     // UV coords are in physical-pixel space (0..ATLAS_SIZE)
     const px = this.shelfX * this.dpr
