@@ -1,5 +1,11 @@
 const ATLAS_SIZE = 2048
-const PADDING = 8
+// Padding must be ≥ SDF_SPREAD * 2 so the distance field's "halo" around
+// every glyph (which extends SDF_SPREAD pixels outward in every direction
+// at logical pixel scale, doubled at dpr=2) stays inside the cell — otherwise
+// glyphs whose actualBoundingBoxAscent reports a small or negative number
+// (Chromium does this for ASCII, Hangul, Kanji) get their SDF clipped at
+// the cell's top edge and render as invisible.
+const PADDING = 16
 const SDF_SPREAD = 4
 
 function propagateEDT(dist: Float32Array, w: number, h: number): void {
