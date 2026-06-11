@@ -74,4 +74,36 @@ describe('a11y — axe-core scan', () => {
     expect(descEl).not.toBeNull()
     expect(descEl!.textContent?.trim().length).toBeGreaterThan(20)
   })
+
+  it('Korean ariaLabel survives axe scan (no false-positive on non-ASCII)', async () => {
+    new FlowChart({ container, onError: () => {}, ariaLabel: '워크플로우 다이어그램' })
+    const results = await axe.run(container, {
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag22aa'] },
+      rules: Object.fromEntries(EXCLUDED_RULES.map(id => [id, { enabled: false }])),
+    })
+    expect(results.violations.filter(v => v.impact === 'critical' || v.impact === 'serious')).toEqual([])
+    const canvas = container.querySelector('canvas')!
+    expect(canvas.getAttribute('aria-label')).toBe('워크플로우 다이어그램')
+  })
+
+  it('aria-keyshortcuts uses canonical key names (axe-recognised)', async () => {
+    new FlowChart({ container, onError: () => {} })
+    const canvas = container.querySelector('canvas')!
+    const ks = canvas.getAttribute('aria-keyshortcuts')!
+    // Per WAI-ARIA 1.2: tokens use named-keys ('ArrowUp', 'Escape', 'Control', etc.) and '+' for modifiers
+    for (const tok of ks.split(/\s+/)) {
+      expect(tok).toMatch(/^([A-Z][a-zA-Z]*(\+|$))*[A-Za-z0-9]+$/)
+    }
+  })
+
+  it('aria-live region is positioned in the accessibility tree, not just visually hidden', async () => {
+    new FlowChart({ container, onError: () => {} })
+    const live = container.querySelector('[aria-live]')
+    expect(live).not.toBeNull()
+    expect(live!.getAttribute('aria-live')).toBe('polite')
+    // Visually hidden, but accessibility tree must still see it
+    const cssText = (live as HTMLElement).style.cssText
+    expect(cssText).toMatch(/width:\s*1px/)   // sr-only pattern
+    expect(cssText).toMatch(/height:\s*1px/)
+  })
 })
