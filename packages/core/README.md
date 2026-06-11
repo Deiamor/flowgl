@@ -21,7 +21,7 @@ Zero-dependency WebGL2 flowchart library for the browser.
 - **Accessible** — `role="application"`, `aria-live` announcements, full keyboard control
 - **SDF text rendering** — Signed Distance Field font atlas delivers sharp labels at any zoom level (dead-reckoning EDT + `smoothstep(fwidth)` in GLSL)
 - **SSR-safe** — detects non-browser environments and calls `onError` instead of crashing
-- **843 tests** across 23 test files
+- **846 tests** across 23 test files
 
 ## Installation
 
@@ -381,3 +381,101 @@ Requires **WebGL2** — available in all modern browsers (Chrome 56+, Firefox 51
 Node labels use a **Signed Distance Field (SDF)** texture atlas. Glyphs are rendered to a Canvas 2D offscreen buffer, a dead-reckoning Euclidean distance transform is applied to the alpha channel, and the result is stored as `(R, G, B) = textColor`, `A = SDF distance`. The fragment shader reconstructs sharp edges via `smoothstep(fwidth(dist) * 0.7)`, making labels crisp at any zoom level — including high-DPI displays and deep zoom-in.
 
 Edge labels (which include a background fill) continue to use the bitmap path and retain their previous quality characteristics.
+
+## Recipes
+
+### Sync a chart with external (e.g. React / Vue / Svelte) state
+
+```ts
+const chart = new FlowChart({ container, nodes: initialNodes, edges: initialEdges })
+
+// Internal mutation → propagate to external store
+chart.on('nodeUpdate', ({ id, updates }) => store.patchNode(id, updates))
+chart.on('nodeAdd',    ({ node })        => store.upsertNode(node))
+chart.on('nodeRemove', ({ id })          => store.deleteNode(id))
+chart.on('edgeAdd',    ({ edge })        => store.upsertEdge(edge))
+chart.on('edgeRemove', ({ id })          => store.deleteEdge(id))
+
+// External mutation → propagate to chart
+store.subscribe(state => chart.setNodes(state.nodes))
+```
+
+### Auto-layout, then animate to the new positions
+
+```ts
+import { hierarchicalLayout } from '@flowgl/core'
+
+const result = hierarchicalLayout(chart.getNodes(), chart.getEdges())
+chart.animateLayout(result.nodes, 600) // 600 ms eased transition
+```
+
+### Reject a connection conditionally
+
+```ts
+new FlowChart({
+  container,
+  onBeforeConnect: ({ sourceId, targetId }) => {
+    // Reject self-loops
+    return sourceId !== targetId
+  },
+})
+```
+
+### Persist + restore chart state
+
+```ts
+// Save
+const snapshot = chart.toJSON()
+localStorage.setItem('chart', JSON.stringify(snapshot))
+
+// Restore (with schema validation at the trust boundary)
+const raw = JSON.parse(localStorage.getItem('chart') ?? 'null')
+if (raw && Array.isArray(raw.nodes) && Array.isArray(raw.edges)) {
+  chart.fromJSON(raw)
+}
+```
+
+### Extend the right-click context menu
+
+```ts
+chart.on('nodeDoubleClick', ({ node }) => openInspector(node.id))
+// Or replace the built-in panels via `setNodeStatus` / `setNodeStyle` etc.
+chart.setNodeStatus(node.id, 'error')
+```
+
+## Accessibility
+
+`FlowChart` aims for full keyboard + screen-reader operability:
+
+- Canvas exposes `role="application"`, a configurable `aria-label`, and an `aria-describedby` summary of shortcuts.
+- **Tab / Shift+Tab** cycles nodes; **Arrow keys** nudge the selection by 10 px (debounced ARIA announcement at 400 ms so screen readers are not flooded).
+- **Delete / Backspace** removes selection; **Ctrl/⌘+Z / Y** undo / redo; **Ctrl/⌘+A** selects all; **F** fits view; **Shift+F** fits selection.
+- Status badges set `aria-live="polite"` announcements (e.g. "Node Start: error").
+- Color contrast guidance: tokenize your `backgroundColor` / `textColor` pairs against WCAG AA (4.5:1) — the library does not enforce this for you.
+
+## Security
+
+`NodeData.htmlContent` is written to `innerHTML` via the HTML overlay. **It is opt-in unsafe** — pass `sanitizeHtml` on the constructor when this field may contain untrusted input:
+
+```ts
+import DOMPurify from 'dompurify'
+
+new FlowChart({
+  container,
+  sanitizeHtml: (html) => DOMPurify.sanitize(html),
+  nodes: [{ id: 'card', x: 0, y: 0, width: 200, height: 100, label: '',
+            htmlContent: someUserSuppliedHtml }],
+})
+```
+
+If `htmlContent` is set without a sanitizer, the first write emits a one-time console warning. `exportSVG` validates `style.{backgroundColor, borderColor, textColor, color}` against a CSS-color whitelist (hex, rgb()/rgba(), hsl()/hsla(), named) and rejects malformed input back to the documented defaults — the export cannot be used as an XSS vector by chart data alone.
+
+## Migration
+
+### 0.1.x → 0.2.0
+
+- `chart.graph.getNodes()` / `chart.graph.getEdges()` → `chart.getNodes()` / `chart.getEdges()`. The `graph` and `viewport` fields still exist for compatibility but are JSDoc-deprecated and will become private in 1.0.
+- `chart.setNodeBorderColor(id, c)` / `setNodeBackgroundColor(id, c)` / `setNodeShape(id, s)` → `chart.setNodeStyle(id, { borderColor | backgroundColor | shape })`.
+- `chart.setSelectedIds(ids)` + `chart.setSelectedEdgeIds(ids)` → `chart.setSelection({ nodes, edges })` (single call emits `selectionChange` once).
+- `chart.requestRender()` → no replacement needed; every mutation already schedules a render.
+- Custom `Renderer` implementations: `render(graph, viewport, ...args)` → `render(graph, viewport, frame: RenderFrame)`. `hasAnimatedEdges(): boolean` is now required by the interface.

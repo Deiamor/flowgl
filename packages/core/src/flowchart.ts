@@ -204,6 +204,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;'
     this.canvas.setAttribute('role', 'application')
     this.canvas.setAttribute('aria-label', options.ariaLabel ?? 'Flowchart')
+    this.canvas.setAttribute('aria-roledescription', 'Flowchart editor')
+    this.canvas.setAttribute('aria-keyshortcuts', 'Tab ArrowUp ArrowDown ArrowLeft ArrowRight Delete Backspace F Shift+F Control+Z Control+Y Control+A Control+C Control+X Control+V Control+D Escape')
     this.canvas.setAttribute('tabindex', '0')
     options.container.appendChild(this.canvas)
 

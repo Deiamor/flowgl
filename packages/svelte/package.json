@@ -1,6 +1,6 @@
 {
   "name": "@flowgl/svelte",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Svelte wrapper for @flowgl/core WebGL flowchart",
   "keywords": [
     "flowchart",

@@ -4,6 +4,17 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.1] — 2026-06-11
+
+### Added
+
+- Canvas now exposes `aria-roledescription="Flowchart editor"` and `aria-keyshortcuts` listing every supported shortcut so AT users discover them without reading docs.
+- README — 6 new sections: Recipes (external state sync, auto-layout + animate, conditional connection guard, JSON persistence, context menu extension), Accessibility (ARIA contract + WCAG guidance), Security (`sanitizeHtml` recipe + threat model), Migration 0.1.x → 0.2.0.
+
+### Tests
+
+- 3 new ARIA tests in `productization.test.ts` (canvas role / label / shortcuts, custom ariaLabel, aria-describedby content).
+
 ## [0.2.0] — 2026-06-11
 
 ### Breaking

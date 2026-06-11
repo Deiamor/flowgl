@@ -171,8 +171,8 @@ tasks:
 
   - id: D-4
     title: Phase 4 — Docs & A11y (cookbook + migration guide + WCAG + ARIA 강화)
-    status: pending
-    dependencies: [D-3]
+    status: done
+    dependencies: [D-2]
 
   - id: D-5
     title: Phase 5 — Playwright E2E + 채택성 신호 강화

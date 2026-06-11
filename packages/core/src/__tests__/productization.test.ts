@@ -623,3 +623,43 @@ describe('FlowChart — HTML overlay sanitizer', () => {
     })).not.toThrow()
   })
 })
+
+// ── Accessibility: ARIA attributes ────────────────────────────────────────────
+
+describe('FlowChart — ARIA attributes on canvas', () => {
+  let container: HTMLElement
+  beforeEach(() => { container = makeContainer() })
+  afterEach(() => { document.body.removeChild(container) })
+
+  it('canvas has role="application", aria-label, aria-roledescription, aria-keyshortcuts, tabindex', () => {
+    new FlowChart({ container, onError: () => {} })
+    const canvas = container.querySelector('canvas')!
+    expect(canvas.getAttribute('role')).toBe('application')
+    expect(canvas.getAttribute('aria-label')).toBe('Flowchart')
+    expect(canvas.getAttribute('aria-roledescription')).toBe('Flowchart editor')
+    expect(canvas.getAttribute('tabindex')).toBe('0')
+    const ks = canvas.getAttribute('aria-keyshortcuts') ?? ''
+    expect(ks).toContain('Tab')
+    expect(ks).toContain('Delete')
+    expect(ks).toContain('Control+Z')
+    expect(ks).toContain('Control+A')
+    expect(ks).toContain('Escape')
+  })
+
+  it('respects custom ariaLabel option', () => {
+    new FlowChart({ container, onError: () => {}, ariaLabel: 'Workflow diagram' })
+    const canvas = container.querySelector('canvas')!
+    expect(canvas.getAttribute('aria-label')).toBe('Workflow diagram')
+  })
+
+  it('aria-describedby points to a visually-hidden description element', () => {
+    new FlowChart({ container, onError: () => {} })
+    const canvas = container.querySelector('canvas')!
+    const descId = canvas.getAttribute('aria-describedby')!
+    expect(descId).toMatch(/^fc-desc-/)
+    const desc = document.getElementById(descId)
+    expect(desc).not.toBeNull()
+    expect(desc!.textContent).toContain('Tab')
+    expect(desc!.textContent).toContain('Arrow keys')
+  })
+})
