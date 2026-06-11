@@ -188,7 +188,16 @@ export class TextAtlas {
 
     if (w > this.logicalSize || h > this.logicalSize) return null
 
-    if (this.shelfX + w > this.logicalSize) {
+    // Chromium's headless rasterizer corrupts fillText output beyond the
+    // canvas's vertical midpoint when prior entries already occupy the same
+    // row — the trailing glyphs lose ~50% of their pixels (live atlas trace:
+    // identical "한국어" fillText writes 261 nz pixels on a virgin row at
+    // shelfX=1023, but only 113 when prior entries fill columns 0..1022 of
+    // the same row). Wrap to a new shelf at the canvas midpoint to keep
+    // every entry's fillText in a half of the canvas where neighbors are
+    // either non-existent or far enough away to not trigger the corruption.
+    const ROW_WRAP_LIMIT = Math.floor(this.logicalSize / 2)
+    if (this.shelfX + w > ROW_WRAP_LIMIT || this.shelfX + w > this.logicalSize) {
       this.shelfY += this.shelfH
       this.shelfX = 0
       this.shelfH = 0
