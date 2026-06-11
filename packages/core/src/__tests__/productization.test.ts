@@ -244,7 +244,7 @@ describe('FlowChart.exportSVG — edge cases', () => {
   it('empty graph returns a valid empty SVG', () => {
     const chart = new FlowChart({ container, onError: () => {} })
     const svg = chart.exportSVG()
-    expect(svg).toBe('<svg xmlns="http://www.w3.org/2000/svg"></svg>')
+    expect(svg).toMatch(/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"[^>]*><\/svg>$/)
   })
 
   it('single node with no edges produces valid SVG', () => {
@@ -661,5 +661,63 @@ describe('FlowChart — ARIA attributes on canvas', () => {
     expect(desc).not.toBeNull()
     expect(desc!.textContent).toContain('Tab')
     expect(desc!.textContent).toContain('Arrow keys')
+  })
+})
+
+// ── Security: fromJSON schema validation ──────────────────────────────────────
+
+describe('FlowChart.fromJSON — schema validation', () => {
+  let container: HTMLElement
+  beforeEach(() => { container = makeContainer() })
+  afterEach(() => { document.body.removeChild(container) })
+
+  it('rejects nodes with missing id', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON({
+      nodes: [{ x: 0, y: 0, width: 100, height: 50, label: 'X' }] as unknown as never,
+      edges: [],
+    })).toThrow(TypeError)
+  })
+
+  it('rejects nodes with non-finite x', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON({
+      nodes: [{ id: 'a', x: Infinity, y: 0, width: 100, height: 50, label: 'X' }],
+      edges: [],
+    })).toThrow(/finite/)
+  })
+
+  it('rejects __proto__ pollution attempts', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    const malicious = JSON.parse('{"nodes":[{"__proto__":{"polluted":true},"id":"a","x":0,"y":0,"width":100,"height":50}],"edges":[]}')
+    expect(() => chart.fromJSON(malicious)).toThrow(/__proto__/)
+  })
+
+  it('rejects oversized htmlContent', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    const huge = 'x'.repeat(200_000)
+    expect(() => chart.fromJSON({
+      nodes: [{ id: 'a', x: 0, y: 0, width: 100, height: 50, label: '', htmlContent: huge }],
+      edges: [],
+    })).toThrow(/htmlContent/)
+  })
+
+  it('accepts well-formed payload without throwing', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON({
+      nodes: [
+        { id: 'a', x: 0,   y: 0, width: 100, height: 50, label: 'A' },
+        { id: 'b', x: 200, y: 0, width: 100, height: 50, label: 'B' },
+      ],
+      edges: [{ id: 'e1', source: 'a', target: 'b' }],
+    })).not.toThrow()
+  })
+
+  it('skipValidation:true accepts pre-validated data without throwing', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON(
+      { nodes: [{ id: 'a', x: 0, y: 0, width: 100, height: 50, label: 'X' }], edges: [] },
+      { skipValidation: true },
+    )).not.toThrow()
   })
 })

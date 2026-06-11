@@ -165,8 +165,8 @@ tasks:
     dependencies: [D-1]
 
   - id: D-3
-    title: 0.2.0 Phase 3 — God Class 분해 (Export/GraphAnalysis/Alignment/LayoutAnimator 추출)
-    status: pending
+    title: 0.2.2 Phase 3 (부분) — God Class 분해 (SVG export 추출) + fromJSON 스키마 검증
+    status: done
     dependencies: [D-2]
 
   - id: D-4

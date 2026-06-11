@@ -19,8 +19,8 @@ import { ContextPanels } from './ui/context-panels'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
-import { handleXY } from './renderer/webgl/util/handle-xy'
-import { edgeControlPoints } from './renderer/webgl/util/bezier'
+import { exportGraphAsSvg } from './services/svg-export'
+import { validateChartJson } from './services/json-validate'
 import type { NodeData, NodeStyle, NodeShape, NodeStatus } from './graph/node'
 import type { EdgeData, EdgeStyle } from './graph/edge'
 import type { ViewportState, AABB } from './viewport/viewport'
@@ -849,114 +849,13 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     return offscreen.toDataURL('image/png')
   }
 
+  /**
+   * Render the current chart as a standalone SVG string. Style fields go
+   * through `services/svg-export.ts` validators so the export cannot be used
+   * as an attribute-injection vector.
+   */
   exportSVG(padding = 40): string {
-    const nodes = this.graph.getNodes()
-    const edges = this.graph.getEdges()
-    if (nodes.length === 0) return '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
-
-    const nodeMap = new Map(nodes.map(n => [n.id, n]))
-
-    // Compute bounding box
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
-    for (const n of nodes) {
-      minX = Math.min(minX, n.x); minY = Math.min(minY, n.y)
-      maxX = Math.max(maxX, n.x + n.width); maxY = Math.max(maxY, n.y + n.height)
-    }
-    const vx = minX - padding, vy = minY - padding
-    const vw = (maxX - minX) + padding * 2, vh = (maxY - minY) + padding * 2
-
-    const parts: string[] = [`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vy} ${vw} ${vh}" width="${vw}" height="${vh}">`]
-    parts.push('<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#555"/></marker></defs>')
-
-    // Draw group nodes first (behind others)
-    const sorted = [...nodes].sort((a, b) => (a.type === 'group' ? -1 : 1) - (b.type === 'group' ? -1 : 1))
-
-    for (const n of sorted) {
-      const s = { backgroundColor: '#fff', borderColor: '#1a73e8', borderWidth: 2, borderRadius: 8, textColor: '#1a1a1a', fontSize: 14, ...n.style }
-      const bg     = this.safeColor(s.backgroundColor, '#fff')
-      const border = this.safeColor(s.borderColor,     '#1a73e8')
-      const text   = this.safeColor(s.textColor,       '#1a1a1a')
-      const bw     = this.safeNumber(s.borderWidth, 2)
-      const br     = this.safeNumber(s.borderRadius, 8)
-      const fs     = this.safeNumber(s.fontSize, 14)
-      const cx = n.x + n.width / 2, cy = n.y + n.height / 2
-      const shape = s.shape ?? 'rectangle'
-      if (shape === 'circle') {
-        parts.push(`<ellipse cx="${cx}" cy="${cy}" rx="${n.width/2}" ry="${n.height/2}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
-      } else if (shape === 'diamond') {
-        const pts = `${cx},${n.y} ${n.x+n.width},${cy} ${cx},${n.y+n.height} ${n.x},${cy}`
-        parts.push(`<polygon points="${pts}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
-      } else if (shape === 'hexagon') {
-        const qw = n.width / 4
-        const pts = `${n.x+qw},${n.y} ${n.x+n.width-qw},${n.y} ${n.x+n.width},${cy} ${n.x+n.width-qw},${n.y+n.height} ${n.x+qw},${n.y+n.height} ${n.x},${cy}`
-        parts.push(`<polygon points="${pts}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
-      } else {
-        parts.push(`<rect x="${n.x}" y="${n.y}" width="${n.width}" height="${n.height}" rx="${br}" fill="${bg}" stroke="${border}" stroke-width="${bw}"/>`)
-      }
-      if (n.label) {
-        parts.push(`<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" fill="${text}" font-size="${fs}" font-family="system-ui,sans-serif">${this.svgEscape(n.label)}</text>`)
-      }
-    }
-
-    // Draw edges
-    for (const edge of edges) {
-      const src = nodeMap.get(edge.source); const tgt = nodeMap.get(edge.target)
-      if (!src || !tgt) continue
-      const [sx, sy] = handleXY(src, edge.sourceHandle)
-      const [ex, ey] = handleXY(tgt, edge.targetHandle)
-      const st = { color: '#555555', width: 2, ...edge.style }
-      const color = this.safeColor(st.color, '#555555')
-      const width = this.safeNumber(st.width, 2)
-      let d: string
-      if (edge.waypoints && edge.waypoints.length > 0) {
-        const pts = [[sx, sy], ...edge.waypoints.map(w => [w.x, w.y]), [ex, ey]]
-        d = `M${pts.map(p => `${p[0]},${p[1]}`).join(' L')}`
-      } else if (edge.type === 'straight') {
-        d = `M${sx},${sy} L${ex},${ey}`
-      } else {
-        const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
-        d = `M${sx},${sy} C${c1x},${c1y} ${c2x},${c2y} ${ex},${ey}`
-      }
-      const dashStr = this.safeDashArray(st.dashArray)
-      const dash = dashStr ? `stroke-dasharray="${dashStr}"` : ''
-      parts.push(`<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" marker-end="url(#arrow)" ${dash}/>`)
-      if (edge.label) {
-        const mx = (sx + ex) / 2, my = (sy + ey) / 2
-        parts.push(`<rect x="${mx-24}" y="${my-9}" width="48" height="18" rx="3" fill="rgba(255,255,255,0.92)"/>`)
-        parts.push(`<text x="${mx}" y="${my}" text-anchor="middle" dominant-baseline="middle" font-size="12" font-family="system-ui,sans-serif" fill="#374151">${this.svgEscape(edge.label)}</text>`)
-      }
-    }
-    parts.push('</svg>')
-    return parts.join('\n')
-  }
-
-  private svgEscape(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-  }
-
-  /** Validate that a color string is safe to embed in an SVG attribute. */
-  private safeColor(c: string | undefined, fallback: string): string {
-    if (typeof c !== 'string') return fallback
-    // hex (#rgb, #rgba, #rrggbb, #rrggbbaa), rgb()/rgba(), hsl()/hsla(), CSS named colors
-    if (/^#[0-9a-fA-F]{3,8}$/.test(c)) return c
-    if (/^rgba?\(\s*[\d.,%\s]+\)$/.test(c)) return c
-    if (/^hsla?\(\s*[\d.,%\s]+\)$/.test(c)) return c
-    if (/^[a-zA-Z]{1,32}$/.test(c)) return c
-    return fallback
-  }
-
-  /** Validate that a length string is safe to embed in an SVG attribute. */
-  private safeNumber(n: unknown, fallback: number): number {
-    if (typeof n !== 'number') return fallback
-    if (!Number.isFinite(n) || n < 0 || n > 1e6) return fallback
-    return n
-  }
-
-  /** Validate dash array — array of finite non-negative numbers. */
-  private safeDashArray(arr: unknown): string | null {
-    if (!Array.isArray(arr)) return null
-    if (!arr.every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1e4)) return null
-    return arr.join(' ')
+    return exportGraphAsSvg(this.graph, padding)
   }
 
   /** Serialize the full chart state (nodes, edges, viewport). */
@@ -969,16 +868,31 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
   }
 
-  /** Load a previously serialized chart state. Replaces current content. */
-  fromJSON(data: { version?: number; nodes: NodeData[]; edges: EdgeData[]; viewport?: ViewportState }): void {
+  /**
+   * Load a previously serialized chart state. Replaces current content.
+   *
+   * The input is validated against a strict schema by default — invalid
+   * fields (missing id, non-finite x/y, over-length htmlContent, prototype
+   * pollution keys, etc.) throw `TypeError` before any state is mutated.
+   * Pass `{ skipValidation: true }` to opt out when loading data you produced
+   * yourself with `toJSON()`.
+   */
+  fromJSON(
+    data: { version?: number; nodes: NodeData[]; edges: EdgeData[]; viewport?: ViewportState },
+    options: { skipValidation?: boolean } = {},
+  ): void {
+    // Validate BEFORE the failed-state check so invalid input throws even when
+    // the renderer is unavailable — the caller's untrusted JSON is still a
+    // trust boundary worth enforcing.
+    const safe = options.skipValidation ? data : validateChartJson(data) as typeof data
     if (this.failed) return
     this.history.clear()
     this.graph.clear()
     this.selectedIds.clear()
     this.selectedEdgeIds.clear()
-    for (const n of data.nodes) this.graph.addNode(n)
-    for (const e of data.edges) this.graph.addEdge(e)
-    if (data.viewport) this.viewport.setState(data.viewport)
+    for (const n of safe.nodes) this.graph.addNode(n)
+    for (const e of safe.edges) this.graph.addEdge(e)
+    if (safe.viewport) this.viewport.setState(safe.viewport)
     this.emit('selectionChange', { selectedIds: [], edgeIds: [] })
     this.scheduleRender()
   }

@@ -4,6 +4,20 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.2] — 2026-06-11
+
+### Security
+
+- **`fromJSON(data)` now runs schema validation before mutating state.** Invalid input throws `TypeError` with a specific reason — non-string `id`, non-finite `x`/`y`, non-positive `width`/`height`, over-length `label` (10k) / `htmlContent` (100k) / `tooltip` (1k), `__proto__` / `constructor` / `prototype` keys. Unknown fields are silently dropped. Pass `{ skipValidation: true }` to opt out when loading data you produced yourself with `toJSON()`.
+
+### Changed
+
+- SVG export moved from `FlowChart.exportSVG` into a new `services/svg-export.ts` (`exportGraphAsSvg(graph, padding)`). `flowchart.ts` shrunk by ~110 LOC; the safe-color / safe-number / safe-dash-array validators now live with the function they protect.
+
+### Tests
+
+- 6 new tests for `fromJSON` schema validation (missing id, non-finite x, `__proto__` pollution, oversized htmlContent, valid payload, skipValidation flag).
+
 ## [0.2.1] — 2026-06-11
 
 ### Added
