@@ -133,6 +133,22 @@ export class TextAtlas {
     const cached = this.entries.get(k)
     if (cached) return cached
 
+    // Isolate this entry's drawing from any ambient ctx state set by the
+    // caller or by a previous getOrCreate. Live trace observed that the
+    // chart instance's atlas wrote only 113 of 261 expected pixels for CJK
+    // glyphs even though an identical fillText sequence in isolation wrote
+    // all 261 — the difference was reproducible only inside the render
+    // frame. save()/restore() bracket forces a clean state snapshot for
+    // every entry, eliminating any cumulative ctx mutation as a suspect.
+    this.ctx.save()
+    try {
+      return this.buildEntry(k, text, font, color, maxWidth, lineHeight, bgColor)
+    } finally {
+      this.ctx.restore()
+    }
+  }
+
+  private buildEntry(k: string, text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor: string): AtlasEntry | null {
     this.ctx.font = font
     const lines = wrapLines(text, maxWidth, this.ctx)
 
