@@ -161,11 +161,19 @@ export class TextAtlas {
       )
       if (a > ascent)  ascent  = a
       if (d > descent) descent = d
-      // For width, fall back to a conservative estimate based on character
-      // count if `m.width` reports near-zero (Chromium did this for some
-      // emoji codepoints prior to v118).
-      const measured = m.width
-      const estimated = line.length * fontSizePx * 0.6
+      // For width, use the MAX of:
+      //   1. measureText().width — accurate for ASCII, reliable in most browsers
+      //   2. line.length × fontSize × 1.2 — conservative ceiling that covers
+      //      CJK / Hangul / emoji whose advance is ≈ font-size per glyph.
+      // The previous 0.6 multiplier underestimated Korean by half, so when
+      // measureText reported width=37 for "한국어" in the 2048×2048 main atlas
+      // canvas (vs 41.5 in the isolated test), the entry was sized too small
+      // and the trailing glyphs ran off its right edge during fillText.
+      // 1.2 × fontSize per character gives every glyph room without padding
+      // the atlas wastefully (ASCII strings still use the smaller measureText
+      // when it's larger than the estimate, which it almost always is).
+      const measured  = m.width
+      const estimated = line.length * fontSizePx * 1.2
       const lw = Math.ceil(Math.max(measured, estimated))
       if (lw > blockW) blockW = lw
     }
