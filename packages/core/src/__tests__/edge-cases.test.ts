@@ -986,6 +986,37 @@ describe('Group and collapse edge cases', () => {
     expect(chart.getEdge('e1')).toBeDefined()
     expect(chart.getEdge('e2')).toBeDefined()
   })
+
+  // ── groupDoubleClickCollapses option (UX safety) ────────────────────────────
+  //
+  // 0.2.6 introduced an explicit opt-in for double-click→collapse on group
+  // nodes. The default is OFF so a single accidental double-click can never
+  // hide an entire subtree. The dblclick handler itself is exercised in the
+  // demo and in production code paths; here we pin the option storage so a
+  // future refactor can't silently flip the default back to true.
+
+  it('EC-G1: groupDoubleClickCollapses defaults to false', () => {
+    expect((chart as unknown as { groupDoubleClickCollapses: boolean }).groupDoubleClickCollapses).toBe(false)
+  })
+
+  it('EC-G2: groupDoubleClickCollapses honors an explicit true', () => {
+    const chart2 = makeChart({ groupDoubleClickCollapses: true })
+    expect((chart2 as unknown as { groupDoubleClickCollapses: boolean }).groupDoubleClickCollapses).toBe(true)
+    chart2.dispose()
+  })
+
+  it('EC-G3: groupDoubleClickCollapses honors an explicit false', () => {
+    const chart2 = makeChart({ groupDoubleClickCollapses: false })
+    expect((chart2 as unknown as { groupDoubleClickCollapses: boolean }).groupDoubleClickCollapses).toBe(false)
+    chart2.dispose()
+  })
+
+  it('EC-G4: toggleCollapse() public API still works regardless of option', () => {
+    // The option only gates the double-click pathway. Explicit API calls stay
+    // free so host apps can still wire chevrons / context menus / API buttons.
+    chart.toggleCollapse('g')
+    expect(chart.getNode('g')!.collapsed).toBe(true)
+  })
 })
 
 // ─── 12. SELECTION EDGE CASES ────────────────────────────────────────────────

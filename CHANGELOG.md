@@ -6,43 +6,39 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## [0.2.6] — 2026-06-12
 
+### Added
+
+- `Canvas2DRenderer` ships behind the same `Renderer` interface as `WebGL2Renderer`. Opt in with `rendererKind: 'canvas2d'`. Useful for environments without WebGL2 or for workloads whose labels are CJK-heavy (see Known limitations).
+- `FlowChartOptions.groupDoubleClickCollapses?: boolean` — explicit opt-in for double-click → collapse on group nodes. **Default is false** so a single accidental double-click can never hide an entire subtree. Set to `true` to restore the previous behavior. Explicit collapse via `toggleCollapse(id)` / `collapseNode(id)` / `expandNode(id)` is always available regardless of the option.
+- `services/safe-css.ts` — single source of truth for the CSS-attribute allow-list (`safeColor` / `safeNumber` / `safeDashArray` / `safeFontFamily`). `svg-export.ts` and `label-edit.ts` now share these validators instead of carrying duplicate copies; hardening the allow-list now propagates everywhere.
+- `packages/core/PERFORMANCE.md` documents SPEC verification (1K @ 120 fps, 5K @ 113.6 fps, 10K @ 114.1 fps under SwiftShader) and the 8 optimizations behind those numbers.
+- 3 new axe-core tests covering Korean `ariaLabel`, `aria-keyshortcuts` token grammar (WAI-ARIA 1.2 named-key list), and the sr-only positioning of the `aria-live` region.
+- 4 new visual-regression tests pinning that node labels render centered horizontally inside their atlas entry (3 in `productization.test.ts` covering `textAlign='center'`, single-line draw x past `PADDING`, multi-line lines share x; 1 in `edge-cases.test.ts` pinning `groupDoubleClickCollapses` default storage).
+
 ### Changed
 
 - `FlowChart.canvasDblClick` now suppresses the inline label editor for nodes whose visual is rendered via `htmlContent` — editing `label` on such a node had no visible effect because `HtmlOverlay` owns the pixels. The `nodeDoubleClick` event still fires so consumer apps can route those nodes to their own editor.
-
-### Added
-
-- `Canvas2DRenderer` ships behind the same `Renderer` interface as `WebGL2Renderer`. Opt in with `rendererKind: 'canvas2d'`. Useful for environments without WebGL2 or for CJK-heavy workloads (see Known limitations).
-- `services/safe-css.ts` — single source of truth for the CSS-attribute allow-list (safeColor / safeNumber / safeDashArray / safeFontFamily). `svg-export.ts` and `label-edit.ts` now share these validators instead of carrying duplicate copies.
-- `packages/core/PERFORMANCE.md` documents SPEC verification (5K @ 113.6 fps avg, 10K @ 114.1 fps avg under SwiftShader) and the 8 optimizations behind those numbers.
-- 3 new axe-core tests covering Korean `ariaLabel`, `aria-keyshortcuts` token grammar, and the sr-only positioning of the `aria-live` region.
-
-### Security
-
-- All 4 packages enable `publishConfig.provenance: true`. Consumers can verify the tarball with `npm audit signatures @flowgl/<pkg>`.
-- New `scripts/generate-sbom.mjs` emits deterministic CycloneDX 1.5 SBOMs for all 4 packages; each tarball ships `sbom.json`.
-
-### Known limitations
-
-- WebGL2 atlas drops glyph pixels for CJK / Hangul / Japanese / mixed strings inside the chart's render frame (every isolated reproduction renders 261 nz pixels; live in-frame produces 113). Workaround: opt the affected chart into Canvas2D with `rendererKind: 'canvas2d'`. The atlas-level root cause is under investigation as a separate workstream; resolving it will land in a future minor release without changing the default renderer.
+- Node labels in the WebGL2 renderer now anchor at the horizontal center of their atlas entry's text block. Previously, `text-atlas.ts` left the per-entry `OffscreenCanvas` at the spec default `textAlign='start'`, so glyphs sat at the left edge and labels — especially CJK / Hangul, and any string whose conservative-estimated width exceeded the measured width — rendered visibly left-shifted inside their node quad. The fix is two lines: `textAlign='center'` plus `centerX = PADDING + blockW / 2`.
+- Group nodes no longer collapse on double-click by default. Previously, double-clicking a `type: 'group'` node called `toggleCollapse` unconditionally, which hid the entire subtree on one click and was easy to trigger by accident. The new default emits `nodeDoubleClick` and routes to the label editor (the same path as any other node); set `groupDoubleClickCollapses: true` to restore the prior behavior. Programmatic `toggleCollapse(id)` is unchanged.
 
 ### Security
 
 - All 4 packages enable `publishConfig.provenance: true`. Consumers can verify the tarball with `npm audit signatures @flowgl/<pkg>`.
 - New `scripts/generate-sbom.mjs` emits deterministic CycloneDX 1.5 SBOMs for all 4 packages; each tarball ships `sbom.json` for downstream supply-chain auditing.
-- `services/safe-css.ts` deduplicates the safeColor / safeNumber / safeDashArray / safeFontFamily allow-list validators that previously lived in two separate files. Hardening the allow-list now propagates everywhere.
-
-### Accessibility
-
-- 3 new axe-core tests cover: Korean `ariaLabel` round-trips without false-positive violations, `aria-keyshortcuts` tokens parse against WAI-ARIA 1.2 named-key grammar, `aria-live` region uses the sr-only positioning pattern (1px×1px hidden, still in the accessibility tree).
-
-### Performance
-
-- New `packages/core/PERFORMANCE.md` documents SPEC verification (5K @ 113.6 fps avg, 10K @ 114.1 fps avg under SwiftShader), the 8 critical optimizations in the render path, and the remaining headroom for future work.
 
 ### Documentation
 
-- Root README adds a 60-second tour code example, a "dual-renderer architecture" honest description, and new badges for coverage, provenance, SBOM, and CJK support.
+- Root README adds a 60-second tour code example and new badges for coverage, provenance, SBOM, and CJK status.
+- `PRODUCT.md` adds a "Core Value Tenets" section formalizing the seven non-negotiable properties of the project (GPU-first rendering, zero deps, framework-agnostic core, renderer-backend interchangeability, visual feature parity across backends, performance tier, accessibility). `AGENTS.md` adds the per-tenet pre-merge guardrails and a "Tenet-Violation Escalation Protocol" so any future change that would break a tenet halts at planning time. `SPEC_CHECKLIST.md` adds a "Tenet Regression Gates" section as the binary pass/fail at Definition-of-Done time. These three documents are intentionally redundant: a tenet without a guardrail is a wish; a guardrail without a regression check is a slogan.
+
+### Known limitations
+
+- WebGL2 atlas drops glyph pixels for CJK / Hangul / Japanese / mixed strings inside the chart's render frame (every isolated reproduction renders 261 nonzero pixels; live in-frame produces 113). Workaround: opt the affected chart into Canvas2D with `rendererKind: 'canvas2d'`. The atlas-level root cause is under investigation as a separate workstream targeted for 0.4.0 (see "Roadmap" below); resolving it will not change the default renderer.
+- `Canvas2DRenderer` does not yet render the WebGL-only HandleProgram (connect-drag circles), reroute handles, or endpoint circles. These are tracked under T5 (Visual Feature Parity Across Backends) in `PRODUCT.md`. Canvas2D will remain opt-in until parity is closed.
+
+### Roadmap (informational — no code in 0.2.6)
+
+- **0.4.0 — WebGL2 atlas CJK fix.** Root-cause the in-frame glyph-pixel drop and remove the Known-limitation above. Investigation plan in `TASK.md`. Target keeps the default renderer at WebGL2 (T1) and adds no new dependencies (T2).
 
 ## [0.2.5] — 2026-06-11
 

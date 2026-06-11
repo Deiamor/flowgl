@@ -52,6 +52,16 @@ export interface FlowChartOptions {
   /** Allow double-click to edit node labels inline. Default: true. */
   labelEditable?: boolean
   /**
+   * When true, double-clicking a `type: 'group'` node toggles its collapse
+   * state. Default: false — collapse is reserved for explicit `toggleCollapse`
+   * / `collapseNode` / `expandNode` API calls (or a host-app chevron / context
+   * menu) so a single double-click can't accidentally hide an entire subtree.
+   * When false, group nodes get the same double-click behavior as any other
+   * node (label edit, or just a `nodeDoubleClick` event if `labelEditable`
+   * is false).
+   */
+  groupDoubleClickCollapses?: boolean
+  /**
    * When true, all editing interactions are disabled: drag, connect, resize,
    * label edit, keyboard delete, and right-click mutation menu. Default: false.
    */
@@ -169,6 +179,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private htmlOverlay!: HtmlOverlay
   private labelEditable!: boolean
   private readOnly!: boolean
+  private groupDoubleClickCollapses!: boolean
   private bgColor!: string
   private gridConfig!: GridConfig
   private snapGridSize = 0
@@ -232,6 +243,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 
     this.labelEditable = options.labelEditable ?? true
     this.readOnly      = options.readOnly ?? false
+    this.groupDoubleClickCollapses = options.groupDoubleClickCollapses ?? false
     this.bgColor       = options.background ?? '#f7f7f7'
     this.gridConfig    = { ...DEFAULT_GRID_CONFIG, ...options.grid }
     this.snapGridSize    = options.snapGrid ?? 0
@@ -507,7 +519,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       if (node) {
         this.emit('nodeDoubleClick', { node })
         if (this.readOnly) return
-        if (node.type === 'group') {
+        if (node.type === 'group' && this.groupDoubleClickCollapses) {
           // Drag end fires a click event; a rapid follow-up click creates a spurious
           // dblclick. Suppress collapse if a drag just ended.
           if (Date.now() - this.lastDragEndTime < 300) return
