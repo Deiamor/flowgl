@@ -12,11 +12,11 @@
       }
     ],
     "component": {
-      "bom-ref": "pkg:npm/%40flowgl%2Fcore@0.2.5",
+      "bom-ref": "pkg:npm/%40flowgl%2Fsvelte@0.2.5",
       "type": "library",
-      "name": "@flowgl/core",
+      "name": "@flowgl/svelte",
       "version": "0.2.5",
-      "purl": "pkg:npm/%40flowgl%2Fcore@0.2.5",
+      "purl": "pkg:npm/%40flowgl%2Fsvelte@0.2.5",
       "licenses": [
         {
           "license": {
@@ -24,7 +24,7 @@
           }
         }
       ],
-      "description": "Zero-dependency WebGL2 flowchart library",
+      "description": "Svelte wrapper for @flowgl/core WebGL flowchart",
       "externalReferences": [
         {
           "type": "vcs",
@@ -36,16 +36,27 @@
         },
         {
           "type": "distribution",
-          "url": "https://www.npmjs.com/package/@flowgl/core"
+          "url": "https://www.npmjs.com/package/@flowgl/svelte"
         }
       ]
     }
   },
-  "components": [],
+  "components": [
+    {
+      "bom-ref": "pkg:npm/%40flowgl%2Fcore@0.2.5",
+      "type": "library",
+      "name": "@flowgl/core",
+      "version": "0.2.5",
+      "purl": "pkg:npm/%40flowgl%2Fcore@0.2.5",
+      "scope": "required"
+    }
+  ],
   "dependencies": [
     {
-      "ref": "pkg:npm/%40flowgl%2Fcore@0.2.5",
-      "dependsOn": []
+      "ref": "pkg:npm/%40flowgl%2Fsvelte@0.2.5",
+      "dependsOn": [
+        "pkg:npm/%40flowgl%2Fcore@0.2.5"
+      ]
     }
   ]
 }

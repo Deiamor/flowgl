@@ -30,7 +30,8 @@
   "files": [
     "dist",
     "src",
-    "README.md"
+    "README.md",
+    "sbom.json"
   ],
   "sideEffects": false,
   "engines": {
