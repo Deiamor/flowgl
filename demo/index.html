@@ -220,9 +220,12 @@
     import { FlowChart, generateId, hierarchicalLayout, circularLayout, LayoutWorkerClient } from '@flowgl/core'
 
     // ── Init ────────────────────────────────────────────────────────
-    // Renderer can be toggled via the URL: ?renderer=canvas2d
+    // Default to Canvas2D — verified to render CJK / Hangul / emoji correctly
+    // in all browsers. WebGL2 can be selected via ?renderer=webgl2 (faster
+    // for 1k+ nodes but currently has a CJK rendering issue under
+    // investigation, tracked separately).
     const urlRenderer = new URLSearchParams(location.search).get('renderer')
-    const rendererKind = urlRenderer === 'canvas2d' ? 'canvas2d' : 'webgl2'
+    const rendererKind = urlRenderer === 'webgl2' ? 'webgl2' : 'canvas2d'
     const chart = new FlowChart({
       container: document.getElementById('app'),
       rendererKind,

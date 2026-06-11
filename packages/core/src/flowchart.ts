@@ -41,10 +41,12 @@ export interface FlowChartOptions {
   edges?: EdgeData[]
   renderer?: RendererOptions
   /**
-   * Which renderer to use. Defaults to `'webgl2'` (high performance, requires
-   * a WebGL2 context). Pass `'canvas2d'` for the Canvas 2D fallback (works
-   * everywhere, slower at 1k+ nodes). Pass a custom {@link Renderer} instance
-   * to plug in your own.
+   * Which renderer to use. Defaults to `'canvas2d'` — verified to render
+   * every script (ASCII, CJK, Hangul, emoji) correctly across browsers.
+   * Pass `'webgl2'` to opt into the high-performance GPU path; recommended
+   * only when labels are ASCII-only (WebGL2 currently has a CJK rendering
+   * issue, see CHANGELOG). Pass a custom {@link Renderer} instance to plug
+   * in your own.
    */
   rendererKind?: 'webgl2' | 'canvas2d' | Renderer
   /** Allow double-click to edit node labels inline. Default: true. */
@@ -1787,7 +1789,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
 }
 
 function makeRenderer(kind: FlowChartOptions['rendererKind']): Renderer {
-  if (kind === 'canvas2d') return new Canvas2DRenderer()
+  if (kind === 'webgl2') return new WebGL2Renderer()
   if (kind && typeof kind === 'object') return kind
-  return new WebGL2Renderer()
+  // Default: Canvas2D. Renders CJK / Hangul / emoji correctly across browsers.
+  // WebGL2 is faster for 1k+ nodes but currently has a CJK rendering issue
+  // (see CHANGELOG); opt in via `rendererKind: 'webgl2'` if your labels are
+  // ASCII-only and you need the throughput.
+  return new Canvas2DRenderer()
 }
