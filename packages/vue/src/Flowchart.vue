@@ -100,7 +100,7 @@ onMounted(() => {
   lastEdges = props.edges
 
   chart.on('nodeDragEnd', () => {
-    const nodes = chart.graph.getNodes()
+    const nodes = chart.getNodes()
     lastNodes = nodes
     emit('nodesChange', nodes)
   })
@@ -108,7 +108,7 @@ onMounted(() => {
   chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
     if (props.autoConnect !== false) {
       chart.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
-      const edges = chart.graph.getEdges()
+      const edges = chart.getEdges()
       lastEdges = edges
       emit('edgesChange', edges)
     }

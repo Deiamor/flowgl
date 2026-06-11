@@ -161,7 +161,7 @@ tasks:
 
   - id: D-2
     title: 0.2.0 Phase 2 — API/Architecture 정리 (Renderer interface 정직화, graph private화, setNode* 통합)
-    status: pending
+    status: done
     dependencies: [D-1]
 
   - id: D-3

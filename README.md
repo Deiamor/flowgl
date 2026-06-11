@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license">
   <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/v/@flowgl/core?label=%40flowgl%2Fcore" alt="npm @flowgl/core"></a>
   <a href="https://www.npmjs.com/package/@flowgl/react"><img src="https://img.shields.io/npm/v/@flowgl/react?label=%40flowgl%2Freact" alt="npm @flowgl/react"></a>
-  <img src="https://img.shields.io/badge/tests-867%20passing-brightgreen" alt="867 tests passing">
+  <img src="https://img.shields.io/badge/tests-870%20passing-brightgreen" alt="870 tests passing">
   <img src="https://img.shields.io/badge/renderer-WebGL2-orange" alt="WebGL2">
   <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">
 </p>

@@ -113,7 +113,16 @@ export interface FlowChartEvents extends Record<string, unknown> {
 
 export class FlowChart extends EventEmitter<FlowChartEvents> {
   private canvas!: HTMLCanvasElement
+  /**
+   * @deprecated since 0.2.0 — direct access bypasses history/events. Use the public
+   * `getNodes()` / `getEdges()` / `addNode()` / `updateNode()` etc. methods instead.
+   * Will become private in 1.0.
+   */
   readonly graph!: Graph
+  /**
+   * @deprecated since 0.2.0 — use `getViewport()` / `setViewport()` / `panTo()` / `zoomIn()` etc.
+   * Will become private in 1.0.
+   */
   readonly viewport!: Viewport
   private renderer!: WebGL2Renderer
   private hitTester!: HitTester
@@ -815,16 +824,16 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     if (this.failed) return null
     // Force a synchronous render into the canvas before reading pixels
     try {
-      this.renderer.render(
-        this.graph, this.viewport,
-        this.selectedIds, this.connectState,
-        this.selectedEdgeIds,
-        this.bgColor,
-        this.gridConfig.visible ? this.gridConfig : null,
-        this.rerouteState,
-        this.edgeReroute.getEndpointCircles(),
-        this.edgeDashOffset,
-      )
+      this.renderer.render(this.graph, this.viewport, {
+        selectedIds:     this.selectedIds,
+        selectedEdgeIds: this.selectedEdgeIds,
+        connectState:    this.connectState,
+        rerouteState:    this.rerouteState,
+        endpointCircles: this.edgeReroute.getEndpointCircles(),
+        bgColor:         this.bgColor,
+        grid:            this.gridConfig.visible ? this.gridConfig : null,
+        dashOffset:      this.edgeDashOffset,
+      })
     } catch { return null }
     const ratio = scale ?? this.canvas.width / this.canvas.offsetWidth
     if (ratio === 1) return this.canvas.toDataURL('image/png')
@@ -1258,16 +1267,16 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
           }
           renderedEdgeIds = extra
         }
-        this.renderer.render(
-          this.graph, this.viewport,
-          this.selectedIds, this.connectState,
-          renderedEdgeIds,
-          this.bgColor,
-          this.gridConfig.visible ? this.gridConfig : null,
-          this.rerouteState,
-          this.edgeReroute.getEndpointCircles(),
-          this.edgeDashOffset,
-        )
+        this.renderer.render(this.graph, this.viewport, {
+          selectedIds:     this.selectedIds,
+          selectedEdgeIds: renderedEdgeIds,
+          connectState:    this.connectState,
+          rerouteState:    this.rerouteState,
+          endpointCircles: this.edgeReroute.getEndpointCircles(),
+          bgColor:         this.bgColor,
+          grid:            this.gridConfig.visible ? this.gridConfig : null,
+          dashOffset:      this.edgeDashOffset,
+        })
         this.htmlOverlay.sync(this.graph.getNodes(), this.viewport)
         const selArr = [...this.selectedIds]
         this.nodeResize.setSelectedNode(selArr.length === 1 ? selArr[0]! : null)
@@ -1538,8 +1547,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.scheduleRender()
   }
 
+  /** @deprecated since 0.2.0 — use `setNodeStyle(id, { borderColor })`. Removed in 1.0. */
   setNodeBorderColor(id: string, color: string): void { this.setNodeStyle(id, { borderColor: color }) }
+  /** @deprecated since 0.2.0 — use `setNodeStyle(id, { backgroundColor })`. Removed in 1.0. */
   setNodeBackgroundColor(id: string, color: string): void { this.setNodeStyle(id, { backgroundColor: color }) }
+  /** @deprecated since 0.2.0 — use `setNodeStyle(id, { shape })`. Removed in 1.0. */
   setNodeShape(id: string, shape: NodeShape): void { this.setNodeStyle(id, { shape }) }
 
   setEdgeStyle(id: string, style: Partial<EdgeStyle>): void {
@@ -1714,13 +1726,26 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   getSelectedIds(): string[] { return [...this.selectedIds] }
   getSelectedEdgeIds(): string[] { return [...this.selectedEdgeIds] }
 
+  /** @deprecated since 0.2.0 — use `setSelection({ nodes })`. Removed in 1.0. */
   setSelectedIds(ids: string[]): void {
     this.selectedIds = new Set(ids)
     this.scheduleRender()
   }
 
+  /** @deprecated since 0.2.0 — use `setSelection({ edges })`. Removed in 1.0. */
   setSelectedEdgeIds(ids: string[]): void {
     this.selectedEdgeIds = new Set(ids)
+    this.scheduleRender()
+  }
+
+  /**
+   * Replace the current selection. Pass undefined for a dimension to leave it untouched.
+   * Emits `selectionChange` once at the end.
+   */
+  setSelection(selection: { nodes?: string[]; edges?: string[] }): void {
+    if (selection.nodes !== undefined) this.selectedIds     = new Set(selection.nodes)
+    if (selection.edges !== undefined) this.selectedEdgeIds = new Set(selection.edges)
+    this.emit('selectionChange', { selectedIds: [...this.selectedIds], edgeIds: [...this.selectedEdgeIds] })
     this.scheduleRender()
   }
 
@@ -1951,7 +1976,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.emit('viewportChange', this.viewport.getState())
   }
 
-  /** Request a render on the next animation frame. Useful for continuous rendering in benchmarks. */
+  /**
+   * Request a render on the next animation frame.
+   * @deprecated since 0.2.0 — internal `scheduleRender` already handles all mutations; this wrapper exists only for benchmarks. Removed in 1.0.
+   */
   requestRender(): void { this.scheduleRender() }
 
   // ── Minimap API ───────────────────────────────────────────────────────────────

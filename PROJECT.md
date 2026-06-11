@@ -8,7 +8,7 @@ WebGL2-based flowchart library. No external runtime dependencies. Framework-agno
 - Rendering: WebGL2 (instanced rendering, SDF rounded rects, bezier tessellation)
 - Text: Canvas 2D texture atlas → WebGL texture (2-pass, RTL support, DPR-aware)
 - Build: Rollup 4 + @rollup/plugin-typescript + @rollup/plugin-terser (production minification)
-- Test: Vitest + happy-dom (867 tests: 840 core / 27 wrappers)
+- Test: Vitest + happy-dom (870 tests: 843 core / 27 wrappers)
 - Dev server: Vite (demo only)
 - Package manager: pnpm workspaces
 
@@ -167,7 +167,7 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 
 ## Build Commands
 ```bash
-pnpm test           # run 867 tests (from monorepo root)
+pnpm test           # run 870 tests (from monorepo root)
 pnpm build          # production build (minified)
 pnpm build:dev      # development build (readable + sourcemaps)
 pnpm typecheck      # tsc --noEmit (all packages)

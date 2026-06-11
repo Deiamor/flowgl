@@ -71,7 +71,7 @@
     lastEdges = edges
 
     chart.on('nodeDragEnd', () => {
-      const n = chart!.graph.getNodes()
+      const n = chart!.getNodes()
       lastNodes = n
       dispatch('nodesChange', n)
     })
@@ -79,7 +79,7 @@
     chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
       if (autoConnect) {
         chart!.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
-        const e = chart!.graph.getEdges()
+        const e = chart!.getEdges()
         lastEdges = e
         dispatch('edgesChange', e)
       }

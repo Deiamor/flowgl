@@ -119,7 +119,7 @@ export const Flowchart = forwardRef<FlowChart | null, FlowchartProps>(
       lastEdgesRef.current = props.edges
 
       chart.on('nodeDragEnd', () => {
-        const nodes = chart.graph.getNodes()
+        const nodes = chart.getNodes()
         lastNodesRef.current = nodes
         cbRef.current.onNodesChange?.(nodes)
       })
@@ -127,7 +127,7 @@ export const Flowchart = forwardRef<FlowChart | null, FlowchartProps>(
       chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
         if (cbRef.current.autoConnect !== false) {
           chart.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
-          const edges = chart.graph.getEdges()
+          const edges = chart.getEdges()
           lastEdgesRef.current = edges
           cbRef.current.onEdgesChange?.(edges)
         }

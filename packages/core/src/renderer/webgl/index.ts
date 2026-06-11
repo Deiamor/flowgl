@@ -1,4 +1,4 @@
-import type { Renderer, RendererOptions } from '../interface'
+import type { Renderer, RendererOptions, RenderFrame } from '../interface'
 import type { Graph } from '../../graph/graph'
 import type { Viewport } from '../../viewport/viewport'
 import type { ConnectState } from '../../interaction/connect'
@@ -107,15 +107,16 @@ export class WebGL2Renderer implements Renderer {
   render(
     graph: Graph,
     viewport: Viewport,
-    selectedIds: Set<string> = new Set(),
-    connectState: ConnectState | null = null,
-    selectedEdgeIds: Set<string> = new Set(),
-    bgColor = '#f7f7f7',
-    grid: GridConfig | null = null,
-    rerouteState: RerouteState | null = null,
-    endpointCircles: EndpointCircle[] = [],
-    dashOffset = 0,
+    frame: RenderFrame = {},
   ): void {
+    const selectedIds     = frame.selectedIds     ?? new Set<string>()
+    const connectState    = frame.connectState    ?? null
+    const selectedEdgeIds = frame.selectedEdgeIds ?? new Set<string>()
+    const bgColor         = frame.bgColor         ?? '#f7f7f7'
+    const grid            = frame.grid            ?? null
+    const rerouteState    = frame.rerouteState    ?? null
+    const endpointCircles = frame.endpointCircles ?? []
+    const dashOffset      = frame.dashOffset      ?? 0
     if (this.contextLost) return
     const gl = this.gl
     const [br, bg, bb] = parseColor(bgColor)

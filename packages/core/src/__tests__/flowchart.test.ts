@@ -235,6 +235,52 @@ describe('FlowChart (WebGL unavailable — graceful degradation)', () => {
     expect(chart.getSelectedEdgeIds()).toEqual(['e1'])
   })
 
+  it('setSelection({nodes, edges}) replaces both dimensions and emits once', () => {
+    const chart = new FlowChart({
+      container, onError,
+      nodes: [
+        { id: 'a', x: 0, y: 0, width: 100, height: 50, label: 'A' },
+        { id: 'b', x: 0, y: 0, width: 100, height: 50, label: 'B' },
+      ],
+      edges: [{ id: 'e1', source: 'a', target: 'b' }],
+    })
+    const handler = vi.fn()
+    chart.on('selectionChange', handler)
+    chart.setSelection({ nodes: ['a'], edges: ['e1'] })
+    expect(chart.getSelectedIds()).toEqual(['a'])
+    expect(chart.getSelectedEdgeIds()).toEqual(['e1'])
+    expect(handler).toHaveBeenCalledOnce()
+    expect(handler).toHaveBeenCalledWith({ selectedIds: ['a'], edgeIds: ['e1'] })
+  })
+
+  it('setSelection({nodes}) leaves edges untouched', () => {
+    const chart = new FlowChart({
+      container, onError,
+      nodes: [
+        { id: 'a', x: 0, y: 0, width: 100, height: 50, label: 'A' },
+        { id: 'b', x: 0, y: 0, width: 100, height: 50, label: 'B' },
+      ],
+      edges: [{ id: 'e1', source: 'a', target: 'b' }],
+    })
+    chart.setSelectedEdgeIds(['e1'])
+    chart.setSelection({ nodes: ['b'] })
+    expect(chart.getSelectedIds()).toEqual(['b'])
+    expect(chart.getSelectedEdgeIds()).toEqual(['e1'])
+  })
+
+  it('setSelection({}) emits with current state (no-op replacement)', () => {
+    const chart = new FlowChart({
+      container, onError,
+      nodes: [{ id: 'a', x: 0, y: 0, width: 100, height: 50, label: 'A' }],
+    })
+    chart.setSelectedIds(['a'])
+    const handler = vi.fn()
+    chart.on('selectionChange', handler)
+    chart.setSelection({})
+    expect(chart.getSelectedIds()).toEqual(['a'])
+    expect(handler).toHaveBeenCalledOnce()
+  })
+
   it('selectAll() selects all nodes and edges', () => {
     const chart = new FlowChart({
       container, onError,

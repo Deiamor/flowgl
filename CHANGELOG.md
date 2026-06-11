@@ -4,6 +4,32 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.0] — 2026-06-11
+
+### Breaking
+
+- **`Renderer.render(graph, viewport, frame)` signature changed.** The 10-parameter positional form (`selectedIds`, `connectState`, `selectedEdgeIds`, `bgColor`, `grid`, `rerouteState`, `endpointCircles`, `dashOffset`) is replaced by a single `RenderFrame` object. Custom renderer implementations must update their signature. The built-in `WebGL2Renderer` migration is internal; consumers who use only `new FlowChart(...)` are unaffected. `Renderer` interface also now requires `hasAnimatedEdges(): boolean`.
+
+### Added
+
+- `setSelection({ nodes?, edges? })` — unified selection setter. Replaces only the dimensions you pass; emits `selectionChange` exactly once.
+- `RenderFrame` type exported from `@flowgl/core`.
+
+### Deprecated (removal scheduled for 1.0)
+
+- `setNodeBorderColor(id, color)` → use `setNodeStyle(id, { borderColor })`
+- `setNodeBackgroundColor(id, color)` → use `setNodeStyle(id, { backgroundColor })`
+- `setNodeShape(id, shape)` → use `setNodeStyle(id, { shape })`
+- `setSelectedIds(ids)` → use `setSelection({ nodes: ids })`
+- `setSelectedEdgeIds(ids)` → use `setSelection({ edges: ids })`
+- `requestRender()` — internal `scheduleRender` already handles all mutations
+- `chart.graph` direct access → use `getNodes()` / `getEdges()` / `addNode()` etc.
+- `chart.viewport` direct access → use `getViewport()` / `panTo()` / `zoomIn()` etc.
+
+### Changed
+
+- React, Vue, Svelte wrappers no longer reach into `chart.graph` directly; all event handlers go through `chart.getNodes()` / `chart.getEdges()`.
+
 ## [0.1.5] — 2026-06-11
 
 ### Security
