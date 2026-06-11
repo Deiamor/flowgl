@@ -214,31 +214,19 @@ export class TextAtlas {
         this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
       }
     } else {
-      // SDF path: render to temp canvas → compute distance field → putImageData
-      // Falls back to bitmap when getImageData is unavailable (e.g. test environments)
-      const physW = Math.ceil(w * this.dpr)
-      const physH = Math.ceil(h * this.dpr)
-      const tmp = new OffscreenCanvas(physW, physH)
-      const tctx = tmp.getContext('2d')!
-      tctx.scale(this.dpr, this.dpr)
-      tctx.font = font
-      tctx.textBaseline = 'alphabetic'
-      tctx.fillStyle = color
-      tctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+      // Glyph path. The previous "SDF (signed distance field) compute via
+      // temp canvas + putImageData" pipeline turned out to silently drop ASCII
+      // and CJK glyphs that follow an emoji in the same string — the
+      // emoji's actualBoundingBox metrics confused either computeSDF or
+      // putImageData enough that the trailing glyphs ended up with alpha=0 in
+      // the atlas. Rendering directly into the main atlas via fillText draws
+      // every glyph correctly. The fragment shader still uses smoothstep so
+      // labels stay sharp at higher zoom levels.
+      this.ctx.fillStyle = color
+      this.ctx.textBaseline = 'alphabetic'
+      this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
       for (let i = 0; i < lines.length; i++) {
-        tctx.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
-      }
-      if (typeof tctx.getImageData === 'function') {
-        const imageData = tctx.getImageData(0, 0, physW, physH)
-        computeSDF(imageData.data, physW, physH, SDF_SPREAD * this.dpr)
-        this.ctx.putImageData(imageData, this.shelfX * this.dpr, this.shelfY * this.dpr)
-      } else {
-        this.ctx.fillStyle = color
-        this.ctx.textBaseline = 'alphabetic'
-        this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
-        for (let i = 0; i < lines.length; i++) {
-          this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
-        }
+        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
       }
     }
 
