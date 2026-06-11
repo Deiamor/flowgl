@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.5] — 2026-06-11
+
+### Added
+
+- GitHub Actions `ci.yml` runs `pnpm typecheck && test && build` on every push and PR to `master` (badge wired into the root README).
+- GitHub Actions `release.yml` (manual `workflow_dispatch`) publishes selected packages with `npm publish --provenance` so consumers can verify the tarball came from this exact commit. Requires the `NPM_TOKEN` secret on the repo.
+- Root README badges: per-package npm versions (core / react / vue / svelte), npm monthly downloads, CI status.
+- core README — Accessibility section now includes a WCAG 2.2 AA audit table (criterion × library guarantee × caller responsibility) plus an `@axe-core/playwright` snippet so consumers can automate the check.
+
 ## [0.2.4] — 2026-06-11
 
 ### Changed

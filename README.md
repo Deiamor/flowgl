@@ -8,6 +8,10 @@
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license">
   <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/v/@flowgl/core?label=%40flowgl%2Fcore" alt="npm @flowgl/core"></a>
   <a href="https://www.npmjs.com/package/@flowgl/react"><img src="https://img.shields.io/npm/v/@flowgl/react?label=%40flowgl%2Freact" alt="npm @flowgl/react"></a>
+  <a href="https://www.npmjs.com/package/@flowgl/vue"><img src="https://img.shields.io/npm/v/@flowgl/vue?label=%40flowgl%2Fvue" alt="npm @flowgl/vue"></a>
+  <a href="https://www.npmjs.com/package/@flowgl/svelte"><img src="https://img.shields.io/npm/v/@flowgl/svelte?label=%40flowgl%2Fsvelte" alt="npm @flowgl/svelte"></a>
+  <a href="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml"><img src="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/dm/@flowgl/core" alt="npm downloads"></a>
   <img src="https://img.shields.io/badge/tests-883%20passing-brightgreen" alt="883 tests passing">
   <img src="https://img.shields.io/badge/renderer-WebGL2-orange" alt="WebGL2">
   <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">

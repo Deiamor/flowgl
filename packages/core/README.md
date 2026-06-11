@@ -447,11 +447,35 @@ chart.setNodeStatus(node.id, 'error')
 
 `FlowChart` aims for full keyboard + screen-reader operability:
 
-- Canvas exposes `role="application"`, a configurable `aria-label`, and an `aria-describedby` summary of shortcuts.
+- Canvas exposes `role="application"`, configurable `aria-label`, `aria-roledescription="Flowchart editor"`, `aria-keyshortcuts` (enumerates every shortcut so AT discovers them), and `aria-describedby` pointing to a visually-hidden summary.
 - **Tab / Shift+Tab** cycles nodes; **Arrow keys** nudge the selection by 10 px (debounced ARIA announcement at 400 ms so screen readers are not flooded).
 - **Delete / Backspace** removes selection; **Ctrl/⌘+Z / Y** undo / redo; **Ctrl/⌘+A** selects all; **F** fits view; **Shift+F** fits selection.
 - Status badges set `aria-live="polite"` announcements (e.g. "Node Start: error").
-- Color contrast guidance: tokenize your `backgroundColor` / `textColor` pairs against WCAG AA (4.5:1) — the library does not enforce this for you.
+
+### WCAG audit — what the library guarantees vs. what you must verify
+
+| Criterion (WCAG 2.2 AA) | Library | Caller |
+|---|---|---|
+| 1.4.3 Contrast (text) | — | **Verify**: `style.backgroundColor` vs `style.textColor` ≥ 4.5:1 for body text, ≥ 3:1 for large/≥18 px |
+| 1.4.11 Non-text Contrast (focus, borders) | Selected-node ring `#1a73e8`, status badges with white border; both ≥ 3:1 on light backgrounds | Verify on custom themes |
+| 2.1.1 Keyboard | ✓ Every interactive surface is keyboard-reachable | — |
+| 2.1.2 No Keyboard Trap | ✓ Inline label editor commits on blur and refocuses canvas | — |
+| 2.4.3 Focus Order | ✓ Tab traverses nodes in graph order | — |
+| 2.4.7 Focus Visible | ✓ Canvas `outline:none` is replaced by a WebGL-rendered selection ring | Verify the ring color contrasts against your background |
+| 3.2.2 On Input | ✓ Label edit does not auto-commit on typing — only Enter / blur | — |
+| 4.1.2 Name, Role, Value | ✓ `role="application"` + `aria-label` + `aria-keyshortcuts` | Pass a domain-specific `ariaLabel` (e.g. `"Pipeline editor"`) |
+| 4.1.3 Status Messages | ✓ `aria-live="polite"` announcements for select/delete/status | — |
+
+Suggested quick audit (axe-core or @axe-core/playwright):
+
+```ts
+import { AxeBuilder } from '@axe-core/playwright'
+
+const results = await new AxeBuilder({ page })
+  .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
+  .analyze()
+expect(results.violations).toEqual([])
+```
 
 ## Security
 

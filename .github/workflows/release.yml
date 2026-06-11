@@ -1,0 +1,75 @@
+name: Release
+
+# Cuts an npm release with signed provenance attestations.
+#
+# Triggered manually from the GitHub UI (workflow_dispatch). The `package`
+# input picks which workspace package to publish (or `all` for the full set).
+# The package's `version` field in package.json must already be bumped on the
+# branch before running this workflow.
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Package to publish: core | react | vue | svelte | all"
+        required: true
+        default: "all"
+        type: choice
+        options: [core, react, vue, svelte, all]
+
+permissions:
+  contents: read
+  id-token: write   # required for npm provenance via OIDC
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck + Test + Build
+        run: |
+          pnpm typecheck
+          pnpm test
+          pnpm build
+
+      - name: Publish @flowgl/core
+        if: ${{ inputs.package == 'core' || inputs.package == 'all' }}
+        working-directory: packages/core
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @flowgl/react
+        if: ${{ inputs.package == 'react' || inputs.package == 'all' }}
+        working-directory: packages/react
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @flowgl/vue
+        if: ${{ inputs.package == 'vue' || inputs.package == 'all' }}
+        working-directory: packages/vue
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @flowgl/svelte
+        if: ${{ inputs.package == 'svelte' || inputs.package == 'all' }}
+        working-directory: packages/svelte
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
