@@ -12,9 +12,13 @@
   <a href="https://www.npmjs.com/package/@flowgl/svelte"><img src="https://img.shields.io/npm/v/@flowgl/svelte?label=%40flowgl%2Fsvelte" alt="npm @flowgl/svelte"></a>
   <a href="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml"><img src="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/dm/@flowgl/core" alt="npm downloads"></a>
-  <img src="https://img.shields.io/badge/tests-883%20passing-brightgreen" alt="883 tests passing">
-  <img src="https://img.shields.io/badge/renderer-WebGL2-orange" alt="WebGL2">
+  <img src="https://img.shields.io/badge/tests-876%20passing-brightgreen" alt="876 tests passing">
+  <img src="https://img.shields.io/badge/coverage-93.75%25-brightgreen" alt="coverage 93.75%">
+  <img src="https://img.shields.io/badge/renderer-Canvas2D%20%2B%20WebGL2-orange" alt="Canvas2D + WebGL2">
   <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">
+  <img src="https://img.shields.io/badge/provenance-signed-blue" alt="npm provenance signed">
+  <img src="https://img.shields.io/badge/SBOM-CycloneDX-blue" alt="CycloneDX SBOM">
+  <img src="https://img.shields.io/badge/i18n-CJK%20%E2%9C%93-brightgreen" alt="CJK supported">
 </p>
 
 <p align="center">
@@ -29,9 +33,33 @@
 
 ## Why flowgl
 
-Every other diagramming library renders to SVG or Canvas 2D — both CPU-bound and DOM-heavy. flowgl renders entirely on the GPU via WebGL2: nodes, edges, text, and minimap live in a single WebGL context. The result is smooth interaction at graph sizes that make SVG-based tools crawl.
+Every other diagramming library renders to SVG or Canvas 2D — both CPU-bound and DOM-heavy. flowgl renders graphs through one of two interchangeable backends — a default Canvas 2D path that renders every script correctly (ASCII, CJK, Hangul, emoji), and an opt-in WebGL2 path that takes the same `Renderer` interface for high-throughput ASCII-only workloads. The result is smooth interaction at graph sizes that make SVG-based tools crawl.
 
-Zero runtime dependencies. No D3. No React. No Lodash. `@flowgl/core` ships as a single ES module you own entirely.
+Zero runtime dependencies. No D3. No React. No Lodash. `@flowgl/core` ships as a single ES module you own entirely. Every release is signed with npm provenance attestations and ships a CycloneDX SBOM in the tarball.
+
+## 60-second tour
+
+```ts
+import { FlowChart } from '@flowgl/core'
+
+const chart = new FlowChart({
+  container: document.getElementById('app')!,
+  nodes: [
+    { id: 'in',  x:  40, y: 100, width: 120, height: 50, label: 'Source' },
+    { id: 'mid', x: 240, y: 100, width: 120, height: 50, label: 'Transform' },
+    { id: 'out', x: 440, y: 100, width: 120, height: 50, label: 'Sink' },
+  ],
+  edges: [
+    { id: 'a', source: 'in',  target: 'mid' },
+    { id: 'b', source: 'mid', target: 'out' },
+  ],
+})
+
+chart.on('nodeDoubleClick', ({ node }) => console.log('opened', node.id))
+chart.on('nodeUpdate',      ({ id, updates }) => console.log('changed', id, updates))
+```
+
+Double-click a node to edit its label inline. Drag the right edge to connect. Pan with empty-canvas drag, zoom with wheel/pinch, undo with Ctrl-Z.
 
 ---
 
