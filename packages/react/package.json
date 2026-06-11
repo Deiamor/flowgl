@@ -1,6 +1,10 @@
 {
   "name": "@flowgl/react",
   "version": "0.2.5",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "description": "React wrapper for @flowgl/core WebGL flowchart",
   "keywords": [
     "flowchart",

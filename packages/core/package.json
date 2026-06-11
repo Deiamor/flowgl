@@ -1,6 +1,10 @@
 {
   "name": "@flowgl/core",
   "version": "0.2.5",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "description": "Zero-dependency WebGL2 flowchart library",
   "keywords": [
     "flowchart",
