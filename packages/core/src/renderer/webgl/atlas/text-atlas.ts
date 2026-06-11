@@ -111,10 +111,11 @@ export class TextAtlas {
     const ctx = this.offscreen.getContext('2d')
     if (!ctx) throw new Error('TextAtlas: OffscreenCanvas 2D context unavailable')
     this.ctx = ctx
-    // Scale up so CSS-pixel font sizes produce dpr× more physical pixels → crisp text on Retina
-    this.ctx.scale(this.dpr, this.dpr)
-    // textBaseline is set per-fillText below (always 'alphabetic'); no need
-    // to pre-configure here.
+    // Scale up so CSS-pixel font sizes produce dpr× more physical pixels → crisp text on Retina.
+    // dpr=1 is a no-op so we skip the call entirely; calling scale(1,1) was
+    // observed to perturb fillText results in some Chromium builds, dropping
+    // glyph pixels for entries written far from the canvas origin.
+    if (this.dpr !== 1) this.ctx.scale(this.dpr, this.dpr)
   }
 
   private key(text: string, font: string, color: string, maxWidth: number, lineHeight: number, bgColor: string): string {
