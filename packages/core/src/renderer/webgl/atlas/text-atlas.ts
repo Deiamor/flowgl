@@ -214,20 +214,29 @@ export class TextAtlas {
         this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
       }
     } else {
-      // Glyph path. The previous "SDF (signed distance field) compute via
-      // temp canvas + putImageData" pipeline turned out to silently drop ASCII
-      // and CJK glyphs that follow an emoji in the same string — the
-      // emoji's actualBoundingBox metrics confused either computeSDF or
-      // putImageData enough that the trailing glyphs ended up with alpha=0 in
-      // the atlas. Rendering directly into the main atlas via fillText draws
-      // every glyph correctly. The fragment shader still uses smoothstep so
-      // labels stay sharp at higher zoom levels.
-      this.ctx.fillStyle = color
-      this.ctx.textBaseline = 'alphabetic'
-      this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
+      // Glyph path. Drawing CJK / Hangul / wide-glyph strings directly into
+      // the 2048×2048 main atlas canvas was producing truncated results in
+      // Chromium — only the trailing glyph of "한국어" survived. The same
+      // string drawn into a small OffscreenCanvas renders perfectly. Workaround:
+      // render every line into a per-entry temp canvas sized exactly for it,
+      // then copy the result into the atlas via drawImage (which respects the
+      // ctx's dpr scale, unlike putImageData).
+      const physW = Math.ceil(w * this.dpr)
+      const physH = Math.ceil(h * this.dpr)
+      const tmp = new OffscreenCanvas(physW, physH)
+      const tctx = tmp.getContext('2d')!
+      tctx.scale(this.dpr, this.dpr)
+      tctx.font = font
+      tctx.textBaseline = 'alphabetic'
+      tctx.fillStyle = color
+      tctx.direction = isRTL(text) ? 'rtl' : 'ltr'
       for (let i = 0; i < lines.length; i++) {
-        this.ctx.fillText(lines[i]!, this.shelfX + PADDING, this.shelfY + baselineY + i * lineStep)
+        tctx.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
       }
+      // drawImage source = temp canvas (already at physical pixel scale).
+      // Destination = (shelfX, shelfY) at logical scale — matches the
+      // dpr-scaled main ctx.
+      this.ctx.drawImage(tmp, 0, 0, physW, physH, this.shelfX, this.shelfY, w, h)
     }
 
     // UV coords are in physical-pixel space (0..ATLAS_SIZE)
