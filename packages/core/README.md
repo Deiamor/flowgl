@@ -494,6 +494,31 @@ new FlowChart({
 
 If `htmlContent` is set without a sanitizer, the first write emits a one-time console warning. `exportSVG` validates `style.{backgroundColor, borderColor, textColor, color}` against a CSS-color whitelist (hex, rgb()/rgba(), hsl()/hsla(), named) and rejects malformed input back to the documented defaults — the export cannot be used as an XSS vector by chart data alone.
 
+`fromJSON` / `importJSON` run a strict schema validator (`validateChartJson`) before mutating state — invalid IDs, non-finite coordinates, oversized text, `__proto__`/`constructor`/`prototype` keys, and `htmlContent` strings containing `<script>` / `javascript:` / inline event handlers all throw `TypeError`. Pass `{ skipValidation: true }` only when loading data your own `toJSON()` produced.
+
+### Content Security Policy
+
+The library does not use `eval` or `new Function` and ships no inline event handlers. A reasonably strict CSP works out of the box:
+
+```
+default-src 'self';
+script-src  'self';
+style-src   'self' 'unsafe-inline';   /* canvas overlay positioning uses inline style */
+img-src     'self' data:;
+worker-src  'self' blob:;              /* if you use LayoutWorkerClient */
+font-src    'self';
+```
+
+Notes:
+- `style-src 'unsafe-inline'` is required because positioned overlays (label editor, tooltip, minimap) write inline `style` attributes. Hashes/nonces are not feasible because positions change every frame.
+- `worker-src blob:` is required only when you opt into `LayoutWorkerClient` (heavy layout offloaded to a Web Worker constructed from a `Blob`).
+- `img-src data:` is required only when you call `exportPNG()` and embed the result.
+
+### Supply-chain verification
+
+- `@flowgl/core` ships a CycloneDX SBOM (`sbom.json` inside the published tarball) declaring **zero runtime dependencies**.
+- Starting with 0.2.5, the `release.yml` GitHub Actions workflow publishes with `npm publish --provenance`. Consumers can run `npm audit signatures @flowgl/core` to verify the tarball came from this exact commit.
+
 ## Migration
 
 ### 0.1.x → 0.2.0

@@ -1,0 +1,29 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-06-11T14:00:00Z",
+    "tools": [
+      { "vendor": "@flowgl", "name": "hand-authored", "version": "1.0.0" }
+    ],
+    "component": {
+      "bom-ref": "pkg:npm/%40flowgl/core@0.2.5",
+      "type": "library",
+      "name": "@flowgl/core",
+      "version": "0.2.5",
+      "purl": "pkg:npm/%40flowgl/core@0.2.5",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "description": "Zero-dependency WebGL2 flowchart library",
+      "externalReferences": [
+        { "type": "vcs",     "url": "https://github.com/Deiamor/flowgl" },
+        { "type": "website", "url": "https://dev.flowgl.ouranos.kr/" },
+        { "type": "distribution", "url": "https://www.npmjs.com/package/@flowgl/core" }
+      ]
+    }
+  },
+  "components": [],
+  "dependencies": [
+    { "ref": "pkg:npm/%40flowgl/core@0.2.5", "dependsOn": [] }
+  ]
+}

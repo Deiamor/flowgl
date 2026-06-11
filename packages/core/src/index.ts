@@ -12,6 +12,7 @@ export type { ViewportState, AABB } from './viewport/viewport'
 export { MIN_ZOOM, MAX_ZOOM } from './viewport/viewport'
 
 export { WebGL2Renderer } from './renderer/webgl/index'
+export { Canvas2DRenderer } from './renderer/canvas2d/index'
 export type { Renderer, RendererOptions, RenderFrame } from './renderer/interface'
 
 export { EventEmitter } from './events/emitter'

@@ -2,6 +2,7 @@ import { EventEmitter } from './events/emitter'
 import { Graph } from './graph/graph'
 import { Viewport } from './viewport/viewport'
 import { WebGL2Renderer } from './renderer/webgl/index'
+import { Canvas2DRenderer } from './renderer/canvas2d/index'
 import { HitTester } from './interaction/hit-test'
 import { PanZoom } from './interaction/pan-zoom'
 import { NodeDrag } from './interaction/drag'
@@ -27,7 +28,7 @@ import { LayoutAnimator } from './services/layout-animator'
 import type { NodeData, NodeStyle, NodeShape, NodeStatus } from './graph/node'
 import type { EdgeData, EdgeStyle } from './graph/edge'
 import type { ViewportState, AABB } from './viewport/viewport'
-import type { RendererOptions } from './renderer/interface'
+import type { RendererOptions, Renderer } from './renderer/interface'
 import type { ConnectState, HandleSide } from './interaction/connect'
 import type { RerouteState } from './interaction/edge-reroute'
 import type { GridConfig, MinimapConfig } from './types'
@@ -39,6 +40,13 @@ export interface FlowChartOptions {
   nodes?: NodeData[]
   edges?: EdgeData[]
   renderer?: RendererOptions
+  /**
+   * Which renderer to use. Defaults to `'webgl2'` (high performance, requires
+   * a WebGL2 context). Pass `'canvas2d'` for the Canvas 2D fallback (works
+   * everywhere, slower at 1k+ nodes). Pass a custom {@link Renderer} instance
+   * to plug in your own.
+   */
+  rendererKind?: 'webgl2' | 'canvas2d' | Renderer
   /** Allow double-click to edit node labels inline. Default: true. */
   labelEditable?: boolean
   /**
@@ -127,7 +135,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
    * Will become private in 1.0.
    */
   readonly viewport!: Viewport
-  private renderer!: WebGL2Renderer
+  private renderer!: Renderer
   private hitTester!: HitTester
   private edgeHitTester!: EdgeHitTester
   private panZoom!: PanZoom
@@ -231,7 +239,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.graph        = new Graph()
     this.layoutAnimator = new LayoutAnimator(this.graph, () => this.scheduleRender())
     this.viewport     = new Viewport()
-    this.renderer     = new WebGL2Renderer()
+    this.renderer = makeRenderer(options.rendererKind)
     this.hitTester    = new HitTester()
     this.edgeHitTester = new EdgeHitTester()
     this.history      = new History(options.historyLimit ?? 100)
@@ -1766,4 +1774,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.canvas?.remove()
     super.dispose()
   }
+}
+
+function makeRenderer(kind: FlowChartOptions['rendererKind']): Renderer {
+  if (kind === 'canvas2d') return new Canvas2DRenderer()
+  if (kind && typeof kind === 'object') return kind
+  return new WebGL2Renderer()
 }
