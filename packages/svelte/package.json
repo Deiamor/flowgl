@@ -58,5 +58,14 @@
     "test": "vitest run",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deiamor/flowgl.git",
+    "directory": "packages/svelte"
+  },
+  "homepage": "https://github.com/Deiamor/flowgl#readme",
+  "bugs": {
+    "url": "https://github.com/Deiamor/flowgl/issues"
   }
 }

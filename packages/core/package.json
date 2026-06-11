@@ -54,5 +54,14 @@
     "tslib": "^2.6.3",
     "typescript": "^5.4.0",
     "vitest": "^2.1.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deiamor/flowgl.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/Deiamor/flowgl#readme",
+  "bugs": {
+    "url": "https://github.com/Deiamor/flowgl/issues"
   }
 }

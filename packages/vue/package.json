@@ -56,5 +56,14 @@
     "test": "vitest run",
     "typecheck": "vue-tsc --noEmit",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deiamor/flowgl.git",
+    "directory": "packages/vue"
+  },
+  "homepage": "https://github.com/Deiamor/flowgl#readme",
+  "bugs": {
+    "url": "https://github.com/Deiamor/flowgl/issues"
   }
 }

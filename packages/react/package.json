@@ -61,5 +61,14 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run typecheck && pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deiamor/flowgl.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/Deiamor/flowgl#readme",
+  "bugs": {
+    "url": "https://github.com/Deiamor/flowgl/issues"
   }
 }
