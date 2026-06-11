@@ -262,14 +262,16 @@ export class TextAtlas {
     if (this.dpr !== 1) ec.scale(this.dpr, this.dpr)
     ec.font = font
     ec.textBaseline = 'alphabetic'
+    ec.textAlign = 'center'
     ec.direction = isRTL(text) ? 'rtl' : 'ltr'
     if (bgColor) {
       ec.fillStyle = bgColor
       ec.fillRect(0, 0, w, h)
     }
     ec.fillStyle = color
+    const centerX = PADDING + blockW / 2
     for (let i = 0; i < lines.length; i++) {
-      ec.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
+      ec.fillText(lines[i]!, centerX, baselineY + i * lineStep)
     }
     // Copy the freshly-rasterized canvas into the main atlas's shelf slot.
     this.ctx.clearRect(this.shelfX, this.shelfY, w, h)

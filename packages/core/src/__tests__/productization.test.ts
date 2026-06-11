@@ -26,6 +26,7 @@ function makeMockCtx2d() {
     fillStyle: '',
     direction: 'ltr' as CanvasDirection,
     textBaseline: 'top' as CanvasTextBaseline,
+    textAlign: 'start' as CanvasTextAlign,
     scale: vi.fn(),
     measureText: vi.fn((text: string) => ({
       width: text.length * 8,
@@ -805,5 +806,61 @@ describe('FlowChart.fromJSON — schema validation', () => {
       nodes: [{ id: 'a', x: Infinity, y: 0, width: 100, height: 50, label: '' }],
       edges: [],
     }, 'merge')).toThrow(/finite/)
+  })
+})
+
+// ── 11. Label centering inside the atlas entry (T5 visual regression gate) ───
+//
+// The 0.2.5 atlas write path forgot to set textAlign on the per-entry
+// OffscreenCanvas, leaving it at the spec default 'start'. Glyphs were drawn
+// at (PADDING, baselineY) but the entry's allocated width was the wider of
+// `measureText().width` and `length × fontSize × 1.2`, so when the estimated
+// width won (CJK / Hangul; sometimes ASCII too) the text sat against the
+// entry's left edge and rendered visibly left-shifted inside its node quad.
+//
+// These tests pin three properties:
+//   (a) `textAlign` is set to 'center' before fillText runs,
+//   (b) each line's draw x is the entry block's horizontal center, not PADDING,
+//   (c) multi-line labels share the same draw x (independent per-line
+//       centering, not longest-line left-alignment).
+
+describe('TextAtlas — label centering (visual regression gate)', () => {
+  let ctx: ReturnType<typeof makeMockCtx2d>
+
+  beforeEach(() => {
+    ctx = makeMockCtx2d()
+    // @ts-expect-error — replace the global mock with one whose ctx we own
+    globalThis.OffscreenCanvas = class MockOffscreenCanvas {
+      width: number; height: number
+      constructor(w: number, h: number) { this.width = w; this.height = h }
+      getContext(type: string) { return type === '2d' ? ctx : null }
+    }
+  })
+
+  it("sets textAlign='center' on the entry canvas before fillText runs", () => {
+    const atlas = new TextAtlas()
+    atlas.getOrCreate('Hello', '14px system-ui', '#000', 200, 1.4)
+    expect(ctx.textAlign).toBe('center')
+  })
+
+  it('draws single-line labels past the left PADDING (not at the entry edge)', () => {
+    const atlas = new TextAtlas()
+    atlas.getOrCreate('Hi', '14px system-ui', '#000', 200, 1.4)
+    const calls = (ctx.fillText as ReturnType<typeof vi.fn>).mock.calls
+    expect(calls.length).toBeGreaterThan(0)
+    // PADDING is 16; the bug-state x was exactly 16. Centering moves x to
+    // PADDING + blockW/2, which for any non-empty string > PADDING.
+    const drawX = calls[0]![1] as number
+    expect(drawX).toBeGreaterThan(16)
+  })
+
+  it('draws every line of a multi-line label at the same x (centered, not left)', () => {
+    const atlas = new TextAtlas()
+    atlas.getOrCreate('Hi\nHello world', '14px system-ui', '#000', 200, 1.4)
+    const calls = (ctx.fillText as ReturnType<typeof vi.fn>).mock.calls
+    expect(calls.length).toBe(2)
+    const [, x1] = calls[0]!
+    const [, x2] = calls[1]!
+    expect(x1).toBe(x2)
   })
 })
