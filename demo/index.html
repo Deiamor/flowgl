@@ -696,6 +696,9 @@
       const [r,g,b] = ctx.getImageData(0,0,1,1).data
       return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')
     }
+
+    // expose for debugging
+    window.chart = chart
   </script>
 </body>
 </html>
