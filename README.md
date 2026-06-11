@@ -157,7 +157,7 @@ export function Pipeline() {
 - 🖱️ Drag & drop with snap-to-grid
 - 🔲 Multi-select — Cmd+click, Shift+drag box select
 - ↔️ Resize handles (4-corner)
-- 🗂️ Group nodes — `groupNodes` / `ungroupNodes` to compose, `toggleCollapse` / `collapseNode` / `expandNode` to show or hide children. Double-click → collapse is opt-in via `groupDoubleClickCollapses: true` so a stray double-click can't accidentally hide a subtree.
+- 🗂️ Group nodes — `groupNodes` / `ungroupNodes` to compose or detach children, `dissolveGroup` to remove the group container while keeping its children, `toggleCollapse` / `collapseNode` / `expandNode` to show or hide children. Double-click → collapse is opt-in via `groupDoubleClickCollapses: true` so a stray double-click can't accidentally hide a subtree.
 - 🔴 Status badges — error / warning / success / info
 - 🔒 Locked nodes
 - 🌐 Custom HTML content inside nodes

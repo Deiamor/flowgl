@@ -1017,6 +1017,36 @@ describe('Group and collapse edge cases', () => {
     chart.toggleCollapse('g')
     expect(chart.getNode('g')!.collapsed).toBe(true)
   })
+
+  // ── dissolveGroup public API ────────────────────────────────────────────────
+
+  it('EC-G5: dissolveGroup removes the group node and detaches its children', () => {
+    chart.dissolveGroup('g')
+    expect(chart.getNode('g')).toBeUndefined()
+    expect(chart.getNode('c1')!.parentId).toBeUndefined()
+    expect(chart.getNode('c2')!.parentId).toBeUndefined()
+  })
+
+  it('EC-G6: dissolveGroup preserves edges between surviving children', () => {
+    // e1: c1 → c2, e2: c2 → out. Both should survive group dissolution.
+    chart.dissolveGroup('g')
+    expect(chart.getEdge('e1')).toBeDefined()
+    expect(chart.getEdge('e2')).toBeDefined()
+  })
+
+  it('EC-G7: dissolveGroup on a non-group node is a no-op', () => {
+    chart.dissolveGroup('c1')
+    expect(chart.getNode('c1')).toBeDefined()
+    expect(chart.getNode('g')).toBeDefined()
+  })
+
+  it('EC-G8: dissolveGroup is undoable as a single entry', () => {
+    chart.dissolveGroup('g')
+    chart.undo()
+    expect(chart.getNode('g')).toBeDefined()
+    expect(chart.getNode('c1')!.parentId).toBe('g')
+    expect(chart.getNode('c2')!.parentId).toBe('g')
+  })
 })
 
 // ─── 12. SELECTION EDGE CASES ────────────────────────────────────────────────

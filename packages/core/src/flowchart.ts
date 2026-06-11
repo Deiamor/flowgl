@@ -1458,6 +1458,30 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.scheduleRender()
   }
 
+  /**
+   * Dissolve a group: remove the group container node itself and detach every
+   * child so the children survive as top-level nodes. Edges between children
+   * are preserved; edges connected directly to the group node are removed
+   * along with it (same as `removeNode`). No-op when `groupId` is not a
+   * `type: 'group'` node. Single undo entry.
+   *
+   * Use `ungroupNodes(childIds)` instead when the group container should
+   * remain (just detach selected children). Use `dissolveGroup(groupId)`
+   * when the group itself should disappear from the graph.
+   */
+  dissolveGroup(groupId: string): void {
+    const group = this.graph.getNode(groupId)
+    if (!group || group.type !== 'group') return
+    const children = this.graph.getNodes().filter(n => n.parentId === groupId)
+    this.beforeMutation()
+    for (const child of children) {
+      const { parentId: _removed, ...rest } = child
+      this.graph.replaceNode(rest as NodeData)
+    }
+    this.graph.removeNode(groupId)
+    this.scheduleRender()
+  }
+
   // ── Canvas appearance API ─────────────────────────────────────────────────────
 
   setBackground(color: string): void {
