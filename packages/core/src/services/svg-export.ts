@@ -3,6 +3,7 @@ import type { NodeData } from '../graph/node'
 import type { EdgeData } from '../graph/edge'
 import { edgeControlPoints } from '../renderer/webgl/util/bezier'
 import { handleXY } from '../renderer/webgl/util/handle-xy'
+import { safeColor, safeNumber, safeDashArray } from './safe-css'
 
 /**
  * Render the current `Graph` as a standalone SVG string.
@@ -104,25 +105,7 @@ export function svgEscape(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-/** Validate a color string is safe to embed in an SVG attribute. */
-export function safeColor(c: string | undefined, fallback: string): string {
-  if (typeof c !== 'string') return fallback
-  if (/^#[0-9a-fA-F]{3,8}$/.test(c)) return c
-  if (/^rgba?\(\s*[\d.,%\s]+\)$/.test(c)) return c
-  if (/^hsla?\(\s*[\d.,%\s]+\)$/.test(c)) return c
-  if (/^[a-zA-Z]{1,32}$/.test(c)) return c
-  return fallback
-}
-
-/** Validate a number is safe to embed in an SVG attribute. */
-export function safeNumber(n: unknown, fallback: number): number {
-  if (typeof n !== 'number' || !Number.isFinite(n) || n < 0 || n > 1e6) return fallback
-  return n
-}
-
-/** Validate dash array — every entry must be finite non-negative. */
-export function safeDashArray(arr: unknown): string | null {
-  if (!Array.isArray(arr)) return null
-  if (!arr.every(v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1e4)) return null
-  return arr.join(' ')
-}
+// Re-export the canonical validators from services/safe-css so callers
+// outside this module (label-edit, future code paths) share the same
+// allow-list rather than duplicating it.
+export { safeColor, safeNumber, safeDashArray } from './safe-css'

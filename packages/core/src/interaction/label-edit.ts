@@ -1,6 +1,7 @@
 import type { NodeData } from '../graph/node'
 import type { Viewport } from '../viewport/viewport'
 import { DEFAULT_NODE_STYLE } from '../graph/node'
+import { safeColor, safeNumber, safeFontFamily } from '../services/safe-css'
 
 export class LabelEditor {
   private input: HTMLInputElement | null = null
@@ -88,23 +89,4 @@ export class LabelEditor {
   dispose(): void { this.stopEdit() }
 }
 
-function safeColor(c: string | undefined, fallback: string): string {
-  if (typeof c !== 'string') return fallback
-  if (/^#[0-9a-fA-F]{3,8}$/.test(c)) return c
-  if (/^rgba?\(\s*[\d.,%\s]+\)$/.test(c)) return c
-  if (/^hsla?\(\s*[\d.,%\s]+\)$/.test(c)) return c
-  if (/^[a-zA-Z]{1,32}$/.test(c)) return c
-  return fallback
-}
-
-function safeNumber(n: unknown, fallback: number): number {
-  if (typeof n !== 'number' || !Number.isFinite(n) || n < 0 || n > 1e4) return fallback
-  return n
-}
-
-function safeFontFamily(s: string | undefined, fallback: string): string {
-  if (typeof s !== 'string' || s.length > 200) return fallback
-  // Block characters that could escape an attribute or inject another CSS declaration.
-  if (/[<>;{}]/.test(s)) return fallback
-  return s
-}
+// Validators are now in services/safe-css.ts — single source of truth.
