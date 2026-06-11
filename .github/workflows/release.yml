@@ -40,11 +40,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck + Test + Build
+      - name: Build + Typecheck + Test
+        # Build first so workspace wrappers (@flowgl/react, /vue, /svelte) can
+        # resolve `@flowgl/core` via its dist/ output when typecheck runs.
         run: |
+          pnpm build
           pnpm typecheck
           pnpm test
-          pnpm build
 
       - name: Publish @flowgl/core
         if: ${{ inputs.package == 'core' || inputs.package == 'all' }}
