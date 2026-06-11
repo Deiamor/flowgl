@@ -227,8 +227,10 @@ export class TextAtlas {
       // Chromium — only the trailing glyph of "한국어" survived. The same
       // string drawn into a small OffscreenCanvas renders perfectly. Workaround:
       // render every line into a per-entry temp canvas sized exactly for it,
-      // then copy the result into the atlas via drawImage (which respects the
-      // ctx's dpr scale, unlike putImageData).
+      // then copy the result into the atlas via getImageData + putImageData.
+      // Both drawImage and direct main-canvas fillText were observed to drop
+      // pixels; putImageData is a byte-level memcpy that ignores the canvas
+      // transform and reliably preserves the glyph content.
       const physW = Math.ceil(w * this.dpr)
       const physH = Math.ceil(h * this.dpr)
       const tmp = new OffscreenCanvas(physW, physH)
@@ -241,10 +243,8 @@ export class TextAtlas {
       for (let i = 0; i < lines.length; i++) {
         tctx.fillText(lines[i]!, PADDING, baselineY + i * lineStep)
       }
-      // drawImage source = temp canvas (already at physical pixel scale).
-      // Destination = (shelfX, shelfY) at logical scale — matches the
-      // dpr-scaled main ctx.
-      this.ctx.drawImage(tmp, 0, 0, physW, physH, this.shelfX, this.shelfY, w, h)
+      const imageData = tctx.getImageData(0, 0, physW, physH)
+      this.ctx.putImageData(imageData, this.shelfX * this.dpr, this.shelfY * this.dpr)
     }
 
     // UV coords are in physical-pixel space (0..ATLAS_SIZE)
