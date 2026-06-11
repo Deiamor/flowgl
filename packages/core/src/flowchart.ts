@@ -514,6 +514,12 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
           return
         }
         if (!this.labelEditable) return
+        // Skip the inline label editor for nodes whose visual is rendered via
+        // `htmlContent`. Editing `label` on such a node has no visible effect
+        // (HtmlOverlay owns the pixels), which is a silent UX dead-end — the
+        // host application should handle these via the `nodeDoubleClick`
+        // event instead.
+        if (node.htmlContent) return
         this.labelEditor.startEdit(node, this.canvas, this.viewport, (newLabel) => {
           if (newLabel === node.label) return
           this.updateNode(node.id, { label: newLabel })
@@ -553,8 +559,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
           this.emit('selectionChange', { selectedIds: [node.id], edgeIds: [] })
           this.scheduleRender()
         }
-        this.contextMenu.show(e.clientX, e.clientY, [
-          {
+        const items: import('./interaction/context-menu').MenuEntry[] = []
+        // Hide "Edit Label" on htmlContent-driven nodes — editing label there
+        // is a no-op since HtmlOverlay paints the pixels.
+        if (!node.htmlContent) {
+          items.push({
             label: 'Edit Label',
             action: () => {
               this.labelEditor.startEdit(node, this.canvas, this.viewport, (newLabel) => {
@@ -562,10 +571,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
                 this.updateNode(node.id, { label: newLabel })
               })
             },
-          },
-          { separator: true },
-          { label: 'Delete Node', destructive: true, action: () => this.deleteSelected() },
-        ])
+          })
+          items.push({ separator: true })
+        }
+        items.push({ label: 'Delete Node', destructive: true, action: () => this.deleteSelected() })
+        this.contextMenu.show(e.clientX, e.clientY, items)
         return
       }
 

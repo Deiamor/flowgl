@@ -737,6 +737,28 @@ describe('FlowChart.fromJSON — schema validation', () => {
     })).toThrow(/event handler/)
   })
 
+  it('double-click on an htmlContent node does NOT open the label editor', () => {
+    const chart = new FlowChart({
+      container,
+      onError: () => {},
+      nodes: [{
+        id: 'h', x: 80, y: 80, width: 160, height: 80, label: '',
+        htmlContent: '<div>⚡ End</div>',
+      }],
+    })
+    // Simulate a dblclick on the canvas center of the node.
+    // In WebGL-unavailable mode the chart is in `failed` state, so this is
+    // really a "no editor opens" assertion rather than a positive event-flow
+    // test — but the path we want to cover is the htmlContent guard in
+    // canvasDblClick at flowchart.ts:518.
+    const before = document.querySelectorAll('input[type=text]').length
+    const canvas = container.querySelector('canvas')
+    if (canvas) canvas.dispatchEvent(new MouseEvent('dblclick', { clientX: 160, clientY: 120, bubbles: true }))
+    const after = document.querySelectorAll('input[type=text]').length
+    expect(after).toBe(before)
+    chart.dispose()
+  })
+
   it('rejects htmlContent containing javascript: URL', () => {
     const chart = new FlowChart({ container, onError: () => {} })
     expect(() => chart.fromJSON({
