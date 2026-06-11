@@ -7,6 +7,8 @@ type MockChart = {
   options:      Record<string, unknown>
   handlers:     Record<string, ((...args: unknown[]) => void)[]>
   graph:        { getNodes: ReturnType<typeof vi.fn>; getEdges: ReturnType<typeof vi.fn> }
+  getNodes:     ReturnType<typeof vi.fn>
+  getEdges:     ReturnType<typeof vi.fn>
   setNodes:     ReturnType<typeof vi.fn>
   setEdges:     ReturnType<typeof vi.fn>
   setReadOnly:  ReturnType<typeof vi.fn>
@@ -29,6 +31,8 @@ const { mockState, MockChart } = vi.hoisted(() => {
     this.options       = options
     this.handlers      = {}
     this.graph         = { getNodes: vi.fn(() => []), getEdges: vi.fn(() => []) }
+    this.getNodes      = vi.fn(() => [])
+    this.getEdges      = vi.fn(() => [])
     this.setNodes      = vi.fn()
     this.setEdges      = vi.fn()
     this.setReadOnly   = vi.fn()
