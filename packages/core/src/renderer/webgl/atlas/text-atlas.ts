@@ -224,14 +224,17 @@ export class TextAtlas {
       }
     } else {
       // Glyph path. Direct fillText into the main atlas canvas at
-      // (shelfX + PADDING, shelfY + baselineY). Detour via a per-entry temp
-      // canvas + putImageData was losing pixels — confirmed on live by
-      // measuring identical fillText output (261 nonZero) in both a tiny
-      // OffscreenCanvas and the 2048×2048 atlas main canvas at empty
-      // coordinates, but the putImageData copy into the entry's shelf slot
-      // wrote only 113 of those 261 pixels. Direct fillText writes all
-      // glyphs reliably regardless of script (ASCII, Hangul, CJK, emoji,
-      // and mixed).
+      // (shelfX + PADDING, shelfY + baselineY).
+      //
+      // CRITICAL: clear the shelf slot first. Without clearRect, Chromium's
+      // headless fillText into a fresh slot on a row that already contains
+      // ink from neighboring entries silently drops most of the glyph
+      // pixels — live trace measured the same fillText writing 261 nz pixels
+      // to a virgin row and only 113 nz pixels to the actual shelf slot
+      // (1023, 0), even though that exact rectangle reported 0 ink before
+      // the call. clearRect resets the per-pixel state so fillText behaves
+      // identically to its standalone form.
+      this.ctx.clearRect(this.shelfX, this.shelfY, w, h)
       this.ctx.fillStyle = color
       this.ctx.textBaseline = 'alphabetic'
       this.ctx.direction = isRTL(text) ? 'rtl' : 'ltr'
