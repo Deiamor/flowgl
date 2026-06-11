@@ -5,6 +5,15 @@ const MAX_LABEL_LEN = 10_000
 const MAX_HTML_LEN  = 100_000
 const MAX_TOOLTIP_LEN = 1_000
 
+/**
+ * Pattern that flags the obvious XSS shapes — <script> tags, javascript: URLs,
+ * and inline event-handler attributes (on*=). Not an exhaustive XSS filter;
+ * its purpose is to catch unsanitized payloads at the JSON boundary so the
+ * caller is forced to either register `FlowChartOptions.sanitizeHtml` or
+ * opt out via `{ skipValidation: true }`.
+ */
+const SCRIPT_PATTERN = /<script[\s>]|javascript:|\bon[a-z]+\s*=/i
+
 export interface ChartJsonInput {
   version?: number
   nodes: unknown[]
@@ -74,6 +83,9 @@ function validateNode(raw: unknown, index: number): NodeData {
   }
   if (r.htmlContent !== undefined && (typeof r.htmlContent !== 'string' || r.htmlContent.length > MAX_HTML_LEN)) {
     throw new TypeError(`nodes[${index}].htmlContent must be a string ≤${MAX_HTML_LEN} chars`)
+  }
+  if (typeof r.htmlContent === 'string' && SCRIPT_PATTERN.test(r.htmlContent)) {
+    throw new TypeError(`nodes[${index}].htmlContent contains a <script> tag, javascript: URL, or inline event handler. If you've registered a sanitizer (FlowChartOptions.sanitizeHtml) and trust this input, load via fromJSON(..., { skipValidation: true })`)
   }
   if (r.tooltip !== undefined && (typeof r.tooltip !== 'string' || r.tooltip.length > MAX_TOOLTIP_LEN)) {
     throw new TypeError(`nodes[${index}].tooltip must be a string ≤${MAX_TOOLTIP_LEN} chars`)

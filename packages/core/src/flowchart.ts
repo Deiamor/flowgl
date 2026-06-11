@@ -898,18 +898,23 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   }
 
   /**
-   * Import nodes and edges.
+   * Import nodes and edges. Both modes run the same schema validation as
+   * `fromJSON` against untrusted input. Pass `{ skipValidation: true }` to
+   * opt out (e.g. when re-loading data you produced with `toJSON()`).
+   *
    * `'replace'` (default) clears the chart first (same as `fromJSON`).
    * `'merge'` adds to the existing graph without clearing.
    */
   importJSON(
     data: { nodes: NodeData[]; edges: EdgeData[]; viewport?: ViewportState },
     mode: 'replace' | 'merge' = 'replace',
+    options: { skipValidation?: boolean } = {},
   ): void {
-    if (mode === 'replace') { this.fromJSON(data); return }
+    if (mode === 'replace') { this.fromJSON(data, options); return }
+    const safe = options.skipValidation ? data : validateChartJson(data) as typeof data
     this.beforeMutation()
-    for (const n of data.nodes) this.graph.addNode(n)
-    for (const e of data.edges) this.graph.addEdge(e)
+    for (const n of safe.nodes) this.graph.addNode(n)
+    for (const e of safe.edges) this.graph.addEdge(e)
     this.scheduleRender()
   }
 

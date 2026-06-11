@@ -4,6 +4,17 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.3] — 2026-06-11
+
+### Security
+
+- `importJSON({ ..., mode: 'merge' })` now runs the same schema validator as `fromJSON` (it previously trusted the input). `{ skipValidation: true }` opts out.
+- `validateChartJson` now rejects `htmlContent` containing `<script>` tags, `javascript:` URLs, or `on*=` inline event handlers. Combined with the `sanitizeHtml` hook, untrusted JSON cannot smuggle XSS through the HTML overlay without an explicit `skipValidation: true` opt-in.
+
+### Tests
+
+- 4 new tests: htmlContent `<script>` rejected, inline event handler rejected, `javascript:` URL rejected, importJSON merge validation.
+
 ## [0.2.2] — 2026-06-11
 
 ### Security

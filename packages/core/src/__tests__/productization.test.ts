@@ -720,4 +720,36 @@ describe('FlowChart.fromJSON — schema validation', () => {
       { skipValidation: true },
     )).not.toThrow()
   })
+
+  it('rejects htmlContent containing <script>', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON({
+      nodes: [{ id: 'a', x: 0, y: 0, width: 100, height: 50, label: '', htmlContent: '<div><script>alert(1)</script></div>' }],
+      edges: [],
+    })).toThrow(/<script>/)
+  })
+
+  it('rejects htmlContent containing inline event handler (onload=)', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON({
+      nodes: [{ id: 'a', x: 0, y: 0, width: 100, height: 50, label: '', htmlContent: '<img src=x onerror="alert(1)">' }],
+      edges: [],
+    })).toThrow(/event handler/)
+  })
+
+  it('rejects htmlContent containing javascript: URL', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.fromJSON({
+      nodes: [{ id: 'a', x: 0, y: 0, width: 100, height: 50, label: '', htmlContent: '<a href="javascript:alert(1)">x</a>' }],
+      edges: [],
+    })).toThrow(/javascript:/)
+  })
+
+  it('importJSON merge also validates the payload', () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.importJSON({
+      nodes: [{ id: 'a', x: Infinity, y: 0, width: 100, height: 50, label: '' }],
+      edges: [],
+    }, 'merge')).toThrow(/finite/)
+  })
 })
