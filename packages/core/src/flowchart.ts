@@ -20,6 +20,7 @@ import { ContextPanels } from './ui/context-panels'
 import { PanelOverlay, type PanelOptions } from './ui/panel-overlay'
 import { Controls, type ControlsOptions } from './ui/controls'
 import { NodeToolbarLayer, type NodeToolbarSpec } from './ui/node-toolbar'
+import { PerfOverlay, type PerfOverlayOptions } from './ui/perf-overlay'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -179,6 +180,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private panelOverlay!: PanelOverlay
   private controls: Controls | null = null
   private nodeToolbarLayer: NodeToolbarLayer | null = null
+  private perfOverlay: PerfOverlay | null = null
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
@@ -1857,6 +1859,41 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     return this.nodeToolbarLayer?.list() ?? []
   }
 
+  // ── PerfOverlay — differentiation API ────────────────────────────────────────
+  //
+  // Real-time fps / frame-time / node-edge counts / atlas-generation overlay.
+  // No equivalent ships in React Flow — this surface is flowgl-specific and
+  // turns the WebGL2 advantage into something visible to a user evaluating
+  // the library.
+
+  /** Show the perf overlay. Idempotent — calling twice replaces the prior mount. */
+  showPerfOverlay(options: PerfOverlayOptions = {}): void {
+    if (this.perfOverlay) this.perfOverlay.hide()
+    const container = this.getContainer()
+    this.perfOverlay = new PerfOverlay(
+      container,
+      this.viewport,
+      this.graph,
+      () => {
+        const r = this.renderer as unknown as { getAtlasGeneration?: () => number }
+        return r?.getAtlasGeneration ? { generation: r.getAtlasGeneration() } : null
+      },
+      options,
+    )
+    this.perfOverlay.show()
+  }
+
+  /** Hide the perf overlay. Returns false if it wasn't visible. */
+  hidePerfOverlay(): boolean {
+    if (!this.perfOverlay) return false
+    this.perfOverlay.hide()
+    this.perfOverlay = null
+    return true
+  }
+
+  /** Whether the perf overlay is currently visible. */
+  hasPerfOverlay(): boolean { return this.perfOverlay?.isVisible() ?? false }
+
   // ── Viewport API ──────────────────────────────────────────────────────────────
 
   getViewport(): ViewportState  { return this.viewport.getState() }
@@ -1970,6 +2007,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.renderer.dispose()
     }
     this.resizeObserver?.disconnect()
+    this.perfOverlay?.dispose()
     this.nodeToolbarLayer?.dispose()
     this.controls?.dispose()
     this.panels?.dispose()
