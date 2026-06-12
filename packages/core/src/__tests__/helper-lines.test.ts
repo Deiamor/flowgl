@@ -56,7 +56,8 @@ describe('HelperLines — 0.8.0', () => {
       const graph = new Graph()
       graph.addNode({ id: 'drag', label: 'D', x: 0, y: 0, width: 80, height: 50 })
       graph.addNode({ id: 'other', label: 'O', x: 200, y: 200, width: 80, height: 50 })
-      const viewport = new Viewport(800, 600)
+      const viewport = new Viewport()
+      viewport.setSize(800, 600)
       const layer = new HelperLinesLayer(c, viewport, graph, { enabled: true, snap: 5, show: 20 })
       layer.begin('drag')
       return { layer, graph, container: c }

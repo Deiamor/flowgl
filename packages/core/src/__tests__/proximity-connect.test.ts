@@ -54,7 +54,8 @@ describe('ProximityConnect — 0.8.0', () => {
       graph.addNode({ id: 'drag',  label: 'D', x: 0, y: 0, width: 80, height: 50 })
       graph.addNode({ id: 'near',  label: 'N', x: 130, y: 0, width: 80, height: 50 })   // 50 px gap
       graph.addNode({ id: 'far',   label: 'F', x: 500, y: 0, width: 80, height: 50 })   // 420 px gap
-      const viewport = new Viewport(800, 600)
+      const viewport = new Viewport()
+      viewport.setSize(800, 600)
       const layer = new ProximityConnectLayer(c, viewport, graph, { enabled: true, threshold: 80 })
       return { c, graph, layer }
     }
@@ -122,7 +123,8 @@ describe('ProximityConnect — 0.8.0', () => {
       const graph = new Graph()
       graph.addNode({ id: 'p', label: 'p', x: 0, y: 0, width: 200, height: 100, type: 'group' })
       graph.addNode({ id: 'child', label: 'child', x: 10, y: 10, width: 50, height: 50, parentId: 'p' })
-      const viewport = new Viewport(800, 600)
+      const viewport = new Viewport()
+      viewport.setSize(800, 600)
       const layer = new ProximityConnectLayer(c, viewport, graph, { enabled: true, threshold: 80 })
       layer.begin('child')
       expect(layer.notifyMove()).toBeNull()
