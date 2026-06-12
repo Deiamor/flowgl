@@ -809,6 +809,99 @@ describe('FlowChart.fromJSON — schema validation', () => {
   })
 })
 
+// ── 0.5.0 — colorMode 'system' + isValidConnection alias ─────────────────────
+
+describe('0.5.0 — setTheme system mode', () => {
+  let container: HTMLElement
+  let originalMatchMedia: typeof window.matchMedia
+
+  beforeEach(() => {
+    container = makeContainer()
+    originalMatchMedia = window.matchMedia
+  })
+  afterEach(() => {
+    if (originalMatchMedia) window.matchMedia = originalMatchMedia
+    container.remove()
+  })
+
+  it("setTheme('light' | 'dark') still works without throwing", () => {
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.setTheme('light')).not.toThrow()
+    expect(() => chart.setTheme('dark')).not.toThrow()
+    chart.dispose()
+  })
+
+  it("setTheme('system') with no matchMedia falls back silently to light", () => {
+    // @ts-expect-error — emulate non-matchMedia env
+    delete window.matchMedia
+    const chart = new FlowChart({ container, onError: () => {} })
+    expect(() => chart.setTheme('system')).not.toThrow()
+    chart.dispose()
+  })
+
+  it("setTheme('system') registers a prefers-color-scheme listener", () => {
+    const added: Array<(e: MediaQueryListEvent) => void> = []
+    const removed: Array<(e: MediaQueryListEvent) => void> = []
+    // @ts-expect-error — minimal MediaQueryList stub
+    window.matchMedia = (q: string) => ({
+      matches: false,
+      media: q,
+      addEventListener: (_: string, cb: (e: MediaQueryListEvent) => void) => { added.push(cb) },
+      removeEventListener: (_: string, cb: (e: MediaQueryListEvent) => void) => { removed.push(cb) },
+    })
+    const chart = new FlowChart({ container, onError: () => {} })
+    chart.setTheme('system')
+    expect(added.length).toBe(1)
+    chart.dispose()
+    expect(removed.length).toBe(1)
+  })
+
+  it("setTheme tears down the previous system listener when switching modes", () => {
+    const added: Array<(e: MediaQueryListEvent) => void> = []
+    const removed: Array<(e: MediaQueryListEvent) => void> = []
+    // @ts-expect-error
+    window.matchMedia = (q: string) => ({
+      matches: true,
+      media: q,
+      addEventListener: (_: string, cb: (e: MediaQueryListEvent) => void) => { added.push(cb) },
+      removeEventListener: (_: string, cb: (e: MediaQueryListEvent) => void) => { removed.push(cb) },
+    })
+    const chart = new FlowChart({ container, onError: () => {} })
+    chart.setTheme('system')
+    expect(added.length).toBe(1)
+    chart.setTheme('light')
+    expect(removed.length).toBe(1)
+    chart.dispose()
+  })
+})
+
+describe('0.5.0 — isValidConnection alias', () => {
+  let container: HTMLElement
+  beforeEach(() => { container = makeContainer() })
+  afterEach(() => { container.remove() })
+
+  it('accepts isValidConnection as a backward-compat alias for onBeforeConnect', () => {
+    const fn = vi.fn(() => true)
+    const chart = new FlowChart({ container, isValidConnection: fn, onError: () => {} })
+    // The internal field receives the alias when onBeforeConnect is absent
+    expect((chart as unknown as { onBeforeConnect: typeof fn | null }).onBeforeConnect).toBe(fn)
+    chart.dispose()
+  })
+
+  it('onBeforeConnect wins when both are provided', () => {
+    const before = vi.fn(() => true)
+    const isValid = vi.fn(() => true)
+    const chart = new FlowChart({
+      container,
+      onBeforeConnect: before,
+      isValidConnection: isValid,
+      onError: () => {},
+    })
+    expect((chart as unknown as { onBeforeConnect: typeof before }).onBeforeConnect).toBe(before)
+    chart.dispose()
+  })
+})
+
 // ── 11. Label centering inside the atlas entry (T5 visual regression gate) ───
 //
 // The 0.2.5 atlas write path forgot to set textAlign on the per-entry

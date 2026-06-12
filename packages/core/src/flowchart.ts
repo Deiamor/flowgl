@@ -87,6 +87,16 @@ export interface FlowChartOptions {
     sourceHandle: string; targetHandle: string
   }) => boolean
   /**
+   * Alias for `onBeforeConnect` — same shape, same behavior. Provided so
+   * apps migrating from React Flow (which calls this `isValidConnection`)
+   * can keep their existing handler name. If both are provided,
+   * `onBeforeConnect` takes precedence.
+   */
+  isValidConnection?: (params: {
+    sourceId: string; targetId: string
+    sourceHandle: string; targetHandle: string
+  }) => boolean
+  /**
    * Return false to cancel deletion of the selected nodes/edges.
    * Called before any nodes or edges are removed.
    */
@@ -247,7 +257,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.bgColor       = options.background ?? '#f7f7f7'
     this.gridConfig    = { ...DEFAULT_GRID_CONFIG, ...options.grid }
     this.snapGridSize    = options.snapGrid ?? 0
-    this.onBeforeConnect = options.onBeforeConnect
+    // `onBeforeConnect` takes precedence over its `isValidConnection` alias
+    // when both are supplied. Apps migrating from React Flow can pass either.
+    this.onBeforeConnect = options.onBeforeConnect ?? options.isValidConnection
     this.onBeforeDelete  = options.onBeforeDelete
 
     this.graph        = new Graph()
@@ -1679,8 +1691,42 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.scheduleRender()
   }
 
-  /** Apply a built-in light or dark theme preset. */
-  setTheme(theme: 'light' | 'dark'): void {
+  private themeMql: MediaQueryList | null = null
+  private themeMqlHandler: ((e: MediaQueryListEvent) => void) | null = null
+
+  /**
+   * Apply a built-in theme preset.
+   *
+   * - `'light'` / `'dark'` — explicit choice, immediate.
+   * - `'system'` — follows `prefers-color-scheme` and updates live when the
+   *   OS theme changes (SSR-safe: in non-DOM environments this falls back to
+   *   `'light'`). Re-calling with another mode tears down the listener.
+   */
+  setTheme(theme: 'light' | 'dark' | 'system'): void {
+    // Tear down any prior 'system' listener before applying the new mode.
+    if (this.themeMql && this.themeMqlHandler) {
+      this.themeMql.removeEventListener('change', this.themeMqlHandler)
+      this.themeMql = null
+      this.themeMqlHandler = null
+    }
+
+    if (theme === 'system') {
+      if (typeof window === 'undefined' || typeof window.matchMedia === 'undefined') {
+        // SSR / no-matchMedia fallback
+        this.applyThemePalette('light')
+        return
+      }
+      const mql = window.matchMedia('(prefers-color-scheme: dark)')
+      this.themeMql = mql
+      this.themeMqlHandler = (e) => this.applyThemePalette(e.matches ? 'dark' : 'light')
+      mql.addEventListener('change', this.themeMqlHandler)
+      this.applyThemePalette(mql.matches ? 'dark' : 'light')
+      return
+    }
+    this.applyThemePalette(theme)
+  }
+
+  private applyThemePalette(theme: 'light' | 'dark'): void {
     if (theme === 'dark') {
       this.setBackground('#1a1a2e')
       this.setGrid({ ...this.gridConfig, color: 'rgba(255,255,255,0.06)' })
@@ -1814,6 +1860,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     if (this.canvasContextMenu)   this.canvas?.removeEventListener('contextmenu',  this.canvasContextMenu)
     if (this.canvasMouseDown)     this.canvas?.removeEventListener('mousedown',    this.canvasMouseDown)
     if (this.canvasClick)         this.canvas?.removeEventListener('click',        this.canvasClick)
+    if (this.themeMql && this.themeMqlHandler) {
+      this.themeMql.removeEventListener('change', this.themeMqlHandler)
+      this.themeMql = null
+      this.themeMqlHandler = null
+    }
     this.tooltipEl?.remove()
     this.ariaLive?.remove()
     this.ariaDesc?.remove()

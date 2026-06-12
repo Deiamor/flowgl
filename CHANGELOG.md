@@ -4,6 +4,30 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] — 0.5.0 in progress
+
+The 0.5.0 cycle targets a curated, value-preserving subset of React Flow's
+UI catalog plus one differentiation item. Full rationale + the explicit
+"won't do" list lives in [`ROADMAP.md`](./ROADMAP.md). Items below land
+incrementally on `master` and are tagged `0.5.0` when the milestone
+acceptance criteria pass.
+
+### Added
+
+- `setTheme('system')` — follows `prefers-color-scheme` and updates live as
+  the OS theme changes. `setTheme` listener is torn down when switching
+  back to `'light'` / `'dark'` or when the chart is `dispose()`d. SSR-safe:
+  in environments without `window.matchMedia`, falls back to `'light'`.
+- `FlowChartOptions.isValidConnection` — backward-compatible alias for
+  `onBeforeConnect`. Apps migrating from React Flow can keep their existing
+  handler name. When both are provided, `onBeforeConnect` wins.
+
+### Tests
+
+- 6 new regression tests in `productization.test.ts` covering
+  `setTheme('system')` registration / teardown / non-matchMedia fallback,
+  and the `isValidConnection` alias precedence.
+
 ## [0.4.2] — 2026-06-12
 
 ### Fixed (critical)

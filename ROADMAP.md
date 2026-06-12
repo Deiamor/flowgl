@@ -54,9 +54,102 @@ items landed; new ones live below them.
   links into the examples gallery and the relevant guide page.
 - 🟡 **Seed Discussions** — Welcome-post bodies prepared in
   [.github/DISCUSSIONS_WELCOME.md](https://github.com/Deiamor/flowgl/blob/master/.github/DISCUSSIONS_WELCOME.md).
-  Maintainer needs to paste each one into the matching Discussions
-  category and pin — a 5-minute manual step that can't be done from
-  the repo.
+  Maintainer pastes + pins.
+
+---
+
+## 0.5.0 — UI components 1차 + 차별화 시드
+
+Filtered from a complete React Flow analysis (June 2026). The selection
+respects every Core Value Tenet (PRODUCT.md): WebGL2 stays default,
+core stays zero-dep, parity stays across renderer backends, T6 floor
+unchanged. The detailed selection rationale + the "won't do" list at
+the bottom are recorded so the next sprint doesn't re-litigate them.
+
+| Item | Notes |
+| --- | --- |
+| **`Panel`** | DOM overlay above the viewport. 9-position layout (top-left … bottom-right). DOM only — no renderer change. |
+| **`Controls`** | zoom +/-, fit view, lock/interactive toggle, custom `ControlButton`. Wires onto existing public methods (`zoomIn`/`fitView`/`setReadOnly`). |
+| **`NodeToolbar`** | Floating, **constant size regardless of zoom** (key UX property). Auto-shows on selection by default. `position`/`align`/`offset`/`isVisible`/single-or-multi `nodeId`. |
+| **`colorMode: 'light' \| 'dark' \| 'system'`** | `'system'` follows `prefers-color-scheme`. Adds to existing `setTheme`. |
+| **`isValidConnection` alias** | Backward-compatible alias for `onBeforeConnect`. React Flow parity for an existing capability. |
+| **`<PerfOverlay>` — differentiation** | fps + frame time + atlas eviction + node count overlay. React Flow has nothing equivalent. Surfaces flowgl's WebGL2 advantage as a visible UI. |
+
+### 0.5.0 acceptance criteria
+
+- Every item behind an opt-in option — no default behavior change for existing apps.
+- axe-clean across every new UI surface; keyboard-reachable.
+- T6 floor (1K/5K/10K) preserved; the Benchmark workflow gains a
+  "UI overlay active" scenario.
+- `atlas-cjk-diag` PARITY + ENTRY MAPPING still pass.
+- 4 new examples in the gallery: Panel, Controls, NodeToolbar, PerfOverlay.
+- CHANGELOG 0.5.0 + HISTORY append.
+
+## 0.6.0 — UI components 2차 + Subflow 강화
+
+| Item | Notes |
+| --- | --- |
+| **`NodeResizer` polish** | minW/H, maxW/H, `keepAspectRatio`, `autoScale` (zoom-aware handle size), `shouldResize` predicate, onResize{Start,End}. Extends existing `interaction/node-resize.ts`. |
+| **`EdgeLabelRenderer`** | HTML overlay label option for edges (alongside the existing atlas SDF labels). "Use sparingly — performance cost scales with edge count" documented at the API boundary. |
+| **`ViewportPortal`** | World-coord DOM portal — children scale with zoom and follow pan. Companion to `NodeToolbar` (which is constant size). |
+| **`extent: 'parent'`** | Clamp a child node inside its parent's bbox on drag. |
+| **Easy Connect** | Whole-node-as-handle pattern via `NodeData.easyConnect: boolean`. |
+| **React hooks** | `@flowgl/react` gains `useFlowChart` / `useNodes` / `useEdges` / `useViewport` / `useSelection`. Built on `useSyncExternalStore` — no new dep. Core stays framework-agnostic (Tenet T3). |
+
+### 0.6.0 acceptance criteria
+
+- T3 preserved: zero framework imports under `packages/core/src/`.
+- T2 preserved: no new runtime dependency in any wrapper package.
+- React hooks: unit-tested via `@testing-library/react`.
+- 6 new gallery examples.
+- CHANGELOG 0.6.0 + HISTORY append.
+
+## 0.7.0 — Edge variant (selective) + EdgeToolbar
+
+| Item | Notes |
+| --- | --- |
+| **`EdgeToolbar`** | NodeToolbar pattern for edges. Code reuse from 0.5.0. |
+| **`type: 'smoothstep'`** + `pathOptions` | Adds **only** the most-asked-for edge variant. `straight` / `step` / `simplebezier` are intentionally deferred — see "Won't / Deferred" below. |
+
+### 0.7.0 acceptance criteria
+
+- T5: smoothstep renders identically on WebGL2 and Canvas2D. Pixel
+  parity gate in `atlas-cjk-diag` extended with edge-type variants.
+- T6 floor unchanged.
+
+## 0.8.0+ — Reactive data flow + Helper Lines
+
+| Item | Notes |
+| --- | --- |
+| **Computing Flows** — `updateNodeData(id, partial)` + `subscribeNodeData(id, listener)` | Differentiator opportunity: ship with explicit **cycle detection** (React Flow's equivalent doesn't). |
+| **`expandParent`** | Lands after `extent: 'parent'` (0.6) has bedded in. |
+| **Helper Lines** | Figma-style alignment guides during drag, plus snapping at threshold. Built on `viewport.worldToScreen` + drag callbacks. |
+| **Proximity Connect** | Drag a node near another → auto-suggest connection. |
+
+## Won't / Deferred (from the React Flow review)
+
+These items came up but did not pass the filter. Recorded so they don't
+get re-proposed without an explicit revisit.
+
+- **Edge types `straight` / `step` / `simplebezier`** — 5× tessellation
+  paths × 2 renderer backends × visual regression coverage for low
+  marginal value. Will revisit on explicit user request. `smoothstep`
+  (0.7.0) covers the common ask.
+- **Per-edge `markerStart`** — `markerEnd` is the common case;
+  `markerStart` is rare enough to defer until requested.
+- **Relative-coordinate child positioning** (React Flow's child = parent
+  relative) — would invade hit-test, drag, render, group, export, and
+  JSON schema layers. **Defer to a future 1.x major.** Absolute child
+  coordinates work fine for the current shape of the library.
+- **Lasso selection** — box-select covers the cases we want. Lasso is a
+  whiteboard-tool affordance that pulls flowgl off-mission.
+- **Vue composables / Svelte stores** — React hooks (0.6) land first.
+  Wrappers grow when there's traction signal in that framework, not
+  speculatively.
+- **All-out React Flow chase** — committing to >50% of React Flow's
+  surface would erase flowgl's "WebGL2 + zero-dep" identity for a
+  duplicate of a mature competitor's API. Every cycle must include at
+  least one item that React Flow does not offer (0.5.0: PerfOverlay).
 
 ## Next (under design — 0.6+ window)
 
