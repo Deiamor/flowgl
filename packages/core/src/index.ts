@@ -50,7 +50,7 @@ export type { HelperLinesOptions } from './ui/helper-lines'
 export type { ProximityConnectOptions } from './ui/proximity-connect'
 export type { NodeTypeDefinition, NodeTypeCategory, HtmlNodeRenderFn, NodeHitTestFn } from './graph/node-type-registry'
 
-export { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from './layout/auto-layout'
+export { hierarchicalLayout, forceLayout, gridLayout, circularLayout, addChildTranslations } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'
 
 export { LayoutWorkerClient } from './workers/layout-client'

@@ -4,6 +4,46 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.9.1] — 2026-06-13
+
+User reported: "그리드 정렬 하니깐 그룹 내부에 있는 노드들이 엉뚱한 곳으로 튕겨나가네?" — Grid layout sent group children to the wrong spot.
+
+### Fixed
+
+- **All 4 layouts dropped children of group nodes** from the result
+  map (`hierarchicalLayout`, `forceLayout`, `gridLayout`,
+  `circularLayout` each filtered `nodes.filter(n => !n.parentId)` and
+  never translated children). The consumer's
+  `for (const [id, pos] of result) updateNode(id, pos)` loop moved
+  the parent to the new grid cell but left children at their old
+  absolute world coords — visually they "flew out" of the group.
+
+  Same regression class as 0.8.1 (edge geometry) and 0.8.2 (mutation
+  listener): N consumers (4 layouts + 1 LayoutAnimator) each
+  re-derived the same logic and only 1 (LayoutAnimator) got it right.
+  Fix shape is the same: new shared `addChildTranslations(result, allNodes)`
+  helper in `layout/auto-layout.ts`, every layout calls it before
+  returning. Recursive — grandchildren of a moved group follow too.
+
+### Added
+
+- **`addChildTranslations(result, allNodes)`** exported from
+  `@flowgl/core`. Public so plugin authors writing their own layouts
+  get a one-liner to preserve the child-follows-parent contract.
+
+### Tests
+
+- 4 existing "skips child nodes" tests inverted in
+  `layout.test.ts` — they pinned the buggy behavior and now assert
+  the fix: child positions follow their parent translation
+  exactly.
+- 3 new tests for `addChildTranslations`:
+  - two children of the same parent both follow
+  - grandchildren follow when the top-level grandparent moves
+  - zero-offset child lands at the same exact spot as the parent
+
+Test counts: **core 1124** (was 1121), **react 17** (unchanged).
+
 ## [0.9.0] — 2026-06-13
 
 The 0.9.0 cycle delivers the first item from the ROADMAP "Next" track —

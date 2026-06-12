@@ -5,6 +5,66 @@ import type { EdgeData } from '../graph/edge'
 export type LayoutResult = Map<string, { x: number; y: number }>
 
 /**
+ * For every entry in `result`, walk that node's descendants and add
+ * `(child.x - parent.x_original + parent.x_new, …)` to the result so
+ * the consumer's `updateNode` loop also relocates the children.
+ *
+ * Why: every layout in this module computes positions for *root* nodes
+ * only — anything with a `parentId` is filtered out at the start. The
+ * consumer then iterates `result` and calls `updateNode(id, pos)`,
+ * which moves the parent but leaves children at their pre-layout
+ * absolute coordinates. Visually, the children "fly out" of the group
+ * because the parent jumps but they don't.
+ *
+ * Pre-0.9.1 only `LayoutAnimator.animate` (services/layout-animator.ts)
+ * did this translation — it was duplicated logic that the four
+ * layouts never reused, classic regression-class shape (same shape
+ * as 0.8.1 edge-geometry and 0.8.2 mutation-listener). Fix is the
+ * same shape too: one shared helper, every layout calls it.
+ *
+ * Recursive: a child group whose parent moved should also drag its
+ * own children. Implemented by iterating until no new translations
+ * are added in a pass (cheap for any realistic depth).
+ */
+export function addChildTranslations(result: LayoutResult, allNodes: NodeData[]): LayoutResult {
+  if (result.size === 0) return result
+  const byId = new Map(allNodes.map(n => [n.id, n]))
+  const byParent = new Map<string, NodeData[]>()
+  for (const n of allNodes) {
+    if (n.parentId) {
+      let arr = byParent.get(n.parentId)
+      if (!arr) { arr = []; byParent.set(n.parentId, arr) }
+      arr.push(n)
+    }
+  }
+
+  let added = true
+  while (added) {
+    added = false
+    // Snapshot to avoid mutating during iteration.
+    for (const [id, newPos] of [...result.entries()]) {
+      const orig = byId.get(id)
+      if (!orig) continue
+      const dx = newPos.x - orig.x
+      const dy = newPos.y - orig.y
+      const children = byParent.get(id)
+      if (!children) continue
+      // We include children even when dx === dy === 0 so the consumer's
+      // `for (const [id, pos] of result) updateNode(id, pos)` loop sees
+      // a position for every descendant. Otherwise grandchildren of a
+      // group whose root happened to land at its original position would
+      // silently drop out of the result, breaking recursion.
+      for (const child of children) {
+        if (result.has(child.id)) continue
+        result.set(child.id, { x: child.x + dx, y: child.y + dy })
+        added = true
+      }
+    }
+  }
+  return result
+}
+
+/**
  * Hierarchical layout (Sugiyama-style).
  *
  * 1. Assign layers using Kahn's topological sort (longest-path).
@@ -141,7 +201,7 @@ export function hierarchicalLayout(
     x += colW + gapX
   }
 
-  return result
+  return addChildTranslations(result, nodes)
 }
 
 /**
@@ -211,7 +271,7 @@ export function forceLayout(
     const c = pos.get(n.id)!
     result.set(n.id, { x: c.x - n.width / 2, y: c.y - n.height / 2 })
   }
-  return result
+  return addChildTranslations(result, nodes)
 }
 
 /**
@@ -242,7 +302,7 @@ export function circularLayout(nodes: NodeData[], radius?: number): LayoutResult
       y: Math.round(r * Math.sin(angle) - n.height / 2),
     })
   }
-  return result
+  return addChildTranslations(result, nodes)
 }
 
 /**
@@ -264,5 +324,5 @@ export function gridLayout(nodes: NodeData[], gap = 40): LayoutResult {
       y: Math.floor(i / cols) * cellH,
     })
   })
-  return result
+  return addChildTranslations(result, nodes)
 }

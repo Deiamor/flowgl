@@ -59,12 +59,21 @@ describe('hierarchicalLayout', () => {
     expect(result.size).toBe(1)
   })
 
-  it('skips child nodes (parentId set) — only root nodes in result', () => {
-    const parent = node('p', { type: 'group' })
-    const child  = childNode('c', 'p')
+  it('child nodes (parentId set) follow their parent translation (0.9.1)', () => {
+    // Parent originally at (50, 60); child at world (60, 70) inside it.
+    // Once the parent gets a new position from the layout, the child
+    // moves by the same delta — pre-0.9.1 the result skipped children
+    // entirely, so they stayed at their absolute world coords and
+    // visually "flew out" of the group.
+    const parent = node('p', { type: 'group', x: 50, y: 60 })
+    const child  = childNode('c', 'p', 60, 70)
     const result = hierarchicalLayout([parent, child], [])
     expect(result.has('p')).toBe(true)
-    expect(result.has('c')).toBe(false)
+    expect(result.has('c')).toBe(true)
+    const parentNew = result.get('p')!
+    const childNew  = result.get('c')!
+    expect(childNew.x).toBe(parentNew.x + (60 - 50))
+    expect(childNew.y).toBe(parentNew.y + (70 - 60))
   })
 })
 
@@ -90,12 +99,16 @@ describe('forceLayout', () => {
     }
   })
 
-  it('skips child nodes — only root nodes in result', () => {
-    const parent = node('p', { type: 'group' })
-    const child  = childNode('c', 'p')
+  it('child nodes follow their parent translation (0.9.1)', () => {
+    const parent = node('p', { type: 'group', x: 0, y: 0 })
+    const child  = childNode('c', 'p', 15, 25)
     const result = forceLayout([parent, child], [])
     expect(result.has('p')).toBe(true)
-    expect(result.has('c')).toBe(false)
+    expect(result.has('c')).toBe(true)
+    const parentNew = result.get('p')!
+    const childNew  = result.get('c')!
+    expect(childNew.x).toBe(parentNew.x + 15)
+    expect(childNew.y).toBe(parentNew.y + 25)
   })
 })
 
@@ -121,12 +134,22 @@ describe('gridLayout', () => {
     expect(ys.size).toBe(2)
   })
 
-  it('skips child nodes — only root nodes in result', () => {
-    const parent = node('p', { type: 'group' })
-    const child  = childNode('c', 'p')
+  it('child nodes follow their parent translation (0.9.1 — the reported bug)', () => {
+    // User: "그리드 정렬 하니깐 그룹 내부에 있는 노드들이 엉뚱한 곳으로
+    // 튕겨나가네?" — pre-0.9.1 gridLayout only positioned roots; the
+    // child's absolute world coords stayed at the OLD spot while the
+    // parent jumped to a new grid cell. Visually the children "flew
+    // out" of the group.
+    const parent = node('p', { type: 'group', x: 300, y: 200 })
+    const child  = childNode('c', 'p', 310, 220) // 10, 20 inside the parent
     const result = gridLayout([parent, child])
     expect(result.has('p')).toBe(true)
-    expect(result.has('c')).toBe(false)
+    expect(result.has('c')).toBe(true)
+    const parentNew = result.get('p')!
+    const childNew  = result.get('c')!
+    // Child preserves its relative offset (10, 20) from the parent.
+    expect(childNew.x - parentNew.x).toBe(310 - 300)
+    expect(childNew.y - parentNew.y).toBe(220 - 200)
   })
 })
 
@@ -176,15 +199,57 @@ describe('circularLayout', () => {
     }
   })
 
-  it('skips child nodes — only root nodes placed on the circle', () => {
-    const parent = node('p', { type: 'group' })
-    const child  = childNode('c', 'p')
+  it('child nodes follow their parent translation (0.9.1)', () => {
+    const parent = node('p', { type: 'group', x: 0, y: 0 })
+    const child  = childNode('c', 'p', 5, 8)
     const other  = node('q')
     const result = circularLayout([parent, child, other])
     expect(result.has('p')).toBe(true)
     expect(result.has('q')).toBe(true)
-    expect(result.has('c')).toBe(false)
-    // only 2 roots → single node result lands each at a distinct circle position
-    expect(result.size).toBe(2)
+    expect(result.has('c')).toBe(true)
+    // 2 roots + 1 child = 3 entries
+    expect(result.size).toBe(3)
+    const pNew = result.get('p')!
+    const cNew = result.get('c')!
+    expect(cNew.x - pNew.x).toBe(5)
+    expect(cNew.y - pNew.y).toBe(8)
+  })
+})
+
+describe('addChildTranslations — nested groups + multi-child (0.9.1)', () => {
+  it('two children of the same parent both follow', () => {
+    const parent = node('p', { type: 'group', x: 100, y: 100 })
+    const c1 = childNode('c1', 'p', 110, 110)
+    const c2 = childNode('c2', 'p', 130, 140)
+    const result = gridLayout([parent, c1, c2])
+    expect(result.size).toBe(3)
+    const pN = result.get('p')!
+    expect(result.get('c1')!.x - pN.x).toBe(10)
+    expect(result.get('c1')!.y - pN.y).toBe(10)
+    expect(result.get('c2')!.x - pN.x).toBe(30)
+    expect(result.get('c2')!.y - pN.y).toBe(40)
+  })
+
+  it('grandchildren follow when the top-level grandparent moves', () => {
+    // Top group `g` contains nested group `n`, which contains leaf `l`.
+    const g = node('g', { type: 'group', x: 0, y: 0 })
+    const n = node('n', { parentId: 'g', type: 'group', x: 20, y: 30 })
+    const l = node('l', { parentId: 'n', x: 25, y: 40 })
+    const result = gridLayout([g, n, l])
+    expect(result.has('g')).toBe(true)
+    expect(result.has('n')).toBe(true)
+    expect(result.has('l')).toBe(true)
+    const gN = result.get('g')!
+    expect(result.get('n')!.x - gN.x).toBe(20)
+    expect(result.get('n')!.y - gN.y).toBe(30)
+    expect(result.get('l')!.x - gN.x).toBe(25)
+    expect(result.get('l')!.y - gN.y).toBe(40)
+  })
+
+  it('child whose offset was zero gets translated to the same exact spot as the parent', () => {
+    const p = node('p', { type: 'group', x: 0, y: 0 })
+    const c = childNode('c', 'p', 0, 0)
+    const result = gridLayout([p, c])
+    expect(result.get('c')).toEqual(result.get('p'))
   })
 })
