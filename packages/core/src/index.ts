@@ -38,6 +38,7 @@ export { EdgeWaypoint } from './interaction/edge-waypoint'
 
 export type { GridConfig, MinimapConfig } from './types'
 export { DEFAULT_GRID_CONFIG, DEFAULT_MINIMAP_CONFIG } from './types'
+export type { PanelPosition, PanelOptions } from './ui/panel-overlay'
 
 export { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'

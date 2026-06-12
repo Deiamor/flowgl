@@ -17,6 +17,7 @@ import { LabelEditor } from './interaction/label-edit'
 import { NodeResize } from './interaction/node-resize'
 import { History } from './history/history'
 import { ContextPanels } from './ui/context-panels'
+import { PanelOverlay, type PanelOptions } from './ui/panel-overlay'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -173,6 +174,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private waypointOverlay!: HTMLDivElement
   private history!: History
   private panels!: ContextPanels
+  private panelOverlay!: PanelOverlay
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
@@ -294,6 +296,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.scheduleRender()
       },
     )
+    // PanelOverlay is DOM-only (no renderer dependency) and stays usable even
+    // when WebGL2 init fails, so we mount it before the WebGL gate. A failed
+    // chart can still host toolbars, error panels, and status messages.
+    this.panelOverlay = new PanelOverlay(options.container, options.sanitizeHtml)
+
     if (!ok) {
       this.failed = true
       const err = new Error('@flowgl/core: WebGL2 is not available in this environment')
@@ -1736,6 +1743,33 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
   }
 
+  // ── Panel overlay API ────────────────────────────────────────────────────────
+  //
+  // Lightweight DOM widgets positioned over the chart in 9-position layout
+  // (top-left … bottom-right). Panels are absolutely-positioned `<div>` siblings
+  // of the canvas — they participate in CSS, not WebGL, and have zero per-frame
+  // render cost. Use for toolbars, legends, status pills, controls etc.
+
+  /** Mount a panel above the viewport. Returns the panel id. */
+  addPanel(options: PanelOptions): string {
+    return this.panelOverlay.add(options)
+  }
+
+  /** Update an existing panel's position / content / styling. Returns false on unknown id. */
+  updatePanel(id: string, options: Partial<Omit<PanelOptions, 'id'>>): boolean {
+    return this.panelOverlay.update(id, options)
+  }
+
+  /** Remove a panel by id. Returns false on unknown id. */
+  removePanel(id: string): boolean {
+    return this.panelOverlay.remove(id)
+  }
+
+  /** Currently mounted panel ids. */
+  listPanels(): string[] {
+    return this.panelOverlay.list()
+  }
+
   // ── Viewport API ──────────────────────────────────────────────────────────────
 
   getViewport(): ViewportState  { return this.viewport.getState() }
@@ -1850,6 +1884,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
     this.resizeObserver?.disconnect()
     this.panels?.dispose()
+    this.panelOverlay?.dispose()
     this.htmlOverlay?.dispose()
     this.minimap?.dispose()
     this.labelEditor?.dispose()
