@@ -147,7 +147,7 @@ export class TextProgram {
     // Step 1: find nodes whose quads need rebuilding.
     // Uses NodeData reference equality first (O(1), no string alloc) before
     // falling back to full fingerprint comparison.
-    const dirtyNodes: NodeData[] = []
+    let dirtyNodes: NodeData[] = []
     for (const node of nodes) {
       if (!node.label) continue
       if (this.nodeRefCache.get(node.id) === node && this.quadCache.has(node.id)) continue
@@ -186,6 +186,22 @@ export class TextProgram {
         const maxWidth   = Math.max(0, node.width - TEXT_PADDING * 2)
         const font = `${fontSize}px ${fontFamily}`
         this.atlas.getOrCreate(node.label!, font, textColor, maxWidth, lineHeight)
+      }
+
+      // If atlas eviction happened DURING Pass 1, every previously-cached quad's
+      // UV is now stale — the entries it pointed at were cleared and rewritten
+      // at fresh shelf positions. The frame-start generation check at line 141
+      // is too early to catch a mid-Pass-1 eviction. Re-check here and force
+      // a full quadCache rebuild so the next loop touches every labeled node,
+      // not just the originally-dirty subset. Without this, ASCII labels that
+      // were cached before a CJK / multi-line entry triggered the eviction get
+      // drawn at the UV of whichever entry now occupies their old shelf cell,
+      // producing the cross-label mis-mapping observed in 0.4.0.
+      if (this.atlas.generation !== this.prevAtlasGeneration) {
+        this.quadCache.clear()
+        this.nodeRefCache.clear()
+        this.prevAtlasGeneration = this.atlas.generation
+        dirtyNodes = labeled.slice()
       }
 
       // Pass 2: build quads only for dirty nodes

@@ -4,6 +4,54 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.1] — 2026-06-12
+
+### Fixed (critical — 0.4.0 deprecated)
+
+- **Atlas eviction race that mis-mapped labels across nodes.** When the total
+  count of labeled entries overflowed `ATLAS_SIZE`, atlas eviction inside the
+  Pass 1 pre-warm loop of `text-program.ts` ran *after* some node entries had
+  already been written but *before* every dirty-node quad had its UV recorded.
+  The frame-start `generation` check was too early to notice; the result was
+  that nodes whose quads still carried pre-eviction UVs were drawn at the
+  shelf cells now occupied by *different* labels. Visually, ASCII nodes like
+  `Start` / `Process` / `Branch A` ended up showing fragments of CJK labels
+  (`Mixed`, `여러줄`, `测试`). On top of that, zoom and pan kept re-triggering
+  the same eviction every frame, which read as label flicker.
+
+  Two-part fix:
+  1. **`text-program.ts` re-checks `atlas.generation` after Pass 1.** If
+     eviction happened during pre-warm, the entire `quadCache` is cleared
+     and every labeled node enters Pass 2 as dirty, so no quad survives with
+     a stale UV.
+  2. **`ATLAS_SIZE` restored from 1024 back to 2048.** The 0.2.5 reduction
+     was a workaround for a Chromium fillText corruption that 0.2.6's
+     per-entry OffscreenCanvas + drawImage strategy eliminated structurally
+     (the live atlas never receives fillText directly anymore). With 4× the
+     row capacity, the eviction race that 0.4.0 surfaced no longer triggers
+     for any realistic mixed ASCII + CJK workload. The 50%-row wrap that
+     accompanied the 1024 atlas is also removed — same reason.
+
+- **`scripts/atlas-cjk-diag.mjs` gained an entry-mapping regression gate.**
+  After the CJK pixel-parity phase, the script now injects 40 stress nodes
+  into the running chart (overflowing the *old* 1024 atlas by ~4×), then
+  walks every labeled node and asserts its atlas entry's nonzero-pixel
+  count matches an isolated reproduction of *that node's own label*. A
+  divergence above 5% is the 0.4.0 mis-mapping signal and the script exits
+  non-zero. The verification stays local-only (CDP needs a real Chromium +
+  live dev server) but is now a permanent pre-release smoke test for atlas
+  write path changes. The script also accepts a target URL argument so it
+  can be pointed at the dev server, the live demo at dev.flowgl.ouranos.kr,
+  or any deployed preview.
+
+### Deprecated
+
+- `@flowgl/{core,react,vue,svelte}@0.4.0` published earlier today carries the
+  eviction race described above. The four packages have been
+  `npm deprecate`-marked with an upgrade-to-0.4.1 message. Consumers
+  installing 0.4.0 will see the deprecation warning. Pin 0.2.6 or upgrade to
+  0.4.1.
+
 ## [0.4.0] — 2026-06-12
 
 ### Fixed

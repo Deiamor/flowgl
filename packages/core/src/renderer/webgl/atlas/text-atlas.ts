@@ -1,10 +1,15 @@
-// Reduced from 2048 to 1024 — Chromium's headless rasterizer corrupts
-// fillText output on a 2048×2048 OffscreenCanvas (live trace: same fillText
-// writes 261 nz pixels at the live atlas vs. only 113 in chart instance,
-// even on a virgin row). 1024×1024 is large enough for typical demos
-// (~120 entries before eviction) and stays inside the rasterizer's safe
-// envelope. Atlas eviction kicks in earlier under heavy node counts.
-const ATLAS_SIZE = 1024
+// Restored from 1024 back to 2048 in 0.4.1. The 0.2.5 reduction was a
+// workaround for a Chromium fillText corruption that 0.2.6's per-entry
+// OffscreenCanvas + drawImage strategy eliminated structurally (the live
+// atlas never receives fillText directly anymore — every glyph goes through
+// a fresh per-entry canvas first). With the per-entry write path in place
+// the pixel-parity CDP diagnostic at scripts/atlas-cjk-diag.mjs confirms
+// 2048 produces the same nonzero counts as an isolated reproduction at
+// every shelf position. The larger atlas postpones eviction by ~4× in
+// row capacity, eliminating the mid-frame eviction race that 0.4.0
+// surfaced when the demo grew to 12+ labeled nodes including multi-line
+// CJK entries.
+const ATLAS_SIZE = 2048
 // Padding must be ≥ SDF_SPREAD * 2 so the distance field's "halo" around
 // every glyph (which extends SDF_SPREAD pixels outward in every direction
 // at logical pixel scale, doubled at dpr=2) stays inside the cell — otherwise
@@ -210,16 +215,14 @@ export class TextAtlas {
 
     if (w > this.logicalSize || h > this.logicalSize) return null
 
-    // Chromium's headless rasterizer corrupts fillText output beyond the
-    // canvas's vertical midpoint when prior entries already occupy the same
-    // row — the trailing glyphs lose ~50% of their pixels (live atlas trace:
-    // identical "한국어" fillText writes 261 nz pixels on a virgin row at
-    // shelfX=1023, but only 113 when prior entries fill columns 0..1022 of
-    // the same row). Wrap to a new shelf at the canvas midpoint to keep
-    // every entry's fillText in a half of the canvas where neighbors are
-    // either non-existent or far enough away to not trigger the corruption.
-    const ROW_WRAP_LIMIT = Math.floor(this.logicalSize / 2)
-    if (this.shelfX + w > ROW_WRAP_LIMIT || this.shelfX + w > this.logicalSize) {
+    // Per-entry OffscreenCanvas + drawImage (see buildEntry below) means the
+    // main atlas ctx never receives fillText directly — every glyph is
+    // rasterized in a fresh isolated canvas and pixel-copied in. That makes
+    // the 0.2.5-era "fillText drops pixels when neighbours occupy the same
+    // row" Chromium quirk a non-issue at the live atlas, so we use the full
+    // row width (no 50% wrap limit) and only wrap when the entry actually
+    // wouldn't fit.
+    if (this.shelfX + w > this.logicalSize) {
       this.shelfY += this.shelfH
       this.shelfX = 0
       this.shelfH = 0

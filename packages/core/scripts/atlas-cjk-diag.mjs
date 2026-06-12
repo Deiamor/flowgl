@@ -16,9 +16,12 @@
 // script exits non-zero.
 //
 // Usage:
-//   pnpm dev                                         # one terminal
-//   brave-debug                                      # another
-//   node packages/core/scripts/atlas-cjk-diag.mjs   # this script
+//   pnpm dev                                                          # one terminal
+//   brave-debug                                                       # another
+//   node packages/core/scripts/atlas-cjk-diag.mjs [target-url]       # this script
+//
+// `target-url` defaults to whatever the local Vite dev server prints.
+// Falls back to http://localhost:5173 when unspecified.
 import http from 'node:http'
 
 function httpGet(path) {
@@ -59,7 +62,9 @@ async function main() {
   const sendB = makeRpc(browserWs)
 
   // 2) Create a fresh tab.
-  const created = await sendB('Target.createTarget', { url: 'http://localhost:5176' })
+  const targetUrl = process.argv[2] || 'http://localhost:5173'
+  console.log('opening', targetUrl)
+  const created = await sendB('Target.createTarget', { url: targetUrl })
   const targetId = created.targetId
   console.log('created targetId', targetId)
 
@@ -141,12 +146,77 @@ async function main() {
 
           out.push({ text, nzIso, nzAtlas, entry, atlasErr })
         }
+
+        // ── Stress phase ──────────────────────────────────────────────────────
+        // Force the atlas to take many more entries than it normally would
+        // for this demo. This used to overflow ATLAS_SIZE=1024 and trigger
+        // the mid-Pass-1 eviction race that mis-mapped labels in 0.4.0.
+        // After 0.4.1 (ATLAS_SIZE=2048 + Pass-1 generation re-check), every
+        // labeled node's atlas entry should match an isolated reproduction of
+        // its own label — regardless of how many other entries crowd the atlas.
+        const chart = window.chart
+        const atlas = chart?.renderer?.textProgram?.atlas
+        const stress = []
+        if (chart && atlas) {
+          // Snapshot pre-existing nodes so we can restore later.
+          const baseline = chart.getNodes().slice()
+          const stressIds = []
+          for (let i = 0; i < 40; i++) {
+            const id = 'stress_' + i
+            chart.addNode({ id, x: 80 + (i % 10) * 90, y: 600 + Math.floor(i / 10) * 70,
+              width: 80, height: 40, label: 'S' + i })
+            stressIds.push(id)
+          }
+          await new Promise(r => requestAnimationFrame(r))
+          await new Promise(r => requestAnimationFrame(r))
+          // Now query each labeled node's atlas entry and compare its pixel
+          // count to a fresh isolated reproduction of just that node's label.
+          for (const node of chart.getNodes()) {
+            if (!node.label) continue
+            const fontSize = node.style?.fontSize ?? 14
+            const fontFamily = node.style?.fontFamily ?? 'system-ui'
+            const textColor = node.style?.textColor ?? '#000'
+            const lineHeight = node.style?.lineHeight ?? 1.4
+            const font = fontSize + 'px ' + fontFamily
+            const maxWidth = Math.max(0, node.width - 12 * 2)
+            const ent = atlas.getOrCreate(node.label, font, textColor, maxWidth, lineHeight)
+            if (!ent) { stress.push({ id: node.id, label: node.label, atlasNz: null, isoNz: null, reason: 'no entry' }); continue }
+            const W = atlas.offscreen.width, H = atlas.offscreen.height
+            const px = atlas.ctx.getImageData(0,0, W, H).data
+            const u0 = Math.round(ent.u0 * W), v0 = Math.round(ent.v0 * H)
+            const u1 = Math.round(ent.u1 * W), v1 = Math.round(ent.v1 * H)
+            let atlasNz = 0
+            for (let y = v0; y < v1; y++)
+              for (let x = u0; x < u1; x++)
+                if (px[(y * W + x) * 4 + 3] > 0) atlasNz++
+
+            // Isolated repro of *this* node's label with identical font/color.
+            const oc = new OffscreenCanvas(Math.ceil((node.width)*dpr), Math.ceil((node.height)*dpr))
+            const ec = oc.getContext('2d')
+            if (dpr !== 1) ec.scale(dpr, dpr)
+            ec.font = font
+            ec.textBaseline = 'alphabetic'
+            ec.textAlign = 'center'
+            ec.fillStyle = textColor
+            ec.fillText(node.label, node.width/2, node.height/2 + 5)
+            const iso = ec.getImageData(0, 0, Math.ceil(node.width*dpr), Math.ceil(node.height*dpr)).data
+            let isoNz = 0
+            for (let i = 3; i < iso.length; i += 4) if (iso[i] > 0) isoNz++
+
+            stress.push({ id: node.id, label: node.label, atlasNz, isoNz, deltaPct: isoNz ? Math.round(100 * (atlasNz - isoNz) / isoNz) : null })
+          }
+          // Clean up stress nodes so the screenshot isn't dominated by S0..S39.
+          for (const id of stressIds) chart.removeNode(id)
+          await new Promise(r => requestAnimationFrame(r))
+        }
+
         return {
           dpr,
           fontsStatus: document.fonts.status,
           chartExists: !!window.chart,
           chartKeys: window.chart ? Object.getOwnPropertyNames(window.chart).slice(0, 20) : null,
           rendererKeys: window.chart?.renderer ? Object.getOwnPropertyNames(window.chart.renderer).slice(0, 20) : null,
+          stress,
           results: out,
         }
       })()
@@ -165,6 +235,19 @@ async function main() {
     process.exitCode = 1
   } else {
     console.log('CJK PARITY OK — all', value.results.length, 'samples match isolated reproduction')
+  }
+
+  // Stress gate — every labeled node's atlas entry must match its own
+  // isolated reproduction. Mismatch here is the 0.4.0 mis-mapping regression.
+  const stressBad = (value.stress || []).filter(s =>
+    s.atlasNz === null || s.isoNz === null || Math.abs((s.deltaPct ?? 100)) > 5
+  )
+  if (stressBad.length > 0) {
+    console.error('ENTRY MAPPING FAILED for', stressBad.length, 'nodes:')
+    for (const b of stressBad.slice(0, 10)) console.error('  ', JSON.stringify(b))
+    process.exitCode = 1
+  } else {
+    console.log('ENTRY MAPPING OK — all', (value.stress || []).length, 'labeled nodes survive atlas overflow')
   }
 
   // 6) Screenshot full page.
