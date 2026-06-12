@@ -178,3 +178,62 @@ tasks:
     title: Phase 5 — Playwright E2E + 채택성 신호 강화
     status: pending
     dependencies: [D-3]
+
+  # Phase 4 — Bug fixes & UX (0.2.6)
+  - id: E-1
+    title: 0.2.6 — WebGL2 텍스트 좌측 쏠림 fix (text-atlas textAlign='center')
+    status: done
+    dependencies: []
+
+  - id: E-2
+    title: 0.2.6 — Group 더블클릭 collapse 옵션화 (groupDoubleClickCollapses, 기본 OFF)
+    status: done
+    dependencies: []
+
+  - id: E-3
+    title: 0.2.6 — 거버넌스 문서에 Core Value Tenets + 가드레일 + 회귀 차단 체크 정비
+    status: done
+    dependencies: []
+
+  # CJK 작업 — 0.4.0~0.4.2 시리즈
+  - id: F-1
+    title: |
+      0.4.0 — WebGL2 atlas CJK glyph drop root-cause verification.
+      Result: 0.2.6's per-entry OffscreenCanvas + drawImage strategy already
+      eliminated the pixel drop at the source. CDP-driven diagnostic at
+      packages/core/scripts/atlas-cjk-diag.mjs confirms pixel parity with
+      isolated reproduction (5/5 samples) on Brave 149 / dpr=2. Workaround
+      not removed — it IS the structural fix. Known-limitation entry
+      removed from CHANGELOG.
+    status: done
+    dependencies: [E-1]
+
+  - id: F-2
+    title: |
+      0.4.1 (hotfix) — atlas eviction race that 0.4.0 surfaced.
+      0.4.0 mis-mapped labels (ASCII nodes rendered CJK label fragments)
+      because Pass 1 pre-warm in text-program.ts could trigger eviction
+      mid-loop; the frame-start generation check was too early to invalidate
+      cached quads. Fix: (a) Pass 1 끝에서 atlas.generation 재확인 →
+      변경 시 quadCache/nodeRefCache clear + 전체 노드를 dirty로 강제,
+      (b) ATLAS_SIZE 1024 → 2048 복구 (per-entry workaround로 인해 2048
+      corruption 가설이 무효화됨), (c) 50%-row wrap 폐기. 0.4.0은 4 packages
+      모두 npm deprecate. atlas-cjk-diag에 ENTRY MAPPING gate 추가 — 40개
+      stress 노드로 atlas overflow 강제 + 모든 라벨이 자기 entry와 일치하는지
+      검증. 통과 후 4 packages npm publish.
+    status: done
+    dependencies: [F-1]
+
+  - id: F-3
+    title: |
+      0.4.2 (hotfix) — multi-line label flatten via single-line <input>.
+      LabelEditor가 <input type="text">를 썼는데, HTMLInputElement.value
+      setter는 \n을 무성하게 제거. 더블클릭 → input.value = node.label 시점에
+      이미 멀티라인 라벨이 단일 라인으로 짜부러지고, blur가 그걸 commit. Fix:
+      <textarea>로 교체 + value.trim() (양 끝만 trim, interior \n 보존) +
+      rows attribute로 줄 수 자동 매칭. Keybind: Enter=commit (single-line UX
+      유지), Shift+Enter=새 줄, Esc=cancel, blur=commit, IME 보호 유지. 5개
+      회귀 테스트 추가 (\n 보존 / blur 라운드트립 / rows / Shift+Enter /
+      평Enter). 4 packages npm publish.
+    status: done
+    dependencies: [F-2]

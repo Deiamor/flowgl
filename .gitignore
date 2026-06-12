@@ -6,11 +6,5 @@ dist/
 coverage/
 *.tgz
 
-# Claude workflow files (internal)
-AGENTS.md
-DEPLOY.md
-HISTORY.md
-PRODUCT.md
-PROJECT.md
-SPEC_CHECKLIST.md
-TASK.md
+# Local-only — ad-hoc screenshots used for bug reports / regression captures.
+images/

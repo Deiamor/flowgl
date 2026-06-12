@@ -44,10 +44,36 @@ cd packages/svelte  && npm publish --access public
 ### 배포된 패키지
 | 패키지 | 최신 버전 | npm |
 |--------|-----------|-----|
-| `@flowgl/core` | 0.1.1 | https://www.npmjs.com/package/@flowgl/core |
-| `@flowgl/react` | 0.1.1 | https://www.npmjs.com/package/@flowgl/react |
-| `@flowgl/vue` | 0.1.1 | https://www.npmjs.com/package/@flowgl/vue |
-| `@flowgl/svelte` | 0.1.1 | https://www.npmjs.com/package/@flowgl/svelte |
+| `@flowgl/core` | 0.4.2 | https://www.npmjs.com/package/@flowgl/core |
+| `@flowgl/react` | 0.4.2 | https://www.npmjs.com/package/@flowgl/react |
+| `@flowgl/vue` | 0.4.2 | https://www.npmjs.com/package/@flowgl/vue |
+| `@flowgl/svelte` | 0.4.2 | https://www.npmjs.com/package/@flowgl/svelte |
+
+**Deprecated**: `0.4.0` on all four packages — atlas eviction race mis-mapped labels. `npm install` warns and points consumers at 0.4.1+ or a 0.2.6 pin.
+
+### 정식 배포 흐름 (provenance 서명)
+
+```bash
+# 1) Bump version across 4 packages, regenerate SBOMs
+for pkg in core react vue svelte; do
+  python3 -c "import json; p=json.load(open('packages/$pkg/package.json'))
+p['version']='X.Y.Z'
+json.dump(p, open('packages/$pkg/package.json','w'), indent=2, ensure_ascii=False)"
+done
+node scripts/generate-sbom.mjs
+
+# 2) Verify locally (typecheck + tests + CDP atlas diag)
+pnpm typecheck && pnpm --filter @flowgl/core test
+pnpm dev &                                                       # one terminal
+brave-debug                                                      # another
+node packages/core/scripts/atlas-cjk-diag.mjs http://localhost:5173
+
+# 3) Commit / push / dispatch GitHub Release workflow
+git commit -am "release: X.Y.Z" && git push
+gh workflow run Release --repo Deiamor/flowgl --ref master -f package=all
+```
+
+GitHub Actions runner은 OIDC로 npm provenance를 서명한다. 로컬에서 `npm publish` 직접 호출은 `publishConfig.provenance: true` 때문에 실패한다 — 항상 release.yml dispatch를 통과해야 한다.
 
 ---
 

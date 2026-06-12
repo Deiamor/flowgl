@@ -8,7 +8,7 @@ WebGL2-based flowchart library. No external runtime dependencies. Framework-agno
 - Rendering: WebGL2 (instanced rendering, SDF rounded rects, bezier tessellation)
 - Text: Canvas 2D texture atlas → WebGL texture (2-pass, RTL support, DPR-aware)
 - Build: Rollup 4 + @rollup/plugin-typescript + @rollup/plugin-terser (production minification)
-- Test: Vitest + happy-dom (873 tests: 846 core / 27 wrappers)
+- Test: Vitest + happy-dom (919 tests: 892 core / 27 wrappers across react/vue/svelte)
 - Dev server: Vite (demo only)
 - Package manager: pnpm workspaces
 
@@ -25,10 +25,20 @@ flowchart/
 │   │   ├── rollup.config.mjs  # Rollup config (ESM + CJS, terser minification)
 │   │   ├── vitest.config.ts
 │   │   ├── README.md          # Public API reference
+│   │   ├── PERFORMANCE.md     # 1K/5K/10K SwiftShader benchmarks + 8 critical optimizations
+│   │   ├── scripts/
+│   │   │   └── atlas-cjk-diag.mjs  # CDP-driven CJK pixel-parity + entry-mapping regression gate
 │   │   └── src/
 │   │       ├── index.ts       # public API exports
 │   │       ├── flowchart.ts   # FlowChart class (main entry)
 │   │       ├── types.ts       # shared type definitions
+│   │       ├── services/      # pure-function services extracted from FlowChart
+│   │       │   ├── alignment.ts        # alignNodes / distributeNodes
+│   │       │   ├── graph-analysis.ts   # getIncomers / getOutgoers / hasCycle / findPaths
+│   │       │   ├── json-validate.ts    # fromJSON / importJSON schema + XSS sink guards
+│   │       │   ├── layout-animator.ts  # smoothstep RAF interpolation
+│   │       │   ├── safe-css.ts         # safeColor / safeNumber / safeDashArray / safeFontFamily SSOT
+│   │       │   └── svg-export.ts       # SVG export with shape polygons + edge bezier/step/waypoints
 │   │       ├── events/
 │   │       │   └── emitter.ts
 │   │       ├── graph/
@@ -56,6 +66,8 @@ flowchart/
 │   │       │   └── node-resize.ts   # node resize handle drag
 │   │       ├── renderer/
 │   │       │   ├── interface.ts
+│   │       │   ├── canvas2d/
+│   │       │   │   └── index.ts       # Canvas2DRenderer — opt-in fallback (rendererKind: 'canvas2d')
 │   │       │   └── webgl/
 │   │       │       ├── index.ts           # WebGL2Renderer
 │   │       │       ├── context.ts
@@ -143,10 +155,10 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 ## Key Design Decisions
 - Nodes: WebGL2 instanced draw (single draw call for all nodes)
 - Edges: CPU bezier → triangle strip, packed into one VBO per frame
-- Text: OffscreenCanvas → 2048×2048 texture atlas, shelf-packing, 2-pass render (pre-warm → vertex gen); DPR-scaled for Retina clarity
+- Text: OffscreenCanvas → 2048×2048 texture atlas, shelf-packing, 2-pass render (pre-warm → vertex gen); DPR-scaled for Retina clarity. Per-entry OffscreenCanvas + drawImage strategy isolates fillText from any cumulative live-atlas ctx state (introduced in 0.2.6, structural fix for the CJK glyph-drop). Pass-1 generation re-check (0.4.1) catches mid-Pass-1 eviction so cached quads never carry stale UVs.
 - TextAtlas cache key includes text color — prevents color bleed between nodes with same label but different textColor
 - Hit test: CPU AABB (no GPU color picking)
-- Renderer abstraction: `Renderer` interface → WebGL2 implementation
+- Renderer abstraction: `Renderer` interface → two implementations. `WebGL2Renderer` (default — instanced GPU rendering, full feature set) and `Canvas2DRenderer` (opt-in via `rendererKind: 'canvas2d'` — fallback for environments without WebGL2; T5 parity gaps under "Known limitations" in CHANGELOG)
 - SSR safety: `typeof window === 'undefined'` guard at FlowChart constructor entry
 - Minification: @rollup/plugin-terser (production), no obfuscation — preserves debuggability for open-source consumers
 - Undo/redo: state-snapshot approach — `beforeMutation()` saves a full snapshot before every mutation; `undo()`/`redo()` restore snapshots wholesale
@@ -167,7 +179,7 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 
 ## Build Commands
 ```bash
-pnpm test           # run 873 tests (from monorepo root)
+pnpm test           # run 919 tests across all packages (892 core / 9+9+9 wrappers)
 pnpm build          # production build (minified)
 pnpm build:dev      # development build (readable + sourcemaps)
 pnpm typecheck      # tsc --noEmit (all packages)

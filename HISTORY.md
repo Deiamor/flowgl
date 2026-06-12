@@ -279,3 +279,23 @@
 - Summary: 그룹 노드를 NW·NE·SW 코너 핸들로 리사이즈하면 그룹의 origin(x, y)이 변경되는데 자식 노드들이 함께 이동하지 않아 그룹 밖으로 이탈하던 버그 수정. 리사이즈 핸들이 origin을 변경할 때 dx/dy 델타를 계산하여 해당 그룹의 모든 자식 노드에도 동일 델타를 적용하도록 수정.
 - Affected files: packages/core/src/interaction/node-resize.ts
 - Timestamp: 2026-06-03
+
+## [release 0.2.6] textAlign='center' label centering + groupDoubleClickCollapses opt-in + dissolveGroup + Canvas2D fallback + governance Tenets
+- Summary: 노드 라벨 좌측 쏠림 fix (text-atlas.ts entryCanvas에 textAlign='center' 미설정 → 기본 'start' → glyph 좌측 정렬). `FlowChartOptions.groupDoubleClickCollapses?: boolean` 옵션 (기본 false) — 그룹 더블클릭 → collapse를 옵션화하여 사고성 자식 소실 방지. `FlowChart.dissolveGroup(groupId)` 새 공개 API — 그룹 컨테이너 제거 + 자식들을 graph 최상위로 풀어줌 (`ungroupNodes`와 짝). Canvas2DRenderer 추가 (rendererKind: 'canvas2d' opt-in). services/safe-css.ts SSOT, PERFORMANCE.md, axe a11y 3개 테스트. 4 packages publishConfig.provenance: true + CycloneDX SBOM. PRODUCT.md Core Value Tenets T1~T7, AGENTS.md Tenet 가드레일 + Escalation Protocol, SPEC_CHECKLIST.md Tenet Regression Gates 추가 (로컬-only 운영).
+- Affected files: packages/core/src/renderer/webgl/atlas/text-atlas.ts, packages/core/src/flowchart.ts, packages/core/src/renderer/canvas2d/index.ts, packages/core/src/services/safe-css.ts, packages/core/PERFORMANCE.md, packages/core/src/__tests__/{productization,edge-cases,a11y-axe}.test.ts, scripts/generate-sbom.mjs, PRODUCT.md, AGENTS.md, SPEC_CHECKLIST.md, CHANGELOG.md, all 4 package.json
+- Timestamp: 2026-06-12
+
+## [release 0.4.0 — DEPRECATED] CJK pixel parity verification + atlas-cjk-diag CDP harness
+- Summary: 0.2.5 시점 "live 113 vs isolated 261" CJK glyph drop은 0.2.6 per-entry OffscreenCanvas + drawImage 도입으로 이미 구조적으로 해결된 상태였음. CDP-driven diagnostic at packages/core/scripts/atlas-cjk-diag.mjs로 Brave 149/dpr=2 환경 5/5 samples pixel parity 확인. Known limitations에서 CJK 항목 제거. 데모에 cjk1~cjk5 5개 노드 추가. **검증 부실로 4 packages 모두 deprecate** — CDP screenshot에 ASCII 라벨 회귀(eviction race로 인한 mis-mapping)가 명백히 찍혀있었는데도 "PARITY OK + CJK 5개 정상"만 보고 npm publish 진행. 사용자 보고 후 1시간 내 deprecate + 0.4.1 hotfix.
+- Affected files: packages/core/scripts/atlas-cjk-diag.mjs (new), demo/index.html, CHANGELOG.md, 4 package.json, 4 sbom.json
+- Timestamp: 2026-06-12
+
+## [release 0.4.1 — hotfix] atlas eviction race fix + ATLAS_SIZE 1024→2048 복구
+- Summary: 0.4.0 mis-mapping root cause는 atlas eviction race. text-program.ts의 Pass 1 (pre-warm) 도중 atlas full → entries.clear() + generation++. frame-start generation check는 너무 일러서 캐시된 quad의 stale UV를 invalidate 못 하고, 이전 frame의 quadCache가 다른 entry 자리를 가리킴 → ASCII 노드에 CJK 라벨 fragment 표시 + zoom/pan 시 매 frame eviction 반복으로 깜박임. Fix: (a) text-program.ts Pass 1 끝에서 atlas.generation 재확인 → 변경 시 quadCache/nodeRefCache clear + dirtyNodes=labeled.slice()로 전체 강제 rebuild, (b) ATLAS_SIZE 1024 → 2048 복구 (0.2.5의 1024 축소는 per-entry workaround 도입 *전*의 corruption 가설 때문), (c) 50%-row wrap 폐기. atlas-cjk-diag에 ENTRY MAPPING gate 추가 — 40 stress 노드 주입 후 모든 labeled 노드의 atlas entry 픽셀 카운트가 격리 reproduction과 5% 이내 일치하는지 검증. 0.4.0 4 packages npm deprecate.
+- Affected files: packages/core/src/renderer/webgl/programs/text-program.ts, packages/core/src/renderer/webgl/atlas/text-atlas.ts, packages/core/scripts/atlas-cjk-diag.mjs, CHANGELOG.md, 4 package.json, 4 sbom.json
+- Timestamp: 2026-06-12
+
+## [release 0.4.2 — hotfix] multi-line label preservation (LabelEditor <input> → <textarea>)
+- Summary: 사용자 보고: 멀티라인 노드 더블클릭 후 편집 비활성화 시 한 줄로 변환. Root cause: LabelEditor가 <input type="text"> 사용. HTMLInputElement.value setter가 \n을 무성하게 제거. startEdit에서 `input.value = node.label` 실행되는 즉시 '여러줄\nテスト\n测试' → '여러줄テスト测试'로 짜부러져 — 사용자가 키보드 만지기도 전에. blur/Enter가 그걸 그대로 commit. Esc로도 복구 불가. Fix: <textarea>로 교체 + value.trim() (양 끝 whitespace만, interior \n 보존) + rows attribute setAttribute로 줄 수 자동 매칭. Keybind: Enter=commit 유지, Shift+Enter=새 줄, Esc=cancel, blur=commit, IME 보호 유지. label-editor.test.ts에 5개 회귀 테스트 (\n 보존 / blur 라운드트립 / rows 매칭 / Shift+Enter 비커밋 / 평Enter 커밋).
+- Affected files: packages/core/src/interaction/label-edit.ts, packages/core/src/__tests__/label-editor.test.ts, CHANGELOG.md, 4 package.json, 4 sbom.json
+- Timestamp: 2026-06-12
