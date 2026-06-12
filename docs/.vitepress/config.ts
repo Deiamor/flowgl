@@ -37,6 +37,7 @@ export default defineConfig({
       { text: 'API', link: '/api/flowchart' },
       { text: 'Cookbook', link: '/cookbook/' },
       { text: 'Examples', link: '/examples/' },
+      { text: 'Benchmarks', link: '/benchmarks' },
       { text: 'Showcase', link: '/showcase' },
       { text: 'Community', link: '/community' },
       {
@@ -85,6 +86,9 @@ export default defineConfig({
           text: 'Cookbook',
           items: [
             { text: 'Index', link: '/cookbook/' },
+            { text: 'Auto-connect on drag', link: '/cookbook/auto-connect' },
+            { text: 'Wire to state store', link: '/cookbook/state-store' },
+            { text: 'Custom HTML node', link: '/cookbook/html-node' },
           ],
         },
       ],

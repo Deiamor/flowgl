@@ -1,0 +1,12 @@
+[
+  {
+    "userAgent": "HeadlessChrome / SwiftShader (baseline from packages/core/PERFORMANCE.md)",
+    "dpr": 2,
+    "timestamp": "2026-06-12T00:00:00.000Z",
+    "results": [
+      { "count": 1000,  "edges": 999,   "avgFps": 120.0, "medianFps": 120.0, "p5Fps": 119.0, "avgMs":  8.33 },
+      { "count": 5000,  "edges": 4999,  "avgFps": 113.6, "medianFps": 114.0, "p5Fps": 110.0, "avgMs":  8.80 },
+      { "count": 10000, "edges": 9999,  "avgFps": 114.1, "medianFps": 114.0, "p5Fps": 109.0, "avgMs":  8.76 }
+    ]
+  }
+]
