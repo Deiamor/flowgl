@@ -38,5 +38,13 @@ jobs:
       - name: Test (all packages)
         run: pnpm test
 
+      - name: Docs sync + docs-coverage audit
+        # Sync derivable facts (test counts, badges, nav version) and audit
+        # that every public export from packages/core/src/index.ts has at
+        # least one mention under docs/. Fails the build when either is
+        # out of date — closes the gap that let 0.5.0 → 0.9.1 ship with
+        # the docs site stuck at 0.4.2.
+        run: node scripts/sync-docs.mjs --check
+
       - name: Build (wrappers + demo)
         run: pnpm --filter '!@flowgl/core' build

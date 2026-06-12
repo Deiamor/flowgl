@@ -8,7 +8,7 @@ WebGL2-based flowchart library. No external runtime dependencies. Framework-agno
 - Rendering: WebGL2 (instanced rendering, SDF rounded rects, bezier tessellation)
 - Text: Canvas 2D texture atlas → WebGL texture (2-pass, RTL support, DPR-aware)
 - Build: Rollup 4 + @rollup/plugin-typescript + @rollup/plugin-terser (production minification)
-- Test: Vitest + happy-dom (919 tests: 892 core / 27 wrappers across react/vue/svelte)
+- Test: Vitest + happy-dom (1151 tests: 1124 core / 27 wrappers across react/vue/svelte)
 - Dev server: Vite (demo only)
 - Package manager: pnpm workspaces
 

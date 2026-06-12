@@ -29,7 +29,7 @@ Zero-dependency WebGL2 flowchart library for the browser.
 - **SDF text rendering** — Signed Distance Field font atlas delivers sharp labels at any zoom level (dead-reckoning EDT + `smoothstep(fwidth)` in GLSL)
 - **SSR-safe** — detects non-browser environments and calls `onError` instead of crashing
 - **Custom node-type registry** (0.9.0) — `chart.registerNodeType('uml-class', { category: 'html', render, … })`. Built-in shapes keep the WebGL2 SDF fast path; plugin authors ship `@my-org/flowgl-node-*` packages on npm.
-- **1121 tests** across 44 test files
+- **1124 tests** across 44 test files
 
 ## Installation
 

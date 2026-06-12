@@ -1,17 +1,25 @@
 #!/usr/bin/env node
-// Auto-synchronize derivable facts across docs.
+// Auto-synchronize derivable facts across docs + audit docs-coverage.
 //
-// What it syncs:
-//   1) package versions  → DEPLOY.md "배포된 패키지" table
-//   2) core test count   → README.md test badge + PROJECT.md tech stack + Build Commands line
-//   3) statement coverage → README.md coverage badge (reads packages/core/coverage/clover.xml)
+// What it syncs (writable):
+//   1) package versions   → DEPLOY.md "배포된 패키지" table
+//   2) core test count    → README.md test badge + PROJECT.md tech stack
+//   3) statement coverage → README.md coverage badge (from clover.xml)
+//   4) docs site nav version → docs/.vitepress/config.ts (the `0.X.Y` label)
+//   5) packages/core/README.md test count line
+//
+// What it audits (read-only — fails with --check):
+//   6) docs-coverage: every named export from `packages/core/src/index.ts`
+//      must appear at least once under `docs/`. Catches the class of bug
+//      we hit at 0.9.1 where five milestones worth of API landed on master
+//      while `docs/api/flowchart.md` was still describing 0.4.2.
 //
 // What it does NOT touch:
 //   - CHANGELOG / HISTORY / TASK content (human-authored, append-only)
 //   - PRODUCT / AGENTS / SPEC_CHECKLIST (governance, manual)
 //
 // Usage:
-//   node scripts/sync-docs.mjs            # write any changes in place
+//   node scripts/sync-docs.mjs            # write any drift in place + audit
 //   node scripts/sync-docs.mjs --check    # exit 1 if any doc is out of sync (CI / pre-commit)
 //
 // Add a fact to the sync map by editing the `tasks` array below — one entry
@@ -159,7 +167,115 @@ function buildTasks() {
     })
   }
 
+  // 5) packages/core/README.md test count line — "**N tests** across M test files"
+  if (coreTests != null) {
+    tasks.push({
+      label: `packages/core/README.md test count → ${coreTests}`,
+      file:  'packages/core/README.md',
+      pairs: [[
+        /\*\*\d+ tests\*\* across \d+ test files/,
+        `**${coreTests} tests** across ${countCoreTestFiles()} test files`,
+      ]],
+    })
+  }
+
+  // 6) docs/.vitepress/config.ts nav version label
+  tasks.push({
+    label: `docs nav version label → ${versions.core}`,
+    file:  'docs/.vitepress/config.ts',
+    pairs: [[
+      /text: '\d+\.\d+\.\d+',/,
+      `text: '${versions.core}',`,
+    ]],
+  })
+
   return tasks
+}
+
+function countCoreTestFiles() {
+  try {
+    return fs.readdirSync(`${root}/packages/core/src/__tests__`).filter(f => f.endsWith('.test.ts') || f.endsWith('.test.tsx')).length
+  } catch { return 0 }
+}
+
+// ─── docs-coverage audit ────────────────────────────────────────────────────
+//
+// Parse every named export from packages/core/src/index.ts. For each name,
+// check that it appears at least once anywhere under docs/. Missing names
+// surface as audit failures. Why this catches the 0.5.0 → 0.9.1 drift:
+// when someone adds `chart.addPanel`, `chart.registerNodeType`, etc., the
+// export shows up in index.ts but never gets a docs/ mention; the
+// auto-deploy ships the same 0.4.2-era page to docs.flowgl.
+
+// Exports that are public for testability / advanced use but not part of
+// the user-facing surface we expect to find in `docs/`. Keep this list
+// short and well-justified — anything that goes here loses its audit
+// coverage. When in doubt, write a docs entry instead.
+const DOCS_AUDIT_IGNORE = new Set([
+  // Interaction classes — exported so tests + advanced apps can wire them,
+  // but they're not on the "every user reads about this" path.
+  'EdgeWaypoint', 'EdgeReroute', 'RerouteState',
+  'BoxSelect', 'BoxSelectOptions',
+  'KeyboardHandler', 'KeyboardOptions',
+  'LabelEditor',
+  'ContextMenu',
+  // Renderer implementations — `Renderer` interface itself IS user-facing
+  // and lives in docs; the concrete subclasses are not.
+  'WebGL2Renderer', 'Canvas2DRenderer',
+  // Hit-test classes — public for testability + advanced overlays.
+  'EdgeHitTester',
+  // Internal infrastructure.
+  'EventEmitter', 'Snapshot', 'EndpointCircle',
+])
+
+function readPublicExports() {
+  const file = `${root}/packages/core/src/index.ts`
+  if (!fs.existsSync(file)) return []
+  const text = fs.readFileSync(file, 'utf8')
+  // Capture identifier lists from `export { A, B as C, type D } from '...'`
+  // and `export type { E, F } from '...'`.
+  const names = new Set()
+  const re = /export\s+(?:type\s+)?\{([^}]+)\}/g
+  let m
+  while ((m = re.exec(text)) !== null) {
+    for (const part of m[1].split(',')) {
+      // strip "type X" prefix + "X as Y" rename
+      const id = part.trim().replace(/^type\s+/, '').split(/\s+as\s+/)[0].trim()
+      if (id && !DOCS_AUDIT_IGNORE.has(id)) names.add(id)
+    }
+  }
+  // Capture default + named exports defined locally, e.g. `export class Foo`.
+  for (const line of text.split('\n')) {
+    const m2 = line.match(/^export\s+(?:default\s+)?(?:class|function|const|let|var|interface|type|enum)\s+([A-Za-z_$][\w$]*)/)
+    if (m2 && !DOCS_AUDIT_IGNORE.has(m2[1])) names.add(m2[1])
+  }
+  return [...names]
+}
+
+function walkDocs(dir) {
+  const out = []
+  if (!fs.existsSync(dir)) return out
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'public') continue
+    const p = `${dir}/${entry.name}`
+    if (entry.isDirectory()) out.push(...walkDocs(p))
+    else if (/\.(md|ts|mjs)$/.test(entry.name)) out.push(p)
+  }
+  return out
+}
+
+function auditDocsCoverage() {
+  const exports = readPublicExports()
+  if (exports.length === 0) return { covered: 0, missing: [] }
+  const docs = walkDocs(`${root}/docs`).map(p => fs.readFileSync(p, 'utf8')).join('\n')
+  const missing = []
+  for (const name of exports) {
+    // Word-boundary match. Avoid false hits on substring; require the exact
+    // identifier in the docs text.
+    const re = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`)
+    if (!re.test(docs)) missing.push(name)
+  }
+  return { covered: exports.length - missing.length, missing }
 }
 
 // ─── run ───────────────────────────────────────────────────────────────────
@@ -177,14 +293,31 @@ for (const task of tasks) {
 }
 
 if (drift === 0) {
-  console.log('docs in sync — no drift detected')
+  console.log('derivable facts in sync — no drift detected')
 } else {
   console.log(`${drift} doc(s) ${CHECK_ONLY ? 'out of sync' : 'updated'}:`)
   for (const line of log) console.log(line)
 }
 
-if (CHECK_ONLY && drift > 0) {
-  console.error('\nRun without --check to fix in place:')
+// ─── docs-coverage audit (run unconditionally) ──────────────────────────────
+
+const audit = auditDocsCoverage()
+let auditFailed = false
+if (audit.missing.length === 0) {
+  console.log(`\ndocs-coverage: ${audit.covered}/${audit.covered} public exports documented`)
+} else {
+  auditFailed = true
+  console.log(`\ndocs-coverage: ${audit.covered}/${audit.covered + audit.missing.length} public exports documented`)
+  console.log(`  ${audit.missing.length} export(s) MISSING from docs/:`)
+  for (const name of audit.missing) console.log(`    ✗ ${name}`)
+  console.log('\nAdd a mention (signature + 1-line description) to docs/api/flowchart.md')
+  console.log('or the relevant guide page. Even a stub bullet under the right heading')
+  console.log('clears the audit and gives users a discoverable entry point.')
+}
+
+if (CHECK_ONLY && (drift > 0 || auditFailed)) {
+  console.error('\nRun without --check to fix derivable drift in place:')
   console.error('  node scripts/sync-docs.mjs')
+  console.error('docs-coverage misses must be fixed by hand — add the API description.')
   process.exit(1)
 }

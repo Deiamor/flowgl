@@ -41,10 +41,11 @@ export default defineConfig({
       { text: 'Showcase', link: '/showcase' },
       { text: 'Community', link: '/community' },
       {
-        text: '0.4.2',
+        text: '0.9.1',
         items: [
           { text: 'Changelog', link: 'https://github.com/Deiamor/flowgl/blob/master/CHANGELOG.md' },
           { text: 'Roadmap', link: 'https://github.com/Deiamor/flowgl/blob/master/ROADMAP.md' },
+          { text: 'Semver policy', link: 'https://github.com/Deiamor/flowgl/blob/master/SEMVER.md' },
           { text: 'Contributing', link: 'https://github.com/Deiamor/flowgl/blob/master/CONTRIBUTING.md' },
         ],
       },

@@ -195,3 +195,260 @@ interface EdgeData {
 Full type signatures are emitted to `dist/index.d.ts` — your editor will
 autocomplete the rest. If you find a public method without an entry on
 this page, please open an issue or a PR.
+
+---
+
+## 0.5.0 → 0.9.1 surface
+
+Every API added between 0.5.0 and 0.9.1 — the cycles that closed the
+React-Flow-parity track, opened the reactive-data layer, hardened
+production, and shipped the first plugin contract.
+
+### Overlays (0.5.0 + 0.6.0 + 0.7.0)
+
+DOM overlays mount inside the chart container. Each layer is
+constant pixel size under zoom **except `ViewportPortal`**, which
+scales with the viewport.
+
+```ts
+// Panel — 9-position floating widget
+chart.addPanel({ position: 'top-right', content: '<button>…</button>' }): string
+chart.updatePanel(id, partial): boolean
+chart.removePanel(id): boolean
+chart.listPanels(): string[]
+
+// Controls — zoom/fit/lock built-ins + custom buttons
+chart.showControls({ position: 'bottom-left', showFitView: true }): void
+chart.hideControls(): void
+chart.hasControls(): boolean
+
+// NodeToolbar — anchored to a node, visible iff selection matches
+chart.addNodeToolbar({ nodeId: 'a', content: '🗑', position: 'top', align: 'center' }): string
+chart.updateNodeToolbar(id, partial): boolean
+chart.removeNodeToolbar(id): boolean
+chart.listNodeToolbars(): string[]
+
+// EdgeToolbar — edge-anchored variant of NodeToolbar
+chart.addEdgeToolbar({ edgeId: 'e1', content: '🗑', align: 'above' }): string
+chart.updateEdgeToolbar(id, partial): boolean
+chart.removeEdgeToolbar(id): boolean
+chart.listEdgeToolbars(): string[]
+
+// ViewportPortal — world-coord DOM, scales with zoom
+chart.addViewportPortal({ x: 80, y: 380, width: 200, height: 60, content: '<div>…</div>' }): string
+chart.updateViewportPortal(id, partial): boolean
+chart.removeViewportPortal(id): boolean
+chart.listViewportPortals(): string[]
+
+// EdgeLabel — HTML edge label at the rendered-path midpoint
+chart.addEdgeLabel({ edgeId: 'e1', content: '<span>↗ flow</span>' }): string
+chart.updateEdgeLabel(id, partial): boolean
+chart.removeEdgeLabel(id): boolean
+chart.listEdgeLabels(): string[]
+
+// PerfOverlay — FPS / frame time / draw call / atlas miss stats (differentiator)
+chart.showPerfOverlay({ position: 'top-right' }): void
+chart.hidePerfOverlay(): void
+```
+
+### Edge variants (0.7.0)
+
+`'smoothstep'` joins `'bezier'` / `'straight'` / `'step'`. Same sampled
+polyline on Canvas2D + WebGL2 (T5 parity).
+
+```ts
+chart.addEdge({
+  id: 'e1', source: 'a', target: 'b',
+  type: 'smoothstep',
+  pathOptions: { borderRadius: 16, arcSegments: 10 },
+})
+```
+
+### Node-level affordances (0.6.0 + 0.8.0)
+
+```ts
+// extent — clamp child to its parent's bbox (or an explicit rect) on drag-end
+chart.addNode({ id: 'c', parentId: 'g', extent: 'parent', /* … */ })
+chart.addNode({ id: 'c', extent: { minX: 0, minY: 0, maxX: 800, maxY: 600 } })
+
+// expandParent — drag the child out, parent grows to contain it
+chart.addNode({ id: 'c', parentId: 'g', expandParent: true })
+
+// easyConnect — inflated handle hit radius, connect from anywhere near the edge
+chart.addNode({ id: 'a', easyConnect: true })
+
+// NodeResize options — min/max bounds, aspect ratio, predicate, callbacks
+chart.setNodeResizeOptions({
+  minWidth: 50, minHeight: 40,
+  maxWidth: 800, maxHeight: 600,
+  keepAspectRatio: false,
+  shouldResize: (node, next) => true,
+  onResizeStart: (id) => {},
+  onResize: (id, x, y, w, h) => {},
+  onResizeEnd: (id, x, y, w, h) => {},
+})
+chart.getNodeResizeOptions(): NodeResizeOptions
+```
+
+### Drag UX layers (0.8.0)
+
+```ts
+// Helper Lines — Figma-style alignment guides + snap during drag
+chart.setHelperLinesOptions({ enabled: true, snap: 5, show: 10 })
+chart.getHelperLinesOptions(): HelperLinesOptions
+
+// Proximity Connect — drag near another node → ghost line → drop creates edge
+chart.setProximityConnectOptions({ enabled: true, threshold: 80 })
+chart.getProximityConnectOptions(): ProximityConnectOptions
+```
+
+### Computing Flows — reactive per-node data (0.8.0)
+
+`updateNodeData` merges into `node.data` and fans out to subscribers.
+Explicit cycle detection — when a subscriber writes back to a node
+already on the active update stack, propagation stops and a
+`nodeDataCycle` event fires. **Differentiator vs React Flow's
+equivalent, which stack-overflows on cycles.**
+
+```ts
+chart.updateNodeData(id: string, partial: Record<string, unknown>): boolean
+chart.subscribeNodeData(id, (data, partial) => { /* … */ }): () => void
+chart.getNodeDataSubscriberCount(id: string): number
+
+// Events
+chart.on('nodeDataChange', ({ id, data, partial }) => {})
+chart.on('nodeDataCycle',  ({ id, chain }) => {})
+```
+
+### Custom node-type registry (0.9.0) — plugin contract
+
+Built-in shapes (`rectangle`, `circle`, `diamond`, `hexagon`) keep the
+WebGL2 SDF fast path. Plugins ship `category: 'html'` types that mount
+DOM overlays scaled with the viewport.
+
+```ts
+chart.registerNodeType('uml-class', {
+  category: 'html',
+  defaultSize: { width: 200, height: 120 },
+  render: (container, node, ctx) => {
+    container.innerHTML = `<div class="uml-card">${node.label}</div>`
+  },
+  destroy: (container, node) => { /* optional teardown */ },
+})
+
+chart.addNode({ id: 'order', type: 'uml-class', label: 'Order', x: 0, y: 0, width: 200, height: 120 })
+
+chart.unregisterNodeType(name: string): boolean
+chart.getRegisteredNodeTypes(): string[]
+chart.getCustomNodeTypes(): string[]
+```
+
+External plugins publish as `@my-org/flowgl-node-*`. See the
+[Custom node-type plugins cookbook recipe](/cookbook/custom-node-type)
+for a complete walkthrough.
+
+### Theme (0.5.0)
+
+```ts
+chart.setTheme('light' | 'dark' | 'system'): void   // 'system' tracks prefers-color-scheme live
+```
+
+### React hooks (0.6.0) — `@flowgl/react`
+
+```tsx
+import { FlowchartProvider, useFlowChart, useNodes, useEdges, useViewport, useSelection } from '@flowgl/react'
+
+<FlowchartProvider value={chartRef.current}>
+  <NodeList />     {/* useNodes() inside */}
+</FlowchartProvider>
+```
+
+Subscribed to chart events via plain `useState` + `useEffect` — no new
+runtime dependency (Tenet T2 preserved).
+
+### Edge geometry helper (0.8.1) — also exported for plugin authors
+
+```ts
+import { edgePathPoints, edgeMidpoint, edgeBoundingBox, edgePathFingerprint } from '@flowgl/core'
+```
+
+### Layout helpers (0.9.1)
+
+```ts
+import {
+  hierarchicalLayout, forceLayout, gridLayout, circularLayout,
+  addChildTranslations,
+} from '@flowgl/core'
+```
+
+Every layout calls `addChildTranslations` before returning, so a layout
+that moves a group also relocates its descendants by the same delta.
+External layout plugins should do the same.
+
+---
+
+## Type reference
+
+Every public type exported from `@flowgl/core`. Importable directly:
+
+```ts
+import type {
+  // Core data
+  NodeData, NodeStyle, NodeShape, NodeStatus, PortDef,
+  EdgeData, EdgeStyle, EdgeType, EdgePathOptions,
+  ViewportState, GridConfig, MinimapConfig, HandleSide,
+
+  // Chart events
+  FlowChartEvents,
+
+  // NodeResize tuning
+  NodeResizeOptions, NodeResizeRect,
+
+  // Renderer plumbing — implement these to swap the renderer
+  RendererOptions, RenderFrame,
+
+  // Context menu API
+  MenuItem, MenuEntry, MenuSeparator,
+
+  // 0.5.0 — overlay options
+  PanelPosition, PanelOptions,
+  ControlsOptions, ControlButtonOptions,
+  NodeToolbarSpec, NodeToolbarPosition, NodeToolbarAlign,
+  PerfOverlayOptions,
+
+  // 0.6.0
+  ViewportPortalSpec,
+  EdgeLabelSpec,
+
+  // 0.7.0
+  EdgeToolbarSpec, EdgeToolbarAlign,
+
+  // 0.8.0
+  HelperLinesOptions,
+  ProximityConnectOptions,
+
+  // 0.9.0 — node-type registry
+  NodeTypeDefinition, NodeTypeCategory,
+  HtmlNodeRenderFn, NodeHitTestFn,
+
+  // Layouts
+  LayoutResult, LayoutAlgorithm,
+} from '@flowgl/core'
+```
+
+Defaults exposed as constants:
+
+```ts
+import {
+  DEFAULT_NODE_STYLE, DEFAULT_EDGE_STYLE,
+  DEFAULT_GRID_CONFIG, DEFAULT_MINIMAP_CONFIG,
+  MIN_ZOOM, MAX_ZOOM,
+} from '@flowgl/core'
+```
+
+## Stability tiers
+
+Every symbol on this page is **stable** unless the docstring or
+[`SEMVER.md`](https://github.com/Deiamor/flowgl/blob/master/SEMVER.md)
+calls it out as `@provisional`. Stable APIs go through a deprecation
+cycle of at least two minor releases before removal.

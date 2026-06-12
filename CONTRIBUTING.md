@@ -69,8 +69,19 @@ Keep the subject under 70 characters. Body explains the *why* — not the
 pnpm typecheck                                # 0 errors
 pnpm test                                     # all pass
 pnpm build                                    # all 4 packages build
-node scripts/sync-docs.mjs --check            # docs in sync
+node scripts/sync-docs.mjs --check            # docs in sync + every public export has a docs mention
 ```
+
+If `sync-docs.mjs --check` reports a public export missing from `docs/`,
+add at least a one-line bullet describing it under the relevant heading
+in `docs/api/flowchart.md` (or the matching guide page). The audit
+exists because between 0.5.0 and 0.9.1 the library shipped 18 + new
+public APIs while `docs.flowgl.ouranos.kr` sat at 0.4.2 — the gate
+now blocks that class of drift at PR review.
+
+Internal exports kept available for advanced apps but not on the
+user-reading path live in `DOCS_AUDIT_IGNORE` inside the script;
+adding to that list should be rare and justified.
 
 If you touched anything in `packages/core/src/renderer/webgl/atlas/` or
 `packages/core/src/renderer/webgl/programs/`, also run the CDP atlas

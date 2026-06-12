@@ -17,7 +17,7 @@
   <a href="https://www.npmjs.com/package/@flowgl/svelte"><img src="https://img.shields.io/npm/v/@flowgl/svelte?label=%40flowgl%2Fsvelte" alt="npm @flowgl/svelte"></a>
   <a href="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml"><img src="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/dm/@flowgl/core" alt="npm downloads"></a>
-  <img src="https://img.shields.io/badge/tests-1121%20passing-brightgreen" alt="1121 tests passing">
+  <img src="https://img.shields.io/badge/tests-1151%20passing-brightgreen" alt="1151 tests passing">
   <img src="https://img.shields.io/badge/coverage-93.75%25-brightgreen" alt="coverage 93.75%">
   <img src="https://img.shields.io/badge/renderer-Canvas2D%20%2B%20WebGL2-orange" alt="Canvas2D + WebGL2">
   <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">

@@ -44,10 +44,10 @@ cd packages/svelte  && npm publish --access public
 ### 배포된 패키지
 | 패키지 | 최신 버전 | npm |
 |--------|-----------|-----|
-| `@flowgl/core` | 0.4.2 | https://www.npmjs.com/package/@flowgl/core |
-| `@flowgl/react` | 0.4.2 | https://www.npmjs.com/package/@flowgl/react |
-| `@flowgl/vue` | 0.4.2 | https://www.npmjs.com/package/@flowgl/vue |
-| `@flowgl/svelte` | 0.4.2 | https://www.npmjs.com/package/@flowgl/svelte |
+| `@flowgl/core` | 0.9.1 | https://www.npmjs.com/package/@flowgl/core |
+| `@flowgl/react` | 0.9.1 | https://www.npmjs.com/package/@flowgl/react |
+| `@flowgl/vue` | 0.9.1 | https://www.npmjs.com/package/@flowgl/vue |
+| `@flowgl/svelte` | 0.9.1 | https://www.npmjs.com/package/@flowgl/svelte |
 
 **Deprecated**: `0.4.0` on all four packages — atlas eviction race mis-mapped labels. `npm install` warns and points consumers at 0.4.1+ or a 0.2.6 pin.
 
