@@ -12,7 +12,7 @@ export default defineConfig({
     ['meta', { property: 'og:title', content: 'flowgl' }],
     ['meta', { property: 'og:description', content: 'GPU-accelerated flowchart library — WebGL2, zero dependencies, framework-agnostic.' }],
     ['meta', { property: 'og:image', content: '/og-card.svg' }],
-    ['meta', { property: 'og:url', content: 'https://flowgl.dev/' }],
+    ['meta', { property: 'og:url', content: 'https://docs.flowgl.ouranos.kr/' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
   themeConfig: {
