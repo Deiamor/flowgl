@@ -1,0 +1,89 @@
+name: Browser matrix
+
+# Cross-browser smoke test — runs the CDP probes against the demo on
+# Chromium, Firefox, and WebKit via Playwright. The library is WebGL2-
+# dependent; Firefox / WebKit are smoke-only (canvas mount + chart-ready)
+# because they don't expose a CDP endpoint Playwright can drive the way
+# Chromium does. Chromium gets the full 0.5.0–0.8.1 CDP probe sequence
+# so any regression that breaks the user-facing surface is caught.
+#
+# Triggers: every push to a code-affecting path on master, every PR, and
+# weekly cron so dependency drift in Playwright / browser binaries is
+# caught even when no source change.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'packages/core/src/**'
+      - 'demo/**'
+      - 'packages/core/scripts/cdp-*.mjs'
+      - '.github/workflows/browser-matrix.yml'
+  pull_request:
+    paths:
+      - 'packages/core/src/**'
+      - 'demo/**'
+      - 'packages/core/scripts/cdp-*.mjs'
+      - '.github/workflows/browser-matrix.yml'
+  schedule:
+    - cron: '0 8 * * 1' # Mondays 08:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    name: ${{ matrix.browser }} smoke
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Build core + demo
+        run: |
+          pnpm --filter @flowgl/core build
+          pnpm --filter demo build
+
+      - name: Smoke test (canvas mount + chart-ready signal)
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: node scripts/browser-smoke.mjs
+
+  cdp-suite:
+    # Full CDP regression probes only on Chromium — Firefox / WebKit
+    # lack the chrome-style remote debugging Playwright pipes through.
+    runs-on: ubuntu-latest
+    needs: smoke
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build core + demo
+        run: |
+          pnpm --filter @flowgl/core build
+          pnpm --filter demo build
+
+      - name: Run CDP probe suite (0.5 → 0.8.1)
+        run: node scripts/run-cdp-suite.mjs

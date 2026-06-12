@@ -1,6 +1,7 @@
 import type { NodeData } from '../graph/node'
 import type { Viewport } from '../viewport/viewport'
 import type { Graph } from '../graph/graph'
+import { sanitizeContent } from '../services/sanitize-html'
 
 export type NodeToolbarPosition = 'top' | 'bottom' | 'left' | 'right'
 export type NodeToolbarAlign = 'start' | 'center' | 'end'
@@ -116,8 +117,7 @@ export class NodeToolbarLayer {
       el.className += ' ' + spec.className.replace(/[^A-Za-z0-9_\- ]/g, '')
     }
     if (typeof spec.content === 'string') {
-      const html = this.sanitizeHtml ? this.sanitizeHtml(spec.content) : spec.content
-      el.innerHTML = html
+      el.innerHTML = sanitizeContent(spec.content, this.sanitizeHtml, 'NodeToolbar')
     } else {
       el.appendChild(spec.content)
     }
@@ -136,8 +136,7 @@ export class NodeToolbarLayer {
     if (partial.isVisible !== undefined) t.isVisible = partial.isVisible
     if (partial.content !== undefined) {
       if (typeof partial.content === 'string') {
-        const html = this.sanitizeHtml ? this.sanitizeHtml(partial.content) : partial.content
-        t.el.innerHTML = html
+        t.el.innerHTML = sanitizeContent(partial.content, this.sanitizeHtml, 'NodeToolbar')
       } else {
         while (t.el.firstChild) t.el.removeChild(t.el.firstChild)
         t.el.appendChild(partial.content)

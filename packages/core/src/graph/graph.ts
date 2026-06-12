@@ -1,12 +1,40 @@
 import type { NodeData } from './node'
 import type { EdgeData } from './edge'
 
+export type GraphMutationKind = 'nodeUpdate' | 'edgeUpdate'
+
+/**
+ * Optional listener fired by every successful mutation. FlowChart wires this
+ * to its event emitter so consumers always see `nodeUpdate` / `edgeUpdate`
+ * regardless of which call site (drag tick, extent clamp, expandParent
+ * sibling shift, setNodeStyle, arrow-key move, etc.) triggered the change.
+ *
+ * Pre-0.8.2 these emits were duplicated at 14 + call sites in flowchart.ts
+ * and most of them were missing — host apps wiring React state / persistence
+ * / undo middleware silently dropped the change. The 0.8.1 audit flagged
+ * this as a BLOCKER regression class with the exact same shape as the
+ * edge-geometry duplication; the fix is the same shape too — one source of
+ * truth that every consumer routes through.
+ */
+export type GraphMutationListener = (
+  kind: GraphMutationKind,
+  id: string,
+  updates: Partial<Omit<NodeData, 'id'>> | Partial<Omit<EdgeData, 'id'>>,
+) => void
+
 export class Graph {
   private nodes = new Map<string, NodeData>()
   private edges = new Map<string, EdgeData>()
   private nodeEdgeIndex = new Map<string, Set<string>>()
   // Increments on every mutation; renderers use this to skip work on static frames.
   version = 0
+
+  private mutationListener: GraphMutationListener | null = null
+
+  /** Register a listener fired on every node/edge mutation. Single-listener — overwrites. */
+  setMutationListener(listener: GraphMutationListener | null): void {
+    this.mutationListener = listener
+  }
 
   addNode(node: NodeData): void {
     if (this.nodes.has(node.id)) {
@@ -41,6 +69,7 @@ export class Graph {
     if (node) {
       this.nodes.set(id, { ...node, ...updates })
       this.version++
+      this.mutationListener?.('nodeUpdate', id, updates)
     }
   }
 
@@ -89,6 +118,7 @@ export class Graph {
     }
     this.edges.set(id, { ...edge, ...updates })
     this.version++
+    this.mutationListener?.('edgeUpdate', id, updates)
   }
 
   getNode(id: string): NodeData | undefined {

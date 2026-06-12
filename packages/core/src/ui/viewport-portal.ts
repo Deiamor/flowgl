@@ -1,4 +1,5 @@
 import type { Viewport } from '../viewport/viewport'
+import { sanitizeContent } from '../services/sanitize-html'
 
 export interface ViewportPortalSpec {
   /** Caller-supplied id; auto-generated when omitted. */
@@ -73,8 +74,7 @@ export class ViewportPortalLayer {
     if (spec.className) el.className = spec.className.replace(/[^A-Za-z0-9_\- ]/g, '')
 
     if (typeof spec.content === 'string') {
-      const html = this.sanitizeHtml ? this.sanitizeHtml(spec.content) : spec.content
-      el.innerHTML = html
+      el.innerHTML = sanitizeContent(spec.content, this.sanitizeHtml, 'ViewportPortal')
     } else {
       el.appendChild(spec.content)
     }
@@ -94,8 +94,7 @@ export class ViewportPortalLayer {
     if (partial.height != null) { p.height = partial.height; p.el.style.height = `${partial.height}px` }
     if (partial.content !== undefined) {
       if (typeof partial.content === 'string') {
-        const html = this.sanitizeHtml ? this.sanitizeHtml(partial.content) : partial.content
-        p.el.innerHTML = html
+        p.el.innerHTML = sanitizeContent(partial.content, this.sanitizeHtml, 'ViewportPortal')
       } else {
         while (p.el.firstChild) p.el.removeChild(p.el.firstChild)
         p.el.appendChild(partial.content)

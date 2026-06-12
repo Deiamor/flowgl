@@ -219,6 +219,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private nodeResizeOptions: import('./interaction/node-resize').NodeResizeOptions = {}
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
+  private ariaLiveAssertive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
   private rafId: number | null = null
   private pendingResize: { w: number, h: number } | null = null
@@ -274,7 +275,21 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
 
     this.canvas = document.createElement('canvas')
+    // Canvas focus-visible: an inset box-shadow ring on focus-visible only,
+    // since the canvas pixels themselves are GPU-painted and a regular
+    // browser `outline` is hidden behind the WebGL surface (WCAG 2.4.7).
     this.canvas.style.cssText = 'display:block;touch-action:none;user-select:none;outline:none;'
+    {
+      const doc = this.canvas.ownerDocument
+      const STYLE_ID = 'flowgl-canvas-focus-style'
+      if (doc && !doc.getElementById(STYLE_ID)) {
+        const tag = doc.createElement('style')
+        tag.id = STYLE_ID
+        tag.textContent = `canvas[data-flowgl-canvas]:focus-visible{box-shadow:inset 0 0 0 2px #6366f1;}`
+        doc.head?.appendChild(tag)
+      }
+      this.canvas.setAttribute('data-flowgl-canvas', '')
+    }
     this.canvas.setAttribute('role', 'application')
     this.canvas.setAttribute('aria-label', options.ariaLabel ?? 'Flowchart')
     this.canvas.setAttribute('aria-roledescription', 'Flowchart editor')
@@ -287,6 +302,16 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.ariaLive.setAttribute('aria-atomic', 'true')
     this.ariaLive.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;'
     options.container.appendChild(this.ariaLive)
+
+    // Separate assertive region for errors. WCAG 4.1.3 Status Messages —
+    // failed WebGL init / async load errors must reach screen readers
+    // even when the host app doesn't wire `onError` to its own SR UI.
+    this.ariaLiveAssertive = document.createElement('div')
+    this.ariaLiveAssertive.setAttribute('role', 'alert')
+    this.ariaLiveAssertive.setAttribute('aria-live', 'assertive')
+    this.ariaLiveAssertive.setAttribute('aria-atomic', 'true')
+    this.ariaLiveAssertive.style.cssText = 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;'
+    options.container.appendChild(this.ariaLiveAssertive)
 
     this.ariaDesc = document.createElement('div')
     this.ariaDesc.id = `fc-desc-${generateId()}`
@@ -313,6 +338,18 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.onBeforeDelete  = options.onBeforeDelete
 
     this.graph        = new Graph()
+    // Every graph mutation — no matter which call site triggered it — emits
+    // `nodeUpdate` / `edgeUpdate` via this single listener. Pre-0.8.2 the
+    // emit was duplicated at 14+ call sites in this file and most of them
+    // missed it; the 0.8.1 audit flagged this as the same regression class
+    // as the edge-geometry duplication. See graph.ts:setMutationListener.
+    this.graph.setMutationListener((kind, id, updates) => {
+      if (kind === 'nodeUpdate') {
+        this.emit('nodeUpdate', { id, updates: updates as Partial<Omit<NodeData, 'id'>> })
+      } else {
+        this.emit('edgeUpdate', { id, updates: updates as Partial<Omit<EdgeData, 'id'>> })
+      }
+    })
     this.layoutAnimator = new LayoutAnimator(this.graph, () => this.scheduleRender())
     this.viewport     = new Viewport()
     this.renderer = makeRenderer(options.rendererKind)
@@ -361,6 +398,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       const err = new Error('@flowgl/core: WebGL2 is not available in this environment')
       if (options.onError) options.onError(err)
       else console.error('[FlowChart]', err.message)
+      this.announceError(`Flowchart could not initialise: ${err.message}`)
       return
     }
     this.renderer.resize(width, height)
@@ -776,6 +814,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       onDuplicate:        () => { if (!this.readOnly) this.duplicateSelected() },
       onFitView:          () => this.fitView(),
       onFitViewSelection: () => this.fitViewToSelection(),
+      onZoomIn:           () => this.zoomIn(),
+      onZoomOut:          () => this.zoomOut(),
     })
 
     // Issue 2: Focus canvas on click so keyboard events are received
@@ -938,6 +978,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     if (!prev) return false
     this.applySnapshot(prev)
     this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() })
+    this.announce('Undone')
     return true
   }
 
@@ -951,6 +992,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     if (!next) return false
     this.applySnapshot(next)
     this.emit('historyChange', { canUndo: this.history.canUndo(), canRedo: this.history.canRedo() })
+    this.announce('Redone')
     return true
   }
 
@@ -1333,6 +1375,12 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     requestAnimationFrame(() => { this.ariaLive.textContent = msg })
   }
 
+  /** WCAG 4.1.3 — assertive announcements for errors / blocking failures. */
+  private announceError(msg: string): void {
+    this.ariaLiveAssertive.textContent = ''
+    requestAnimationFrame(() => { this.ariaLiveAssertive.textContent = msg })
+  }
+
   private announceNode(node: { id: string; label: string }): void {
     const edges = this.graph.getEdges()
     const inCount  = edges.filter(e => e.target === node.id).length
@@ -1343,14 +1391,39 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.announce(parts.join(', '))
   }
 
-  private tabSelectNode(direction: 1 | -1): void {
+  /**
+   * Tab/Shift-Tab navigation. Returns true when the Tab was consumed by
+   * moving the selection within the chart; returns false when the cycle
+   * has wrapped past the end (forward) or beginning (back) of the node
+   * list, so the browser can advance focus out of the chart. This is
+   * the WCAG 2.4.3 No Keyboard Trap contract.
+   */
+  private tabSelectNode(direction: 1 | -1): boolean {
     const nodes = this.graph.getNodes()
-    if (nodes.length === 0) return
+    if (nodes.length === 0) return false
     const currentId = this.selectedIds.size === 1 ? [...this.selectedIds][0]! : null
     const currentIdx = currentId ? nodes.findIndex(n => n.id === currentId) : -1
-    const nextIdx = ((currentIdx + direction) + nodes.length) % nodes.length
-    const next = nodes[nextIdx]
-    if (!next) return
+    // No selection yet: enter at first (forward) or last (back). Consume.
+    if (currentIdx < 0) {
+      const next = nodes[direction === 1 ? 0 : nodes.length - 1]!
+      this.applyTabSelection(next)
+      return true
+    }
+    const nextIdx = currentIdx + direction
+    // Wrapped past either end → release focus to the browser.
+    if (nextIdx < 0 || nextIdx >= nodes.length) {
+      // Clear our selection so re-entering Tab starts fresh.
+      this.selectedIds.clear()
+      this.selectedEdgeIds.clear()
+      this.emit('selectionChange', { selectedIds: [], edgeIds: [] })
+      this.scheduleRender()
+      return false
+    }
+    this.applyTabSelection(nodes[nextIdx]!)
+    return true
+  }
+
+  private applyTabSelection(next: NodeData): void {
     this.selectedIds.clear()
     this.selectedIds.add(next.id)
     this.selectedEdgeIds.clear()
@@ -1730,8 +1803,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   updateNode(id: string, updates: Partial<Omit<NodeData, 'id'>>): void {
     if (!this.graph.getNode(id)) return
     this.beforeMutation()
+    // `graph.updateNode` fires 'nodeUpdate' through the mutation listener
+    // wired in the constructor — no manual emit needed.
     this.graph.updateNode(id, updates)
-    this.emit('nodeUpdate', { id, updates })
     this.scheduleRender()
   }
 
@@ -1830,8 +1904,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   updateEdge(id: string, updates: Partial<Omit<EdgeData, 'id'>>): void {
     if (!this.graph.getEdge(id)) return
     this.beforeMutation()
+    // graph.updateEdge fires 'edgeUpdate' through the mutation listener.
     this.graph.updateEdge(id, updates)
-    this.emit('edgeUpdate', { id, updates })
     this.scheduleRender()
   }
 
@@ -1842,7 +1916,6 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.beforeMutation()
     const updates = { source: edge.target, target: edge.source }
     this.graph.updateEdge(id, updates)
-    this.emit('edgeUpdate', { id, updates })
     this.scheduleRender()
   }
 
@@ -2461,6 +2534,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
     this.tooltipEl?.remove()
     this.ariaLive?.remove()
+    this.ariaLiveAssertive?.remove()
     this.ariaDesc?.remove()
     this.highlightOverlay?.remove()
     this.statusOverlay?.remove()

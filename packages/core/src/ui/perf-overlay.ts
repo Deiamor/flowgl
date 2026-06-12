@@ -21,13 +21,19 @@ interface AtlasProbe { generation?: number }
 const STYLE_TAG_ID = 'flowgl-perf-overlay-style'
 const STYLE_CSS = `
 .flowgl-perf-overlay{position:absolute;display:grid;grid-template-columns:auto auto;gap:2px 10px;background:rgba(15,23,42,.88);backdrop-filter:blur(6px);color:#cbd5e1;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;line-height:1.4;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.06);box-shadow:0 4px 10px rgba(0,0,0,.25);z-index:45;user-select:none;pointer-events:none;}
-.flowgl-perf-overlay__label{opacity:.6;}
+/* WCAG 1.4.3 — opacity .6 on the slate label was ~3.2:1 against the
+ * overlay background. Bumped to .85 for ≥4.5:1 AA. */
+.flowgl-perf-overlay__label{opacity:.85;}
 .flowgl-perf-overlay__value{color:#f1f5f9;font-weight:600;text-align:right;}
 .flowgl-perf-overlay__value.is-green{color:#22c55e;}
 .flowgl-perf-overlay__value.is-yellow{color:#fbbf24;}
 .flowgl-perf-overlay__value.is-red{color:#f87171;}
 .flowgl-perf-overlay__value.is-flash{animation:flowgl-perf-flash .6s ease-out 1;}
 @keyframes flowgl-perf-flash{0%{color:#fbbf24}100%{color:#f1f5f9}}
+/* WCAG 2.3.3 — respect prefers-reduced-motion. */
+@media (prefers-reduced-motion: reduce){
+.flowgl-perf-overlay__value.is-flash{animation:none;}
+}
 `
 
 function ensureStyleTag(container: HTMLElement) {

@@ -35,6 +35,13 @@ export class LayoutAnimator {
   ): void {
     this.cancel()
 
+    // WCAG 2.3.3 — respect `prefers-reduced-motion: reduce`. Collapse the
+    // animation to a single tick: positions snap to their target. The
+    // host can still observe a `nodeUpdate` event the same way as before.
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      duration = 0
+    }
+
     const entries: [string, { x: number; y: number }][] = targets instanceof Map
       ? [...targets.entries()]
       : targets.map(({ id, x, y }) => [id, { x, y }])

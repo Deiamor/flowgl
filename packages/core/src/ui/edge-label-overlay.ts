@@ -1,6 +1,7 @@
 import type { Viewport } from '../viewport/viewport'
 import type { Graph } from '../graph/graph'
 import { edgeMidpoint, edgePathPoints } from '../renderer/webgl/util/edge-geometry'
+import { sanitizeContent } from '../services/sanitize-html'
 
 function pointAtFraction(pts: [number, number][], t: number): [number, number] {
   if (pts.length < 2) return pts[0] ?? [0, 0]
@@ -116,8 +117,7 @@ export class EdgeLabelOverlay {
     el.style.zIndex = String(Math.max(0, spec.zIndex ?? 38))
     if (spec.className) el.className += ' ' + spec.className.replace(/[^A-Za-z0-9_\- ]/g, '')
     if (typeof spec.content === 'string') {
-      const html = this.sanitizeHtml ? this.sanitizeHtml(spec.content) : spec.content
-      el.innerHTML = html
+      el.innerHTML = sanitizeContent(spec.content, this.sanitizeHtml, 'EdgeLabel')
     } else {
       el.appendChild(spec.content)
     }
@@ -134,8 +134,7 @@ export class EdgeLabelOverlay {
     if (partial.zIndex != null) l.el.style.zIndex = String(Math.max(0, partial.zIndex))
     if (partial.content !== undefined) {
       if (typeof partial.content === 'string') {
-        const html = this.sanitizeHtml ? this.sanitizeHtml(partial.content) : partial.content
-        l.el.innerHTML = html
+        l.el.innerHTML = sanitizeContent(partial.content, this.sanitizeHtml, 'EdgeLabel')
       } else {
         while (l.el.firstChild) l.el.removeChild(l.el.firstChild)
         l.el.appendChild(partial.content)

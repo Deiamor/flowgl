@@ -12,8 +12,8 @@ function makeOpts() {
     onSelectAll: vi.fn(),
     onUndo:      vi.fn(),
     onRedo:      vi.fn(),
-    onTabNext:   vi.fn(),
-    onTabPrev:   vi.fn(),
+    onTabNext:   vi.fn(() => true),
+    onTabPrev:   vi.fn(() => true),
     onArrowKey:  vi.fn(),
     onCopy:             vi.fn(),
     onPaste:            vi.fn(),
@@ -21,6 +21,8 @@ function makeOpts() {
     onDuplicate:        vi.fn(),
     onFitView:          vi.fn(),
     onFitViewSelection: vi.fn(),
+    onZoomIn:           vi.fn(),
+    onZoomOut:          vi.fn(),
   }
 }
 

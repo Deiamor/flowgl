@@ -1,4 +1,5 @@
 import { safeColor, safeNumber } from '../services/safe-css'
+import { sanitizeContent } from '../services/sanitize-html'
 
 export type PanelPosition =
   | 'top-left'      | 'top-center'    | 'top-right'
@@ -101,8 +102,7 @@ export class PanelOverlay {
     }
 
     if (typeof options.content === 'string') {
-      const html = this.sanitizeHtml ? this.sanitizeHtml(options.content) : options.content
-      el.innerHTML = html
+      el.innerHTML = sanitizeContent(options.content, this.sanitizeHtml, 'Panel')
     } else {
       el.appendChild(options.content)
     }
@@ -142,8 +142,7 @@ export class PanelOverlay {
     }
     if (options.content != null) {
       if (typeof options.content === 'string') {
-        const html = this.sanitizeHtml ? this.sanitizeHtml(options.content) : options.content
-        panel.el.innerHTML = html
+        panel.el.innerHTML = sanitizeContent(options.content, this.sanitizeHtml, 'Panel')
       } else {
         while (panel.el.firstChild) panel.el.removeChild(panel.el.firstChild)
         panel.el.appendChild(options.content)

@@ -1,0 +1,38 @@
+name: CodeQL
+
+# GitHub's first-party static analysis. Runs the security-extended +
+# security-and-quality query suites on TypeScript / JavaScript source.
+# Surfaces taint paths, injection sinks, prototype pollution, and the
+# CWE-25 / CWE-79 patterns we have already audited manually so that the
+# next instance of those classes shows up at PR review time, not in
+# someone's production app.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: '17 5 * * 2' # Tuesdays 05:17 UTC
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

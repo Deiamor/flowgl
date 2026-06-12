@@ -1,0 +1,25 @@
+name: Dependency review
+
+# Gates every PR on the supply-chain delta: new transitive deps with
+# known CVEs, license drift, and any vulnerability advisory that
+# touches our dependency graph. Catches a class of issues that
+# `npm audit` only flags after merge.
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+          allow-licenses: MIT, ISC, Apache-2.0, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, BlueOak-1.0.0, Python-2.0

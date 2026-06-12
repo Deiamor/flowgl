@@ -44,6 +44,15 @@ const counts       = countsIx >= 0
 // hardware regression detection lives in local maintainer runs + PERFORMANCE.md.
 const FLOORS = { 1000: 60, 5000: 30, 10000: 30 }
 
+// SwiftShader regression floors. These are NOT the T6 floors; they are
+// a "below this means something got slower than we have ever measured
+// in CI" line, computed from the bottom 20 % of the SwiftShader runs we
+// already archived in docs/data/benchmarks.json (see PERFORMANCE.md for
+// the derivation). They run even with --no-floor-check so we still
+// catch CPU-side regressions in the hot path. Adjust upward when the
+// archived baseline improves; never downward.
+const SWIFT_FLOORS = { 1000: 0.8, 5000: 0.15, 10000: 0.05 }
+
 let playwright
 try {
   playwright = (await import('playwright')).chromium
@@ -133,19 +142,30 @@ try {
   }
 
   let belowFloor = false
+  let belowSwiftFloor = false
   for (const r of result.results) {
     const floor = FLOORS[r.count]
+    const sfloor = SWIFT_FLOORS[r.count]
     if (floor != null && r.avgFps < floor) {
       if (noFloorCheck) {
-        console.log(`· ${r.count} nodes: ${r.avgFps.toFixed(1)} fps (under floor ${floor}, --no-floor-check)`)
+        console.log(`· ${r.count} nodes: ${r.avgFps.toFixed(1)} fps (under T6 floor ${floor}, --no-floor-check)`)
       } else {
-        console.error(`✗ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps < floor ${floor}`)
+        console.error(`✗ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps < T6 floor ${floor}`)
         belowFloor = true
       }
     } else {
-      console.log(`✓ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps (floor ${floor ?? '—'})`)
+      console.log(`✓ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps (T6 floor ${floor ?? '—'})`)
+    }
+    // SwiftShader regression floor runs unconditionally — catches CPU-path
+    // regressions even when --no-floor-check is set for the GPU floor.
+    if (sfloor != null && r.avgFps < sfloor) {
+      console.error(`✗ ${r.count} nodes: ${r.avgFps.toFixed(2)} fps < SwiftShader regression floor ${sfloor}`)
+      belowSwiftFloor = true
+    } else if (sfloor != null) {
+      console.log(`✓ ${r.count} nodes: SwiftShader regression floor ${sfloor} OK`)
     }
   }
+  if (belowSwiftFloor) belowFloor = true
 
   await browser.close()
   vite.kill()

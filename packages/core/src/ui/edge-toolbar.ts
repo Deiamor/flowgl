@@ -1,6 +1,7 @@
 import type { Viewport } from '../viewport/viewport'
 import type { Graph } from '../graph/graph'
 import { edgeMidpoint, edgePathPoints } from '../renderer/webgl/util/edge-geometry'
+import { sanitizeContent } from '../services/sanitize-html'
 
 function pointAtFraction(pts: [number, number][], t: number): [number, number] {
   if (pts.length < 2) return pts[0] ?? [0, 0]
@@ -131,8 +132,7 @@ export class EdgeToolbarLayer {
       el.className += ' ' + spec.className.replace(/[^A-Za-z0-9_\- ]/g, '')
     }
     if (typeof spec.content === 'string') {
-      const html = this.sanitizeHtml ? this.sanitizeHtml(spec.content) : spec.content
-      el.innerHTML = html
+      el.innerHTML = sanitizeContent(spec.content, this.sanitizeHtml, 'EdgeToolbar')
     } else {
       el.appendChild(spec.content)
     }
@@ -151,8 +151,7 @@ export class EdgeToolbarLayer {
     if (partial.isVisible !== undefined) t.isVisible = partial.isVisible
     if (partial.content !== undefined) {
       if (typeof partial.content === 'string') {
-        const html = this.sanitizeHtml ? this.sanitizeHtml(partial.content) : partial.content
-        t.el.innerHTML = html
+        t.el.innerHTML = sanitizeContent(partial.content, this.sanitizeHtml, 'EdgeToolbar')
       } else {
         while (t.el.firstChild) t.el.removeChild(t.el.firstChild)
         t.el.appendChild(partial.content)
