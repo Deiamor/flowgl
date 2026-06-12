@@ -68,6 +68,14 @@ export interface NodeData {
    * is opt-in and does not affect nodes whose easyConnect is unset.
    */
   easyConnect?: boolean
+  /**
+   * When `true` and this node has a `parentId`, dragging the node outside
+   * the parent's bbox at drag end grows the parent to fit. Overrides
+   * `extent: 'parent'` (the two are mutually exclusive in practice — pick
+   * one). Useful for "sticky note inside a group" UX where the group
+   * should accommodate its contents instead of pinning them.
+   */
+  expandParent?: boolean
 }
 
 export const DEFAULT_NODE_STYLE: NodeStyle = {

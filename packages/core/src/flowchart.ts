@@ -24,6 +24,8 @@ import { PerfOverlay, type PerfOverlayOptions } from './ui/perf-overlay'
 import { ViewportPortalLayer, type ViewportPortalSpec } from './ui/viewport-portal'
 import { EdgeLabelOverlay, type EdgeLabelSpec } from './ui/edge-label-overlay'
 import { EdgeToolbarLayer, type EdgeToolbarSpec } from './ui/edge-toolbar'
+import { HelperLinesLayer, type HelperLinesOptions } from './ui/helper-lines'
+import { ProximityConnectLayer, type ProximityConnectOptions } from './ui/proximity-connect'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -111,6 +113,20 @@ export interface FlowChartOptions {
    */
   nodeResize?: import('./interaction/node-resize').NodeResizeOptions
   /**
+   * Figma-style alignment guides during node drag. When `enabled`, dragging
+   * a node renders pink guide lines for matching X/Y coords on other nodes'
+   * left/center/right + top/center/bottom, and snaps to them within
+   * threshold. Disabled by default. World-unit thresholds.
+   */
+  helperLines?: HelperLinesOptions
+  /**
+   * Proximity Connect — during drag, suggest a connection when the dragged
+   * node lands within `threshold` world units of another node. Renders a
+   * dashed teal ghost line + halo on the suggested target; on drop, creates
+   * the edge (still routed through `onBeforeConnect`). Disabled by default.
+   */
+  proximityConnect?: ProximityConnectOptions
+  /**
    * Return false to cancel deletion of the selected nodes/edges.
    * Called before any nodes or edges are removed.
    */
@@ -151,6 +167,8 @@ export interface FlowChartEvents extends Record<string, unknown> {
   nodeAdd:          { node: NodeData }
   nodeRemove:       { id: string }
   nodeUpdate:       { id: string; updates: Partial<Omit<NodeData, 'id'>> }
+  nodeDataChange:   { id: string; data: Record<string, unknown>; partial: Record<string, unknown> }
+  nodeDataCycle:    { id: string; chain: string[] }
   edgeAdd:          { edge: EdgeData }
   edgeRemove:       { id: string }
   historyChange:    { canUndo: boolean; canRedo: boolean }
@@ -194,6 +212,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private viewportPortalLayer: ViewportPortalLayer | null = null
   private edgeLabelOverlay: EdgeLabelOverlay | null = null
   private edgeToolbarLayer: EdgeToolbarLayer | null = null
+  private helperLines: HelperLinesLayer | null = null
+  private proximityConnect: ProximityConnectLayer | null = null
+  private helperLinesOptions: HelperLinesOptions = {}
+  private proximityConnectOptions: ProximityConnectOptions = {}
   private nodeResizeOptions: import('./interaction/node-resize').NodeResizeOptions = {}
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
@@ -280,6 +302,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     // still reports a consistent options state. The interaction layer picks
     // them up after a successful init via setOptions.
     if (options.nodeResize) this.nodeResizeOptions = { ...options.nodeResize }
+    if (options.helperLines) this.helperLinesOptions = { ...options.helperLines }
+    if (options.proximityConnect) this.proximityConnectOptions = { ...options.proximityConnect }
     this.bgColor       = options.background ?? '#f7f7f7'
     this.gridConfig    = { ...DEFAULT_GRID_CONFIG, ...options.grid }
     this.snapGridSize    = options.snapGrid ?? 0
@@ -324,6 +348,13 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     // when WebGL2 init fails, so we mount it before the WebGL gate. A failed
     // chart can still host toolbars, error panels, and status messages.
     this.panelOverlay = new PanelOverlay(options.container, options.sanitizeHtml)
+
+    // HelperLines + ProximityConnect mount before the WebGL gate too. They
+    // attach DOM overlays only, no GPU work. A WebGL-failed chart can still
+    // expose `setHelperLinesOptions` / `setProximityConnectOptions` for
+    // consistent options state without mounting visible guides.
+    this.helperLines = new HelperLinesLayer(options.container, this.viewport, this.graph, this.helperLinesOptions)
+    this.proximityConnect = new ProximityConnectLayer(options.container, this.viewport, this.graph, this.proximityConnectOptions)
 
     if (!ok) {
       this.failed = true
@@ -492,16 +523,29 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     // Issue 3: onStart callback captures snapshot before any drag mutation
     this.drag = new NodeDrag(
       this.canvas, this.viewport, this.graph, this.hitTester,
-      (id) => { this.beforeMutation(); this.emit('nodeDragStart', { id }) },
-      (_id, _x, _y) => this.scheduleRender(),
+      (id) => {
+        this.beforeMutation()
+        this.helperLines?.begin(id)
+        this.proximityConnect?.begin(id)
+        this.emit('nodeDragStart', { id })
+      },
+      (id, _x, _y) => { void id; this.proximityConnect?.notifyMove(); this.scheduleRender() },
       (id, x, y)    => {
         this.lastDragEndTime = Date.now()
+        const proxTarget = this.proximityConnect?.end() ?? null
+        this.helperLines?.end()
         // Apply `NodeData.extent` clamp at drag end (positional snap).
         // Clamping during the drag itself would jitter the gesture; snapping
         // at end keeps the interaction smooth while still enforcing the
         // constraint.
         const node = this.graph.getNode(id)
-        if (node && node.extent != null) {
+        // expandParent wins over extent: instead of clamping the child, we
+        // grow the parent's bbox to include the child's new position. The
+        // expand happens at drag end (mirrors the extent timing — no
+        // jitter mid-gesture).
+        if (node?.expandParent && node.parentId) {
+          this.expandParentTo(node)
+        } else if (node && node.extent != null) {
           const r = this.clampToExtent(node)
           if (r && (r.x !== node.x || r.y !== node.y)) {
             this.graph.updateNode(id, { x: r.x, y: r.y })
@@ -510,6 +554,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
           }
         }
         this.emit('nodeDragEnd', { id, x, y })
+        // Promote proximity suggestion to a real edge after drag-end emit,
+        // so consumer handlers see the moved node first.
+        if (proxTarget) this.commitProximityConnection(id, proxTarget)
       },
       (clientX, clientY) =>
         this.readOnly ||
@@ -523,6 +570,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       (nodeId) => this.graph.getNodes().filter(n => n.parentId === nodeId).map(n => n.id),
       (nodeId) => this.selectedIds.has(nodeId) ? [...this.selectedIds].filter(id => id !== nodeId) : [],
     )
+    // HelperLines snap is applied via the drag layer's postSnap hook so the
+    // snapped coords reach updateNode (and therefore the renderer) without
+    // a round-trip through the chart's render loop.
+    this.drag.setPostSnap((nx, ny) => this.helperLines?.applySnap(nx, ny) ?? [nx, ny])
 
     this.panZoom = new PanZoom(
       this.canvas, this.viewport,
@@ -1678,6 +1729,83 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.scheduleRender()
   }
 
+  // ── Computing Flows (0.8.0) ───────────────────────────────────────────
+  //
+  // updateNodeData merges a partial into node.data and fans the new data out
+  // to any subscribers registered for that node id. Subscriber callbacks
+  // typically call updateNodeData themselves (downstream computation) so
+  // re-entry is the common case, not the exception. We track the active
+  // update chain in `dataUpdateStack` and detect cycles (same id appearing
+  // twice in the chain). When a cycle is detected we stop propagation,
+  // emit `nodeDataCycle` so consumers can surface a UI error, and leave the
+  // already-applied data in place (last-writer-wins for the cycle leg).
+  //
+  // Differentiator over React Flow's equivalent: this is explicit cycle
+  // detection. React Flow lets you stack-overflow yourself.
+
+  private nodeDataSubscribers = new Map<string, Set<(data: Record<string, unknown>, partial: Record<string, unknown>) => void>>()
+  private dataUpdateStack: string[] = []
+
+  /**
+   * Merge `partial` into `node.data` and notify subscribers. Cycles in the
+   * subscriber graph are detected and broken with a `nodeDataCycle` event.
+   *
+   * Returns `true` if the update was applied, `false` if the node is missing
+   * or a cycle prevented propagation.
+   */
+  updateNodeData(id: string, partial: Record<string, unknown>): boolean {
+    const node = this.graph.getNode(id)
+    if (!node) return false
+
+    if (this.dataUpdateStack.includes(id)) {
+      this.emit('nodeDataCycle', { id, chain: [...this.dataUpdateStack, id] })
+      return false
+    }
+
+    const nextData = { ...(node.data ?? {}), ...partial }
+    this.graph.updateNode(id, { data: nextData })
+    this.scheduleRender()
+
+    const subs = this.nodeDataSubscribers.get(id)
+    this.emit('nodeDataChange', { id, data: nextData, partial })
+
+    if (subs && subs.size > 0) {
+      this.dataUpdateStack.push(id)
+      try {
+        for (const fn of subs) fn(nextData, partial)
+      } finally {
+        this.dataUpdateStack.pop()
+      }
+    }
+    return true
+  }
+
+  /**
+   * Subscribe to data changes on a specific node. Returns an unsubscribe
+   * function. The subscriber receives the full merged data and the
+   * just-applied partial — most computing-flow consumers care about the
+   * partial (what changed) and call `updateNodeData` on downstream nodes.
+   */
+  subscribeNodeData(
+    id: string,
+    listener: (data: Record<string, unknown>, partial: Record<string, unknown>) => void,
+  ): () => void {
+    let set = this.nodeDataSubscribers.get(id)
+    if (!set) { set = new Set(); this.nodeDataSubscribers.set(id, set) }
+    set.add(listener)
+    return () => {
+      const s = this.nodeDataSubscribers.get(id)
+      if (!s) return
+      s.delete(listener)
+      if (s.size === 0) this.nodeDataSubscribers.delete(id)
+    }
+  }
+
+  /** Current subscriber count for `id`. Useful for tests + diagnostics. */
+  getNodeDataSubscriberCount(id: string): number {
+    return this.nodeDataSubscribers.get(id)?.size ?? 0
+  }
+
   addEdge(edge: EdgeData): void {
     this.beforeMutation()
     this.graph.addEdge(edge)
@@ -2087,6 +2215,47 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   }
 
   /**
+   * Grow the parent of `node` so the parent's bbox contains the child's
+   * current position. Mutates the parent's x / y / width / height in place.
+   * No-op when `node.parentId` is missing or the parent already contains
+   * the child. Called from the drag-end pipeline when `node.expandParent`
+   * is set.
+   */
+  private expandParentTo(node: NodeData): void {
+    if (!node.parentId) return
+    const parent = this.graph.getNode(node.parentId)
+    if (!parent) return
+
+    const cMinX = node.x, cMinY = node.y
+    const cMaxX = node.x + node.width, cMaxY = node.y + node.height
+    const pMinX = Math.min(parent.x, cMinX)
+    const pMinY = Math.min(parent.y, cMinY)
+    const pMaxX = Math.max(parent.x + parent.width,  cMaxX)
+    const pMaxY = Math.max(parent.y + parent.height, cMaxY)
+    if (
+      pMinX === parent.x && pMinY === parent.y &&
+      pMaxX === parent.x + parent.width && pMaxY === parent.y + parent.height
+    ) return
+
+    // Moving the parent origin shifts every child. Compute the offset and
+    // forward it to siblings so the relative positions stay stable.
+    const dx = pMinX - parent.x
+    const dy = pMinY - parent.y
+    this.graph.updateNode(parent.id, {
+      x: pMinX, y: pMinY,
+      width:  pMaxX - pMinX,
+      height: pMaxY - pMinY,
+    })
+    if (dx !== 0 || dy !== 0) {
+      for (const sibling of this.graph.getNodes()) {
+        if (sibling.parentId !== parent.id) continue
+        this.graph.updateNode(sibling.id, { x: sibling.x - dx, y: sibling.y - dy })
+      }
+    }
+    this.scheduleRender()
+  }
+
+  /**
    * Update NodeResize tuning at runtime. Merges with existing options. The
    * interaction layer may be null on a WebGL-failed chart, in which case the
    * options are still stored — consumer UI reads back consistent state and
@@ -2100,6 +2269,46 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   /** Current NodeResize tuning. */
   getNodeResizeOptions(): import('./interaction/node-resize').NodeResizeOptions {
     return { ...this.nodeResizeOptions }
+  }
+
+  /** Update Helper Lines tuning at runtime (enabled / thresholds). */
+  setHelperLinesOptions(options: HelperLinesOptions): void {
+    this.helperLinesOptions = { ...this.helperLinesOptions, ...options }
+    this.helperLines?.setOptions(this.helperLinesOptions)
+  }
+
+  /** Current Helper Lines tuning. */
+  getHelperLinesOptions(): HelperLinesOptions {
+    return { ...this.helperLinesOptions }
+  }
+
+  /** Update Proximity Connect tuning at runtime (enabled / threshold). */
+  setProximityConnectOptions(options: ProximityConnectOptions): void {
+    this.proximityConnectOptions = { ...this.proximityConnectOptions, ...options }
+    this.proximityConnect?.setOptions(this.proximityConnectOptions)
+  }
+
+  /** Current Proximity Connect tuning. */
+  getProximityConnectOptions(): ProximityConnectOptions {
+    return { ...this.proximityConnectOptions }
+  }
+
+  /**
+   * Promote a proximity-suggested target into a real edge. Routed through
+   * `onBeforeConnect` so consumer veto logic still applies. Uses the
+   * `generateEdgeId` from ProximityConnectOptions (default: `prox-<rand>`).
+   */
+  private commitProximityConnection(sourceId: string, targetId: string): void {
+    const sourceHandle: HandleSide = 'right'
+    const targetHandle: HandleSide = 'left'
+    if (this.onBeforeConnect && !this.onBeforeConnect({ sourceId, targetId, sourceHandle, targetHandle })) return
+    const genId = this.proximityConnectOptions.generateEdgeId ?? (() => `prox-${Math.random().toString(36).slice(2, 10)}`)
+    const edge: EdgeData = { id: genId(), source: sourceId, target: targetId, sourceHandle, targetHandle }
+    this.beforeMutation()
+    this.graph.addEdge(edge)
+    this.emit('edgeAdd', { edge })
+    this.emit('connect', { sourceId, targetId, sourceHandle, targetHandle })
+    this.scheduleRender()
   }
 
   // ── Viewport API ──────────────────────────────────────────────────────────────
@@ -2220,6 +2429,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.perfOverlay?.dispose()
     this.edgeLabelOverlay?.dispose()
     this.edgeToolbarLayer?.dispose()
+    this.helperLines?.dispose()
+    this.proximityConnect?.dispose()
+    this.nodeDataSubscribers.clear()
+    this.dataUpdateStack.length = 0
     this.viewportPortalLayer?.dispose()
     this.nodeToolbarLayer?.dispose()
     this.controls?.dispose()

@@ -21,6 +21,7 @@ export class NodeDrag {
   private getSnapGrid: () => number
   private getChildren: (nodeId: string) => string[]
   private getCoselected: (nodeId: string) => string[]
+  private postSnap: ((nx: number, ny: number, dragId: string) => [number, number]) | null = null
 
   private dragging: NodeData | null = null
   private dragOffsetX = 0
@@ -82,6 +83,11 @@ export class NodeDrag {
     return g > 0 ? Math.round(v / g) * g : v
   }
 
+  /** Register a coords-rewrite hook called after grid snap, before updateNode. */
+  setPostSnap(fn: ((nx: number, ny: number, dragId: string) => [number, number]) | null): void {
+    this.postSnap = fn
+  }
+
   private toWorld(clientX: number, clientY: number): [number, number] {
     const r = this.canvas.getBoundingClientRect()
     return this.viewport.screenToWorld(clientX - r.left, clientY - r.top)
@@ -122,12 +128,13 @@ export class NodeDrag {
   private handleMouseMove(e: MouseEvent): void {
     if (!this.dragging) return
     const [wx, wy] = this.toWorld(e.clientX, e.clientY)
-    const nx = this.snap(wx - this.dragOffsetX)
-    const ny = this.snap(wy - this.dragOffsetY)
+    let nx = this.snap(wx - this.dragOffsetX)
+    let ny = this.snap(wy - this.dragOffsetY)
     if (!this.didMove) {
       this.onStart(this.dragging.id)
       this.didMove = true
     }
+    if (this.postSnap) [nx, ny] = this.postSnap(nx, ny, this.dragging.id)
     this.graph.updateNode(this.dragging.id, { x: nx, y: ny })
     for (const c of this.dragChildren) this.graph.updateNode(c.id, { x: nx + c.dx, y: ny + c.dy })
     this.canvas.style.cursor = 'grabbing'
@@ -182,12 +189,13 @@ export class NodeDrag {
     if (!touch) return
     e.preventDefault()
     const [wx, wy] = this.toWorld(touch.clientX, touch.clientY)
-    const nx = this.snap(wx - this.dragOffsetX)
-    const ny = this.snap(wy - this.dragOffsetY)
+    let nx = this.snap(wx - this.dragOffsetX)
+    let ny = this.snap(wy - this.dragOffsetY)
     if (!this.didMove) {
       this.onStart(this.dragging.id)
       this.didMove = true
     }
+    if (this.postSnap) [nx, ny] = this.postSnap(nx, ny, this.dragging.id)
     this.graph.updateNode(this.dragging.id, { x: nx, y: ny })
     for (const c of this.dragChildren) this.graph.updateNode(c.id, { x: nx + c.dx, y: ny + c.dy })
     this.canvas.style.cursor = 'grabbing'

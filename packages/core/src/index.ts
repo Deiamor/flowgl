@@ -46,6 +46,8 @@ export type { PerfOverlayOptions } from './ui/perf-overlay'
 export type { ViewportPortalSpec } from './ui/viewport-portal'
 export type { EdgeLabelSpec } from './ui/edge-label-overlay'
 export type { EdgeToolbarSpec, EdgeToolbarAlign } from './ui/edge-toolbar'
+export type { HelperLinesOptions } from './ui/helper-lines'
+export type { ProximityConnectOptions } from './ui/proximity-connect'
 
 export { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'

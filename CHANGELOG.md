@@ -4,7 +4,102 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — 0.7.0 in progress
+## [Unreleased] — 0.8.0 in progress
+
+The 0.8.0 cycle delivers the four "reactive data + drag UX" items the
+ROADMAP held back behind the React-Flow-parity track: a per-node
+reactive data layer with explicit cycle detection (a deliberate
+differentiator over React Flow's stack-overflow-on-cycle equivalent),
+`expandParent` as the dual of the `extent: 'parent'` clamp landed in
+0.6.0, and two drag-time DX features (Helper Lines + Proximity
+Connect) built on top of the same `postSnap` hook in the drag layer.
+
+### Added
+
+- **Computing Flows** — `updateNodeData(id, partial)` /
+  `subscribeNodeData(id, listener)` / `getNodeDataSubscriberCount(id)`.
+  Per-node data layer with merge-not-replace semantics, fan-out to
+  subscribers, and explicit cycle detection. When a subscriber's
+  downstream write re-enters a node already on the active update
+  stack, the propagation is stopped and a `nodeDataCycle` event fires
+  with `{ id, chain }`. Already-applied data stays in place
+  (last-writer-wins on the cycle leg). New events:
+  `nodeDataChange`, `nodeDataCycle`.
+- **`NodeData.expandParent`** — opt-in boolean. When `true` and the
+  node has a `parentId`, dragging it past the parent's bbox at drag
+  end grows the parent to contain it instead of clamping (the dual of
+  `extent: 'parent'`). Sibling positions stay stable: when the parent
+  origin shifts, every sibling's local offset is preserved.
+- **Helper Lines layer** — `helperLines: HelperLinesOptions` in
+  `FlowChartOptions`, plus `setHelperLinesOptions` /
+  `getHelperLinesOptions` at runtime. Figma-style alignment guides
+  during node drag: matches the dragged node's left / center / right
+  + top / center / bottom against every other node's same set of
+  candidate coordinates and draws a pink guide line when within `show`
+  threshold (default 10 world units). Snaps to the matched coordinate
+  when within `snap` (default 5). Wired into the drag layer via a new
+  `setPostSnap` hook on `NodeDrag` — the snapped coords reach
+  `updateNode` directly so the renderer sees them in the same frame.
+  Disabled by default.
+- **Proximity Connect layer** — `proximityConnect:
+  ProximityConnectOptions` in `FlowChartOptions`, plus
+  `setProximityConnectOptions` / `getProximityConnectOptions` at
+  runtime. During a node drag, the nearest node within `threshold`
+  world units (bbox-to-bbox) is highlighted with a teal halo and a
+  dashed teal ghost line from the dragged node's center. On drag end
+  the suggestion is promoted into a real edge through
+  `onBeforeConnect` (so consumer veto logic still applies). Default
+  threshold 80; disabled by default; ignores the parent of the
+  dragged node and any node already connected to it.
+- **`NodeDrag.setPostSnap(fn)`** — public hook on the drag interaction
+  layer. The chart wires its HelperLines layer through this; consumers
+  with custom snap heuristics (e.g. host-app grid policies) can do the
+  same.
+
+### Changed
+
+- The drag-end pipeline now branches on `node.expandParent` before
+  `node.extent`. The two flags are mutually exclusive in practice;
+  setting both makes `expandParent` win.
+
+### Tests
+
+- 10 new tests in `computing-flows.test.ts` — merge semantics, return
+  values, subscribe / unsubscribe / count, multi-node chain, a→b→a
+  cycle, a→a self cycle, `nodeDataChange` event shape, dispose clears
+  subscribers, undefined partials still merge.
+- 3 new tests in `expand-parent.test.ts` — flag preserved through
+  addNode / updateNode / toJSON. (Full drag-pipeline expansion is
+  covered by the CDP probe.)
+- 9 new tests in `helper-lines.test.ts` — options round-trip, style
+  tag mounted, snap-within-threshold, show-but-not-snap renders
+  guides, outside-show no-op, center-to-center two-axis snap,
+  disabled passthrough, `end()` clears guides + deactivates.
+- 10 new tests in `proximity-connect.test.ts` — options round-trip,
+  style tag mounted, nearest-within-threshold, no-candidate returns
+  null, existing-edge excluded, ghost+halo render lifecycle, disabled
+  always-null, `end()` returns final target + clears visuals, parent
+  excluded.
+
+### CDP probe — 0.8.0 interactive gate
+
+- `packages/core/scripts/cdp-080-probe.mjs` — drives real Brave mouse
+  events through `Input.dispatchMouseEvent`:
+  - **GATE 1** Computing Flows: a → b (×10) → c (+1) chain propagates,
+    a → b → a cycle emits `nodeDataCycle` with chain `[a, b, a]` and
+    does not loop.
+  - **GATE 2** expandParent: dragging the child past the parent's
+    right + bottom corner grows the parent from (240×140) to a size
+    that contains the dropped child.
+  - **GATE 3** Helper Lines: dragging a node 3 px short of an aligned
+    edge snaps to the neighbour's coordinate (left edge at x=400).
+  - **GATE 4** Proximity Connect: mid-drag a target halo + dashed
+    ghost line appear; on drop a `prox-…` edge is created from source
+    to target and visuals clear.
+
+Test counts: **core 1056** (was 1024), **react 17** (unchanged).
+
+## [0.7.0] — 2026-06-13
 
 The 0.7.0 cycle closes the React-Flow-parity edge track: the most-asked-
 for path variant (`'smoothstep'`) lands on both renderers with byte-
