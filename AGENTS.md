@@ -95,6 +95,65 @@ When an agent (or a PR) discovers that a planned change would violate a tenet:
 
 ---
 
+## Doc Update Map
+
+When code changes, the docs that depend on it have to follow. Without an
+explicit map, "I'll update PROJECT.md later" turns into permanent drift —
+the kind that shipped 0.4.0 with a stale CHANGELOG entry and a phantom
+"Known limitations" line. Two-tier system: tier 1 is the computer's job,
+tier 2 is yours.
+
+### Tier 1 — Automated (`scripts/sync-docs.mjs`)
+
+These derive directly from `package.json` / `clover.xml` and have no
+business being hand-edited. The script reads the source of truth and
+rewrites the destination lines.
+
+| Source of truth | Synced into |
+|---|---|
+| `packages/*/package.json` `version` | `DEPLOY.md` 배포된 패키지 table |
+| `packages/core` test count (live vitest) + wrapper counts | `README.md` tests badge + `PROJECT.md` tech stack + Build Commands |
+| `packages/core/coverage/clover.xml` statements % | `README.md` coverage badge |
+
+Commands:
+
+```bash
+node scripts/sync-docs.mjs            # write any drift in place
+node scripts/sync-docs.mjs --check    # exit 1 on drift — CI / pre-commit gate
+```
+
+Adding a fact: open `scripts/sync-docs.mjs`, add an entry to the `tasks`
+array with the source reader and the regex that selects the doc line.
+
+### Tier 2 — Human-decided (this table)
+
+These are content changes, not derived numbers. The agent making the
+change is responsible for touching every row that matches.
+
+| Code change | Docs to update in the same PR |
+|---|---|
+| Add / rename / delete source file under `packages/core/src/` | `PROJECT.md` directory tree |
+| Add new public API (method, option, event) | `README.md` API section + `CHANGELOG.md` Added + a regression test |
+| Change public behavior (default, signature, event shape) | `CHANGELOG.md` Changed + `HISTORY.md` append entry + `SPEC_CHECKLIST.md` regression gate |
+| Fix a bug | `CHANGELOG.md` Fixed + `HISTORY.md` append entry + regression test + (if visual/UX) `SPEC_CHECKLIST.md` Visual Rendering or Release Verification Gates |
+| Add new external runtime dependency to `@flowgl/core` | **T2 violation** — stop, follow Tenet-Violation Escalation Protocol |
+| Change `makeRenderer` default | **T1 violation** — stop, follow Escalation Protocol |
+| Add new Renderer backend | `PRODUCT.md` T5 parity audit + `CHANGELOG.md` Known limitations (until parity is closed) + `SPEC_CHECKLIST.md` Visual Rendering Regression Gates row |
+| Add / amend / retire a Tenet | All three of `PRODUCT.md` (definition) + `AGENTS.md` (this file's guardrail row) + `SPEC_CHECKLIST.md` (regression gate) — never one without the other two |
+| Bump version | `scripts/sync-docs.mjs` handles `DEPLOY.md`; you still write the `CHANGELOG.md` entry and the `HISTORY.md` append entry by hand |
+
+### Release-time checklist
+
+Before `gh workflow run Release ...`:
+
+1. `node scripts/sync-docs.mjs` — apply any pending tier-1 sync
+2. `node scripts/sync-docs.mjs --check` — must exit 0
+3. Every applicable tier-2 row covered (CHANGELOG / HISTORY / SPEC_CHECKLIST)
+4. Every box in `SPEC_CHECKLIST.md` § "Release Verification Gates" ticked
+5. Then dispatch the release workflow
+
+---
+
 ## Notes for the `main` agent
 
 - The seven tenets above are not aspirational copy. Every time you sit down

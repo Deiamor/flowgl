@@ -135,11 +135,16 @@ flowchart/
 │           ├── Flowchart.svelte
 │           └── index.ts
 ├── wrangler.toml                  # Cloudflare Workers static assets config
-└── demo/
-    ├── package.json
-    ├── vite.config.ts
-    ├── index.html                 # vanilla JS demo (deployed at dev.flowgl.ouranos.kr)
-    └── react.html                 # React demo page
+├── demo/
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── index.html                 # vanilla JS demo (deployed at dev.flowgl.ouranos.kr)
+│   ├── react.html                 # React demo page
+│   ├── react-app.tsx              # React demo entry
+│   └── benchmark.html             # synthetic 1K/5K/10K perf benchmark page
+└── scripts/
+    ├── generate-sbom.mjs          # CycloneDX 1.5 SBOM generator (4 packages)
+    └── sync-docs.mjs              # auto-sync versions + test count + coverage badge across docs
 ```
 
 ## Canvas Overlay Stack

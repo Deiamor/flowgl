@@ -246,8 +246,9 @@ hotfixed within hours. Every release must pass every gate below.
 
 ### 1. Static checks
 - [ ] `pnpm typecheck` — 0 errors across all four packages
-- [ ] `pnpm test` — all tests pass (919+ currently; refresh PROJECT.md if the number drifts)
+- [ ] `pnpm test` — all tests pass
 - [ ] `pnpm build` — every package's `dist/` produces successfully
+- [ ] `node scripts/sync-docs.mjs --check` — exits 0 (no version / test-count / coverage drift in DEPLOY.md / README.md / PROJECT.md). See `AGENTS.md` § "Doc Update Map" for what is auto-synced versus hand-edited.
 
 ### 2. CDP atlas regression gate
 - [ ] `pnpm dev` + `brave-debug` are running locally
