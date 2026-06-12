@@ -22,9 +22,9 @@ example where applicable.
 
 - **Custom HTML inside a node** — set `NodeData.htmlContent` and pass a
   `sanitizeHtml` option to the chart constructor for untrusted input.
-- **Custom node shapes beyond the built-in five** — use the
-  `htmlContent` overlay today; a node-type registry is on the
-  [roadmap](https://github.com/Deiamor/flowgl/blob/master/ROADMAP.md).
+- **Custom node shapes beyond the built-in four** — register an
+  `'html'` node-type with `chart.registerNodeType(name, def)` (0.9.0).
+  Full walkthrough in [Custom node types](/cookbook/custom-node-type).
 - **Status badges** — `setNodeStatus(id, 'error' | 'warning' | 'success' | 'info' | null)`.
 - **Tooltips on hover** — `NodeData.tooltip`.
 
