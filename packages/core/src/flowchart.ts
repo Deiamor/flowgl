@@ -23,6 +23,7 @@ import { NodeToolbarLayer, type NodeToolbarSpec } from './ui/node-toolbar'
 import { PerfOverlay, type PerfOverlayOptions } from './ui/perf-overlay'
 import { ViewportPortalLayer, type ViewportPortalSpec } from './ui/viewport-portal'
 import { EdgeLabelOverlay, type EdgeLabelSpec } from './ui/edge-label-overlay'
+import { EdgeToolbarLayer, type EdgeToolbarSpec } from './ui/edge-toolbar'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -192,6 +193,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private perfOverlay: PerfOverlay | null = null
   private viewportPortalLayer: ViewportPortalLayer | null = null
   private edgeLabelOverlay: EdgeLabelOverlay | null = null
+  private edgeToolbarLayer: EdgeToolbarLayer | null = null
   private nodeResizeOptions: import('./interaction/node-resize').NodeResizeOptions = {}
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
@@ -1180,6 +1182,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         if (this.edgeLabelOverlay) {
           this.edgeLabelOverlay.reposition()
         }
+        if (this.edgeToolbarLayer) {
+          this.edgeToolbarLayer.setSelection(this.selectedEdgeIds)
+        }
 
         // Keep animating when any edge has animated:true
         if (this.renderer.hasAnimatedEdges()) {
@@ -1607,6 +1612,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   /** @deprecated since 0.2.0 — use `setSelection({ edges })`. Removed in 1.0. */
   setSelectedEdgeIds(ids: string[]): void {
     this.selectedEdgeIds = new Set(ids)
+    this.edgeToolbarLayer?.setSelection(this.selectedEdgeIds)
+    this.emit('selectionChange', {
+      selectedIds: [...this.selectedIds],
+      edgeIds:     [...this.selectedEdgeIds],
+    })
     this.scheduleRender()
   }
 
@@ -1617,6 +1627,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   setSelection(selection: { nodes?: string[]; edges?: string[] }): void {
     if (selection.nodes !== undefined) this.selectedIds     = new Set(selection.nodes)
     if (selection.edges !== undefined) this.selectedEdgeIds = new Set(selection.edges)
+    this.nodeToolbarLayer?.setSelection(this.selectedIds)
+    this.edgeToolbarLayer?.setSelection(this.selectedEdgeIds)
     this.emit('selectionChange', { selectedIds: [...this.selectedIds], edgeIds: [...this.selectedEdgeIds] })
     this.scheduleRender()
   }
@@ -2016,6 +2028,39 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     return this.edgeLabelOverlay?.list() ?? []
   }
 
+  private ensureEdgeToolbarLayer(): EdgeToolbarLayer {
+    if (!this.edgeToolbarLayer) {
+      this.edgeToolbarLayer = new EdgeToolbarLayer(
+        this.getContainer(),
+        this.viewport,
+        this.graph,
+        (this as unknown as { sanitizeHtml?: (s: string) => string }).sanitizeHtml,
+      )
+      this.edgeToolbarLayer.setSelection(this.selectedEdgeIds)
+    }
+    return this.edgeToolbarLayer
+  }
+
+  /** Mount a floating toolbar anchored to an edge's midpoint. Returns its id. */
+  addEdgeToolbar(spec: EdgeToolbarSpec): string {
+    return this.ensureEdgeToolbarLayer().add(spec)
+  }
+
+  /** Update an existing edge toolbar. */
+  updateEdgeToolbar(id: string, partial: Partial<Omit<EdgeToolbarSpec, 'edgeId'>>): boolean {
+    return this.edgeToolbarLayer?.update(id, partial) ?? false
+  }
+
+  /** Remove an edge toolbar. */
+  removeEdgeToolbar(id: string): boolean {
+    return this.edgeToolbarLayer?.remove(id) ?? false
+  }
+
+  /** Currently-mounted edge toolbar ids. */
+  listEdgeToolbars(): string[] {
+    return this.edgeToolbarLayer?.list() ?? []
+  }
+
   /**
    * Clamp a node's bbox into its `extent` constraint and return the new top-left
    * position. Returns null when the node has no extent. The clamp respects the
@@ -2174,6 +2219,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.resizeObserver?.disconnect()
     this.perfOverlay?.dispose()
     this.edgeLabelOverlay?.dispose()
+    this.edgeToolbarLayer?.dispose()
     this.viewportPortalLayer?.dispose()
     this.nodeToolbarLayer?.dispose()
     this.controls?.dispose()

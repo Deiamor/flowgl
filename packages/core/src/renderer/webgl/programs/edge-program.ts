@@ -2,11 +2,11 @@ import { createProgram } from '../context'
 import { DynamicBuffer } from '../buffers/dynamic-buffer'
 import {
   buildBezierStrip, edgeControlPoints,
-  buildStraightStrip, buildPolylineStrip, stepWaypoints,
+  buildStraightStrip, buildPolylineStrip, stepWaypoints, smoothStepWaypoints,
   EDGE_FLOATS_PER_VERT, BEZIER_SEGMENTS,
 } from '../util/bezier'
 import type { EdgeData, EdgeStyle } from '../../../graph/edge'
-import { DEFAULT_EDGE_STYLE } from '../../../graph/edge'
+import { DEFAULT_EDGE_STYLE, DEFAULT_SMOOTHSTEP_BORDER_RADIUS, DEFAULT_SMOOTHSTEP_ARC_SEGMENTS } from '../../../graph/edge'
 import type { NodeData } from '../../../graph/node'
 import { handleXY } from '../util/handle-xy'
 
@@ -73,7 +73,8 @@ function edgeFingerprint(
   styleColor: string, styleWidth: number, isSelected: boolean,
 ): string {
   const wpts = edge.waypoints ? edge.waypoints.map(w => `${w.x},${w.y}`).join(';') : ''
-  return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${edge.type ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}|${edge.animated ? 1 : 0}|${wpts}`
+  const path = edge.pathOptions ? `${edge.pathOptions.borderRadius ?? ''},${edge.pathOptions.arcSegments ?? ''}` : ''
+  return `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${edge.type ?? ''}|${styleColor}|${styleWidth}|${isSelected ? 1 : 0}|${edge.animated ? 1 : 0}|${wpts}|${path}`
 }
 
 // One GPU draw call covers a contiguous range of the combined VBO.
@@ -205,6 +206,11 @@ export class EdgeProgram {
         strip = buildStraightStrip(sx, sy, ex, ey, r, g, b, a, halfWidth)
       } else if (edge.type === 'step') {
         const pts = stepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
+        strip = buildPolylineStrip(pts, r, g, b, a, halfWidth)
+      } else if (edge.type === 'smoothstep') {
+        const br = edge.pathOptions?.borderRadius ?? DEFAULT_SMOOTHSTEP_BORDER_RADIUS
+        const seg = edge.pathOptions?.arcSegments ?? DEFAULT_SMOOTHSTEP_ARC_SEGMENTS
+        const pts = smoothStepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle, br, seg)
         strip = buildPolylineStrip(pts, r, g, b, a, halfWidth)
       } else {
         const [c1x, c1y, c2x, c2y] = edgeControlPoints(

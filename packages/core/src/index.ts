@@ -3,7 +3,7 @@ export type { FlowChartOptions, FlowChartEvents } from './flowchart'
 
 export { Graph } from './graph/graph'
 export type { NodeData, NodeStyle, NodeShape, NodeStatus, PortDef } from './graph/node'
-export type { EdgeData, EdgeStyle, EdgeType } from './graph/edge'
+export type { EdgeData, EdgeStyle, EdgeType, EdgePathOptions } from './graph/edge'
 export { DEFAULT_NODE_STYLE } from './graph/node'
 export { DEFAULT_EDGE_STYLE } from './graph/edge'
 
@@ -45,6 +45,7 @@ export type { NodeToolbarSpec, NodeToolbarPosition, NodeToolbarAlign } from './u
 export type { PerfOverlayOptions } from './ui/perf-overlay'
 export type { ViewportPortalSpec } from './ui/viewport-portal'
 export type { EdgeLabelSpec } from './ui/edge-label-overlay'
+export type { EdgeToolbarSpec, EdgeToolbarAlign } from './ui/edge-toolbar'
 
 export { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'

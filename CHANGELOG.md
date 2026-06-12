@@ -4,7 +4,67 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — 0.6.0 in progress
+## [Unreleased] — 0.7.0 in progress
+
+The 0.7.0 cycle closes the React-Flow-parity edge track: the most-asked-
+for path variant (`'smoothstep'`) lands on both renderers with byte-
+identical geometry (T5 parity), and the `NodeToolbar` pattern from 0.5.0
+gets a sibling — `EdgeToolbar` — anchored to edge midpoints.
+
+### Added
+
+- **`'smoothstep'` edge type** — orthogonal routing with rounded corners.
+  Same step path as `'step'`, but every interior 90° vertex is filleted
+  with a quarter-circle of `pathOptions.borderRadius` world units
+  (default 8). The arc is sampled into a polyline with
+  `pathOptions.arcSegments` points per corner (default 8) and rendered
+  via `buildPolylineStrip` (WebGL) or `lineTo` chain (Canvas2D). Both
+  renderers generate **the same sampled polyline**, so the two paths are
+  pixel-equivalent — T5 parity gate honoured for the new variant.
+- **`EdgeData.pathOptions`** — `{ borderRadius?: number; arcSegments?: number }`.
+  Reserved for type-specific routing tuning. `'smoothstep'` reads both
+  fields; other edge types ignore it. Cached in the WebGL edge program
+  fingerprint so geometry rebuilds when the user mutates corner radius.
+- **`EdgeToolbar` layer** — `chart.addEdgeToolbar(spec)` /
+  `updateEdgeToolbar(id, partial)` / `removeEdgeToolbar(id)` /
+  `listEdgeToolbars()`. Mirrors NodeToolbar contract but anchors to a
+  single edge's midpoint. Position via `align: 'above' | 'below' |
+  'inline'` and `offset` screen-pixels. Visibility policy: `'auto'`
+  (default — visible when the edge is in `selectedEdgeIds`), `true`,
+  `false`. Constant pixel size under zoom. Exports added:
+  `EdgeToolbarSpec`, `EdgeToolbarAlign`.
+
+### Changed
+
+- `setSelectedEdgeIds` now emits `selectionChange` and syncs the
+  EdgeToolbar visibility — same fix shape as `setSelectedIds` got in
+  0.6.0. `setSelection({ edges })` also forwards to both toolbar layers.
+- WebGL edge fingerprint now includes `pathOptions` so a borderRadius
+  mutation invalidates the strip cache.
+
+### Tests
+
+- 10 new tests in `smoothstep.test.ts` — polyline length math (2 vs 1
+  interior corner), arc sample distance == r, tangent point coordinates,
+  endpoint preservation, radius-0 / segments-0 fallbacks, radius
+  clamping, and chart-side round-trip of `type` + `pathOptions`.
+- 15 new tests in `edge-toolbar.test.ts` — mount, isVisible auto / true
+  / false, edge-removed hides, endpoint-removed hides, update mutation,
+  remove, list, dispose, align variants, HTMLElement content.
+
+### CDP probe — 0.7.0 regression gate
+
+- `packages/core/scripts/cdp-070-probe.mjs` — opens Brave, mounts a
+  smoothstep edge with `pathOptions: { borderRadius: 16, arcSegments: 10 }`
+  and an `EdgeToolbar` with auto visibility, screenshots default state,
+  selects the edge and verifies the toolbar appears at the midpoint,
+  pans the viewport and verifies the toolbar follows by exactly the
+  pan delta (±3 px), deselects and verifies the toolbar hides,
+  disposes the chart and verifies 0 toolbars remain.
+
+Test counts: **core 1024** (was 999), **react 17** (unchanged).
+
+## [0.6.0] — 2026-06-12
 
 The 0.6.0 cycle finishes the React-Flow-parity track started in 0.5.0:
 the remaining overlay pair (ViewportPortal, EdgeLabel HTML), one

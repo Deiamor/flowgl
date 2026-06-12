@@ -4,9 +4,9 @@ import type { NodeData } from '../../graph/node'
 import type { EdgeData } from '../../graph/edge'
 import type { Viewport } from '../../viewport/viewport'
 import { DEFAULT_NODE_STYLE } from '../../graph/node'
-import { DEFAULT_EDGE_STYLE } from '../../graph/edge'
+import { DEFAULT_EDGE_STYLE, DEFAULT_SMOOTHSTEP_BORDER_RADIUS, DEFAULT_SMOOTHSTEP_ARC_SEGMENTS } from '../../graph/edge'
 import { handleXY } from '../webgl/util/handle-xy'
-import { edgeControlPoints, cubicBezierPoint, stepWaypoints } from '../webgl/util/bezier'
+import { edgeControlPoints, cubicBezierPoint, stepWaypoints, smoothStepWaypoints } from '../webgl/util/bezier'
 import { cullNodes, cullEdges } from '../webgl/cull'
 
 /**
@@ -237,6 +237,12 @@ export class Canvas2DRenderer implements Renderer {
       const pts = stepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
       ctx.moveTo(pts[0]![0]!, pts[0]![1]!)
       for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i]![0]!, pts[i]![1]!)
+    } else if (edge.type === 'smoothstep') {
+      const r = edge.pathOptions?.borderRadius ?? DEFAULT_SMOOTHSTEP_BORDER_RADIUS
+      const seg = edge.pathOptions?.arcSegments ?? DEFAULT_SMOOTHSTEP_ARC_SEGMENTS
+      const pts = smoothStepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle, r, seg)
+      ctx.moveTo(pts[0]![0]!, pts[0]![1]!)
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i]![0]!, pts[i]![1]!)
     } else {
       const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
       ctx.moveTo(sx, sy)
@@ -258,6 +264,12 @@ export class Canvas2DRenderer implements Renderer {
       dx = ex - sx; dy = ey - sy
     } else if (edge.type === 'step') {
       const pts = stepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
+      const last = pts[pts.length - 2]!
+      dx = ex - last[0]!; dy = ey - last[1]!
+    } else if (edge.type === 'smoothstep') {
+      const r = edge.pathOptions?.borderRadius ?? DEFAULT_SMOOTHSTEP_BORDER_RADIUS
+      const seg = edge.pathOptions?.arcSegments ?? DEFAULT_SMOOTHSTEP_ARC_SEGMENTS
+      const pts = smoothStepWaypoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle, r, seg)
       const last = pts[pts.length - 2]!
       dx = ex - last[0]!; dy = ey - last[1]!
     } else {

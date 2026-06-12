@@ -30,6 +30,63 @@ export function stepWaypoints(
 }
 
 /**
+ * Take the sharp orthogonal polyline from `stepWaypoints` and fillet every
+ * interior 90° corner with a quarter-circle of radius `r`. Returns a denser
+ * polyline; each interior corner contributes `segments` extra samples.
+ *
+ * `r` is automatically clamped to half the shorter incident segment so the
+ * arc never crosses the previous/next segment endpoints.
+ *
+ * The same sampled polyline is used by both renderers — WebGL feeds it into
+ * `buildPolylineStrip`, Canvas2D walks it with `lineTo`. Identical geometry
+ * on both = T5 parity for `'smoothstep'`.
+ */
+export function smoothStepWaypoints(
+  sx: number, sy: number, sourceHandle: string | undefined,
+  ex: number, ey: number, targetHandle: string | undefined,
+  radius = 8,
+  segments = 8,
+): [number, number][] {
+  const corners = stepWaypoints(sx, sy, sourceHandle, ex, ey, targetHandle)
+  if (corners.length <= 2 || radius <= 0 || segments < 1) return corners
+
+  const out: [number, number][] = [corners[0]!]
+  for (let i = 1; i < corners.length - 1; i++) {
+    const prev = corners[i - 1]!
+    const curr = corners[i]!
+    const next = corners[i + 1]!
+    const v1x = curr[0] - prev[0], v1y = curr[1] - prev[1]
+    const v2x = next[0] - curr[0], v2y = next[1] - curr[1]
+    const l1 = Math.hypot(v1x, v1y)
+    const l2 = Math.hypot(v2x, v2y)
+    const r = Math.min(radius, l1 / 2, l2 / 2)
+    if (r <= 0) { out.push(curr); continue }
+    const u1x = v1x / l1, u1y = v1y / l1
+    const u2x = v2x / l2, u2y = v2y / l2
+    const t1x = curr[0] - u1x * r, t1y = curr[1] - u1y * r
+    const t2x = curr[0] + u2x * r, t2y = curr[1] + u2y * r
+    // Arc center: from T1 perpendicular to incoming direction, inward.
+    // cross sign picks which side of v1 the arc curves to (matches v2's side).
+    const cross = u1x * u2y - u1y * u2x
+    const sign = cross >= 0 ? 1 : -1
+    const cx = t1x + (-u1y) * r * sign
+    const cy = t1y +  u1x * r * sign
+    const a1 = Math.atan2(t1y - cy, t1x - cx)
+    let a2 = Math.atan2(t2y - cy, t2x - cx)
+    if (sign > 0) { if (a2 < a1) a2 += 2 * Math.PI }
+    else          { if (a2 > a1) a2 -= 2 * Math.PI }
+    out.push([t1x, t1y])
+    for (let s = 1; s <= segments; s++) {
+      const t = s / segments
+      const a = a1 + (a2 - a1) * t
+      out.push([cx + r * Math.cos(a), cy + r * Math.sin(a)])
+    }
+  }
+  out.push(corners[corners.length - 1]!)
+  return out
+}
+
+/**
  * Build a triangle strip for a straight line between two points.
  */
 export function buildStraightStrip(
