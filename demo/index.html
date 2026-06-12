@@ -250,6 +250,17 @@
             { id: 'out-right', side: 'right',  offset: 0.5 },
           ],
         },
+        // CJK / mixed labels — verify WebGL2 atlas renders non-ASCII glyphs correctly.
+        { id: 'cjk1', x: 80,  y: 400, width: 150, height: 52, label: '한국어',
+          style: { backgroundColor: '#fff', borderColor: '#43a047' } },
+        { id: 'cjk2', x: 260, y: 400, width: 150, height: 52, label: '日本語',
+          style: { backgroundColor: '#fff', borderColor: '#1e88e5' } },
+        { id: 'cjk3', x: 440, y: 400, width: 150, height: 52, label: '中文测试',
+          style: { backgroundColor: '#fff', borderColor: '#f9a825' } },
+        { id: 'cjk4', x: 620, y: 400, width: 180, height: 52, label: 'Mixed 한글 test',
+          style: { backgroundColor: '#fff', borderColor: '#e53935' } },
+        { id: 'cjk5', x: 830, y: 400, width: 200, height: 100, label: '여러줄\nテスト\n测试',
+          style: { backgroundColor: '#fff', borderColor: '#8e24aa' } },
       ],
       edges: [
         { id: 'e1', source: 'n1', target: 'n2' },

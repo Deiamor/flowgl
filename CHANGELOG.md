@@ -4,6 +4,32 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.0] — 2026-06-12
+
+### Fixed
+
+- **CJK / Hangul / Japanese / mixed label rendering — confirmed parity with isolated reproduction.** The 0.2.5 known limitation ("WebGL2 atlas drops glyph pixels for CJK strings inside the chart's render frame; 261 nonzero pixels in isolation vs. 113 in-frame") is closed. 0.2.6's per-entry `OffscreenCanvas` + `drawImage` strategy in the atlas write path was the right structural fix; this release adds the in-frame verification harness that proves it works and converts that harness into a permanent regression gate.
+  - In-frame CDP-driven diagnostic at `packages/core/scripts/atlas-cjk-diag.mjs` opens a fresh Brave/Chrome tab against the dev server, draws five sample strings (`'Hello'`, `'한국어'`, `'日本語'`, `'中文测试'`, `'Mixed 한글 test'`) through both a fresh `OffscreenCanvas` and the live chart atlas, and asserts the nonzero-alpha pixel counts match.
+  - Current readings (Brave 149 / macOS / `dpr=2`):
+
+    | sample | isolated nz | atlas nz | parity |
+    | --- | --- | --- | --- |
+    | `Hello` | 665 | 665 | ✅ |
+    | `한국어` | 789 | 789 | ✅ |
+    | `日本語` | 913 | 913 | ✅ |
+    | `中文测试` | 1294 | 1294 | ✅ |
+    | `Mixed 한글 test` | 1985 | 1985 | ✅ |
+
+  - The script exits non-zero on any divergence — wire it into pre-release smoke testing alongside `pnpm typecheck && pnpm test && pnpm build`. Local-only; CI doesn't run it because CDP needs a real Chromium and a live dev server.
+
+### Changed
+
+- The `Known limitations` block in 0.2.6 listing the CJK atlas drop is removed — the limitation no longer holds.
+
+### Documentation
+
+- Demo (`demo/index.html`) ships five new CJK / mixed / multi-line CJK nodes (`cjk1`–`cjk5`) on the canvas. They double as a hand-eye verification anytime the atlas write path is touched. `cjk5` (`'여러줄\nテスト\n测试'`) uses a tall `height: 100` so the three-line wrapped block fits without overflow — also documents the rule-of-thumb that multi-line label nodes need height ≥ `lineCount × fontSize × lineHeight + 2 × PADDING`.
+
 ## [0.2.6] — 2026-06-12
 
 ### Added
@@ -34,12 +60,7 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ### Known limitations
 
-- WebGL2 atlas drops glyph pixels for CJK / Hangul / Japanese / mixed strings inside the chart's render frame (every isolated reproduction renders 261 nonzero pixels; live in-frame produces 113). Workaround: opt the affected chart into Canvas2D with `rendererKind: 'canvas2d'`. The atlas-level root cause is under investigation as a separate workstream targeted for 0.4.0 (see "Roadmap" below); resolving it will not change the default renderer.
 - `Canvas2DRenderer` does not yet render the WebGL-only HandleProgram (connect-drag circles), reroute handles, or endpoint circles. These are tracked under T5 (Visual Feature Parity Across Backends) in `PRODUCT.md`. Canvas2D will remain opt-in until parity is closed.
-
-### Roadmap (informational — no code in 0.2.6)
-
-- **0.4.0 — WebGL2 atlas CJK fix.** Root-cause the in-frame glyph-pixel drop and remove the Known-limitation above. Investigation plan in `TASK.md`. Target keeps the default renderer at WebGL2 (T1) and adds no new dependencies (T2).
 
 ## [0.2.5] — 2026-06-11
 
