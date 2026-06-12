@@ -26,14 +26,23 @@ function startPreview() {
       stdio: ['ignore', 'pipe', 'inherit'],
     })
     let resolved = false
+    const settleOnce = () => { if (!resolved) { resolved = true; resolve(child) } }
     child.stdout.on('data', (c) => {
-      const buf = c.toString()
-      if (!resolved && buf.includes(`localhost:${PORT}`)) {
-        resolved = true
-        resolve(child)
-      }
+      if (c.toString().includes(`localhost:${PORT}`)) settleOnce()
     })
-    setTimeout(() => reject(new Error('preview did not start')), 30000)
+    // HTTP-probe fallback: pnpm sometimes buffers vite's stdout enough that
+    // the "Local:" line never makes it back to us, but the server is up.
+    // Poll the port for 90 s and resolve as soon as a 200 lands.
+    const start = Date.now()
+    const poll = () => {
+      if (resolved) return
+      const req = http.get(`http://localhost:${PORT}/`, (res) => { res.resume(); if (res.statusCode === 200) settleOnce() })
+      req.on('error', () => {})
+      req.setTimeout(800, () => req.destroy())
+      if (Date.now() - start > 90000) reject(new Error('preview did not start within 90 s'))
+      else setTimeout(poll, 1500)
+    }
+    setTimeout(poll, 3000)
   })
 }
 
