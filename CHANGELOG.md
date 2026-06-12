@@ -4,9 +4,111 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — 0.5.0 in progress
+## [Unreleased] — 0.6.0 in progress
 
-The 0.5.0 cycle targets a curated, value-preserving subset of React Flow's
+The 0.6.0 cycle finishes the React-Flow-parity track started in 0.5.0:
+the remaining overlay pair (ViewportPortal, EdgeLabel HTML), one
+quality-of-life resize-handle upgrade, two pure-model affordances
+(extent clamp, easyConnect hit area), and the first React-side
+DX layer (hooks). All six items shipped as one cycle, gated by a
+new browser-CDP probe.
+
+### Added
+
+- **`ViewportPortal` layer** — `chart.addViewportPortal(spec)` /
+  `updateViewportPortal(id, partial)` / `removeViewportPortal(id)` /
+  `listViewportPortals()`. World-coordinate DOM portal: children
+  translate + **scale together with the viewport** (transform
+  `translate(sx, sy) scale(zoom)`). Opposite contract from
+  `NodeToolbar` (constant size). Use for in-canvas annotations,
+  embedded media, sticky notes. Repositions inside the render loop;
+  zero per-frame cost when empty. Exports added: `ViewportPortalSpec`.
+- **`EdgeLabel` HTML overlay** — `chart.addEdgeLabel(spec)` /
+  `updateEdgeLabel(id, partial)` / `removeEdgeLabel(id)` /
+  `listEdgeLabels()`. Alternative to atlas SDF labels for HTML
+  content (badges, buttons, mini-graphs). Anchored to the
+  straight-line midpoint between source/target node centers. Hides
+  automatically when the edge or one of its endpoint nodes
+  disappears. Performance budget documented: tens of labels OK,
+  hundreds should still prefer the SDF text path. Exports added:
+  `EdgeLabelSpec`.
+- **`NodeResizer` polish** — `NodeResizeOptions` interface accepted
+  on construction (`FlowChartOptions.nodeResize`) and via
+  `setNodeResizeOptions` / `getNodeResizeOptions`. Fields:
+  `minWidth` / `minHeight` / `maxWidth` / `maxHeight`,
+  `keepAspectRatio`, `shouldResize` predicate (returns false to
+  veto), `onResizeStart` / `onResize` / `onResizeEnd` callbacks.
+  Holding **Shift** during a resize gesture also temporarily enables
+  keep-aspect-ratio. Options storage lives on `FlowChart` itself
+  (above the WebGL gate) so a WebGL-failed chart returns consistent
+  options state. Exports added: `NodeResizeOptions`, `NodeResizeRect`.
+- **`NodeData.extent`** — `'parent' | { minX, minY, maxX, maxY } | null`.
+  `'parent'` clamps the node to its `parentId`'s bbox on drag end.
+  Explicit rect clamps to that rect. `null`/`undefined` = no
+  constraint (default). Drag-end pipeline calls a new
+  `clampToExtent` helper and re-emits `nodeDragEnd` with the clamped
+  coords.
+- **`NodeData.easyConnect`** — boolean opt-in. When `true`, the
+  connection hit radius around each handle expands to
+  `min(width, height) / 4`, so dragging anywhere near the node's
+  edge starts a connection (React-Flow-style whole-node-as-handle).
+  Default false stays opt-in per-node.
+- **`@flowgl/react` hooks** — `FlowchartProvider`, `useFlowChart`,
+  `useNodes`, `useEdges`, `useViewport`, `useSelection`. Built on
+  plain `useState` + `useEffect` subscribed to chart events; **no
+  new runtime dependency** (Tenet T2 preserved). Provider takes a
+  `FlowChart` instance; hooks resolve through React context and
+  throw outside a provider.
+
+### Changed
+
+- `setSelectedIds` now emits `selectionChange` (was a no-op for
+  listeners — 0.5.0 wired it into NodeToolbar visibility but skipped
+  the event). `useSelection` requires this.
+- `setViewport` now emits `viewportChange`. `useViewport` requires
+  this.
+- **EC-145** and **EC-201** inverted from "does not emit" to "emits"
+  to assert the new behavior.
+
+### Tests
+
+- 13 new tests in `viewport-portal.test.ts` for mount, transform
+  shape, zoom-reflection (scale(N) matches viewport.zoom), content
+  variants, update, list, dispose, id collision, className hardening.
+- 11 new tests in `edge-label-overlay.test.ts` for mount,
+  edge-removed-hides, endpoint-removed-hides, midpoint centering,
+  update, list, dispose, HTMLElement content.
+- 7 new tests in `node-resize-options.test.ts` for setOptions/
+  getOptions, construct-time options, partial merge, predicate +
+  callbacks storage, defaults.
+- 8 new tests in `extent.test.ts` for undefined/null bypass, parent
+  clamp (positive + negative axes), stale-parent → null, explicit
+  rect, inside-bounds no-op.
+- 5 new tests in `easy-connect.test.ts` for flag preserved through
+  construct, addNode, updateNode, getNodes, toJSON.
+- 8 new tests in `packages/react/src/__tests__/hooks.test.tsx` for
+  useFlowChart outside-provider throw, useNodes init + add + remove,
+  useEdges init + add, useViewport init + setViewport,
+  useSelection update on setSelectedIds.
+
+### CDP probe — 0.6.0 regression gate
+
+- `packages/core/scripts/cdp-060-probe.mjs` — opens a fresh Brave
+  target, mounts a ViewportPortal + an EdgeLabel + an easyConnect
+  node + an `extent: 'parent'` child, screenshots default + 2× zoom,
+  asserts:
+  - portal transform contains `scale(1)` at zoom 1 and `scale(2)`
+    at zoom 2
+  - clamped child returns the expected corner from `clampToExtent`
+  - `NodeData.easyConnect` and `NodeData.extent` storage round-trips
+  - `setNodeResizeOptions` round-trips
+  - `dispose()` leaves 0 portals + 0 edge-labels + 0 toolbars
+
+Test counts: **core 999** (was 986), **react 17** (was 9).
+
+## [0.5.0] — 2026-06-12
+
+The 0.5.0 cycle shipped a curated, value-preserving subset of React Flow's
 UI catalog plus one differentiation item. Full rationale + the explicit
 "won't do" list lives in [`ROADMAP.md`](./ROADMAP.md). Items below land
 incrementally on `master` and are tagged `0.5.0` when the milestone
