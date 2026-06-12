@@ -52,8 +52,9 @@ const vite = spawn('pnpm', ['--filter', 'demo', 'dev', '--silent'], {
   stdio: ['ignore', 'pipe', 'pipe'],
 })
 let viteUrl = null
+const VITE_TIMEOUT_MS = 90_000
 await new Promise((resolve, reject) => {
-  const timer = setTimeout(() => reject(new Error('vite did not start in 30s')), 30000)
+  const timer = setTimeout(() => reject(new Error(`vite did not start in ${VITE_TIMEOUT_MS / 1000}s`)), VITE_TIMEOUT_MS)
   vite.stdout.on('data', (chunk) => {
     const m = chunk.toString().match(/http:\/\/localhost:(\d+)/)
     if (m && !viteUrl) {
