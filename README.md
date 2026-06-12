@@ -17,7 +17,7 @@
   <a href="https://www.npmjs.com/package/@flowgl/svelte"><img src="https://img.shields.io/npm/v/@flowgl/svelte?label=%40flowgl%2Fsvelte" alt="npm @flowgl/svelte"></a>
   <a href="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml"><img src="https://github.com/Deiamor/flowgl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@flowgl/core"><img src="https://img.shields.io/npm/dm/@flowgl/core" alt="npm downloads"></a>
-  <img src="https://img.shields.io/badge/tests-919%20passing-brightgreen" alt="919 tests passing">
+  <img src="https://img.shields.io/badge/tests-1082%20passing-brightgreen" alt="1082 tests passing">
   <img src="https://img.shields.io/badge/coverage-93.75%25-brightgreen" alt="coverage 93.75%">
   <img src="https://img.shields.io/badge/renderer-Canvas2D%20%2B%20WebGL2-orange" alt="Canvas2D + WebGL2">
   <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="zero dependencies">
@@ -177,10 +177,11 @@ export function Pipeline() {
 <br clear="right">
 
 ### Edges
-- 〰️ Bezier curves, smooth GPU rendering
+- 〰️ Edge variants — bezier (default), straight, step (orthogonal), `'smoothstep'` (rounded corners, `pathOptions.borderRadius`)
 - 🐜 Animated edges (marching-ants)
-- 🏷️ Labels at bezier midpoint
-- ⚓ Waypoints — drag midpoint to add, right-click to remove
+- 🏷️ Labels at the rendered-path midpoint by arc length (follows waypoints + step / smoothstep routing, not just the bezier baseline)
+- 🌐 HTML edge labels via `chart.addEdgeLabel(spec)` for buttons / badges / mini-graphs
+- ⚓ Waypoints — drag the midpoint handle to insert, right-click to remove; hit testing follows the rendered polyline
 - ↩️ Endpoint rerouting by drag
 - ✏️ Dashed / custom stroke styles
 
@@ -194,15 +195,36 @@ export function Pipeline() {
 - ✅ Select all — Ctrl+A
 - 🔎 Fit view — F; fit selection — Shift+F
 - 👁️ Read-only mode
+- 📏 **Helper Lines** — Figma-style alignment guides + snap during drag (`helperLines: { enabled, snap, show }`)
+- 🧲 **Proximity Connect** — drag a node near another → ghost + halo preview → drop creates the edge through `onBeforeConnect`
+- 🤝 **Easy Connect** — opt-in per-node: `NodeData.easyConnect = true` inflates the handle hit radius so the edge of the node body starts a connection (React Flow whole-node-as-handle UX)
+- 🔓 **`NodeData.extent`** — `'parent'` (clamp child to its parent group) or explicit world-coord rect; applied at drag end
+- 🌱 **`NodeData.expandParent`** — opposite of `extent: 'parent'`: drag the child out → parent grows to contain it (siblings keep their local offsets)
+- 📐 **NodeResize options** — `minWidth/Height`, `maxWidth/Height`, `keepAspectRatio`, `shouldResize` predicate, `onResizeStart/onResize/onResizeEnd` callbacks (Shift toggles aspect-ratio per gesture)
 
 ### Layout & Rendering
 - 🌳 Hierarchical auto-layout
 - ⭕ Circular layout
 - 🗺️ Minimap (configurable position & size)
 - ▦ Grid background — dots or lines
-- 🖼️ Export PNG / SVG
+- 🖼️ Export PNG / SVG (every edge variant exports the actual rendered geometry)
 - ♿ Accessible — `role="application"`, `aria-live` announcements
 - 🌐 SSR-safe — no crash in Node.js environments
+
+### Overlays & DOM components (0.5.0+)
+- 🧰 **Panel** — `chart.addPanel(opts)` — 9-position floating widgets over the chart
+- 🎛️ **Controls** — `chart.showControls()` — zoom in/out, fit view, lock toggle, customButtons (vertical / horizontal orientation, 9-position)
+- 🛠️ **NodeToolbar** — `chart.addNodeToolbar(spec)` — node-anchored, constant pixel size under zoom, visibility `'auto'` (with selection) / `true` / `false`
+- 🛠️ **EdgeToolbar** — `chart.addEdgeToolbar(spec)` — edge-anchored variant of the above
+- 🪟 **ViewportPortal** — `chart.addViewportPortal(spec)` — world-coord DOM portal: children scale together with the viewport (opposite of NodeToolbar's constant-size contract)
+- 📊 **PerfOverlay** — `chart.showPerfOverlay()` — live FPS / frame time / draw calls / GPU memory estimate / atlas miss rate (differentiator over React Flow)
+
+### Reactive data layer (0.8.0)
+- 🔄 **Computing Flows** — `updateNodeData(id, partial)` + `subscribeNodeData(id, listener)` for per-node data fan-out; merge-not-replace semantics
+- 🚨 **Explicit cycle detection** — when a subscriber writes back to a node already on the active update stack, propagation stops and a `nodeDataCycle` event fires (differentiator over React Flow, which stack-overflows on cycles)
+
+### React DX (`@flowgl/react`, 0.6.0)
+- ⚛️ Hooks — `FlowchartProvider`, `useFlowChart`, `useNodes`, `useEdges`, `useViewport`, `useSelection`. Built on plain `useState` + `useEffect` subscribed to chart events; **no new runtime dependency**.
 
 ---
 

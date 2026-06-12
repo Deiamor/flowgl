@@ -12,16 +12,23 @@ Zero-dependency WebGL2 flowchart library for the browser.
 - **Keyboard navigation** — Tab/Shift+Tab to cycle nodes, Arrow keys to nudge (10 px), Ctrl+Z/Y for undo/redo
 - **Undo / redo** — snapshot-based history with configurable depth; `batchUpdate` groups mutations into one entry
 - **Multi-line text + RTL** — word-wrap within node width, automatic RTL detection
-- **Edge labels** — `label` field on any edge, rendered at the bezier midpoint
+- **Edge variants** — `'bezier'` (default), `'straight'`, `'step'`, `'smoothstep'` (rounded orthogonal corners, `pathOptions.borderRadius`). Canvas2D + WebGL2 render the same sampled polyline for `smoothstep` (T5 parity).
+- **Edge labels** — atlas SDF text or `chart.addEdgeLabel(spec)` for HTML content; both anchor at the rendered-path midpoint by arc length, so labels follow waypoints + step / smoothstep routing — not just the bezier baseline.
 - **Animated edges** — `animated: true` on any edge enables marching-ants rendering
 - **Custom ports** — named connection points with optional `maxConnections` limits
-- **Group nodes** — collapse/expand child nodes; `type: 'group'`
+- **Group nodes** — collapse/expand child nodes; `type: 'group'`. `extent: 'parent'` clamps a child to the group; `expandParent: true` does the opposite — drag out, the group grows.
+- **Easy Connect** — `NodeData.easyConnect = true` inflates the connection hit radius to `min(width, height) / 4` so the user can drag from anywhere near the node edge.
+- **NodeResize options** — `minWidth/Height`, `maxWidth/Height`, `keepAspectRatio` (Shift toggle), `shouldResize` predicate, `onResizeStart/onResize/onResizeEnd` callbacks.
 - **Minimap** — optional overview panel, configurable position and size
 - **Node status badges** — `error | warning | success | info` rendered at the top-right corner
+- **Floating overlays** — `Panel`, `Controls`, `NodeToolbar`, `EdgeToolbar`, `ViewportPortal`, `PerfOverlay`. NodeToolbar / EdgeToolbar keep constant pixel size under zoom; ViewportPortal scales together with the viewport.
+- **Helper Lines** — Figma-style alignment guides + snap during node drag (`helperLines: { enabled, snap, show }`).
+- **Proximity Connect** — drag a node near another within `threshold` world units → teal halo + dashed ghost line → drop creates the edge through `onBeforeConnect`.
+- **Computing Flows** — `updateNodeData(id, partial)` + `subscribeNodeData(id, listener)` for reactive per-node data. **Explicit cycle detection** stops propagation and emits `nodeDataCycle` instead of stack-overflowing.
 - **Accessible** — `role="application"`, `aria-live` announcements, full keyboard control
 - **SDF text rendering** — Signed Distance Field font atlas delivers sharp labels at any zoom level (dead-reckoning EDT + `smoothstep(fwidth)` in GLSL)
 - **SSR-safe** — detects non-browser environments and calls `onError` instead of crashing
-- **856 tests** across 23 test files
+- **1082 tests** across 41 test files
 
 ## Installation
 

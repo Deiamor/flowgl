@@ -4,7 +4,88 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — 0.8.0 in progress
+## [0.8.1] — 2026-06-13
+
+A single-cycle regression-class fix. A user reported that dragging the
+middle of a bezier edge inserted a waypoint as expected, but the edge
+then became unselectable — clicks on the new polyline missed. An audit
+found seven separate consumers of edge geometry (three renderers, hit
+testing, HTML label overlay, EdgeToolbar anchor, SVG export, viewport
+culling, and the WebGL atlas cache key) each re-deriving the path
+individually, and most got at least one branch wrong. CDP verification
+turned up two more (the waypoint drag-handle midpoint used the wrong
+handle defaults; PanZoom did not defer to the waypoint layer and
+panned concurrently, freezing the dragged waypoint).
+
+### Added
+
+- **`renderer/webgl/util/edge-geometry.ts`** — single source of truth
+  for the 4-branch path decision used by every consumer. Exports
+  `edgePathPoints(edge, src, tgt)`, `edgeMidpoint(edge, src, tgt)`
+  (arc-length walk), `edgeBoundingBox(edge, src, tgt)`, and
+  `edgePathFingerprint(edge, src, tgt)`.
+- **`EdgeWaypoint.isNearMidpoint(clientX, clientY)`** — public hit
+  query for other interaction layers (PanZoom uses it now).
+
+### Fixed
+
+- **`EdgeHitTester`** ignored `waypoints` / `type`. The reported
+  regression. Now walks `edgePathPoints` and uses point-to-segment
+  distance against every segment.
+- **WebGL SDF edge labels** (`text-program.ts`) — label position used
+  bezier midpoint regardless of type/waypoints; cache fingerprint
+  omitted type/waypoints/pathOptions, so stale labels stuck forever.
+  Both fixed via the shared helper.
+- **Canvas2D `drawEdgeLabel`** — missing step/smoothstep branches and
+  used straight-line midpoint for waypoint edges. Replaced with
+  `edgeMidpoint`.
+- **`EdgeLabelOverlay`** (HTML labels, 0.6.0) — straight-line
+  node-center midpoint regardless of type/waypoints/handles. Now uses
+  `edgeMidpoint` by default with a `pointAtFraction` helper for custom
+  `t`.
+- **`EdgeToolbar`** (0.7.0) — same anchor bug as the HTML label.
+  Same fix shape.
+- **SVG export** — missing step/smoothstep path branches (they fell
+  through to bezier rendering, wrong shape) and label at straight
+  midpoint. Path d-attribute now walks `edgePathPoints` for every
+  non-bezier branch; label uses `edgeMidpoint`.
+- **`cullEdges`** — endpoint-only AABB wrongly culled waypoint-routed
+  and step-routed edges. Now uses `edgeBoundingBox`.
+- **`EdgeWaypoint.getEdgeMidpoints`** — called `handleXY(node, undefined)`
+  for both source and target, defaulting both to RIGHT. So on a
+  default-bezier edge the midpoint handle sat past the visible curve.
+  Fixed by using renderer-aligned defaults (`'right'` / `'left'`).
+- **PanZoom + EdgeWaypoint concurrency** — PanZoom did not check
+  whether the press was over a waypoint / midpoint handle. PanZoom
+  shifted the viewport during the drag, the world coords seen by the
+  waypoint layer never moved, the dragged waypoint froze in place.
+  PanZoom's `shouldBlock` now consults `EdgeWaypoint.isNearMidpoint`.
+
+### Tests
+
+- 18 new tests in `edge-geometry.test.ts` — every branch of
+  `edgePathPoints`, arc-length midpoint (incl. waypoint-asymmetric),
+  `edgeBoundingBox` tight bounds, `edgePathFingerprint` sensitivity.
+- 8 new tests in `edge-hit-test.test.ts` — straight / step / smoothstep
+  branches, waypoints-override-bezier, waypoints-override-step,
+  smoothstep with custom `borderRadius`.
+- 1 test in `edge-waypoint.test.ts` updated for the new midpoint
+  position given the source-right / target-left defaults.
+
+### CDP probe — 0.8.1 regression gate
+
+- `packages/core/scripts/cdp-081-probe.mjs` — drives the user's
+  reported scenario through real Brave mouse events:
+  - GATE 1a: drag midpoint of a default bezier → waypoint inserted at
+    drop position (not frozen at the insert point — PanZoom defer fix)
+  - GATE 1b: click on the new polyline → edge re-selectable (the
+    reported regression)
+  - GATE 3: EdgeToolbar follows the polyline midpoint by ~140 px
+    when a waypoint is added (anchor refactor fix)
+
+Test counts: **core 1082** (was 1056), **react 17** (unchanged).
+
+## [0.8.0] — 2026-06-13
 
 The 0.8.0 cycle delivers the four "reactive data + drag UX" items the
 ROADMAP held back behind the React-Flow-parity track: a per-node

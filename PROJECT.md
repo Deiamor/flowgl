@@ -85,11 +85,21 @@ flowchart/
 │   │       │       │   └── grid-program.ts
 │   │       │       └── util/
 │   │       │           ├── bezier.ts
+│   │       │           ├── edge-geometry.ts  # 0.8.1 — shared 4-branch edge geometry (waypoints/straight/step/smoothstep/bezier). Single source of truth for hit testing, label position, EdgeToolbar anchor, SVG export, culling, cache fingerprint.
 │   │       │           └── color.ts
 │   │       ├── ui/
-│   │       │   ├── context-panels.ts  # node/edge context panel UI
-│   │       │   ├── html-overlay.ts    # custom HTML content inside nodes
-│   │       │   └── minimap.ts         # minimap canvas overlay
+│   │       │   ├── context-panels.ts       # node/edge context panel UI
+│   │       │   ├── html-overlay.ts         # custom HTML content inside nodes
+│   │       │   ├── minimap.ts              # minimap canvas overlay
+│   │       │   ├── panel-overlay.ts        # 0.5.0 — 9-position floating panels (Panel API)
+│   │       │   ├── controls.ts             # 0.5.0 — built-in zoom/fit/lock control bar
+│   │       │   ├── node-toolbar.ts         # 0.5.0 — node-anchored, constant-pixel-size toolbar
+│   │       │   ├── perf-overlay.ts         # 0.5.0 — FPS / frame time / draw call / atlas-miss differentiator
+│   │       │   ├── viewport-portal.ts      # 0.6.0 — world-coord DOM portal (scales with viewport)
+│   │       │   ├── edge-label-overlay.ts   # 0.6.0 — HTML edge label alternative to atlas SDF
+│   │       │   ├── edge-toolbar.ts         # 0.7.0 — edge-anchored variant of NodeToolbar
+│   │       │   ├── helper-lines.ts         # 0.8.0 — Figma-style alignment guides + snap during drag
+│   │       │   └── proximity-connect.ts    # 0.8.0 — drag node near another → ghost line + halo → drop creates edge
 │   │       ├── workers/
 │   │       │   ├── layout-client.ts   # LayoutWorkerClient — async layout via Web Worker
 │   │       │   └── layout-worker.ts   # Web Worker entry point
@@ -191,6 +201,13 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 | status overlay | `<canvas>` 2D | 2 | Node status badges (error/warning/success/info) |
 | waypoint overlay | `<div>` | 15 | Waypoint handle DOM elements |
 | minimap | `<canvas>` 2D | 20 | Mini navigation map, click-to-pan |
+| helper lines (0.8.0) | `<div>` | 25 | Pink alignment guides during node drag |
+| proximity ghost / halo (0.8.0) | `<div>` | 24 | Teal dashed line + halo when a drag is near a target node |
+| panel / controls (0.5.0) | `<div>` | 30 | 9-position floating widgets + built-in control bar |
+| viewport portal (0.6.0) | `<div>` | 35 | World-coord DOM content that scales with the viewport |
+| node toolbar / edge toolbar (0.5.0 / 0.7.0) | `<div>` | 40 | Constant-size floating toolbars anchored to nodes / edges |
+| edge label overlay (0.6.0) | `<div>` | 40 | HTML edge labels anchored at the rendered-path midpoint |
+| perf overlay (0.5.0) | `<div>` | 60 | FPS / frame time / draw call / atlas-miss stats |
 
 ## Key Design Decisions
 - Nodes: WebGL2 instanced draw (single draw call for all nodes)
@@ -206,6 +223,9 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 - GPU resource management: all WebGL programs (including `CapProgram`) implement `dispose()` — called from `WebGL2Renderer.dispose()`
 - Event listener management: canvas event handlers stored as class fields so `dispose()` can call `removeEventListener` with the exact same reference
 - WebGL context loss: `webglcontextlost` / `webglcontextrestored` events handled; programs are re-created on restore; `onContextLost`/`onContextRestored` callbacks notify the host application
+- Edge geometry (0.8.1): every consumer of edge geometry — hit testing, WebGL/Canvas2D atlas SDF labels, HTML edge labels, EdgeToolbar anchor, SVG export, viewport culling — reads from `renderer/webgl/util/edge-geometry.ts`. The shared module exposes `edgePathPoints` (rendered polyline, 4-branch decision), `edgeMidpoint` (arc-length walk), `edgeBoundingBox` (tight AABB), and `edgePathFingerprint` (cache key). Pre-0.8.1 each consumer derived geometry on its own and most got at least one branch wrong; consolidating closed an entire regression class.
+- Reactive data (0.8.0): `updateNodeData(id, partial)` merges into `node.data` and fans out to subscribers. A `dataUpdateStack` tracks the active propagation chain — when a subscriber writes back to a node already on the stack, propagation is halted and a `nodeDataCycle` event fires. Explicit cycle break (differentiator vs React Flow's equivalent, which stack-overflows).
+- Drag pipeline (0.8.0): `NodeDrag.setPostSnap()` lets layers rewrite drag coordinates after grid snap, before `updateNode`. Helper Lines reach into this hook; consumers with custom snap heuristics can register their own.
 
 ## Production Hardening (completed)
 - Memory leak fix: 4 canvas event listeners stored as class fields and removed in `dispose()`
@@ -219,7 +239,7 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 
 ## Build Commands
 ```bash
-pnpm test           # run 919 tests across all packages (892 core / 9+9+9 wrappers)
+pnpm test           # run 1099 tests across all packages (1082 core / 17 react / 9 vue / 9 svelte)
 pnpm build          # production build (minified)
 pnpm build:dev      # development build (readable + sourcemaps)
 pnpm typecheck      # tsc --noEmit (all packages)

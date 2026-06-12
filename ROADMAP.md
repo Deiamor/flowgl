@@ -10,11 +10,18 @@ Keep a Changelog-style record of what actually shipped lives in
 [CHANGELOG.md](./CHANGELOG.md); the append-only ledger lives in
 [HISTORY.md](./HISTORY.md).
 
-## Now (active — 0.5.x window)
+## Now (active — 0.9.x window)
 
-Items here are likely to ship within the next two or three releases.
-After the 0.4.2 → docs / examples / infra sweep all five original "Now"
-items landed; new ones live below them.
+The 0.5.0 / 0.6.0 / 0.7.0 / 0.8.0 milestones all shipped between
+2026-06-12 and 2026-06-13. The React-Flow-parity track and the
+reactive-data + drag-UX track are now closed. 0.8.1 (2026-06-13)
+landed a regression-class fix consolidating every edge-geometry
+consumer behind a shared `edge-geometry` helper after a user reported
+that waypoint-inserted edges became unselectable.
+
+Items below were the original "Now" list — kept here because they are
+the operational backbone (docs, examples, benchmarks, identity,
+discussions) rather than code milestones.
 
 - ✅ **Official documentation site** — Vitepress under `docs/`, deployed
   at [docs.flowgl.ouranos.kr](https://docs.flowgl.ouranos.kr/). 16
@@ -55,6 +62,26 @@ items landed; new ones live below them.
 - 🟡 **Seed Discussions** — Welcome-post bodies prepared in
   [.github/DISCUSSIONS_WELCOME.md](https://github.com/Deiamor/flowgl/blob/master/.github/DISCUSSIONS_WELCOME.md).
   Maintainer pastes + pins.
+
+---
+
+## ✅ Shipped — 0.5.0 / 0.6.0 / 0.7.0 / 0.8.0 / 0.8.1
+
+The four milestone cycles plus one regression-class fix below shipped
+on 2026-06-12 and 2026-06-13. Items kept here for reference; full
+per-item rationale and acceptance criteria are in `CHANGELOG.md` and
+`HISTORY.md`.
+
+| Milestone | Date | Items |
+| --- | --- | --- |
+| **0.5.0** | 2026-06-12 | Panel · Controls · NodeToolbar · PerfOverlay (differentiator) · `setTheme('system')` · `isValidConnection` alias |
+| **0.6.0** | 2026-06-12 | ViewportPortal · EdgeLabel (HTML) · NodeResize options polish · `NodeData.extent` · `NodeData.easyConnect` · `@flowgl/react` hooks |
+| **0.7.0** | 2026-06-13 | `'smoothstep'` edge type + `pathOptions` · EdgeToolbar |
+| **0.8.0** | 2026-06-13 | Computing Flows + cycle detection (differentiator) · `NodeData.expandParent` · Helper Lines · Proximity Connect |
+| **0.8.1** | 2026-06-13 | Edge geometry shared helper — 7-consumer regression-class fix (the user-reported waypoint-unselectable bug + six audit findings + two CDP-found extras) |
+
+Test counts grew from 934 (pre-0.5.0) to **1082** (post-0.8.1) across
+41 test files in core, plus 17 in `@flowgl/react`.
 
 ---
 
