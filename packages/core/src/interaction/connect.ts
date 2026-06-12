@@ -160,7 +160,7 @@ export class ConnectDrag {
    * Searching all handles avoids losing the hovered state in that zone.
    */
   private findNearestHandle(wx: number, wy: number): HandlePos | null {
-    const hitR = HANDLE_HIT_PX / this.viewport.zoom
+    const baseHitR = HANDLE_HIT_PX / this.viewport.zoom
     const nodes = this.graph.getNodes()
 
     // Check hoveredNodeId first so it wins when multiple nodes overlap
@@ -172,6 +172,11 @@ export class ConnectDrag {
       : nodes
 
     for (const node of ordered) {
+      // Easy Connect: inflate the hit radius to `min(width, height) / 4`,
+      // so dragging anywhere near the node edge starts a connection.
+      const hitR = node.easyConnect
+        ? Math.max(baseHitR, Math.min(node.width, node.height) / 4)
+        : baseHitR
       for (const h of getHandlePositions(node)) {
         if (Math.hypot(wx - h.wx, wy - h.wy) <= hitR) return h
       }

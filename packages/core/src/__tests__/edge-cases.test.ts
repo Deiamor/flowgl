@@ -1203,13 +1203,11 @@ describe('Viewport edge cases', () => {
     expect(typeof vp.y).toBe('number')
   })
 
-  it('EC-145: setViewport does not emit viewportChange (only schedules render)', () => {
-    // setViewport calls viewport.setState + scheduleRender, does NOT emit event
+  it('EC-145: setViewport emits viewportChange (0.6.0 onwards — required by React useViewport)', () => {
     const handler = vi.fn()
     chart.on('viewportChange', handler)
     chart.setViewport({ x: 10, y: 20, zoom: 1.2 })
-    expect(handler).not.toHaveBeenCalled()
-    // But viewport state is updated
+    expect(handler).toHaveBeenCalledOnce()
     expect(chart.getViewport().zoom).toBeCloseTo(1.2)
   })
 })
@@ -1713,13 +1711,12 @@ describe('Event system edge cases', () => {
     expect(handler).toHaveBeenCalledWith({ id: 'e1' })
   })
 
-  it('EC-201: setSelectedIds does not emit selectionChange (only schedules render)', () => {
-    // Only selectAll() and applySnapshot() emit selectionChange
+  it('EC-201: setSelectedIds emits selectionChange (0.6.0 onwards — required by React useSelection)', () => {
     const handler = vi.fn()
     chart.on('selectionChange', handler)
     chart.setSelectedIds(['a'])
-    expect(handler).not.toHaveBeenCalled()
-    // But the selection is stored
+    expect(handler).toHaveBeenCalledOnce()
+    expect(handler.mock.calls[0]![0].selectedIds).toEqual(['a'])
     expect(chart.getSelectedIds()).toEqual(['a'])
   })
 

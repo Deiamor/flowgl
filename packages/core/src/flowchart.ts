@@ -21,6 +21,8 @@ import { PanelOverlay, type PanelOptions } from './ui/panel-overlay'
 import { Controls, type ControlsOptions } from './ui/controls'
 import { NodeToolbarLayer, type NodeToolbarSpec } from './ui/node-toolbar'
 import { PerfOverlay, type PerfOverlayOptions } from './ui/perf-overlay'
+import { ViewportPortalLayer, type ViewportPortalSpec } from './ui/viewport-portal'
+import { EdgeLabelOverlay, type EdgeLabelSpec } from './ui/edge-label-overlay'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -100,6 +102,13 @@ export interface FlowChartOptions {
     sourceId: string; targetId: string
     sourceHandle: string; targetHandle: string
   }) => boolean
+  /**
+   * NodeResize tuning — min/max bounds, aspect ratio, predicate, lifecycle
+   * callbacks. Holding Shift during a resize gesture also toggles
+   * keep-aspect-ratio for the duration of that gesture, irrespective of the
+   * configured default.
+   */
+  nodeResize?: import('./interaction/node-resize').NodeResizeOptions
   /**
    * Return false to cancel deletion of the selected nodes/edges.
    * Called before any nodes or edges are removed.
@@ -181,6 +190,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private controls: Controls | null = null
   private nodeToolbarLayer: NodeToolbarLayer | null = null
   private perfOverlay: PerfOverlay | null = null
+  private viewportPortalLayer: ViewportPortalLayer | null = null
+  private edgeLabelOverlay: EdgeLabelOverlay | null = null
+  private nodeResizeOptions: import('./interaction/node-resize').NodeResizeOptions = {}
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
@@ -262,6 +274,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.labelEditable = options.labelEditable ?? true
     this.readOnly      = options.readOnly ?? false
     this.groupDoubleClickCollapses = options.groupDoubleClickCollapses ?? false
+    // Store NodeResize options before the WebGL gate so a WebGL-failed chart
+    // still reports a consistent options state. The interaction layer picks
+    // them up after a successful init via setOptions.
+    if (options.nodeResize) this.nodeResizeOptions = { ...options.nodeResize }
     this.bgColor       = options.background ?? '#f7f7f7'
     this.gridConfig    = { ...DEFAULT_GRID_CONFIG, ...options.grid }
     this.snapGridSize    = options.snapGrid ?? 0
@@ -330,6 +346,10 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       () => this.scheduleRender(),
       (id, x, y, width, height) => this.emit('nodeResize', { id, x, y, width, height }),
     )
+    if (options.nodeResize) {
+      this.nodeResizeOptions = { ...options.nodeResize }
+      this.nodeResize.setOptions(options.nodeResize)
+    }
 
     this.highlightOverlay = document.createElement('canvas')
     this.highlightOverlay.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:1;'
@@ -472,7 +492,23 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.canvas, this.viewport, this.graph, this.hitTester,
       (id) => { this.beforeMutation(); this.emit('nodeDragStart', { id }) },
       (_id, _x, _y) => this.scheduleRender(),
-      (id, x, y)    => { this.lastDragEndTime = Date.now(); this.emit('nodeDragEnd', { id, x, y }) },
+      (id, x, y)    => {
+        this.lastDragEndTime = Date.now()
+        // Apply `NodeData.extent` clamp at drag end (positional snap).
+        // Clamping during the drag itself would jitter the gesture; snapping
+        // at end keeps the interaction smooth while still enforcing the
+        // constraint.
+        const node = this.graph.getNode(id)
+        if (node && node.extent != null) {
+          const r = this.clampToExtent(node)
+          if (r && (r.x !== node.x || r.y !== node.y)) {
+            this.graph.updateNode(id, { x: r.x, y: r.y })
+            x = r.x; y = r.y
+            this.scheduleRender()
+          }
+        }
+        this.emit('nodeDragEnd', { id, x, y })
+      },
       (clientX, clientY) =>
         this.readOnly ||
         this.edgeWaypoint.isCapturing() ||
@@ -1138,6 +1174,12 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         if (this.nodeToolbarLayer) {
           this.nodeToolbarLayer.setSelection(this.selectedIds)
         }
+        if (this.viewportPortalLayer) {
+          this.viewportPortalLayer.reposition()
+        }
+        if (this.edgeLabelOverlay) {
+          this.edgeLabelOverlay.reposition()
+        }
 
         // Keep animating when any edge has animated:true
         if (this.renderer.hasAnimatedEdges()) {
@@ -1554,6 +1596,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     // visibility change. The render loop also calls setSelection but it's a
     // cheap idempotent map write.
     this.nodeToolbarLayer?.setSelection(this.selectedIds)
+    // Subscribers (e.g. React's useSelection) need to know.
+    this.emit('selectionChange', {
+      selectedIds: [...this.selectedIds],
+      edgeIds:     [...this.selectedEdgeIds],
+    })
     this.scheduleRender()
   }
 
@@ -1894,12 +1941,130 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   /** Whether the perf overlay is currently visible. */
   hasPerfOverlay(): boolean { return this.perfOverlay?.isVisible() ?? false }
 
+  // ── ViewportPortal API ───────────────────────────────────────────────────────
+  //
+  // World-coordinate DOM portals. Each portal's children scale + translate
+  // with the viewport — opposite contract from NodeToolbar (constant size).
+  // Use for in-canvas annotations, embedded media, sticky notes.
+
+  private ensureViewportPortalLayer(): ViewportPortalLayer {
+    if (!this.viewportPortalLayer) {
+      this.viewportPortalLayer = new ViewportPortalLayer(
+        this.getContainer(),
+        this.viewport,
+        (this as unknown as { sanitizeHtml?: (s: string) => string }).sanitizeHtml,
+      )
+    }
+    return this.viewportPortalLayer
+  }
+
+  /** Mount a viewport portal. Returns its id. */
+  addViewportPortal(spec: ViewportPortalSpec): string {
+    return this.ensureViewportPortalLayer().add(spec)
+  }
+
+  /** Update an existing portal's position / content / sizing / zIndex. */
+  updateViewportPortal(id: string, partial: Partial<Omit<ViewportPortalSpec, 'id'>>): boolean {
+    return this.viewportPortalLayer?.update(id, partial) ?? false
+  }
+
+  /** Remove a viewport portal. */
+  removeViewportPortal(id: string): boolean {
+    return this.viewportPortalLayer?.remove(id) ?? false
+  }
+
+  /** Currently-mounted viewport portal ids. */
+  listViewportPortals(): string[] {
+    return this.viewportPortalLayer?.list() ?? []
+  }
+
+  // ── EdgeLabel HTML overlay API ───────────────────────────────────────────────
+  //
+  // HTML edge labels — an alternative to the atlas SDF labels (EdgeData.label)
+  // for cases that need arbitrary HTML (badges, mini-graphs, buttons). Practical
+  // budget is on the order of tens — use atlas labels for the bulk of the graph.
+
+  private ensureEdgeLabelOverlay(): EdgeLabelOverlay {
+    if (!this.edgeLabelOverlay) {
+      this.edgeLabelOverlay = new EdgeLabelOverlay(
+        this.getContainer(),
+        this.viewport,
+        this.graph,
+        (this as unknown as { sanitizeHtml?: (s: string) => string }).sanitizeHtml,
+      )
+    }
+    return this.edgeLabelOverlay
+  }
+
+  /** Mount an HTML label anchored at an edge's midpoint. Returns its id. */
+  addEdgeLabel(spec: EdgeLabelSpec): string {
+    return this.ensureEdgeLabelOverlay().add(spec)
+  }
+
+  /** Update an existing edge label. */
+  updateEdgeLabel(id: string, partial: Partial<Omit<EdgeLabelSpec, 'edgeId'>>): boolean {
+    return this.edgeLabelOverlay?.update(id, partial) ?? false
+  }
+
+  /** Remove an edge label. */
+  removeEdgeLabel(id: string): boolean {
+    return this.edgeLabelOverlay?.remove(id) ?? false
+  }
+
+  /** Currently-mounted edge label ids. */
+  listEdgeLabels(): string[] {
+    return this.edgeLabelOverlay?.list() ?? []
+  }
+
+  /**
+   * Clamp a node's bbox into its `extent` constraint and return the new top-left
+   * position. Returns null when the node has no extent. The clamp respects the
+   * node's current width/height — the node's box stays the same size and is
+   * translated to fit. Width that exceeds the bound is clamped to the bound's
+   * top-left corner (no resize).
+   */
+  private clampToExtent(node: NodeData): { x: number; y: number } | null {
+    if (node.extent == null) return null
+    let bounds: { minX: number; minY: number; maxX: number; maxY: number } | null = null
+    if (node.extent === 'parent') {
+      if (!node.parentId) return null
+      const parent = this.graph.getNode(node.parentId)
+      if (!parent) return null
+      bounds = { minX: parent.x, minY: parent.y, maxX: parent.x + parent.width, maxY: parent.y + parent.height }
+    } else {
+      bounds = node.extent
+    }
+    const maxAllowedX = bounds.maxX - node.width
+    const maxAllowedY = bounds.maxY - node.height
+    const x = Math.min(maxAllowedX, Math.max(bounds.minX, node.x))
+    const y = Math.min(maxAllowedY, Math.max(bounds.minY, node.y))
+    return { x, y }
+  }
+
+  /**
+   * Update NodeResize tuning at runtime. Merges with existing options. The
+   * interaction layer may be null on a WebGL-failed chart, in which case the
+   * options are still stored — consumer UI reads back consistent state and
+   * the next chart instance picks them up.
+   */
+  setNodeResizeOptions(options: import('./interaction/node-resize').NodeResizeOptions): void {
+    this.nodeResizeOptions = { ...this.nodeResizeOptions, ...options }
+    this.nodeResize?.setOptions(this.nodeResizeOptions)
+  }
+
+  /** Current NodeResize tuning. */
+  getNodeResizeOptions(): import('./interaction/node-resize').NodeResizeOptions {
+    return { ...this.nodeResizeOptions }
+  }
+
   // ── Viewport API ──────────────────────────────────────────────────────────────
 
   getViewport(): ViewportState  { return this.viewport.getState() }
 
   setViewport(state: ViewportState): void {
     this.viewport.setState(state)
+    // Subscribers (e.g. React's useViewport) need to know.
+    this.emit('viewportChange', this.viewport.getState())
     this.scheduleRender()
   }
 
@@ -2008,6 +2173,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     }
     this.resizeObserver?.disconnect()
     this.perfOverlay?.dispose()
+    this.edgeLabelOverlay?.dispose()
+    this.viewportPortalLayer?.dispose()
     this.nodeToolbarLayer?.dispose()
     this.controls?.dispose()
     this.panels?.dispose()

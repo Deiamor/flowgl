@@ -36,6 +36,14 @@ export interface NodeData {
   type?: string
   /** When set, this node is a child of the given group node. */
   parentId?: string
+  /**
+   * Constrain drag of this node. `'parent'` clamps the node's bbox to its
+   * parent's bbox (set `parentId` to point to the container). An explicit
+   * rect clamps to the given world-coordinate bounds. `null` / undefined =
+   * no constraint. Applied at drag end (positional snap), preserving the
+   * gesture's smoothness during the drag itself.
+   */
+  extent?: 'parent' | { minX: number; minY: number; maxX: number; maxY: number } | null
   /** When true, the group node is collapsed (children hidden). */
   collapsed?: boolean
   /** When true, the node cannot be dragged or resized. */
@@ -52,6 +60,14 @@ export interface NodeData {
   tooltip?: string
   /** Visual status indicator badge rendered at the node's top-right corner. */
   status?: NodeStatus
+  /**
+   * When true, the connection hit radius around each handle is expanded to
+   * the node's minor dimension / 4, so the user can drag from almost anywhere
+   * near the node edge to start a connection (matches React Flow's
+   * "Easy Connect" UX). The center of the node still routes to drag — this
+   * is opt-in and does not affect nodes whose easyConnect is unset.
+   */
+  easyConnect?: boolean
 }
 
 export const DEFAULT_NODE_STYLE: NodeStyle = {
