@@ -141,10 +141,45 @@ flowchart/
 │   ├── index.html                 # vanilla JS demo (deployed at dev.flowgl.ouranos.kr)
 │   ├── react.html                 # React demo page
 │   ├── react-app.tsx              # React demo entry
-│   └── benchmark.html             # synthetic 1K/5K/10K perf benchmark page
+│   ├── benchmark.html             # synthetic 1K/5K/10K perf benchmark + window.__flowglBenchmark hook
+│   └── examples/                  # focused single-page scenarios linked from docs/examples
+│       ├── index.html             #   gallery
+│       ├── minimal.html
+│       ├── drag-connect.html
+│       ├── animated-edges.html
+│       ├── cjk-labels.html
+│       └── hierarchical-layout.html
+├── docs/                          # Vitepress public docs site (separate workspace package @flowgl/docs)
+│   ├── package.json
+│   ├── .vitepress/config.ts
+│   ├── public/                    # logo / og-card assets copied from /assets/brand
+│   ├── index.md                   # landing
+│   ├── guide/                     # 10 pages: getting-started, why-flowgl, vanilla/react/vue/svelte, renderers, labels, accessibility, performance
+│   ├── api/flowchart.md           # public API reference
+│   ├── cookbook/index.md
+│   ├── examples/index.md
+│   ├── showcase.md
+│   └── community.md
+├── assets/
+│   ├── screenshot-light.png
+│   ├── screenshot-dark.png
+│   └── brand/                     # logo.svg, logo-dark.svg, mark.svg, og-card.svg
+├── .github/                       # Tier 1 OSS community files
+│   ├── FUNDING.yml                # GitHub Sponsors button
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── MANUAL_SETUP.md            # one-time GitHub UI configuration checklist
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── config.yml
+│   │   ├── bug_report.yml
+│   │   └── feature_request.yml
+│   └── workflows/
+│       ├── ci.yml                 # typecheck + test + build on every push
+│       ├── release.yml            # workflow_dispatch → npm publish with provenance
+│       └── benchmark.yml          # push + weekly cron + dispatch → measure 1K/5K/10K and check T6 floor
 └── scripts/
     ├── generate-sbom.mjs          # CycloneDX 1.5 SBOM generator (4 packages)
-    └── sync-docs.mjs              # auto-sync versions + test count + coverage badge across docs
+    ├── sync-docs.mjs              # auto-sync versions + test count + coverage badge across docs
+    └── run-benchmark.mjs          # Playwright + benchmark.html driver, writes docs/data/benchmarks.json + checks T6 floors
 ```
 
 ## Canvas Overlay Stack

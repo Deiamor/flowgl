@@ -1,0 +1,93 @@
+name: Benchmark
+
+# Measures 1K / 5K / 10K node rendering fps against the T6 performance
+# floor (PRODUCT.md). Runs:
+#   - on every push to master (post-merge regression check)
+#   - weekly on Sunday at 03:00 UTC (catches drift from new content)
+#   - manually via workflow_dispatch
+#
+# Results are written to docs/data/benchmarks.json (time series) and the
+# job fails if any size drops below its T6 floor.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'packages/core/src/**'
+      - 'demo/benchmark.html'
+      - 'scripts/run-benchmark.mjs'
+      - '.github/workflows/benchmark.yml'
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: benchmark-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run benchmark
+        id: bench
+        run: node scripts/run-benchmark.mjs
+        continue-on-error: true
+
+      - name: Commit results (if changed and on master)
+        if: github.ref == 'refs/heads/master' && steps.bench.outcome == 'success'
+        run: |
+          if [ -n "$(git status --porcelain docs/data/benchmarks.json)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email 'github-actions[bot]@users.noreply.github.com'
+            git add docs/data/benchmarks.json
+            git commit -m "ci(benchmark): append run from ${GITHUB_SHA:0:7}"
+            git push
+          fi
+
+      - name: Open regression issue
+        if: steps.bench.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Benchmark regression below T6 floor on ${context.sha.slice(0,7)}`
+            const body = [
+              `The benchmark workflow ran on commit ${context.sha} and at least one`,
+              `node count dropped below its PRODUCT.md T6 floor.`,
+              ``,
+              `- See the workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `- T6 floors: 1K @ 60 fps, 5K @ 30 fps, 10K @ 30 fps`,
+              `- Per PRODUCT.md, a regression below the floor is a release blocker`,
+              `  unless a Tenet-exception is recorded in HISTORY.md.`,
+              ``,
+              `Run \`node scripts/run-benchmark.mjs\` locally to reproduce.`,
+            ].join('\n')
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['benchmark', 'regression', 'T6'],
+            })
+            core.setFailed('Benchmark dropped below T6 floor')

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Hierarchical layout</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 12px; font-size: 13px; border: 1px solid #cbd5e1; background: white; border-radius: 6px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    #app { width: 100vw; height: calc(100vh - 53px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Hierarchical layout</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/hierarchical-layout.html">View source</a>
+    <button id="layout">Re-layout (TB)</button>
+    <button id="layout-lr">Re-layout (LR)</button>
+  </header>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart, hierarchicalLayout } from '@flowgl/core'
+
+    const initialNodes = [
+      { id: 'root', x: 0, y: 0, width: 140, height: 60, label: 'main()' },
+      { id: 'init', x: 0, y: 0, width: 140, height: 60, label: 'init()' },
+      { id: 'cfg',  x: 0, y: 0, width: 140, height: 60, label: 'loadConfig()' },
+      { id: 'srv',  x: 0, y: 0, width: 140, height: 60, label: 'startServer()' },
+      { id: 'db',   x: 0, y: 0, width: 140, height: 60, label: 'connectDB()' },
+      { id: 'ws',   x: 0, y: 0, width: 140, height: 60, label: 'openSocket()' },
+      { id: 'rt',   x: 0, y: 0, width: 140, height: 60, label: 'router()' },
+      { id: 'auth', x: 0, y: 0, width: 140, height: 60, label: 'auth()' },
+      { id: 'log',  x: 0, y: 0, width: 140, height: 60, label: 'logger()' },
+    ]
+    const edges = [
+      { id: 'e1', source: 'root', target: 'init' },
+      { id: 'e2', source: 'init', target: 'cfg' },
+      { id: 'e3', source: 'init', target: 'srv' },
+      { id: 'e4', source: 'srv', target: 'db' },
+      { id: 'e5', source: 'srv', target: 'ws' },
+      { id: 'e6', source: 'srv', target: 'rt' },
+      { id: 'e7', source: 'rt', target: 'auth' },
+      { id: 'e8', source: 'rt', target: 'log' },
+    ]
+
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: hierarchicalLayout(initialNodes, edges, { direction: 'TB', nodeSpacing: 60, rankSpacing: 100 }),
+      edges,
+      autoFit: true,
+    })
+
+    document.getElementById('layout').onclick = () => {
+      const laid = hierarchicalLayout(chart.getNodes(), chart.getEdges(), { direction: 'TB' })
+      chart.animateLayout(Object.fromEntries(laid.map(n => [n.id, { x: n.x, y: n.y }])), 400)
+    }
+    document.getElementById('layout-lr').onclick = () => {
+      const laid = hierarchicalLayout(chart.getNodes(), chart.getEdges(), { direction: 'LR' })
+      chart.animateLayout(Object.fromEntries(laid.map(n => [n.id, { x: n.x, y: n.y }])), 400)
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="flowgl — GPU-accelerated flowchart library">
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="og-accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <pattern id="og-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-grid)"/>
+
+  <!-- decorative flowchart on the right -->
+  <g transform="translate(720, 130)" opacity="0.55">
+    <rect x="0"   y="0"   width="120" height="60" rx="8" fill="url(#og-accent)"/>
+    <rect x="200" y="0"   width="120" height="60" rx="8" fill="url(#og-accent)" opacity="0.9"/>
+    <rect x="100" y="120" width="120" height="60" rx="8" fill="url(#og-accent)" opacity="0.85"/>
+    <rect x="0"   y="240" width="120" height="60" rx="8" fill="url(#og-accent)" opacity="0.75"/>
+    <rect x="200" y="240" width="120" height="60" rx="8" fill="url(#og-accent)" opacity="0.7"/>
+    <rect x="200" y="360" width="120" height="60" rx="8" fill="url(#og-accent)" opacity="0.6"/>
+
+    <path d="M 120 30 C 160 30, 160 30, 200 30" fill="none" stroke="url(#og-accent)" stroke-width="3"/>
+    <path d="M 60 60 C 60 100, 160 80, 160 120" fill="none" stroke="url(#og-accent)" stroke-width="3"/>
+    <path d="M 260 60 C 260 100, 160 80, 160 120" fill="none" stroke="url(#og-accent)" stroke-width="3"/>
+    <path d="M 160 180 C 160 220, 60 220, 60 240" fill="none" stroke="url(#og-accent)" stroke-width="3"/>
+    <path d="M 160 180 C 160 220, 260 220, 260 240" fill="none" stroke="url(#og-accent)" stroke-width="3"/>
+    <path d="M 260 300 C 260 340, 260 340, 260 360" fill="none" stroke="url(#og-accent)" stroke-width="3"/>
+  </g>
+
+  <!-- logo + wordmark -->
+  <g transform="translate(80, 130)">
+    <!-- mark -->
+    <g transform="translate(0, 0) scale(1.8)">
+      <rect x="0" y="8" width="20" height="14" rx="3" fill="url(#og-accent)"/>
+      <rect x="14" y="26" width="20" height="14" rx="3" fill="url(#og-accent)" opacity="0.85"/>
+      <rect x="28" y="44" width="20" height="14" rx="3" fill="url(#og-accent)" opacity="0.7"/>
+      <path d="M 20 15 C 30 15, 14 33, 24 33" fill="none" stroke="url(#og-accent)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M 34 33 C 44 33, 28 51, 38 51" fill="none" stroke="url(#og-accent)" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <text x="80" y="380" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="92" font-weight="700" fill="#f1f5f9">flowgl</text>
+  <text x="80" y="445" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="500" fill="#cbd5e1">GPU-accelerated flowchart library</text>
+  <text x="80" y="490" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="400" fill="#94a3b8">WebGL2 · zero dependencies · framework-agnostic</text>
+
+  <!-- bottom tag strip -->
+  <g transform="translate(80, 540)" font-family="ui-monospace, monospace" font-size="20" fill="#64748b">
+    <text x="0"   y="0">@flowgl/core</text>
+    <text x="180" y="0">·</text>
+    <text x="200" y="0">@flowgl/react</text>
+    <text x="380" y="0">·</text>
+    <text x="400" y="0">@flowgl/vue</text>
+    <text x="560" y="0">·</text>
+    <text x="580" y="0">@flowgl/svelte</text>
+  </g>
+</svg>

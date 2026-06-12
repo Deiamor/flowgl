@@ -1,4 +1,9 @@
-<h1 align="center">flowgl</h1>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./assets/brand/logo-dark.svg">
+    <img src="./assets/brand/logo.svg" alt="flowgl" width="280">
+  </picture>
+</p>
 
 <p align="center">
   <strong>GPU-accelerated flowchart &amp; diagram library — WebGL2, zero dependencies, framework-agnostic.</strong>

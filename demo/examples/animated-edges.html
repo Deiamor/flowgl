@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Animated edges</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    #app { width: 100vw; height: calc(100vh - 53px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Animated edges</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/animated-edges.html">View source</a>
+  </header>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+
+    new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'src',   x: 100, y: 240, width: 140, height: 60, label: 'Source',
+          style: { backgroundColor: '#e8f5e9', borderColor: '#43a047' } },
+        { id: 'q1',    x: 340, y: 120, width: 140, height: 60, label: 'Queue (warm)',
+          style: { backgroundColor: '#fff8e1', borderColor: '#f9a825' } },
+        { id: 'q2',    x: 340, y: 240, width: 140, height: 60, label: 'Queue (live)',
+          style: { backgroundColor: '#fce4ec', borderColor: '#e53935' } },
+        { id: 'q3',    x: 340, y: 360, width: 140, height: 60, label: 'Queue (cold)',
+          style: { backgroundColor: '#e3f2fd', borderColor: '#1e88e5' } },
+        { id: 'sink',  x: 580, y: 240, width: 140, height: 60, label: 'Sink',
+          style: { backgroundColor: '#f3e5f5', borderColor: '#8e24aa' } },
+      ],
+      edges: [
+        { id: 'e1', source: 'src', target: 'q1' },
+        { id: 'e2', source: 'src', target: 'q2', animated: true, label: 'hot path' },
+        { id: 'e3', source: 'src', target: 'q3', style: { dashArray: [8, 4] } },
+        { id: 'e4', source: 'q1', target: 'sink' },
+        { id: 'e5', source: 'q2', target: 'sink', animated: true },
+        { id: 'e6', source: 'q3', target: 'sink' },
+      ],
+      autoFit: true,
+    })
+  </script>
+</body>
+</html>

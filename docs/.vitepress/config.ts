@@ -1,0 +1,101 @@
+import { defineConfig } from 'vitepress'
+
+export default defineConfig({
+  title: 'flowgl',
+  description: 'GPU-accelerated flowchart library — WebGL2, zero dependencies, framework-agnostic.',
+  cleanUrls: true,
+  lastUpdated: true,
+  appearance: 'dark',
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/mark.svg' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'flowgl' }],
+    ['meta', { property: 'og:description', content: 'GPU-accelerated flowchart library — WebGL2, zero dependencies, framework-agnostic.' }],
+    ['meta', { property: 'og:image', content: '/og-card.svg' }],
+    ['meta', { property: 'og:url', content: 'https://flowgl.dev/' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+  ],
+  themeConfig: {
+    logo: { light: '/logo.svg', dark: '/logo-dark.svg', alt: 'flowgl' },
+    siteTitle: false,
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/Deiamor/flowgl' },
+      { icon: 'npm', link: 'https://www.npmjs.com/package/@flowgl/core' },
+    ],
+    search: { provider: 'local' },
+    editLink: {
+      pattern: 'https://github.com/Deiamor/flowgl/edit/master/docs/:path',
+      text: 'Suggest an edit',
+    },
+    lastUpdated: { text: 'Last updated', formatOptions: { dateStyle: 'medium' } },
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2026 flowgl maintainers',
+    },
+    nav: [
+      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'API', link: '/api/flowchart' },
+      { text: 'Cookbook', link: '/cookbook/' },
+      { text: 'Examples', link: '/examples/' },
+      { text: 'Showcase', link: '/showcase' },
+      { text: 'Community', link: '/community' },
+      {
+        text: '0.4.2',
+        items: [
+          { text: 'Changelog', link: 'https://github.com/Deiamor/flowgl/blob/master/CHANGELOG.md' },
+          { text: 'Roadmap', link: 'https://github.com/Deiamor/flowgl/blob/master/ROADMAP.md' },
+          { text: 'Contributing', link: 'https://github.com/Deiamor/flowgl/blob/master/CONTRIBUTING.md' },
+        ],
+      },
+      { text: 'Demo', link: 'https://dev.flowgl.ouranos.kr/' },
+    ],
+    sidebar: {
+      '/guide/': [
+        {
+          text: 'Getting started',
+          items: [
+            { text: 'Why flowgl', link: '/guide/why-flowgl' },
+            { text: 'Install & first chart', link: '/guide/getting-started' },
+            { text: 'Vanilla JS / TS', link: '/guide/vanilla' },
+            { text: 'React', link: '/guide/react' },
+            { text: 'Vue', link: '/guide/vue' },
+            { text: 'Svelte', link: '/guide/svelte' },
+          ],
+        },
+        {
+          text: 'Core concepts',
+          items: [
+            { text: 'Renderers (WebGL2 + Canvas2D)', link: '/guide/renderers' },
+            { text: 'Labels (CJK + multi-line)', link: '/guide/labels' },
+            { text: 'Accessibility', link: '/guide/accessibility' },
+            { text: 'Performance & atlas', link: '/guide/performance' },
+          ],
+        },
+      ],
+      '/api/': [
+        {
+          text: 'API reference',
+          items: [
+            { text: 'FlowChart', link: '/api/flowchart' },
+          ],
+        },
+      ],
+      '/cookbook/': [
+        {
+          text: 'Cookbook',
+          items: [
+            { text: 'Index', link: '/cookbook/' },
+          ],
+        },
+      ],
+      '/examples/': [
+        {
+          text: 'Examples',
+          items: [
+            { text: 'Gallery', link: '/examples/' },
+          ],
+        },
+      ],
+    },
+  },
+})

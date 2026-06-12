@@ -407,6 +407,33 @@
     toggleBtn.addEventListener('click', () => {
       resultsPanel.classList.toggle('visible')
     })
+
+    // ── External hook for headless benchmarking ────────────────────────────
+    // CI / CDP / Playwright drivers call window.__flowglBenchmark.run(counts)
+    // and get back a JSON object with measurements. Used by
+    // scripts/run-benchmark.mjs and .github/workflows/benchmark.yml.
+    window.__flowglBenchmark = {
+      async run(counts = [1000, 5000, 10000]) {
+        const results = []
+        for (const count of counts) {
+          const stats = await runOne(count)
+          if (stats) results.push({
+            count,
+            edges: stats.edges,
+            avgFps: stats.avgFps,
+            medianFps: stats.medianFps,
+            p5Fps: stats.p5Fps,
+            avgMs: stats.avgMs,
+          })
+        }
+        return {
+          userAgent: navigator.userAgent,
+          dpr: window.devicePixelRatio,
+          timestamp: new Date().toISOString(),
+          results,
+        }
+      },
+    }
   </script>
 </body>
 </html>
