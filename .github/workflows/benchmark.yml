@@ -17,6 +17,8 @@ on:
       - 'demo/benchmark.html'
       - 'scripts/run-benchmark.mjs'
       - '.github/workflows/benchmark.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
   schedule:
     - cron: '0 3 * * 0'
   workflow_dispatch:

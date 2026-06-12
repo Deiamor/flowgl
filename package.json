@@ -11,6 +11,7 @@
     "test:coverage": "pnpm --filter @flowgl/core exec vitest run --coverage"
   },
   "devDependencies": {
+    "playwright": "^1.49.0",
     "typescript": "^5.4.0"
   }
 }
