@@ -1,0 +1,105 @@
+name: Bug report
+description: A reproducible defect in @flowgl/core, /react, /vue, or /svelte.
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Before filing, please:
+        1. Check that the bug reproduces on the latest published version. Older versions don't get patches.
+        2. Search existing open + closed issues — your bug may already be filed or fixed.
+
+  - type: input
+    id: version
+    attributes:
+      label: Affected version
+      description: Output of `npm list @flowgl/core` (or whichever package).
+      placeholder: "@flowgl/core@0.4.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package?
+      multiple: true
+      options:
+        - "@flowgl/core"
+        - "@flowgl/react"
+        - "@flowgl/vue"
+        - "@flowgl/svelte"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: renderer
+    attributes:
+      label: Renderer
+      description: Which `rendererKind` were you using?
+      options:
+        - webgl2 (default)
+        - canvas2d (opt-in)
+        - custom Renderer
+        - not sure
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Browser + version + OS. For SSR setups, also the framework + version.
+      placeholder: "Chrome 142 / macOS 14.5"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: |
+        A code snippet, repo, CodeSandbox, or StackBlitz that reproduces the bug
+        in 30 lines or fewer is ideal. A description of the steps without a
+        repro is much harder to action.
+      placeholder: |
+        ```ts
+        const chart = new FlowChart({ ... })
+        chart.addNode({ id: 'a', x: 0, y: 0, width: 100, height: 50, label: '...' })
+        // I expected X but observed Y
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should have happened.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      placeholder: What you observed. For visual bugs, please attach a screenshot — pixel-count automation has historically missed visual regressions (see 0.4.0).
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output / errors
+      description: Paste any browser console errors or warnings related to the bug.
+      render: shell
+
+  - type: checkboxes
+    id: pre-flight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I reproduced this on the latest published version.
+          required: true
+        - label: I searched existing issues and discussions.
+          required: true

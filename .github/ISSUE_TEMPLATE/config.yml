@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or open-ended discussion
+    url: https://github.com/Deiamor/flowgl/discussions
+    about: For "how do I…", "is this a good fit for…", or design discussions, please open a Discussion rather than an issue.
+  - name: Security vulnerability
+    url: https://github.com/Deiamor/flowgl/security/advisories/new
+    about: Do NOT open a public issue. File a private Security Advisory — see SECURITY.md.

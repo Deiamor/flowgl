@@ -1,0 +1,70 @@
+name: Feature request
+description: Suggest a new public API, option, event, or behavior.
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. To save a round of back-and-forth, please
+        say *what* you'd like to be able to do and *why*. The "how" is
+        optional — we can usually figure that out together.
+
+        If the feature would touch a Core Value Tenet (see [PRODUCT.md](../../PRODUCT.md)),
+        please call that out below. T2 (new runtime dep) and T3 (framework
+        import in core) are not negotiable; T1 / T4 / T5 / T6 / T7 are
+        possible but need explicit discussion.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the use case in your own words, not the proposed API.
+      placeholder: "I'm building X and need to do Y, but the current API only lets me do Z."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API or behavior
+      description: A rough sketch is fine. You don't need to nail the signature on the first pass.
+      placeholder: |
+        ```ts
+        chart.fooBar(opts: { ... })
+        // or a new option on FlowChartOptions
+        ```
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: How are you working around this today? What would the "ugly but works" version look like?
+
+  - type: dropdown
+    id: tenet
+    attributes:
+      label: Tenet impact (if any)
+      description: Does the feature touch a Core Value Tenet?
+      multiple: true
+      options:
+        - "T1 — GPU-First Rendering"
+        - "T2 — Zero Runtime Dependencies"
+        - "T3 — Framework-Agnostic Core"
+        - "T4 — Renderer-Backend Interchangeability"
+        - "T5 — Visual Feature Parity Across Backends"
+        - "T6 — Performance Tier"
+        - "T7 — Accessibility"
+        - "None"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: pre-flight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues and discussions for this idea.
+          required: true
+        - label: I confirmed this is a feature request, not a bug report.
+          required: true

@@ -1,0 +1,10 @@
+# Sponsor links shown on the repo's "Sponsor" button.
+# flowgl is MIT-licensed and not commercially sold — sponsorships keep
+# the maintainer paid for time spent on docs, releases, and reviewing
+# external PRs.
+
+github: [Deiamor]
+# Other channels left open for the future; uncomment when set up:
+# open_collective: flowgl
+# ko_fi: deiamor
+# custom: ["https://flowgl.dev/sponsor"]
