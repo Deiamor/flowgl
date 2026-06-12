@@ -1,11 +1,10 @@
 import { createProgram } from '../context'
 import { DynamicBuffer } from '../buffers/dynamic-buffer'
-import { edgeControlPoints, cubicBezierPoint } from '../util/bezier'
+import { edgeMidpoint, edgePathFingerprint } from '../util/edge-geometry'
 import type { TextAtlas } from '../atlas/text-atlas'
 import type { NodeData, NodeStyle } from '../../../graph/node'
 import { DEFAULT_NODE_STYLE } from '../../../graph/node'
 import type { EdgeData } from '../../../graph/edge'
-import { handleXY } from '../util/handle-xy'
 
 // Per-vertex: position(2) + uv(2) = 4 floats
 const FLOATS_PER_VERT = 4
@@ -294,14 +293,15 @@ export class TextProgram {
       const tgt = nodeMap.get(edge.target)
       if (!src || !tgt) continue
 
-      const fp = `${src.x}|${src.y}|${src.width}|${src.height}|${tgt.x}|${tgt.y}|${tgt.width}|${tgt.height}|${edge.sourceHandle ?? ''}|${edge.targetHandle ?? ''}|${edge.label}`
+      // Fingerprint must include the full 4-branch path inputs (waypoints,
+      // type, pathOptions). Otherwise a step / smoothstep / waypoint-edited
+      // edge with the same endpoints as a previously-cached bezier hits the
+      // cache and the label sticks at the bezier midpoint forever.
+      const fp = edgePathFingerprint(edge, src, tgt) + '|' + edge.label
       const cached = this.edgeLabelCache.get(edge.id)
       if (cached?.key === fp) continue
 
-      const [sx, sy] = handleXY(src, edge.sourceHandle)
-      const [ex, ey] = handleXY(tgt, edge.targetHandle)
-      const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
-      const [mx, my] = cubicBezierPoint(0.5, sx, sy, c1x, c1y, c2x, c2y, ex, ey)
+      const [mx, my] = edgeMidpoint(edge, src, tgt)
 
       const entry = this.atlas.getOrCreate(edge.label, EDGE_LABEL_FONT, EDGE_LABEL_COLOR, 0, 1.0, EDGE_LABEL_BG)
       if (!entry) continue

@@ -1,6 +1,7 @@
 import type { NodeData } from '../../graph/node'
 import type { EdgeData } from '../../graph/edge'
 import type { AABB } from '../../viewport/viewport'
+import { edgeBoundingBox } from './util/edge-geometry'
 
 const EDGE_CULL_PADDING = 200
 
@@ -42,12 +43,13 @@ export function cullEdges(
     const src = nodeMap.get(e.source)
     const tgt = nodeMap.get(e.target)
     if (!src || !tgt) return false
-    const minX = Math.min(src.x, tgt.x)
-    const minY = Math.min(src.y, tgt.y)
-    const maxX = Math.max(src.x + src.width, tgt.x + tgt.width)
-    const maxY = Math.max(src.y + src.height, tgt.y + tgt.height)
-    return maxX >= padded.minX && minX <= padded.maxX &&
-           maxY >= padded.minY && minY <= padded.maxY
+    // Use the rendered-path AABB, not the endpoint-only AABB. The latter
+    // wrongly culled waypoint-routed edges that extended far outside the
+    // src/tgt rect and step-routed edges whose orthogonal corner pushed
+    // out of the rect.
+    const bb = edgeBoundingBox(e, src, tgt)
+    return bb.maxX >= padded.minX && bb.minX <= padded.maxX &&
+           bb.maxY >= padded.minY && bb.minY <= padded.maxY
   })
 }
 

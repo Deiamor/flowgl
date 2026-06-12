@@ -57,15 +57,30 @@ export class EdgeWaypoint {
     return this.viewport.worldToScreen(wx, wy)
   }
 
-  /** Returns midpoint of each bezier segment (between consecutive waypoints, and endpoint→waypoint→endpoint). */
+  /**
+   * Midpoints of each segment between consecutive control points (source
+   * handle, existing waypoints, target handle). These are the "drag
+   * handles" the user grabs to insert a new waypoint. The control points
+   * are read from the same source-of-truth as every other edge consumer
+   * (`edge-geometry` resolves the default handles to `'right'`/`'left'`),
+   * so a click on the visible midpoint hits this hit-test instead of a
+   * phantom point past the visible curve.
+   *
+   * For the bezier branch we use only the source + target handles + any
+   * existing waypoints (NOT the sampled curve points), because the user
+   * is grabbing logical insert positions — at high curvature these still
+   * sit slightly off the visible bezier, but inserting a waypoint at the
+   * straight-segment midpoint is the right UX intent.
+   */
   private getEdgeMidpoints(edge: EdgeData): { x: number; y: number; insertAt: number }[] {
     const nodeMap = new Map(this.graph.getNodes().map(n => [n.id, n]))
     const src = nodeMap.get(edge.source)
     const tgt = nodeMap.get(edge.target)
     if (!src || !tgt) return []
 
-    const [sx, sy] = handleXY(src, edge.sourceHandle)
-    const [ex, ey] = handleXY(tgt, edge.targetHandle)
+    // Use the renderer-aligned defaults for unspecified handles.
+    const [sx, sy] = handleXY(src, edge.sourceHandle ?? 'right')
+    const [ex, ey] = handleXY(tgt, edge.targetHandle ?? 'left')
     const wpts = edge.waypoints ?? []
     const pts: [number, number][] = [[sx, sy], ...wpts.map(w => [w.x, w.y] as [number, number]), [ex, ey]]
     const mids: { x: number; y: number; insertAt: number }[] = []
@@ -165,6 +180,36 @@ export class EdgeWaypoint {
   }
 
   isCapturing(): boolean { return this.dragging !== null }
+
+  /**
+   * Returns true when (clientX, clientY) is over a waypoint handle or
+   * midpoint hit area for any selected edge. Other interaction layers
+   * (PanZoom) use this in their `shouldBlock` predicate so they do not
+   * fire a competing pan when the user is about to grab a waypoint.
+   * Pre-0.8.1 PanZoom did not check this — concurrent panning shifted
+   * the viewport so the world coords seen by the waypoint drag never
+   * moved, freezing the dragged waypoint at its insert position.
+   */
+  isNearMidpoint(clientX: number, clientY: number): boolean {
+    const selected = this.getSelectedEdgeIds()
+    if (selected.size === 0) return false
+    const [wx, wy] = this.toWorld(clientX, clientY)
+    const zoom = this.viewport.zoom
+    const hitR = HIT_PX / zoom
+    const midR = MIDPOINT_HIT_PX / zoom
+    for (const edgeId of selected) {
+      const edge = this.graph.getEdge(edgeId)
+      if (!edge) continue
+      for (const w of edge.waypoints ?? []) {
+        if (Math.hypot(wx - w.x, wy - w.y) <= hitR) return true
+      }
+      const mids = this.getEdgeMidpoints(edge)
+      for (const mid of mids) {
+        if (Math.hypot(wx - mid.x, wy - mid.y) <= midR) return true
+      }
+    }
+    return false
+  }
 
   dispose(): void {
     this.canvas.removeEventListener('mousedown', this.onMouseDown)

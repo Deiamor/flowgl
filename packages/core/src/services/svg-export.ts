@@ -3,6 +3,7 @@ import type { NodeData } from '../graph/node'
 import type { EdgeData } from '../graph/edge'
 import { edgeControlPoints } from '../renderer/webgl/util/bezier'
 import { handleXY } from '../renderer/webgl/util/handle-xy'
+import { edgeMidpoint, edgePathPoints } from '../renderer/webgl/util/edge-geometry'
 import { safeColor, safeNumber, safeDashArray } from './safe-css'
 
 /**
@@ -79,15 +80,24 @@ function renderEdge(parts: string[], edge: EdgeData, nodeMap: Map<string, NodeDa
   const color = safeColor(st.color, '#555555')
   const width = safeNumber(st.width, 2)
 
+  // Path d-attribute. For bezier (the only smooth case) the SVG cubic
+  // command preserves the exact curve; for every other case we walk the
+  // shared polyline and emit straight `L` commands. Pre-0.8.1 this branch
+  // only handled bezier + straight + waypoints — step and smoothstep
+  // fell through to bezier rendering, which did not match the on-screen
+  // shape.
   let d: string
-  if (edge.waypoints && edge.waypoints.length > 0) {
-    const pts = [[sx, sy], ...edge.waypoints.map(w => [w.x, w.y]), [ex, ey]]
-    d = `M${pts.map(p => `${p[0]},${p[1]}`).join(' L')}`
-  } else if (edge.type === 'straight') {
-    d = `M${sx},${sy} L${ex},${ey}`
+  if (edge.type === 'bezier' || edge.type == null) {
+    if (edge.waypoints && edge.waypoints.length > 0) {
+      const pts: [number, number][] = [[sx, sy], ...edge.waypoints.map(w => [w.x, w.y] as [number, number]), [ex, ey]]
+      d = `M${pts.map(p => `${p[0]},${p[1]}`).join(' L')}`
+    } else {
+      const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
+      d = `M${sx},${sy} C${c1x},${c1y} ${c2x},${c2y} ${ex},${ey}`
+    }
   } else {
-    const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
-    d = `M${sx},${sy} C${c1x},${c1y} ${c2x},${c2y} ${ex},${ey}`
+    const pts = edgePathPoints(edge, src, tgt)
+    d = `M${pts.map(p => `${p[0]},${p[1]}`).join(' L')}`
   }
 
   const dashStr = safeDashArray(st.dashArray)
@@ -95,7 +105,9 @@ function renderEdge(parts: string[], edge: EdgeData, nodeMap: Map<string, NodeDa
   parts.push(`<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" marker-end="url(#arrow)" ${dash}/>`)
 
   if (edge.label) {
-    const mx = (sx + ex) / 2, my = (sy + ey) / 2
+    // Label at the rendered-path midpoint, not the source→target straight
+    // midpoint. (Same fix shape as the other label consumers.)
+    const [mx, my] = edgeMidpoint(edge, src, tgt)
     parts.push(`<rect x="${mx-24}" y="${my-9}" width="48" height="18" rx="3" fill="rgba(255,255,255,0.92)"/>`)
     parts.push(`<text x="${mx}" y="${my}" text-anchor="middle" dominant-baseline="middle" font-size="12" font-family="system-ui,sans-serif" fill="#374151">${svgEscape(edge.label)}</text>`)
   }

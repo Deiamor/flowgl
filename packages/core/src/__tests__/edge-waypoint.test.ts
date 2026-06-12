@@ -115,11 +115,12 @@ describe('EdgeWaypoint', () => {
   })
 
   it('mousedown on midpoint inserts new waypoint and starts drag', () => {
-    // handleXY default = right side: a(right)=(100,25), b(right)=(300,25)
-    // Geometric midpoint of segment: ((100+300)/2, 25) = (200, 25)
-    // MIDPOINT_HIT_PX=8, zoom=1 → midR=8; click at (200,25) → distance=0
+    // 0.8.1: source defaults to 'right', target defaults to 'left' (aligned
+    // with both renderers). a.right=(100,25), b.left=(200,25).
+    // Geometric midpoint: ((100+200)/2, 25) = (150, 25).
+    // MIDPOINT_HIT_PX=8, zoom=1 → midR=8; click at (150,25) → distance=0.
     canvas.dispatchEvent(new MouseEvent('mousedown', {
-      button: 0, clientX: 200, clientY: 25, bubbles: true,
+      button: 0, clientX: 150, clientY: 25, bubbles: true,
     }))
     expect(ew.isCapturing()).toBe(true)
     const edge = graph.getEdge('e1')!

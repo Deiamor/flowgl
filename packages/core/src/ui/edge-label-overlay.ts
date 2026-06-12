@@ -1,5 +1,29 @@
 import type { Viewport } from '../viewport/viewport'
 import type { Graph } from '../graph/graph'
+import { edgeMidpoint, edgePathPoints } from '../renderer/webgl/util/edge-geometry'
+
+function pointAtFraction(pts: [number, number][], t: number): [number, number] {
+  if (pts.length < 2) return pts[0] ?? [0, 0]
+  let total = 0
+  const seg = new Array<number>(pts.length - 1)
+  for (let i = 0; i + 1 < pts.length; i++) {
+    seg[i] = Math.hypot(pts[i + 1]![0] - pts[i]![0], pts[i + 1]![1] - pts[i]![1])
+    total += seg[i]!
+  }
+  if (total === 0) return pts[0]!
+  const target = total * Math.max(0, Math.min(1, t))
+  let cum = 0
+  for (let i = 0; i < seg.length; i++) {
+    const next = cum + seg[i]!
+    if (next >= target) {
+      const f = (target - cum) / (seg[i] || 1)
+      const a = pts[i]!, b = pts[i + 1]!
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]
+    }
+    cum = next
+  }
+  return pts[pts.length - 1]!
+}
 
 export interface EdgeLabelSpec {
   /** Caller-supplied id; auto-generated when omitted. */
@@ -148,14 +172,21 @@ export class EdgeLabelOverlay {
     const tgt = this.graph.getNode(edge.target)
     if (!src || !tgt) { l.el.setAttribute('data-visible', 'false'); return }
 
-    const t = l.t ?? 0.5
-    // World midpoint along the straight line between node centers.
-    const sx = src.x + src.width / 2
-    const sy = src.y + src.height / 2
-    const ex = tgt.x + tgt.width / 2
-    const ey = tgt.y + tgt.height / 2
-    const wx = sx + (ex - sx) * t
-    const wy = sy + (ey - sy) * t
+    // Anchor at the rendered-path midpoint (arc-length walk through the
+    // shared edge-geometry helper). Pre-0.8.1 this used the straight line
+    // between node centers, which drifted off the visible polyline for
+    // step / smoothstep / waypoint-edited edges.
+    let wx: number, wy: number
+    const t = l.t
+    if (t == null || t === 0.5) {
+      const [mx, my] = edgeMidpoint(edge, src, tgt)
+      wx = mx; wy = my
+    } else {
+      // Non-default t: lerp along the polyline by fraction of arc length.
+      const pts = edgePathPoints(edge, src, tgt)
+      const point = pointAtFraction(pts, t)
+      wx = point[0]; wy = point[1]
+    }
 
     const [px, py] = this.viewport.worldToScreen(wx, wy)
     l.el.setAttribute('data-visible', 'true')

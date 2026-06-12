@@ -124,4 +124,73 @@ describe('EdgeHitTester', () => {
     const edges: EdgeData[] = [{ id: 'e1', source: 'a', target: 'b', sourceHandle: 'out' }]
     expect(() => ht.findEdgeAt(edges, makeMap(nodes), 150, 25, 1)).not.toThrow()
   })
+
+  // ── 0.8.1 regression suite — hit test mirrors every renderer branch ──
+  describe('renderer-parity branches (regression: edge unselectable after waypoint insert)', () => {
+    const src = nd('s', 0,   0, 100, 60)
+    const tgt = nd('t', 400, 0, 100, 60)
+    const nm = makeMap([src, tgt])
+
+    it('type:"straight" — hit on the midpoint of the segment', () => {
+      const e: EdgeData = { id: 'e', source: 's', target: 't', type: 'straight' }
+      expect(ht.findEdgeAt([e], nm, 250, 30, 1)?.id).toBe('e')
+    })
+
+    it('type:"straight" — off-line click misses', () => {
+      const e: EdgeData = { id: 'e', source: 's', target: 't', type: 'straight' }
+      expect(ht.findEdgeAt([e], nm, 250, 200, 1)).toBeNull()
+    })
+
+    it('type:"step" left↔right — hit on the mid-segment', () => {
+      const e: EdgeData = { id: 'e', source: 's', target: 't', type: 'step', sourceHandle: 'right', targetHandle: 'left' }
+      // L-routed step at y=30 from x=100 to x=400; hit at (300, 30)
+      expect(ht.findEdgeAt([e], nm, 300, 30, 1)?.id).toBe('e')
+    })
+
+    it('type:"step" right→top — hit on the vertical leg', () => {
+      const tgt2 = nd('t', 200, 200, 80, 60)
+      const m = makeMap([src, tgt2])
+      const e: EdgeData = { id: 'e', source: 's', target: 't', type: 'step', sourceHandle: 'right', targetHandle: 'top' }
+      // step path: (100,30) → (240,30) → (240,200). Hit on vertical leg.
+      expect(ht.findEdgeAt([e], m, 240, 100, 1)?.id).toBe('e')
+    })
+
+    it('type:"smoothstep" — sampled polyline hit on the mid-segment', () => {
+      const e: EdgeData = { id: 'e', source: 's', target: 't', type: 'smoothstep', sourceHandle: 'right', targetHandle: 'left' }
+      expect(ht.findEdgeAt([e], nm, 300, 30, 1)?.id).toBe('e')
+    })
+
+    it('waypoints override bezier: hit on the polyline through a user-added waypoint', () => {
+      // User dragged the middle of a bezier edge → waypoint inserted. The
+      // renderer now draws a polyline through (s.right, waypoint, t.left).
+      // The hit test must follow.
+      const e: EdgeData = {
+        id: 'e', source: 's', target: 't', type: 'bezier',
+        waypoints: [{ x: 250, y: 200 }],
+      }
+      // Midpoint of polyline leg s.right(100,30) → waypoint(250,200)
+      expect(ht.findEdgeAt([e], nm, 175, 115, 1)?.id).toBe('e')
+      // The old (pre-fix) sample point at y=30 is no longer on the line.
+      expect(ht.findEdgeAt([e], nm, 250, 30, 1)).toBeNull()
+    })
+
+    it('waypoints override step routing too', () => {
+      const e: EdgeData = {
+        id: 'e', source: 's', target: 't', type: 'step',
+        waypoints: [{ x: 250, y: 150 }],
+      }
+      // The presence of waypoints overrides type; hit follows the polyline.
+      expect(ht.findEdgeAt([e], nm, 175, 90, 1)?.id).toBe('e')
+    })
+
+    it('smoothstep with custom borderRadius — polyline samples adjust accordingly', () => {
+      const e: EdgeData = {
+        id: 'e', source: 's', target: 't', type: 'smoothstep',
+        sourceHandle: 'right', targetHandle: 'left',
+        pathOptions: { borderRadius: 24, arcSegments: 12 },
+      }
+      // Even with a large border radius, the midpoint of the mid-segment is on the line.
+      expect(ht.findEdgeAt([e], nm, 300, 30, 1)?.id).toBe('e')
+    })
+  })
 })

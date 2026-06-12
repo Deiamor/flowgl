@@ -1,5 +1,29 @@
 import type { Viewport } from '../viewport/viewport'
 import type { Graph } from '../graph/graph'
+import { edgeMidpoint, edgePathPoints } from '../renderer/webgl/util/edge-geometry'
+
+function pointAtFraction(pts: [number, number][], t: number): [number, number] {
+  if (pts.length < 2) return pts[0] ?? [0, 0]
+  let total = 0
+  const seg = new Array<number>(pts.length - 1)
+  for (let i = 0; i + 1 < pts.length; i++) {
+    seg[i] = Math.hypot(pts[i + 1]![0] - pts[i]![0], pts[i + 1]![1] - pts[i]![1])
+    total += seg[i]!
+  }
+  if (total === 0) return pts[0]!
+  const target = total * Math.max(0, Math.min(1, t))
+  let cum = 0
+  for (let i = 0; i < seg.length; i++) {
+    const next = cum + seg[i]!
+    if (next >= target) {
+      const f = (target - cum) / (seg[i] || 1)
+      const a = pts[i]!, b = pts[i + 1]!
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]
+    }
+    cum = next
+  }
+  return pts[pts.length - 1]!
+}
 
 export type EdgeToolbarAlign = 'above' | 'below' | 'inline'
 
@@ -175,13 +199,19 @@ export class EdgeToolbarLayer {
     t.el.setAttribute('data-visible', visible ? 'true' : 'false')
     if (!visible) return
 
-    const tt = t.t ?? 0.5
-    const sx = src.x + src.width / 2
-    const sy = src.y + src.height / 2
-    const ex = tgt.x + tgt.width / 2
-    const ey = tgt.y + tgt.height / 2
-    const wx = sx + (ex - sx) * tt
-    const wy = sy + (ey - sy) * tt
+    // Anchor at the rendered-path midpoint (or arc-length fraction `t`).
+    // Pre-0.8.1 this used the straight line between node centers, which
+    // drifted off the visible polyline for step/smoothstep/waypoint edges.
+    let wx: number, wy: number
+    const tt = t.t
+    if (tt == null || tt === 0.5) {
+      const [mx, my] = edgeMidpoint(edge, src, tgt)
+      wx = mx; wy = my
+    } else {
+      const pts = edgePathPoints(edge, src, tgt)
+      const point = pointAtFraction(pts, tt)
+      wx = point[0]; wy = point[1]
+    }
 
     const [px, py] = this.viewport.worldToScreen(wx, wy)
     const align = t.align ?? 'above'

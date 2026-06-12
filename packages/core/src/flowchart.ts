@@ -582,6 +582,12 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         if (this.edgeReroute.isCapturing()) return true
         if (this.connectDrag.isCapturing()) return true
         if (this.nodeResize.isCapturing()) return true
+        // Defer to the waypoint layer when the press is over a midpoint /
+        // waypoint handle of any selected edge. Pre-0.8.1 PanZoom did not
+        // check this, so PanZoom and EdgeWaypoint started a drag concurrently
+        // — the pan compensated the world coords and waypoints froze in place.
+        const r = this.canvas.getBoundingClientRect()
+        if (this.edgeWaypoint?.isNearMidpoint(sx + r.left, sy + r.top)) return true
         const [wx, wy] = this.viewport.screenToWorld(sx, sy)
         return this.hitTester.findNodeAt(this.graph.getNodes(), wx, wy) !== null
       },

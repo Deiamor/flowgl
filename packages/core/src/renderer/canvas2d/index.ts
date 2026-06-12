@@ -7,6 +7,7 @@ import { DEFAULT_NODE_STYLE } from '../../graph/node'
 import { DEFAULT_EDGE_STYLE, DEFAULT_SMOOTHSTEP_BORDER_RADIUS, DEFAULT_SMOOTHSTEP_ARC_SEGMENTS } from '../../graph/edge'
 import { handleXY } from '../webgl/util/handle-xy'
 import { edgeControlPoints, cubicBezierPoint, stepWaypoints, smoothStepWaypoints } from '../webgl/util/bezier'
+import { edgeMidpoint } from '../webgl/util/edge-geometry'
 import { cullNodes, cullEdges } from '../webgl/cull'
 
 /**
@@ -299,16 +300,7 @@ export class Canvas2DRenderer implements Renderer {
     if (!edge.label) return
     const src = nodeMap.get(edge.source); const tgt = nodeMap.get(edge.target)
     if (!src || !tgt) return
-    const [sx, sy] = handleXY(src, edge.sourceHandle)
-    const [ex, ey] = handleXY(tgt, edge.targetHandle)
-    let mx: number, my: number
-    if (edge.type === 'straight' || (edge.waypoints && edge.waypoints.length > 0)) {
-      mx = (sx + ex) / 2; my = (sy + ey) / 2
-    } else {
-      const [c1x, c1y, c2x, c2y] = edgeControlPoints(sx, sy, edge.sourceHandle, ex, ey, edge.targetHandle)
-      const [bx, by] = cubicBezierPoint(0.5, sx, sy, c1x, c1y, c2x, c2y, ex, ey)
-      mx = bx; my = by
-    }
+    const [mx, my] = edgeMidpoint(edge, src, tgt)
 
     const ctx = this.ctx
     ctx.save()
