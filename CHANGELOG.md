@@ -32,16 +32,54 @@ acceptance criteria pass.
   so a WebGL-failed chart can still host error panels and status
   messages. Exports added: `PanelPosition`, `PanelOptions`.
 
+- **`Controls` panel** — `chart.showControls(opts)` / `hideControls()` /
+  `hasControls()`. Built atop the Panel overlay. Built-in buttons:
+  zoom in/out, fit view, lock/interactive toggle (all opt-out via
+  `showZoom` / `showFitView` / `showInteractive`). Override handlers
+  via `onZoomIn` / `onZoomOut` / `onFitView` / `onInteractiveChange`.
+  `customButtons` appends additional `ControlButtonOptions` after the
+  built-ins (id, icon, title, onClick, disabled). 9-position
+  placement, `orientation: 'horizontal' | 'vertical'`. Built with
+  inline-rendered SVG icons (no assets, no deps). `role="toolbar"`,
+  `aria-pressed` on the lock toggle, focus-visible outline. Exports
+  added: `ControlsOptions`, `ControlButtonOptions`.
+- **`NodeToolbar` layer** — `chart.addNodeToolbar(spec)` /
+  `updateNodeToolbar(id, partial)` / `removeNodeToolbar(id)` /
+  `listNodeToolbars()`. Floating toolbar anchored to one node (or a
+  set — `nodeId: 'a' | ['a', 'b']`). Visibility policy:
+  `'auto'` (default — shows iff the target nodes exactly match the
+  current selection, matching React Flow's behavior), `true` (always
+  while the node exists), `false` (never). Position
+  (`top`/`bottom`/`left`/`right`), align (`start`/`center`/`end`),
+  offset in screen pixels. **Pixel size is constant under zoom** —
+  the underlying node may render at any scale but the toolbar buttons
+  stay legible. Exports added: `NodeToolbarSpec`,
+  `NodeToolbarPosition`, `NodeToolbarAlign`.
+- `chart.isReadOnly()` / `getContainer()` / `getPanelOverlay()`
+  exposed for Controls / NodeToolbar / downstream host code.
+- `applyReadOnly` now null-guards the interaction-layer `setDisabled`
+  calls so `setReadOnly()` works on a WebGL-failed chart too. This
+  reverses EC-185's prior "crashes on failed chart" expectation —
+  the consumer UI (Controls lock button, host-app toggle) now reads
+  back consistent state.
+
 ### Tests
 
-- 6 new regression tests in `productization.test.ts` covering
-  `setTheme('system')` registration / teardown / non-matchMedia fallback,
-  and the `isValidConnection` alias precedence.
-- 14 new tests in `panel-overlay.test.ts` covering mount / update /
-  remove / list / dispose lifecycle, all 9 positions including
-  center-transform, content as string vs HTMLElement, onClick wiring,
-  id collision (re-add replaces), and className attribute-breakout
+- 6 new tests in `productization.test.ts` for `setTheme('system')` +
+  `isValidConnection` alias.
+- 14 new tests in `panel-overlay.test.ts` for Panel lifecycle + 9
+  positions + content shapes + onClick + id collision + className
   hardening.
+- 19 new tests in `controls.test.ts` for default 4-button mount, opt-outs,
+  default handlers routing, override handlers, lock toggle + aria-pressed,
+  onInteractiveChange override, orientation, customButtons + disabled,
+  hide/show/dispose lifecycle, re-show swap.
+- 13 new tests in `node-toolbar.test.ts` for mount, isVisible auto/true/false,
+  multi-node visibility (selection-exact match), update mutation, remove,
+  list, dispose, unknown-node hidden-without-throw, multi-node hides on
+  selection extras.
+- EC-185 updated from "throws" to "flips without throw + isReadOnly returns
+  the new value".
 
 ## [0.4.2] — 2026-06-12
 

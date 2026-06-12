@@ -19,6 +19,7 @@ import { History } from './history/history'
 import { ContextPanels } from './ui/context-panels'
 import { PanelOverlay, type PanelOptions } from './ui/panel-overlay'
 import { Controls, type ControlsOptions } from './ui/controls'
+import { NodeToolbarLayer, type NodeToolbarSpec } from './ui/node-toolbar'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -177,6 +178,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private panels!: ContextPanels
   private panelOverlay!: PanelOverlay
   private controls: Controls | null = null
+  private nodeToolbarLayer: NodeToolbarLayer | null = null
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
@@ -1131,6 +1133,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         this.renderHighlights()
         this.renderStatusBadges()
         this.renderWaypointHandles()
+        if (this.nodeToolbarLayer) {
+          this.nodeToolbarLayer.setSelection(this.selectedIds)
+        }
 
         // Keep animating when any edge has animated:true
         if (this.renderer.hasAnimatedEdges()) {
@@ -1542,6 +1547,11 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   /** @deprecated since 0.2.0 — use `setSelection({ nodes })`. Removed in 1.0. */
   setSelectedIds(ids: string[]): void {
     this.selectedIds = new Set(ids)
+    // Toolbar visibility derives from selection — sync immediately so that
+    // tests + headless callers don't need to await a render frame to see the
+    // visibility change. The render loop also calls setSelection but it's a
+    // cheap idempotent map write.
+    this.nodeToolbarLayer?.setSelection(this.selectedIds)
     this.scheduleRender()
   }
 
@@ -1807,6 +1817,46 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     return this.controls?.isVisible() ?? false
   }
 
+  // ── NodeToolbar API ──────────────────────────────────────────────────────────
+  //
+  // Floating, constant-screen-size toolbars anchored to a node (or a set of
+  // nodes). Position/visibility recomputed every render frame via the layer's
+  // `reposition()` call. By default a toolbar shows only when its node(s)
+  // exactly match the current selection (matches React Flow's auto behaviour).
+
+  private ensureNodeToolbarLayer(): NodeToolbarLayer {
+    if (!this.nodeToolbarLayer) {
+      const container = this.getContainer()
+      this.nodeToolbarLayer = new NodeToolbarLayer(
+        container,
+        this.viewport,
+        this.graph,
+        (this as unknown as { sanitizeHtml?: (s: string) => string }).sanitizeHtml,
+      )
+    }
+    return this.nodeToolbarLayer
+  }
+
+  /** Add a node toolbar. Returns its id. */
+  addNodeToolbar(spec: NodeToolbarSpec): string {
+    return this.ensureNodeToolbarLayer().add(spec)
+  }
+
+  /** Update content / position / align / offset / visibility of an existing toolbar. */
+  updateNodeToolbar(id: string, partial: Partial<Omit<NodeToolbarSpec, 'nodeId'>>): boolean {
+    return this.nodeToolbarLayer?.update(id, partial) ?? false
+  }
+
+  /** Remove a node toolbar. */
+  removeNodeToolbar(id: string): boolean {
+    return this.nodeToolbarLayer?.remove(id) ?? false
+  }
+
+  /** Currently-mounted node toolbar ids. */
+  listNodeToolbars(): string[] {
+    return this.nodeToolbarLayer?.list() ?? []
+  }
+
   // ── Viewport API ──────────────────────────────────────────────────────────────
 
   getViewport(): ViewportState  { return this.viewport.getState() }
@@ -1920,6 +1970,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.renderer.dispose()
     }
     this.resizeObserver?.disconnect()
+    this.nodeToolbarLayer?.dispose()
     this.controls?.dispose()
     this.panels?.dispose()
     this.panelOverlay?.dispose()

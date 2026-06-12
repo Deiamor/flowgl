@@ -40,6 +40,7 @@ export type { GridConfig, MinimapConfig } from './types'
 export { DEFAULT_GRID_CONFIG, DEFAULT_MINIMAP_CONFIG } from './types'
 export type { PanelPosition, PanelOptions } from './ui/panel-overlay'
 export type { ControlsOptions, ControlButtonOptions } from './ui/controls'
+export type { NodeToolbarSpec, NodeToolbarPosition, NodeToolbarAlign } from './ui/node-toolbar'
 
 export { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'

@@ -29,13 +29,19 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root      = path.resolve(__dirname, '..')
 
-const args     = process.argv.slice(2)
-const noWrite  = args.includes('--no-write')
-const countsIx = args.indexOf('--counts')
-const counts   = countsIx >= 0
+const args         = process.argv.slice(2)
+const noWrite      = args.includes('--no-write')
+const noFloorCheck = args.includes('--no-floor-check')
+const countsIx     = args.indexOf('--counts')
+const counts       = countsIx >= 0
   ? args[countsIx + 1].split(',').map(n => +n)
   : [1000, 5000, 10000]
 
+// PRODUCT.md T6 floors. These reflect *real* GPU performance on a developer
+// machine. SwiftShader-only environments (no GPU acceleration — typical
+// GitHub Actions runner) cannot meet them, so CI passes --no-floor-check
+// to record measurements without failing on hardware-bound limits. Real-
+// hardware regression detection lives in local maintainer runs + PERFORMANCE.md.
 const FLOORS = { 1000: 60, 5000: 30, 10000: 30 }
 
 let playwright
@@ -130,8 +136,12 @@ try {
   for (const r of result.results) {
     const floor = FLOORS[r.count]
     if (floor != null && r.avgFps < floor) {
-      console.error(`✗ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps < floor ${floor}`)
-      belowFloor = true
+      if (noFloorCheck) {
+        console.log(`· ${r.count} nodes: ${r.avgFps.toFixed(1)} fps (under floor ${floor}, --no-floor-check)`)
+      } else {
+        console.error(`✗ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps < floor ${floor}`)
+        belowFloor = true
+      }
     } else {
       console.log(`✓ ${r.count} nodes: ${r.avgFps.toFixed(1)} fps (floor ${floor ?? '—'})`)
     }

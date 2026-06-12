@@ -1583,10 +1583,15 @@ describe('Port maxConnections constraint', () => {
 // ─── 20. READ-ONLY MODE ──────────────────────────────────────────────────────
 
 describe('Read-only mode', () => {
-  it('EC-185: setReadOnly(true) crashes on failed (WebGL unavailable) chart — connectDrag undefined', () => {
-    // In failed state, connectDrag is never initialized so setReadOnly throws
+  it('EC-185: setReadOnly(true) on a failed (WebGL unavailable) chart flips the flag without throwing', () => {
+    // As of 0.5.0 applyReadOnly null-guards each interaction setDisabled call,
+    // so a WebGL-failed chart can still flip readOnly — the consumer UI
+    // (Controls lock button, host-app toggle) reads back consistent state.
     const chart = makeChart()
-    expect(() => chart.setReadOnly(true)).toThrow()
+    expect(() => chart.setReadOnly(true)).not.toThrow()
+    expect(chart.isReadOnly()).toBe(true)
+    chart.setReadOnly(false)
+    expect(chart.isReadOnly()).toBe(false)
     chart.dispose()
   })
 
