@@ -4,6 +4,40 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.2] — 2026-06-12
+
+### Fixed (critical)
+
+- **Multi-line label edit destroyed `\n`.** `LabelEditor` used a single-line
+  `<input type="text">`, whose `value` setter silently strips newlines.
+  Opening the inline editor on a node like `'여러줄\nテスト\n测试'`
+  copied the label into the input as the joined single-line string, and
+  blur (or Enter) committed *that* back — permanently flattening the
+  label. Even Escape couldn't recover, because the strip happened at
+  `input.value = node.label` before any user interaction.
+
+  Fix: switch the editor element to `<textarea>` and preserve interior
+  newlines on commit via `value.trim()` (interior whitespace and newlines
+  pass through; only leading / trailing whitespace is stripped, matching
+  the prior single-line behaviour). `rows` is set from the label's line
+  count so the editor opens at the visual height the label occupies.
+
+### Changed
+
+- Keyboard contract inside the editor: plain **Enter commits** (preserves
+  the existing UX), **Shift+Enter inserts a newline**, Escape cancels,
+  blur commits. IME composition (`isComposing` / `keyCode === 229`)
+  continues to swallow Enter so Korean / Japanese / Chinese
+  composition-finalisation Enter doesn't commit prematurely.
+
+### Tests
+
+- 5 new regression tests in `label-editor.test.ts` pin: (a) opening on a
+  multi-line label preserves every `\n` in the textarea value, (b) blur
+  commits a multi-line value verbatim, (c) `rows` attribute matches the
+  label's line count, (d) Shift+Enter does not commit, (e) plain Enter
+  still commits the single-line UX.
+
 ## [0.4.1] — 2026-06-12
 
 ### Fixed (critical — 0.4.0 deprecated)
