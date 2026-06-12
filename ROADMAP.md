@@ -81,8 +81,9 @@ per-item rationale and acceptance criteria are in `CHANGELOG.md` and
 | **0.8.1** | 2026-06-13 | Edge geometry shared helper — 7-consumer regression-class fix (the user-reported waypoint-unselectable bug + six audit findings + two CDP-found extras) |
 | **0.8.2** | 2026-06-13 | Production-gate hardening — Graph mutation listener (regression class), shared `sanitizeContent` (regression class), 5 WCAG 2.2 AA blockers closed, cross-browser CI (Playwright matrix), CodeQL + OSSF Scorecard + dependency-review, SwiftShader regression floor, 9-test stress suite, `SEMVER.md` + `CASE_STUDIES.md`. **First multi-cycle npm publish: 0.4.2 → 0.8.2 across all four packages.** Composite production-gate score reached 8.50 / 10. |
 | **0.9.0** | 2026-06-13 | **Custom node-type registry** — first plugin contract. `chart.registerNodeType('foo', { category: 'html', render, defaultSize, hitTest, className, destroy })`. Per-chart `NodeTypeRegistry` with built-in shape names reserved; `HtmlNodeTypeLayer` mounts a `<div>` per node, positioned + zoom-scaled to match the WebGL canvas. Built-ins keep the SDF fast path. Opens the door to `@my-org/flowgl-node-*` packages on npm. |
+| **0.9.1** | 2026-06-13 | Layout child-translation fix (`gridLayout` / `hierarchicalLayout` / `forceLayout` / `circularLayout` now translate group children, exported `addChildTranslations` helper) + docs.flowgl catch-up (api/flowchart.md surface 0.5.0→0.9.1, new cookbook recipe) + `sync-docs.mjs` docs-coverage audit + CI gate that fails undocumented exports. |
 
-Test counts grew from 934 (pre-0.5.0) to **1121** (post-0.9.0) across
+Test counts grew from 934 (pre-0.5.0) to **1124** (post-0.9.1) across
 44 test files in core, plus 17 in `@flowgl/react`.
 
 ---
