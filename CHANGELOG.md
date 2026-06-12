@@ -21,12 +21,27 @@ acceptance criteria pass.
 - `FlowChartOptions.isValidConnection` — backward-compatible alias for
   `onBeforeConnect`. Apps migrating from React Flow can keep their existing
   handler name. When both are provided, `onBeforeConnect` wins.
+- **`Panel` overlay** — lightweight DOM widgets positioned over the chart
+  in 9-position layout (top-left … bottom-right). New public API:
+  `chart.addPanel(opts)` / `chart.updatePanel(id, opts)` /
+  `chart.removePanel(id)` / `chart.listPanels()`. Panels are absolutely-
+  positioned `<div>` siblings of the canvas — they participate in CSS,
+  not WebGL, and have zero per-frame render cost. Content may be a
+  string (sanitized via the chart's `sanitizeHtml` when provided) or an
+  `HTMLElement`. PanelOverlay is constructed before the WebGL2 init gate
+  so a WebGL-failed chart can still host error panels and status
+  messages. Exports added: `PanelPosition`, `PanelOptions`.
 
 ### Tests
 
 - 6 new regression tests in `productization.test.ts` covering
   `setTheme('system')` registration / teardown / non-matchMedia fallback,
   and the `isValidConnection` alias precedence.
+- 14 new tests in `panel-overlay.test.ts` covering mount / update /
+  remove / list / dispose lifecycle, all 9 positions including
+  center-transform, content as string vs HTMLElement, onClick wiring,
+  id collision (re-add replaces), and className attribute-breakout
+  hardening.
 
 ## [0.4.2] — 2026-06-12
 
