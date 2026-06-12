@@ -18,6 +18,7 @@ import { NodeResize } from './interaction/node-resize'
 import { History } from './history/history'
 import { ContextPanels } from './ui/context-panels'
 import { PanelOverlay, type PanelOptions } from './ui/panel-overlay'
+import { Controls, type ControlsOptions } from './ui/controls'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -175,6 +176,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private history!: History
   private panels!: ContextPanels
   private panelOverlay!: PanelOverlay
+  private controls: Controls | null = null
   private resizeObserver!: ResizeObserver
   private ariaLive!: HTMLElement
   private arrowMoveTimer: ReturnType<typeof setTimeout> | null = null
@@ -777,10 +779,23 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.applyReadOnly(readOnly)
   }
 
+  /** Returns the current readOnly state — used by Controls and external host code. */
+  isReadOnly(): boolean { return this.readOnly }
+
+  /** The DOM container the chart was constructed against. */
+  getContainer(): HTMLElement { return this.canvas?.parentElement ?? this.canvas?.ownerDocument?.body ?? document.body }
+
+  /** The panel overlay layer — used by Controls / NodeToolbar / PerfOverlay. */
+  getPanelOverlay() { return this.panelOverlay }
+
   private applyReadOnly(readOnly: boolean): void {
-    this.connectDrag.setDisabled(readOnly)
-    this.edgeReroute.setDisabled(readOnly)
-    this.nodeResize.setDisabled(readOnly)
+    // Interactions are only constructed when the renderer initialised
+    // successfully. In a WebGL-failed environment we still want setReadOnly
+    // to flip the public flag so consumer UI (e.g. the Controls lock button)
+    // reads back consistent state.
+    this.connectDrag?.setDisabled(readOnly)
+    this.edgeReroute?.setDisabled(readOnly)
+    this.nodeResize?.setDisabled(readOnly)
   }
 
   // ── Undo / Redo ───────────────────────────────────────────────────────────────
@@ -1770,6 +1785,28 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     return this.panelOverlay.list()
   }
 
+  // ── Controls panel ────────────────────────────────────────────────────────────
+  //
+  // Built on top of the Panel overlay: zoom in/out, fit view, lock/interactive
+  // toggle, plus optional custom buttons. Idempotent — calling `showControls`
+  // twice swaps the prior mount for the new one.
+
+  /** Show the chart controls panel. Returns the underlying panel id. */
+  showControls(options: ControlsOptions = {}): string {
+    if (!this.controls) this.controls = new Controls(this)
+    return this.controls.show(options)
+  }
+
+  /** Hide the chart controls panel. Returns false if it wasn't visible. */
+  hideControls(): boolean {
+    return this.controls?.hide() ?? false
+  }
+
+  /** Whether the controls panel is currently mounted. */
+  hasControls(): boolean {
+    return this.controls?.isVisible() ?? false
+  }
+
   // ── Viewport API ──────────────────────────────────────────────────────────────
 
   getViewport(): ViewportState  { return this.viewport.getState() }
@@ -1883,6 +1920,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
       this.renderer.dispose()
     }
     this.resizeObserver?.disconnect()
+    this.controls?.dispose()
     this.panels?.dispose()
     this.panelOverlay?.dispose()
     this.htmlOverlay?.dispose()

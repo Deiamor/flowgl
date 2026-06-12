@@ -46,23 +46,53 @@ try {
   process.exit(2)
 }
 
-// Start the demo dev server.
-const vite = spawn('pnpm', ['--filter', 'demo', 'dev', '--silent'], {
+// Build the demo first, then serve the static dist via `vite preview` — much
+// more reliable in CI than `vite dev`, whose stdout can be buffered through
+// pnpm's wrapper and produces a "did not start" timeout even when the server
+// is actually up. The build adds ~5s but the preview server has a fixed
+// startup signature and a published default port.
+const PREVIEW_PORT = 4173
+console.log('building demo for benchmark…')
+await new Promise((resolve, reject) => {
+  const build = spawn('pnpm', ['--filter', 'demo', 'build'], { cwd: root, stdio: 'inherit' })
+  build.on('exit', (code) => code === 0 ? resolve() : reject(new Error(`demo build failed: ${code}`)))
+})
+
+const vite = spawn('pnpm', ['--filter', 'demo', 'preview', '--', '--port', String(PREVIEW_PORT)], {
   cwd: root,
   stdio: ['ignore', 'pipe', 'pipe'],
 })
 let viteUrl = null
-const VITE_TIMEOUT_MS = 90_000
+const VITE_TIMEOUT_MS = 60_000
 await new Promise((resolve, reject) => {
-  const timer = setTimeout(() => reject(new Error(`vite did not start in ${VITE_TIMEOUT_MS / 1000}s`)), VITE_TIMEOUT_MS)
-  vite.stdout.on('data', (chunk) => {
-    const m = chunk.toString().match(/http:\/\/localhost:(\d+)/)
+  const timer = setTimeout(() => reject(new Error(`vite preview did not start in ${VITE_TIMEOUT_MS / 1000}s`)), VITE_TIMEOUT_MS)
+  // Stream stdout for the Local: URL.
+  const onChunk = (chunk) => {
+    const text = chunk.toString()
+    const m = text.match(/http:\/\/(?:localhost|127\.0\.0\.1):(\d+)/)
     if (m && !viteUrl) {
       viteUrl = `http://localhost:${m[1]}`
       clearTimeout(timer)
       resolve()
     }
-  })
+  }
+  vite.stdout.on('data', onChunk)
+  vite.stderr.on('data', onChunk)
+  // Belt-and-braces fallback — poll the well-known port. `vite preview` always
+  // binds the same port (PREVIEW_PORT) and tends to print before binding, so a
+  // 2s grace + GET / is enough to confirm the server is ready even if stdout
+  // got swallowed.
+  setTimeout(async () => {
+    if (viteUrl) return
+    try {
+      const res = await fetch(`http://localhost:${PREVIEW_PORT}/`)
+      if (res.ok && !viteUrl) {
+        viteUrl = `http://localhost:${PREVIEW_PORT}`
+        clearTimeout(timer)
+        resolve()
+      }
+    } catch { /* still booting */ }
+  }, 2_000)
 })
 console.log('vite ready', viteUrl)
 
