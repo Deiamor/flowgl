@@ -45,7 +45,8 @@ flowchart/
 │   │       ├── graph/
 │   │       │   ├── node.ts
 │   │       │   ├── edge.ts
-│   │       │   └── graph.ts
+│   │       │   ├── graph.ts
+│   │       │   └── node-type-registry.ts  # 0.9.0 — per-chart map of NodeData.type → render behaviour. Built-ins auto-seeded; reserved names cannot be re-registered. External plugins register as `category: 'html'`.
 │   │       ├── viewport/
 │   │       │   └── viewport.ts
 │   │       ├── history/
@@ -100,7 +101,8 @@ flowchart/
 │   │       │   ├── edge-label-overlay.ts   # 0.6.0 — HTML edge label alternative to atlas SDF
 │   │       │   ├── edge-toolbar.ts         # 0.7.0 — edge-anchored variant of NodeToolbar
 │   │       │   ├── helper-lines.ts         # 0.8.0 — Figma-style alignment guides + snap during drag
-│   │       │   └── proximity-connect.ts    # 0.8.0 — drag node near another → ghost line + halo → drop creates edge
+│   │       │   ├── proximity-connect.ts    # 0.8.0 — drag node near another → ghost line + halo → drop creates edge
+│   │       │   └── html-node-type-layer.ts # 0.9.0 — per-node `<div>` overlay for `category: 'html'` custom node-types. Positioned + zoom-scaled via viewport.worldToScreen.
 │   │       ├── workers/
 │   │       │   ├── layout-client.ts   # LayoutWorkerClient — async layout via Web Worker
 │   │       │   └── layout-worker.ts   # Web Worker entry point

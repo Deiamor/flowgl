@@ -4,6 +4,68 @@ All notable changes to this project will be documented here.
 
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.9.0] — 2026-06-13
+
+The 0.9.0 cycle delivers the first item from the ROADMAP "Next" track —
+the **custom node-type registry**. Plugin authors can publish
+`@my-org/flowgl-node-foo` on npm with a `NodeTypeDefinition`, consumers
+`chart.registerNodeType('foo', def)` once, then `addNode({ type: 'foo' })`
+as usual. Built-in shapes (`rectangle`, `circle`, `diamond`, `hexagon`)
+and the group container keep the fast WebGL2 SDF path; only registered
+`'html'` types mount a DOM overlay scaled with the viewport.
+
+### Added
+
+- **`NodeTypeRegistry`** (`graph/node-type-registry.ts`) — per-chart map
+  of `NodeData.type` → render behaviour. Built-ins auto-seeded; reserved
+  names cannot be re-registered. External plugins register as
+  `category: 'html'` with a `render(container, node, ctx)` hook.
+- **`HtmlNodeTypeLayer`** (`ui/html-node-type-layer.ts`) — per-node
+  `<div>` container, positioned via `viewport.worldToScreen` and scaled
+  by current zoom. Pointer events route into the div; the chart's
+  drag / connect / select still work as long as the plugin doesn't
+  call `stopPropagation`. Each div carries
+  `data-flowgl-html-node` / `data-flowgl-html-type` /
+  `data-flowgl-selected` attributes for CSS / test instrumentation.
+- **`FlowChart.registerNodeType(name, def)`** /
+  **`unregisterNodeType(name)`** /
+  **`getRegisteredNodeTypes()`** /
+  **`getCustomNodeTypes()`** — public API.
+- **Exports**: `NodeTypeDefinition`, `NodeTypeCategory`,
+  `HtmlNodeRenderFn`, `NodeHitTestFn`.
+
+### Changed
+
+- **`scheduleRender`** now repositions the custom-type HTML overlay
+  synchronously before queuing the WebGL RAF, so plugin DOM stays in
+  sync with the model on the same microtask (and tests in environments
+  without a real RAF loop see the updated DOM immediately). The HTML
+  layer does NOT depend on WebGL — a failed chart can still mount
+  custom-type nodes, useful for error-fallback UI.
+
+### Tests
+
+- 19 new tests in `node-type-registry.test.ts` — registry-only
+  (built-in seed, reserved-name rejection, html-only rule, render
+  required, empty-name throw, round-trip, unregister-reserved, replace
+  warning) + chart-integrated (5 default names, register + addNode
+  mounts div, transform tracks viewport, removeNode + destroy hook,
+  type change at runtime, built-ins skip html layer, unregister
+  unmounts existing, dispose drains, render-ctx flags, selection state,
+  z-index + pointer-events on root).
+
+### CDP probe — 0.9.0 regression gate
+
+- `packages/core/scripts/cdp-090-probe.mjs` — drives a `uml-class`
+  custom type through Brave:
+  - register + 2 custom node mounts + 1 built-in stays on canvas
+  - zoom 1.5x → `<div>` transform contains `scale(1.5)`
+  - reserved built-in name rejection throws
+  - removeNode unmounts div + destroy hook fires
+  - dispose leaves 0 custom-node divs + 0 root layers
+
+Test counts: **core 1121** (was 1102), **react 17** (unchanged), 44 test files.
+
 ## [0.8.2] — 2026-06-13
 
 Production-gate hardening cycle. Three regression classes closed, the

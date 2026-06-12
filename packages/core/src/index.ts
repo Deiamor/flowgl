@@ -48,6 +48,7 @@ export type { EdgeLabelSpec } from './ui/edge-label-overlay'
 export type { EdgeToolbarSpec, EdgeToolbarAlign } from './ui/edge-toolbar'
 export type { HelperLinesOptions } from './ui/helper-lines'
 export type { ProximityConnectOptions } from './ui/proximity-connect'
+export type { NodeTypeDefinition, NodeTypeCategory, HtmlNodeRenderFn, NodeHitTestFn } from './graph/node-type-registry'
 
 export { hierarchicalLayout, forceLayout, gridLayout, circularLayout } from './layout/auto-layout'
 export type { LayoutResult } from './layout/auto-layout'

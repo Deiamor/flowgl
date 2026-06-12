@@ -26,6 +26,8 @@ import { EdgeLabelOverlay, type EdgeLabelSpec } from './ui/edge-label-overlay'
 import { EdgeToolbarLayer, type EdgeToolbarSpec } from './ui/edge-toolbar'
 import { HelperLinesLayer, type HelperLinesOptions } from './ui/helper-lines'
 import { ProximityConnectLayer, type ProximityConnectOptions } from './ui/proximity-connect'
+import { NodeTypeRegistry, type NodeTypeDefinition } from './graph/node-type-registry'
+import { HtmlNodeTypeLayer } from './ui/html-node-type-layer'
 import { Minimap } from './ui/minimap'
 import { HtmlOverlay } from './ui/html-overlay'
 import { computeNodeBounds } from './renderer/webgl/cull'
@@ -214,6 +216,8 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   private edgeToolbarLayer: EdgeToolbarLayer | null = null
   private helperLines: HelperLinesLayer | null = null
   private proximityConnect: ProximityConnectLayer | null = null
+  private nodeTypeRegistry: NodeTypeRegistry = new NodeTypeRegistry()
+  private htmlNodeTypeLayer: HtmlNodeTypeLayer | null = null
   private helperLinesOptions: HelperLinesOptions = {}
   private proximityConnectOptions: ProximityConnectOptions = {}
   private nodeResizeOptions: import('./interaction/node-resize').NodeResizeOptions = {}
@@ -337,6 +341,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.onBeforeConnect = options.onBeforeConnect ?? options.isValidConnection
     this.onBeforeDelete  = options.onBeforeDelete
 
+    // Node-type registry is already initialised at declaration so a
+    // failed chart still exposes `registerNodeType` /
+    // `getRegisteredNodeTypes` consistently.
     this.graph        = new Graph()
     // Every graph mutation — no matter which call site triggered it — emits
     // `nodeUpdate` / `edgeUpdate` via this single listener. Pre-0.8.2 the
@@ -392,6 +399,18 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     // consistent options state without mounting visible guides.
     this.helperLines = new HelperLinesLayer(options.container, this.viewport, this.graph, this.helperLinesOptions)
     this.proximityConnect = new ProximityConnectLayer(options.container, this.viewport, this.graph, this.proximityConnectOptions)
+
+    // Per-instance custom-type HTML layer. Built-ins stay on the WebGL/
+    // Canvas2D fast path; only nodes with a registered `'html'` type
+    // mount inside this layer.
+    this.htmlNodeTypeLayer = new HtmlNodeTypeLayer(
+      options.container,
+      this.viewport,
+      this.graph,
+      this.nodeTypeRegistry,
+      () => this.selectedIds,
+      () => this.readOnly,
+    )
 
     if (!ok) {
       this.failed = true
@@ -1231,7 +1250,14 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
   }
 
   private scheduleRender(): void {
-    if (this.failed || this.batching || this.rafId !== null) return
+    if (this.batching) return
+    // Custom-type HTML overlay layer repositions synchronously on every
+    // requested render so consumers (and tests in environments without
+    // a real RAF loop) see the DOM in sync with the model immediately.
+    // The WebGL canvas itself still defers to RAF. The HTML layer does
+    // NOT depend on WebGL and stays consistent even on a failed chart.
+    this.htmlNodeTypeLayer?.reposition()
+    if (this.failed || this.rafId !== null) return
     this.rafId = requestAnimationFrame(() => {
       this.rafId = null
       if (this.pendingResize) {
@@ -1283,6 +1309,9 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
         }
         if (this.edgeToolbarLayer) {
           this.edgeToolbarLayer.setSelection(this.selectedEdgeIds)
+        }
+        if (this.htmlNodeTypeLayer) {
+          this.htmlNodeTypeLayer.reposition()
         }
 
         // Keep animating when any edge has animated:true
@@ -2350,6 +2379,53 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     return { ...this.nodeResizeOptions }
   }
 
+  // ── Custom node-type registry (0.9.0) ─────────────────────────────────
+  //
+  // Plugins ship as npm packages exporting a `NodeTypeDefinition`. The
+  // host app `registerNodeType('uml-class', umlClassDef)` once after
+  // constructing the chart, then `addNode({ type: 'uml-class', ... })`
+  // as usual. The chart renders the node via a DOM overlay (zoom-
+  // scaled) — built-in shapes (rectangle / circle / diamond / hexagon)
+  // and the group container still take the fast WebGL2 SDF path. See
+  // graph/node-type-registry.ts for the definition contract.
+
+  /**
+   * Register a new custom node-type. The name becomes a valid value
+   * for `NodeData.type`. Built-in shape names (`rectangle`, `circle`,
+   * `diamond`, `hexagon`, `group`) are reserved — registering them
+   * throws. Re-registering an existing custom name logs a warning and
+   * replaces (useful during HMR).
+   *
+   * Throws on validation failure (empty name, reserved name, missing
+   * render, non-html category).
+   */
+  registerNodeType(name: string, def: NodeTypeDefinition): void {
+    this.nodeTypeRegistry.register(name, def)
+    this.scheduleRender()
+  }
+
+  /** Remove a previously-registered custom node-type. Returns true on success. */
+  unregisterNodeType(name: string): boolean {
+    const ok = this.nodeTypeRegistry.unregister(name)
+    if (ok) this.scheduleRender()
+    return ok
+  }
+
+  /** Every node-type name known to the chart (built-ins + group + custom). */
+  getRegisteredNodeTypes(): string[] {
+    return this.nodeTypeRegistry.list()
+  }
+
+  /** Custom (html) node-type names only — what plugin-aware host UI usually wants. */
+  getCustomNodeTypes(): string[] {
+    return this.nodeTypeRegistry.listCustom()
+  }
+
+  /** Internal — used by tests to verify the DOM element of a custom-type node. */
+  _getHtmlNodeElement(nodeId: string): HTMLDivElement | undefined {
+    return this.htmlNodeTypeLayer?.getElement(nodeId)
+  }
+
   /** Update Helper Lines tuning at runtime (enabled / thresholds). */
   setHelperLinesOptions(options: HelperLinesOptions): void {
     this.helperLinesOptions = { ...this.helperLinesOptions, ...options }
@@ -2510,6 +2586,7 @@ export class FlowChart extends EventEmitter<FlowChartEvents> {
     this.edgeToolbarLayer?.dispose()
     this.helperLines?.dispose()
     this.proximityConnect?.dispose()
+    this.htmlNodeTypeLayer?.dispose()
     this.nodeDataSubscribers.clear()
     this.dataUpdateStack.length = 0
     this.viewportPortalLayer?.dispose()
