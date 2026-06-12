@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — dissolveGroup</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 320px; }
+    aside b { color: #0f172a; }
+    aside code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — dissolveGroup vs ungroupNodes</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/dissolve-group.html">View source</a>
+    <button id="dissolve">dissolveGroup('grp1')</button>
+    <button id="ungroup">ungroupNodes(children)</button>
+    <button id="reset">Reset</button>
+  </header>
+  <aside>
+    <b>dissolveGroup</b> removes the container <em>and</em> detaches children.
+    <b>ungroupNodes</b> only detaches children — the group container survives.
+    Edges between surviving children are preserved in both.
+  </aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+
+    const initial = () => ({
+      nodes: [
+        { id: 'grp1', x: 240, y: 80, width: 320, height: 260, label: 'Group',
+          type: 'group', style: { backgroundColor: 'rgba(120,144,190,0.12)', borderColor: '#7890be', borderRadius: 12 } },
+        { id: 'c1', x: 280, y: 140, width: 120, height: 60, label: 'Child 1', parentId: 'grp1' },
+        { id: 'c2', x: 280, y: 230, width: 120, height: 60, label: 'Child 2', parentId: 'grp1' },
+        { id: 'c3', x: 430, y: 185, width: 120, height: 60, label: 'Child 3', parentId: 'grp1' },
+        { id: 'ext', x: 80, y: 185, width: 120, height: 60, label: 'External' },
+      ],
+      edges: [
+        { id: 'e1', source: 'c1',  target: 'c2' },
+        { id: 'e2', source: 'c2',  target: 'c3' },
+        { id: 'e3', source: 'ext', target: 'c1' },
+      ],
+    })
+
+    const chart = new FlowChart({ container: document.getElementById('app'), ...initial(), autoFit: true })
+    document.getElementById('dissolve').onclick = () => chart.dissolveGroup('grp1')
+    document.getElementById('ungroup').onclick  = () => chart.ungroupNodes(['c1', 'c2', 'c3'])
+    document.getElementById('reset').onclick    = () => {
+      const init = initial()
+      chart.setNodes(init.nodes)
+      chart.setEdges(init.edges)
+      chart.fitView()
+    }
+  </script>
+</body>
+</html>

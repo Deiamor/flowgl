@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Minimap</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 260px; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Minimap</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/minimap.html">View source</a>
+    <button data-pos="top-left">↖ top-left</button>
+    <button data-pos="top-right">↗ top-right</button>
+    <button data-pos="bottom-left">↙ bottom-left</button>
+    <button data-pos="bottom-right">↘ bottom-right</button>
+  </header>
+  <aside>Click anywhere on the minimap to pan the main canvas. Position is controlled by the <code>minimap.position</code> option.</aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      minimap: { position: 'bottom-right', size: { width: 220, height: 150 } },
+      nodes: Array.from({ length: 60 }, (_, i) => ({
+        id: 'n' + i, x: (i % 10) * 160, y: Math.floor(i / 10) * 120,
+        width: 110, height: 50, label: 'n' + i,
+      })),
+      edges: Array.from({ length: 30 }, (_, i) => ({
+        id: 'e' + i, source: 'n' + i, target: 'n' + (i + 30),
+      })),
+      autoFit: true,
+    })
+    document.querySelectorAll('[data-pos]').forEach(btn => {
+      btn.onclick = () => chart.setMinimap({ position: btn.dataset.pos, size: { width: 220, height: 150 } })
+    })
+  </script>
+</body>
+</html>

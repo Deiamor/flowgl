@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Export PNG</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 280px; }
+    aside code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Export PNG</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/export-png.html">View source</a>
+    <button id="png1">⬇ Export @ 1×</button>
+    <button id="png2">⬇ Export @ 2× (retina)</button>
+  </header>
+  <aside><code>chart.exportPNG(scale)</code> returns a data URL. Use the scale arg to upscale for retina prints or high-resolution screenshots.</aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'a', x: 100, y: 200, width: 140, height: 60, label: 'Source', style: { backgroundColor: '#e8f5e9', borderColor: '#43a047' } },
+        { id: 'b', x: 320, y: 200, width: 140, height: 60, label: 'Transform', style: { backgroundColor: '#e3f2fd', borderColor: '#1e88e5' } },
+        { id: 'c', x: 540, y: 200, width: 140, height: 60, label: 'Sink', style: { backgroundColor: '#fce4ec', borderColor: '#e53935' } },
+      ],
+      edges: [
+        { id: 'e1', source: 'a', target: 'b', label: 'flow' },
+        { id: 'e2', source: 'b', target: 'c', label: 'flow' },
+      ],
+      autoFit: true,
+    })
+
+    const download = (scale) => {
+      const url = chart.exportPNG(scale)
+      if (!url) return
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `flowgl-${scale}x.png`
+      a.click()
+    }
+    document.getElementById('png1').onclick = () => download(1)
+    document.getElementById('png2').onclick = () => download(2)
+  </script>
+</body>
+</html>

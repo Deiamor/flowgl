@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Fit view</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; margin-right: 8px; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    aside { position: fixed; right: 24px; top: 100px; padding: 10px 14px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; color: #475569; max-width: 240px; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Fit view</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/fit-view.html">View source</a>
+    <button id="all">Fit all</button>
+    <button id="sel">Fit selection</button>
+    <button id="scroll">Scroll to "needle"</button>
+  </header>
+  <aside>Pan or zoom away, then click a button. Selection-fit requires at least one selected node.</aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        ...Array.from({ length: 24 }, (_, i) => ({
+          id: 'n' + i, x: (i % 6) * 200, y: Math.floor(i / 6) * 140,
+          width: 130, height: 60, label: 'node ' + i,
+        })),
+        { id: 'needle', x: 2000, y: 1500, width: 160, height: 70, label: '🪡 needle',
+          style: { backgroundColor: '#fff8e1', borderColor: '#f9a825' } },
+      ],
+      edges: [],
+      autoFit: true,
+    })
+    document.getElementById('all').onclick    = () => chart.fitView({ padding: 60 })
+    document.getElementById('sel').onclick    = () => chart.fitViewToSelection({ padding: 80 })
+    document.getElementById('scroll').onclick = () => chart.scrollToNode('needle', 80)
+  </script>
+</body>
+</html>

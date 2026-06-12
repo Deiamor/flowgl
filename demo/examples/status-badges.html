@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Status badges</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; margin-right: 8px; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Status badges</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/status-badges.html">View source</a>
+    <button data-status="error">🔴 error</button>
+    <button data-status="warning">🟡 warning</button>
+    <button data-status="success">🟢 success</button>
+    <button data-status="info">🔵 info</button>
+    <button data-status="">clear</button>
+  </header>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'ingest',    x: 100, y: 200, width: 140, height: 60, label: 'Ingest',    status: 'success' },
+        { id: 'parse',     x: 300, y: 200, width: 140, height: 60, label: 'Parse',     status: 'warning' },
+        { id: 'transform', x: 500, y: 200, width: 140, height: 60, label: 'Transform', status: 'error' },
+        { id: 'load',      x: 700, y: 200, width: 140, height: 60, label: 'Load',      status: 'info' },
+      ],
+      edges: [
+        { id: 'e1', source: 'ingest',    target: 'parse' },
+        { id: 'e2', source: 'parse',     target: 'transform' },
+        { id: 'e3', source: 'transform', target: 'load' },
+      ],
+      autoFit: true,
+    })
+    document.querySelectorAll('[data-status]').forEach((btn) => {
+      btn.onclick = () => {
+        const s = btn.dataset.status || null
+        for (const n of chart.getNodes()) chart.setNodeStatus(n.id, s)
+      }
+    })
+  </script>
+</body>
+</html>

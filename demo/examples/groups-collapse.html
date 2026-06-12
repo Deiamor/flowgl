@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Groups with collapse</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 280px; }
+    aside code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Groups with collapse</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/groups-collapse.html">View source</a>
+    <button id="toggle">Toggle group collapse</button>
+  </header>
+  <aside>
+    Double-click is opt-in via <code>groupDoubleClickCollapses: true</code>. The button calls <code>toggleCollapse</code> programmatically — that path is always available.
+  </aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      groupDoubleClickCollapses: true,
+      nodes: [
+        { id: 'grp1', x: 240, y: 80,  width: 320, height: 260, label: 'Pipeline group',
+          type: 'group', style: { backgroundColor: 'rgba(120,144,190,0.12)', borderColor: '#7890be', borderRadius: 12 } },
+        { id: 'in',  x: 280, y: 140, width: 120, height: 60, label: 'Ingest',    parentId: 'grp1' },
+        { id: 'tx',  x: 280, y: 230, width: 120, height: 60, label: 'Transform', parentId: 'grp1' },
+        { id: 'out', x: 430, y: 185, width: 120, height: 60, label: 'Load',      parentId: 'grp1' },
+        { id: 'src', x: 80,  y: 185, width: 120, height: 60, label: 'Source' },
+        { id: 'snk', x: 620, y: 185, width: 120, height: 60, label: 'Sink' },
+      ],
+      edges: [
+        { id: 'e1', source: 'src', target: 'in' },
+        { id: 'e2', source: 'in',  target: 'tx' },
+        { id: 'e3', source: 'tx',  target: 'out' },
+        { id: 'e4', source: 'out', target: 'snk' },
+      ],
+      autoFit: true,
+    })
+    document.getElementById('toggle').onclick = () => chart.toggleCollapse('grp1')
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Custom HTML node</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 280px; }
+    aside b { color: #0f172a; }
+    aside code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    #app { width: 100vw; height: calc(100vh - 53px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Custom HTML node</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/html-node.html">View source</a>
+  </header>
+  <aside>
+    <b>htmlContent</b>
+    <p style="margin: 4px 0 0;">When <code>htmlContent</code> is set, the node renders an HTML overlay on top of the WebGL canvas. Pass a <code>sanitizeHtml</code> option for untrusted input.</p>
+  </aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+
+    const userCard = `
+      <div style="display:flex;gap:10px;align-items:center;padding:8px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#06b6d4);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;">A</div>
+        <div>
+          <div style="font-weight:600;font-size:13px;">Anna Park</div>
+          <div style="font-size:11px;color:#64748b;">Reviewer · 12 PRs</div>
+        </div>
+      </div>`
+    const metricCard = `
+      <div style="padding:8px;">
+        <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">P95 latency</div>
+        <div style="font-size:22px;font-weight:700;color:#0f172a;">142 ms</div>
+        <div style="font-size:11px;color:#22c55e;">↘ 8.4% vs. last week</div>
+      </div>`
+    const chartIcon = `
+      <div style="padding:12px;display:flex;align-items:center;gap:12px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l3-3 4 4 5-7"/></svg>
+        <div>
+          <div style="font-weight:600;font-size:13px;">Daily metrics</div>
+          <div style="font-size:11px;color:#64748b;">last 30 days</div>
+        </div>
+      </div>`
+
+    new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'user',  x: 100, y: 100, width: 200, height: 60, label: '', htmlContent: userCard,
+          style: { backgroundColor: '#fff', borderColor: '#e2e8f0' } },
+        { id: 'metric', x: 380, y: 100, width: 200, height: 80, label: '', htmlContent: metricCard,
+          style: { backgroundColor: '#fff', borderColor: '#e2e8f0' } },
+        { id: 'chart', x: 660, y: 100, width: 220, height: 70, label: '', htmlContent: chartIcon,
+          style: { backgroundColor: '#fff', borderColor: '#e2e8f0' } },
+        { id: 'plain', x: 380, y: 260, width: 200, height: 50, label: 'Plain node (no htmlContent)' },
+      ],
+      edges: [
+        { id: 'e1', source: 'user', target: 'metric' },
+        { id: 'e2', source: 'metric', target: 'chart' },
+        { id: 'e3', source: 'metric', target: 'plain' },
+      ],
+      autoFit: true,
+    })
+  </script>
+</body>
+</html>

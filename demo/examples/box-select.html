@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Box select</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 280px; }
+    aside b { color: #0f172a; }
+    aside .count { display: block; margin-top: 8px; font-family: ui-monospace, monospace; color: #6366f1; }
+    #app { width: 100vw; height: calc(100vh - 53px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Box select</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/box-select.html">View source</a>
+  </header>
+  <aside>
+    <b>Try it</b>
+    <p style="margin: 4px 0 0;">Drag on empty canvas to rubber-band-select multiple nodes. Selected nodes get a blue border. Click anywhere empty to clear.</p>
+    <span class="count" id="count">0 nodes selected</span>
+  </aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: Array.from({ length: 16 }, (_, i) => ({
+        id: 'n' + i, x: 80 + (i % 4) * 180, y: 120 + Math.floor(i / 4) * 110,
+        width: 130, height: 60, label: 'Node ' + (i + 1),
+      })),
+      edges: [],
+      autoFit: true,
+    })
+    const countEl = document.getElementById('count')
+    chart.on('selectionChange', ({ selectedIds }) => {
+      countEl.textContent = `${selectedIds.length} node${selectedIds.length === 1 ? '' : 's'} selected`
+    })
+  </script>
+</body>
+</html>

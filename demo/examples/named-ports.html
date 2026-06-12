@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Named ports</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 280px; }
+    aside b { color: #0f172a; }
+    aside code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    #app { width: 100vw; height: calc(100vh - 53px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Named ports</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/named-ports.html">View source</a>
+  </header>
+  <aside>
+    <b>ports + maxConnections</b>
+    <p style="margin: 4px 0 0;">A node with <code>ports</code> exposes named connection points. Drag from one port to another to connect. The hub node's <code>in</code> port allows only one connection (<code>maxConnections: 1</code>).</p>
+  </aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart, generateId } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'src',  x: 100, y: 200, width: 130, height: 60, label: 'Source',
+          ports: [{ id: 'out', side: 'right', offset: 0.5 }] },
+        { id: 'hub',  x: 360, y: 100, width: 180, height: 200, label: 'Hub',
+          ports: [
+            { id: 'in',     side: 'left',  offset: 0.5, maxConnections: 1 },
+            { id: 'out-a',  side: 'right', offset: 0.25 },
+            { id: 'out-b',  side: 'right', offset: 0.5 },
+            { id: 'out-c',  side: 'right', offset: 0.75 },
+          ] },
+        { id: 'sinkA', x: 700, y: 100, width: 130, height: 60, label: 'Sink A',
+          ports: [{ id: 'in', side: 'left', offset: 0.5 }] },
+        { id: 'sinkB', x: 700, y: 200, width: 130, height: 60, label: 'Sink B',
+          ports: [{ id: 'in', side: 'left', offset: 0.5 }] },
+        { id: 'sinkC', x: 700, y: 300, width: 130, height: 60, label: 'Sink C',
+          ports: [{ id: 'in', side: 'left', offset: 0.5 }] },
+      ],
+      edges: [
+        { id: 'e1', source: 'src', target: 'hub',   sourceHandle: 'out',   targetHandle: 'in' },
+        { id: 'e2', source: 'hub', target: 'sinkA', sourceHandle: 'out-a', targetHandle: 'in' },
+        { id: 'e3', source: 'hub', target: 'sinkB', sourceHandle: 'out-b', targetHandle: 'in' },
+        { id: 'e4', source: 'hub', target: 'sinkC', sourceHandle: 'out-c', targetHandle: 'in' },
+      ],
+      onBeforeConnect: ({ targetId, targetHandle }) => {
+        if (targetId === 'hub' && targetHandle === 'in') {
+          const existing = chart.getEdges().filter(e => e.target === 'hub' && e.targetHandle === 'in')
+          if (existing.length >= 1) {
+            console.warn('hub.in is single-connection only')
+            return false
+          }
+        }
+        return true
+      },
+      autoFit: true,
+    })
+    chart.on('connect', ({ sourceId, targetId, sourceHandle, targetHandle }) => {
+      chart.addEdge({ id: generateId('e'), source: sourceId, target: targetId, sourceHandle, targetHandle })
+    })
+  </script>
+</body>
+</html>

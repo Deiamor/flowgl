@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Animated layout</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; margin-right: 8px; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Animated layout</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/animated-layout.html">View source</a>
+    <button id="row">→ Row</button>
+    <button id="circle">○ Circle</button>
+    <button id="grid">▦ Grid</button>
+    <button id="random">? Random</button>
+  </header>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart, circularLayout } from '@flowgl/core'
+    const ids = Array.from({ length: 12 }, (_, i) => 'n' + i)
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: ids.map((id, i) => ({
+        id, x: 100 + i * 100, y: 300, width: 80, height: 50, label: id,
+      })),
+      edges: ids.slice(0, -1).map((id, i) => ({ id: 'e' + i, source: id, target: ids[i + 1] })),
+      autoFit: true,
+    })
+
+    const animateTo = (positions) => chart.animateLayout(positions, 600)
+
+    document.getElementById('row').onclick = () => {
+      animateTo(Object.fromEntries(ids.map((id, i) => [id, { x: 80 + i * 100, y: 300 }])))
+    }
+    document.getElementById('circle').onclick = () => {
+      const laid = circularLayout(chart.getNodes(), { radius: 220 })
+      animateTo(Object.fromEntries(laid.map(n => [n.id, { x: n.x, y: n.y }])))
+    }
+    document.getElementById('grid').onclick = () => {
+      animateTo(Object.fromEntries(ids.map((id, i) => [id, {
+        x: 100 + (i % 4) * 180, y: 120 + Math.floor(i / 4) * 140,
+      }])))
+    }
+    document.getElementById('random').onclick = () => {
+      animateTo(Object.fromEntries(ids.map(id => [id, { x: Math.random() * 1000, y: Math.random() * 500 }])))
+    }
+  </script>
+</body>
+</html>

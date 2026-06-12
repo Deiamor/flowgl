@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — toJSON / fromJSON</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    .layout { display: grid; grid-template-columns: 1fr 360px; height: calc(100vh - 60px); }
+    #app { width: 100%; height: 100%; }
+    .json { background: #0f172a; color: #e2e8f0; padding: 12px; font-family: ui-monospace, 'SF Mono', monospace; font-size: 11px; overflow: auto; border-left: 1px solid #1e293b; white-space: pre; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — toJSON / fromJSON</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/json-roundtrip.html">View source</a>
+    <button id="snapshot">📸 Snapshot</button>
+    <button id="restore">↺ Restore</button>
+    <button id="clear">🗑 Clear graph</button>
+  </header>
+  <div class="layout">
+    <div id="app"></div>
+    <pre class="json" id="json">(click Snapshot to capture)</pre>
+  </div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'a', x: 100, y: 200, width: 130, height: 60, label: 'Source' },
+        { id: 'b', x: 320, y: 200, width: 130, height: 60, label: 'Transform' },
+        { id: 'c', x: 540, y: 200, width: 130, height: 60, label: 'Sink' },
+      ],
+      edges: [
+        { id: 'e1', source: 'a', target: 'b' },
+        { id: 'e2', source: 'b', target: 'c', animated: true },
+      ],
+      autoFit: true,
+    })
+
+    const jsonEl = document.getElementById('json')
+    let snap = null
+
+    document.getElementById('snapshot').onclick = () => {
+      snap = chart.toJSON()
+      jsonEl.textContent = JSON.stringify(snap, null, 2)
+    }
+    document.getElementById('restore').onclick = () => {
+      if (!snap) return
+      chart.fromJSON(snap)
+      chart.fitView()
+    }
+    document.getElementById('clear').onclick = () => {
+      chart.setNodes([])
+      chart.setEdges([])
+    }
+  </script>
+</body>
+</html>

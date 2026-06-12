@@ -27,9 +27,6 @@
     }
     .card h3 { margin: 0 0 4px; font-size: 17px; font-weight: 600; }
     .card p  { margin: 0; color: #64748b; font-size: 14px; line-height: 1.5; }
-    .card.coming { opacity: 0.55; cursor: default; pointer-events: none; }
-    .card.coming::after { content: 'Coming soon'; display: inline-block; margin-top: 8px; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #f1f5f9; color: #64748b; }
-    @media (prefers-color-scheme: dark) { .card.coming::after { background: #334155; color: #94a3b8; } }
     section h2 { margin: 32px 0 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; font-weight: 600; }
   </style>
 </head>
@@ -37,9 +34,9 @@
   <header>
     <h1>Examples</h1>
     <p>
-      Small, focused, runnable scenarios. Each example is a single HTML file with
-      inline TS — clone the repo and <code>pnpm dev</code>, or browse the source
-      on <a href="https://github.com/Deiamor/flowgl/tree/master/demo/examples">GitHub</a>.
+      25 focused scenarios, each a single HTML file with inline TS — clone the repo and
+      <code>pnpm dev</code>, or browse the source on
+      <a href="https://github.com/Deiamor/flowgl/tree/master/demo/examples">GitHub</a>.
     </p>
     <p style="margin-top: 8px;"><a href="../">← Back to main demo</a></p>
   </header>
@@ -49,19 +46,19 @@
       <div class="grid">
         <a class="card" href="./minimal.html"><h3>Minimal</h3><p>The smallest possible chart — three nodes, two edges, default options.</p></a>
         <a class="card" href="./drag-connect.html"><h3>Drag & connect</h3><p>Drag nodes to reposition. Drag the right edge of a node to draw a new connection.</p></a>
-        <a class="card coming"><h3>Snap to grid</h3><p><code>snapGrid: 20</code> plus a visible dotted background.</p></a>
-        <a class="card coming"><h3>Keyboard navigation</h3><p>Tab cycle, Arrow nudge, Delete, Cmd+Z.</p></a>
-        <a class="card coming"><h3>Read-only mode</h3><p><code>readOnly: true</code> disables every edit.</p></a>
+        <a class="card" href="./snap-to-grid.html"><h3>Snap to grid</h3><p><code>snapGrid: 20</code> plus a visible dotted background.</p></a>
+        <a class="card" href="./keyboard-navigation.html"><h3>Keyboard navigation</h3><p>Tab cycle, Arrow nudge, Delete, Cmd+Z.</p></a>
+        <a class="card" href="./readonly.html"><h3>Read-only mode</h3><p><code>readOnly: true</code> disables every edit; pan/zoom still works.</p></a>
       </div>
     </section>
 
     <section>
       <h2>Selection & multi-select</h2>
       <div class="grid">
-        <a class="card coming"><h3>Box select</h3><p>Drag on empty canvas to rubber-band-select multiple nodes.</p></a>
-        <a class="card coming"><h3>Cmd-click multi</h3><p>Toggle additional nodes into the selection.</p></a>
-        <a class="card coming"><h3>Programmatic selection</h3><p><code>setSelectedIds()</code> driven by a sidebar.</p></a>
-        <a class="card coming"><h3>Align & distribute</h3><p><code>alignNodes('left')</code> / <code>distributeNodes('horizontal')</code>.</p></a>
+        <a class="card" href="./box-select.html"><h3>Box select</h3><p>Drag on empty canvas to rubber-band-select multiple nodes.</p></a>
+        <a class="card" href="./cmd-click-multi.html"><h3>Cmd-click multi</h3><p>Toggle additional nodes into the selection.</p></a>
+        <a class="card" href="./programmatic-selection.html"><h3>Programmatic selection</h3><p><code>setSelectedIds()</code> driven by a sidebar.</p></a>
+        <a class="card" href="./align-distribute.html"><h3>Align & distribute</h3><p><code>alignNodes()</code> / <code>distributeNodes()</code>.</p></a>
       </div>
     </section>
 
@@ -69,18 +66,18 @@
       <h2>Edges</h2>
       <div class="grid">
         <a class="card" href="./animated-edges.html"><h3>Animated edges</h3><p><code>animated: true</code> marching ants.</p></a>
-        <a class="card coming"><h3>Edge labels</h3><p>Midpoint label with pill background.</p></a>
-        <a class="card coming"><h3>Waypoints</h3><p>Drag the midpoint to create + remove waypoints.</p></a>
-        <a class="card coming"><h3>Endpoint reroute</h3><p>Drag an endpoint to a different node.</p></a>
+        <a class="card" href="./edge-labels.html"><h3>Edge labels</h3><p>Midpoint label with pill background.</p></a>
+        <a class="card" href="./waypoints.html"><h3>Waypoints</h3><p>Drag the midpoint to create + remove waypoints.</p></a>
+        <a class="card" href="./endpoint-reroute.html"><h3>Endpoint reroute</h3><p>Drag an endpoint to a different node.</p></a>
       </div>
     </section>
 
     <section>
       <h2>Nodes</h2>
       <div class="grid">
-        <a class="card coming"><h3>Status badges</h3><p>error / warning / success / info badges in the corner.</p></a>
-        <a class="card coming"><h3>Custom HTML node</h3><p><code>htmlContent</code> with sanitization.</p></a>
-        <a class="card coming"><h3>Named ports</h3><p><code>ports: [{ id, side, offset }]</code> with <code>maxConnections</code>.</p></a>
+        <a class="card" href="./status-badges.html"><h3>Status badges</h3><p>error / warning / success / info badges in the corner.</p></a>
+        <a class="card" href="./html-node.html"><h3>Custom HTML node</h3><p><code>htmlContent</code> with sanitization.</p></a>
+        <a class="card" href="./named-ports.html"><h3>Named ports</h3><p><code>ports: [{ id, side, offset }]</code> with <code>maxConnections</code>.</p></a>
         <a class="card" href="./cjk-labels.html"><h3>Multi-line CJK labels</h3><p>한국어, 日本語, 中文测试, mixed and multi-line.</p></a>
       </div>
     </section>
@@ -88,28 +85,28 @@
     <section>
       <h2>Groups & layout</h2>
       <div class="grid">
-        <a class="card coming"><h3>Groups with collapse</h3><p><code>type: 'group'</code>, <code>groupDoubleClickCollapses: true</code>.</p></a>
-        <a class="card coming"><h3>dissolveGroup</h3><p>Remove a group container while keeping its children.</p></a>
+        <a class="card" href="./groups-collapse.html"><h3>Groups with collapse</h3><p><code>type: 'group'</code>, <code>groupDoubleClickCollapses: true</code>.</p></a>
+        <a class="card" href="./dissolve-group.html"><h3>dissolveGroup</h3><p>Remove a group container while keeping its children.</p></a>
         <a class="card" href="./hierarchical-layout.html"><h3>Hierarchical layout</h3><p><code>hierarchicalLayout()</code> driving <code>chart.setNodes</code>.</p></a>
-        <a class="card coming"><h3>Animated layout</h3><p><code>chart.animateLayout(targets, duration)</code> smoothstep.</p></a>
+        <a class="card" href="./animated-layout.html"><h3>Animated layout</h3><p><code>chart.animateLayout(targets, duration)</code> smoothstep.</p></a>
       </div>
     </section>
 
     <section>
       <h2>Viewport tools</h2>
       <div class="grid">
-        <a class="card coming"><h3>Fit view</h3><p>Programmatic + on-load <code>autoFit</code>.</p></a>
-        <a class="card coming"><h3>Minimap</h3><p>Position + click-to-pan.</p></a>
-        <a class="card coming"><h3>Search & highlight</h3><p><code>searchNodes(query)</code> with a dashed yellow highlight.</p></a>
+        <a class="card" href="./fit-view.html"><h3>Fit view</h3><p>Programmatic fitView / fitViewToSelection / scrollToNode.</p></a>
+        <a class="card" href="./minimap.html"><h3>Minimap</h3><p>Position + click-to-pan.</p></a>
+        <a class="card" href="./search-highlight.html"><h3>Search & highlight</h3><p><code>searchNodes(query)</code> with a dashed yellow highlight.</p></a>
       </div>
     </section>
 
     <section>
       <h2>Import / export</h2>
       <div class="grid">
-        <a class="card coming"><h3>toJSON / fromJSON</h3><p>Serialize, edit, deserialize roundtrip.</p></a>
-        <a class="card coming"><h3>Export PNG</h3><p><code>exportPNG(scale)</code> with retina upscale.</p></a>
-        <a class="card coming"><h3>Export SVG</h3><p><code>exportSVG(padding)</code> with proper bezier paths.</p></a>
+        <a class="card" href="./json-roundtrip.html"><h3>toJSON / fromJSON</h3><p>Serialize, edit, deserialize roundtrip.</p></a>
+        <a class="card" href="./export-png.html"><h3>Export PNG</h3><p><code>exportPNG(scale)</code> with retina upscale.</p></a>
+        <a class="card" href="./export-svg.html"><h3>Export SVG</h3><p><code>exportSVG(padding)</code> with proper bezier paths.</p></a>
       </div>
     </section>
   </main>

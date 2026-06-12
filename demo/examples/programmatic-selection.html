@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Programmatic selection</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: baseline; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    .layout { display: grid; grid-template-columns: 220px 1fr; height: calc(100vh - 53px); }
+    .sidebar { background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 16px; overflow-y: auto; }
+    .sidebar h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; }
+    .sidebar button { display: block; width: 100%; padding: 8px 12px; margin-bottom: 6px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; text-align: left; font-size: 13px; cursor: pointer; }
+    .sidebar button:hover { border-color: #6366f1; color: #6366f1; }
+    .sidebar button.is-selected { border-color: #6366f1; background: #eef2ff; color: #6366f1; }
+    .sidebar .clear { margin-top: 12px; color: #ef4444; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Programmatic selection</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/programmatic-selection.html">View source</a>
+  </header>
+  <div class="layout">
+    <div class="sidebar">
+      <h3>Nodes</h3>
+      <div id="list"></div>
+      <button id="all">Select all</button>
+      <button id="clear" class="clear">Clear selection</button>
+    </div>
+    <div id="app"></div>
+  </div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const ids = ['ingest', 'parse', 'transform', 'enrich', 'validate', 'load']
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: ids.map((id, i) => ({
+        id, x: 80 + i * 180, y: 200, width: 140, height: 60, label: id,
+      })),
+      edges: ids.slice(0, -1).map((id, i) => ({
+        id: 'e' + i, source: id, target: ids[i + 1],
+      })),
+      autoFit: true,
+    })
+    const list = document.getElementById('list')
+    ids.forEach((id) => {
+      const btn = document.createElement('button')
+      btn.textContent = id
+      btn.dataset.id = id
+      btn.onclick = () => chart.setSelectedIds([id])
+      list.appendChild(btn)
+    })
+    chart.on('selectionChange', ({ selectedIds }) => {
+      list.querySelectorAll('button').forEach((b) => {
+        b.classList.toggle('is-selected', selectedIds.includes(b.dataset.id))
+      })
+    })
+    document.getElementById('all').onclick = () => chart.setSelectedIds(ids)
+    document.getElementById('clear').onclick = () => chart.clearSelection()
+  </script>
+</body>
+</html>

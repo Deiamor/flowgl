@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Search & highlight</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header input { padding: 6px 10px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 6px; min-width: 200px; }
+    header input:focus { outline: none; border-color: #6366f1; }
+    header .count { font-size: 12px; color: #64748b; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Search & highlight</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/search-highlight.html">View source</a>
+    <input id="q" placeholder="Search node labels…" autofocus>
+    <span class="count" id="count"></span>
+  </header>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const labels = ['ingest', 'parse', 'normalize', 'transform', 'enrich', 'validate',
+                    'dedupe', 'aggregate', 'rollup', 'sink', 'audit', 'archive']
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: labels.map((label, i) => ({
+        id: label, x: (i % 4) * 200, y: Math.floor(i / 4) * 130,
+        width: 130, height: 60, label,
+      })),
+      edges: [],
+      autoFit: true,
+    })
+
+    const q = document.getElementById('q')
+    const count = document.getElementById('count')
+    q.addEventListener('input', () => {
+      const hits = chart.searchNodes(q.value.trim())
+      count.textContent = q.value.trim() === '' ? '' :
+        `${hits.length} match${hits.length === 1 ? '' : 'es'}`
+    })
+  </script>
+</body>
+</html>

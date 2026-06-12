@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>flowgl example — Export SVG</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header a { color: #6366f1; text-decoration: none; font-size: 14px; }
+    header button { padding: 6px 10px; font-size: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer; }
+    header button:hover { border-color: #6366f1; color: #6366f1; }
+    aside { position: fixed; right: 24px; top: 80px; padding: 12px 16px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #475569; max-width: 280px; }
+    aside code { background: #f1f5f9; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    #app { width: 100vw; height: calc(100vh - 60px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>flowgl — Export SVG</h1>
+    <a href="./">← Gallery</a>
+    <a href="https://github.com/Deiamor/flowgl/blob/master/demo/examples/export-svg.html">View source</a>
+    <button id="svg">⬇ Download SVG</button>
+    <button id="preview">👁 Preview in new tab</button>
+  </header>
+  <aside><code>chart.exportSVG(padding)</code> returns an SVG string with proper bezier paths + shape polygons. Open in Illustrator / Figma / your favorite vector tool.</aside>
+  <div id="app"></div>
+  <script type="module">
+    import { FlowChart } from '@flowgl/core'
+    const chart = new FlowChart({
+      container: document.getElementById('app'),
+      nodes: [
+        { id: 'in', x: 80,  y: 200, width: 130, height: 60, label: 'Input',
+          style: { shape: 'circle', backgroundColor: '#e8f5e9', borderColor: '#43a047' } },
+        { id: 'cond', x: 280, y: 200, width: 130, height: 60, label: 'OK?',
+          style: { shape: 'diamond', backgroundColor: '#fff8e1', borderColor: '#f9a825' } },
+        { id: 'yes', x: 480, y: 100, width: 130, height: 60, label: 'Process',
+          style: { shape: 'hexagon', backgroundColor: '#e3f2fd', borderColor: '#1e88e5' } },
+        { id: 'no',  x: 480, y: 300, width: 130, height: 60, label: 'Reject',
+          style: { backgroundColor: '#fce4ec', borderColor: '#e53935' } },
+        { id: 'out', x: 680, y: 200, width: 130, height: 60, label: 'Output',
+          style: { shape: 'circle', backgroundColor: '#f3e5f5', borderColor: '#8e24aa' } },
+      ],
+      edges: [
+        { id: 'e1', source: 'in', target: 'cond' },
+        { id: 'e2', source: 'cond', target: 'yes', label: 'yes' },
+        { id: 'e3', source: 'cond', target: 'no',  label: 'no', style: { dashArray: [8, 4] } },
+        { id: 'e4', source: 'yes', target: 'out' },
+      ],
+      autoFit: true,
+    })
+
+    document.getElementById('svg').onclick = () => {
+      const svg = chart.exportSVG(40)
+      const blob = new Blob([svg], { type: 'image/svg+xml' })
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(blob)
+      a.download = 'flowgl.svg'
+      a.click()
+      URL.revokeObjectURL(a.href)
+    }
+    document.getElementById('preview').onclick = () => {
+      const svg = chart.exportSVG(40)
+      const w = window.open('', '_blank')
+      if (w) {
+        w.document.write(`<style>body{margin:0;background:#fff;}</style>${svg}`)
+        w.document.close()
+      }
+    }
+  </script>
+</body>
+</html>
