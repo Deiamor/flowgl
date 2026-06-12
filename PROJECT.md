@@ -36,8 +36,9 @@ flowchart/
 │   │       │   ├── alignment.ts        # alignNodes / distributeNodes
 │   │       │   ├── graph-analysis.ts   # getIncomers / getOutgoers / hasCycle / findPaths
 │   │       │   ├── json-validate.ts    # fromJSON / importJSON schema + XSS sink guards
-│   │       │   ├── layout-animator.ts  # smoothstep RAF interpolation
+│   │       │   ├── layout-animator.ts  # smoothstep RAF interpolation (0.8.2: prefers-reduced-motion guard)
 │   │       │   ├── safe-css.ts         # safeColor / safeNumber / safeDashArray / safeFontFamily SSOT
+│   │       │   ├── sanitize-html.ts    # 0.8.2 — shared `sanitizeContent` for every overlay innerHTML write (warn-once)
 │   │       │   └── svg-export.ts       # SVG export with shape polygons + edge bezier/step/waypoints
 │   │       ├── events/
 │   │       │   └── emitter.ts
@@ -224,6 +225,9 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 - Event listener management: canvas event handlers stored as class fields so `dispose()` can call `removeEventListener` with the exact same reference
 - WebGL context loss: `webglcontextlost` / `webglcontextrestored` events handled; programs are re-created on restore; `onContextLost`/`onContextRestored` callbacks notify the host application
 - Edge geometry (0.8.1): every consumer of edge geometry — hit testing, WebGL/Canvas2D atlas SDF labels, HTML edge labels, EdgeToolbar anchor, SVG export, viewport culling — reads from `renderer/webgl/util/edge-geometry.ts`. The shared module exposes `edgePathPoints` (rendered polyline, 4-branch decision), `edgeMidpoint` (arc-length walk), `edgeBoundingBox` (tight AABB), and `edgePathFingerprint` (cache key). Pre-0.8.1 each consumer derived geometry on its own and most got at least one branch wrong; consolidating closed an entire regression class.
+- Mutation emit (0.8.2): every mutation to a node or edge fires `nodeUpdate` / `edgeUpdate`, regardless of which call site triggered it. `Graph.setMutationListener` is the single emit point — `FlowChart` wires it in the constructor. Pre-0.8.2 14 + direct `graph.updateNode/updateEdge` callsites in `flowchart.ts` skipped the emit; React state mirrors / persistence / undo middleware silently lost the change. Same regression-class shape as the 0.8.1 edge-geometry consolidation; fix by single-listener routing rather than 14 surgical edits.
+- Sanitizer plumbing (0.8.2): every overlay that writes a `content: string` to `innerHTML` (`Panel`, `NodeToolbar`, `EdgeToolbar`, `ViewportPortal`, `EdgeLabel`) routes through `services/sanitize-html.ts#sanitizeContent`, which warns once per page load with the source overlay name when no `sanitizeHtml` option is configured. Pre-0.8.2 only `HtmlOverlay` emitted that warning — host apps that wired sanitization to `HtmlOverlay` because that's the one that warned still had five other unsanitized sinks.
+- WCAG 2.2 AA hardening (0.8.2): the 5 blockers identified by the a11y audit are closed in code — Tab no longer traps focus (2.4.3), canvas gets a `:focus-visible` ring drawn via `box-shadow` since `outline` is occluded by the GPU surface (2.4.7), keyboard zoom (`Ctrl/Cmd +`/`-`) is bound (2.1.1), WebGL init failures fire an assertive `aria-live` announcement (4.1.3), and PerfOverlay label contrast meets 4.5:1 (1.4.3). Reduced-motion guards on `layout-animator` and the PerfOverlay flash animation respect 2.3.3.
 - Reactive data (0.8.0): `updateNodeData(id, partial)` merges into `node.data` and fans out to subscribers. A `dataUpdateStack` tracks the active propagation chain — when a subscriber writes back to a node already on the stack, propagation is halted and a `nodeDataCycle` event fires. Explicit cycle break (differentiator vs React Flow's equivalent, which stack-overflows).
 - Drag pipeline (0.8.0): `NodeDrag.setPostSnap()` lets layers rewrite drag coordinates after grid snap, before `updateNode`. Helper Lines reach into this hook; consumers with custom snap heuristics can register their own.
 
@@ -239,7 +243,7 @@ Overlays are positioned absolutely on top of the WebGL canvas, inside the contai
 
 ## Build Commands
 ```bash
-pnpm test           # run 1099 tests across all packages (1082 core / 17 react / 9 vue / 9 svelte)
+pnpm test           # run 1119 tests across all packages (1102 core / 17 react / 9 vue / 9 svelte)
 pnpm build          # production build (minified)
 pnpm build:dev      # development build (readable + sourcemaps)
 pnpm typecheck      # tsc --noEmit (all packages)

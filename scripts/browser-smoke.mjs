@@ -59,8 +59,19 @@ async function run() {
     const browser = await launcher.launch({ headless: true })
     const page = await browser.newPage()
     const errors = []
-    page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`))
-    page.on('console', (msg) => { if (msg.type() === 'error') errors.push(`console.error: ${msg.text()}`) })
+    // Whitelist expected init warnings that are environmental, not bugs.
+    // Linux Playwright Firefox / WebKit lack WebGL2 acceleration so the
+    // chart correctly fires onError + announces the fallback; the
+    // Canvas2D path takes over and the smoke is still meaningful.
+    const ignorable = [
+      /WebGL2 is not available/i,
+      /\[FlowChart\] @flowgl\/core: WebGL2/i,
+    ]
+    const isExpected = (text) => ignorable.some((rx) => rx.test(text))
+    page.on('pageerror', (err) => { if (!isExpected(err.message)) errors.push(`pageerror: ${err.message}`) })
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && !isExpected(msg.text())) errors.push(`console.error: ${msg.text()}`)
+    })
 
     await page.goto(`http://localhost:${PORT}/`, { waitUntil: 'load', timeout: 30000 })
 
