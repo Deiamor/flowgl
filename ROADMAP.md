@@ -13,27 +13,46 @@ Keep a Changelog-style record of what actually shipped lives in
 ## Now (active — 0.5.x window)
 
 Items here are likely to ship within the next two or three releases.
+After the 0.4.2 → docs / examples / infra sweep all five original "Now"
+items landed; new ones live below them.
 
-- **Official documentation site** — Vitepress under `docs/`, deployed
-  alongside the demo. Getting Started for each framework, Core Concepts,
-  Guides (drag / group / shortcuts / events / HTML overlay / themes),
-  auto-generated API Reference via TypeDoc, Cookbook, Migration.
-- **Examples gallery** — 15–20 small scenarios under `demo/examples/`,
-  each a self-contained HTML + TS file with a StackBlitz / CodeSandbox
-  embed. Drag, connect, group, waypoints, multi-line labels, animated
-  edges, status badges, custom HTML nodes, minimap, fit view, undo/redo,
-  search, import/export, hierarchical layout.
-- **Automated benchmark dashboard** — `.github/workflows/benchmark.yml`
-  runs `demo/benchmark.html` on every release tag, writes the result
-  JSON, publishes a small static page with a time-series of 1K / 5K /
-  10K node fps. Regression below the SPEC floor (T6 in PRODUCT.md)
-  opens an issue automatically.
-- **Logo + visual identity** — single SVG mark, dark/light variants,
-  1200×630 OG card. Used in the README hero, the docs site, and social
-  share previews.
-- **GitHub Discussions** — turn on Q&A / Show & Tell / Ideas categories.
-  Seed each with a few worked-through scenarios so the channel doesn't
-  open empty.
+- ✅ **Official documentation site** — Vitepress under `docs/`, deployed
+  at [docs.flowgl.ouranos.kr](https://docs.flowgl.ouranos.kr/). 16
+  pages: landing, 10-page guide (getting-started, why-flowgl,
+  vanilla/react/vue/svelte, renderers, labels, accessibility,
+  performance), API reference, cookbook, examples, showcase, community.
+- ✅ **Examples gallery** — 25 focused scenarios under `demo/examples/`,
+  live at [dev.flowgl.ouranos.kr/examples/](https://dev.flowgl.ouranos.kr/examples/).
+  Drag, connect, group, waypoints, multi-line CJK labels, animated
+  edges, status badges, custom HTML nodes, minimap, fit view, search,
+  json roundtrip, PNG/SVG export, animated + hierarchical layout.
+- ✅ **Automated benchmark workflow** —
+  [`.github/workflows/benchmark.yml`](https://github.com/Deiamor/flowgl/blob/master/.github/workflows/benchmark.yml)
+  drives `demo/benchmark.html` through Playwright + SwiftShader
+  Chromium on push to `packages/core/src/**` + weekly cron. Results
+  archive to `docs/data/benchmarks.json`; below-floor opens an issue
+  automatically. (Dashboard page with time-series graph is the next
+  iteration — see below.)
+- ✅ **Logo + visual identity** — SVG wordmark, dark/light variants,
+  square mark for favicon, 1200×630 OG card. Live in the README hero
+  (with `<picture>` dark-mode swap), the docs site, and social shares.
+- ✅ **GitHub Discussions** — Q&A / Ideas / Show & Tell / Announcements
+  categories live at
+  [github.com/Deiamor/flowgl/discussions](https://github.com/Deiamor/flowgl/discussions).
+  Seed posts are the next contributor-facing step.
+
+### Now — next sweep
+
+- **Benchmark dashboard page** — small static page in `docs/` that
+  renders the `docs/data/benchmarks.json` time-series. The workflow
+  already writes the data; the visualization is missing.
+- **Cookbook recipe pages** — the cookbook index lists 7 planned
+  recipes but each one is still a placeholder. Each recipe = one
+  Markdown page under `docs/cookbook/<slug>.md` with a runnable
+  snippet and (where possible) a link into the examples gallery.
+- **Seed Discussions** — pin Welcome posts in Q&A / Ideas / Show & Tell
+  / Announcements pointing at the relevant docs page. Empty channels
+  intimidate contributors.
 
 ## Next (under design — 0.6+ window)
 
