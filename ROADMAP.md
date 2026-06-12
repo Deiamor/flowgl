@@ -43,16 +43,20 @@ items landed; new ones live below them.
 
 ### Now — next sweep
 
-- **Benchmark dashboard page** — small static page in `docs/` that
-  renders the `docs/data/benchmarks.json` time-series. The workflow
-  already writes the data; the visualization is missing.
-- **Cookbook recipe pages** — the cookbook index lists 7 planned
-  recipes but each one is still a placeholder. Each recipe = one
-  Markdown page under `docs/cookbook/<slug>.md` with a runnable
-  snippet and (where possible) a link into the examples gallery.
-- **Seed Discussions** — pin Welcome posts in Q&A / Ideas / Show & Tell
-  / Announcements pointing at the relevant docs page. Empty channels
-  intimidate contributors.
+- ✅ **Benchmark dashboard page** — live at
+  [docs.flowgl.ouranos.kr/benchmarks](https://docs.flowgl.ouranos.kr/benchmarks).
+  Inline SVG time-series of 10K-node fps, T6 floor (30 fps) as a red
+  dashed reference, latest run summary with per-tier floor checks.
+  `docs/public/data/benchmarks.json` seeded with the PERFORMANCE.md
+  baseline; the workflow appends to it on every run.
+- ✅ **Cookbook recipes** — 7/7 written: auto-connect, state-store,
+  html-node, animated-layout, svg-to-pdf, ssr, untrusted-json. Each
+  links into the examples gallery and the relevant guide page.
+- 🟡 **Seed Discussions** — Welcome-post bodies prepared in
+  [.github/DISCUSSIONS_WELCOME.md](https://github.com/Deiamor/flowgl/blob/master/.github/DISCUSSIONS_WELCOME.md).
+  Maintainer needs to paste each one into the matching Discussions
+  category and pin — a 5-minute manual step that can't be done from
+  the repo.
 
 ## Next (under design — 0.6+ window)
 
